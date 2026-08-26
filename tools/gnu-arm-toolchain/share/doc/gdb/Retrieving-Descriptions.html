@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Retrieving Descriptions (Debugging with GDB)</title>
+
+<meta name="description" content="Retrieving Descriptions (Debugging with GDB)">
+<meta name="keywords" content="Retrieving Descriptions (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Target-Descriptions.html" rel="up" title="Target Descriptions">
+<link href="Target-Description-Format.html" rel="next" title="Target Description Format">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Retrieving-Descriptions">
+<div class="nav-panel">
+<p>
+Next: <a href="Target-Description-Format.html" accesskey="n" rel="next">Target Description Format</a>, Up: <a href="Target-Descriptions.html" accesskey="u" rel="up">Target Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Retrieving-Descriptions-1"><span>G.1 Retrieving Descriptions<a class="copiable-link" href="#Retrieving-Descriptions-1"> &para;</a></span></h3>
+
+<p>Target descriptions can be read from the target automatically, or
+specified by the user manually.  The default behavior is to read the
+description from the target.  <small class="sc">GDB</small> retrieves it via the remote
+protocol using &lsquo;<samp class="samp">qXfer</samp>&rsquo; requests (see <a class="pxref" href="General-Query-Packets.html">qXfer</a>).  The <var class="var">annex</var> in the &lsquo;<samp class="samp">qXfer</samp>&rsquo; packet will be
+&lsquo;<samp class="samp">target.xml</samp>&rsquo;.  The contents of the &lsquo;<samp class="samp">target.xml</samp>&rsquo; annex are an
+XML document, of the form described in <a class="ref" href="Target-Description-Format.html">Target Description Format</a>.
+</p>
+<p>Alternatively, you can specify a file to read for the target description.
+If a file is set, the target will not be queried.  The commands to
+specify a file are:
+</p>
+<dl class="table">
+<dt><a id="index-set-tdesc-filename"></a><span><code class="code">set tdesc filename <var class="var">path</var></code><a class="copiable-link" href="#index-set-tdesc-filename"> &para;</a></span></dt>
+<dd><p>Read the target description from <var class="var">path</var>.
+</p>
+</dd>
+<dt><a id="index-unset-tdesc-filename"></a><span><code class="code">unset tdesc filename</code><a class="copiable-link" href="#index-unset-tdesc-filename"> &para;</a></span></dt>
+<dd><p>Do not read the XML target description from a file.  <small class="sc">GDB</small>
+will use the description supplied by the current target.
+</p>
+</dd>
+<dt><a id="index-show-tdesc-filename"></a><span><code class="code">show tdesc filename</code><a class="copiable-link" href="#index-show-tdesc-filename"> &para;</a></span></dt>
+<dd><p>Show the filename to read for a target description, if any.
+</p></dd>
+</dl>
+
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Convenience Funs (Debugging with GDB)</title>
+
+<meta name="description" content="Convenience Funs (Debugging with GDB)">
+<meta name="keywords" content="Convenience Funs (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data.html" rel="up" title="Data">
+<link href="Registers.html" rel="next" title="Registers">
+<link href="Convenience-Vars.html" rel="prev" title="Convenience Vars">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Convenience-Funs">
+<div class="nav-panel">
+<p>
+Next: <a href="Registers.html" accesskey="n" rel="next">Registers</a>, Previous: <a href="Convenience-Vars.html" accesskey="p" rel="prev">Convenience Variables</a>, Up: <a href="Data.html" accesskey="u" rel="up">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Convenience-Functions"><span>10.13 Convenience Functions<a class="copiable-link" href="#Convenience-Functions"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-convenience-functions"></a>
+<p><small class="sc">GDB</small> also supplies some <em class="dfn">convenience functions</em>.  These
+have a syntax similar to convenience variables.  A convenience
+function can be used in an expression just like an ordinary function;
+however, a convenience function is implemented internally to
+<small class="sc">GDB</small>.
+</p>
+<p>These functions do not require <small class="sc">GDB</small> to be configured with
+<code class="code">Python</code> support, which means that they are always available.
+</p>
+<dl class="table">
+<dt><a id="index-_0024_005fisvoid_002c-convenience-function"></a><span><code class="code">$_isvoid (<var class="var">expr</var>)</code><a class="copiable-link" href="#index-_0024_005fisvoid_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Return one if the expression <var class="var">expr</var> is <code class="code">void</code>.  Otherwise it
+returns zero.
+</p>
+<p>A <code class="code">void</code> expression is an expression where the type of the result
+is <code class="code">void</code>.  For example, you can examine a convenience variable
+(see <a class="ref" href="Convenience-Vars.html">Convenience Variables</a>) to check whether
+it is <code class="code">void</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $_exitcode
+$1 = void
+(gdb) print $_isvoid ($_exitcode)
+$2 = 1
+(gdb) run
+Starting program: ./a.out
+[Inferior 1 (process 29572) exited normally]
+(gdb) print $_exitcode
+$3 = 0
+(gdb) print $_isvoid ($_exitcode)
+$4 = 0
+</pre></div>
+
+<p>In the example above, we used <code class="code">$_isvoid</code> to check whether
+<code class="code">$_exitcode</code> is <code class="code">void</code> before and after the execution of the
+program being debugged.  Before the execution there is no exit code to
+be examined, therefore <code class="code">$_exitcode</code> is <code class="code">void</code>.  After the
+execution the program being debugged returned zero, therefore
+<code class="code">$_exitcode</code> is zero, which means that it is not <code class="code">void</code>
+anymore.
+</p>
+<p>The <code class="code">void</code> expression can also be a call of a function from the
+program being debugged.  For example, given the following function:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void
+foo (void)
+{
+}
+</pre></div>
+
+<p>The result of calling it inside <small class="sc">GDB</small> is <code class="code">void</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print foo ()
+$1 = void
+(gdb) print $_isvoid (foo ())
+$2 = 1
+(gdb) set $v = foo ()
+(gdb) print $v
+$3 = void
+(gdb) print $_isvoid ($v)
+$4 = 1
+</pre></div>
+
+</dd>
+<dt><a id="index-_0024_005fgdb_005fsetting_005fstr_002c-convenience-function"></a><span><code class="code">$_gdb_setting_str (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fsetting_005fstr_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Return the value of the <small class="sc">GDB</small> <var class="var">setting</var> as a string.
+<var class="var">setting</var> is any setting that can be used in a <code class="code">set</code> or
+<code class="code">show</code> command (see <a class="pxref" href="Controlling-GDB.html">Controlling <small class="sc">GDB</small></a>).
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) show print frame-arguments
+Printing of non-scalar frame arguments is &quot;scalars&quot;.
+(gdb) p $_gdb_setting_str(&quot;print frame-arguments&quot;)
+$1 = &quot;scalars&quot;
+(gdb) p $_gdb_setting_str(&quot;height&quot;)
+$2 = &quot;30&quot;
+(gdb)
+</pre></div>
+
+</dd>
+<dt><a id="index-_0024_005fgdb_005fsetting_002c-convenience-function"></a><span><code class="code">$_gdb_setting (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fsetting_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Return the value of the <small class="sc">GDB</small> <var class="var">setting</var>.
+The type of the returned value depends on the setting.
+</p>
+<p>The value type for boolean and auto boolean settings is <code class="code">int</code>.
+The boolean values <code class="code">off</code> and <code class="code">on</code> are converted to
+the integer values <code class="code">0</code> and <code class="code">1</code>.  The value <code class="code">auto</code> is
+converted to the value <code class="code">-1</code>.
+</p>
+<p>The value type for integer settings is either <code class="code">unsigned int</code>
+or <code class="code">int</code>, depending on the setting.
+</p>
+<p>Some integer settings accept an <code class="code">unlimited</code> value.
+Depending on the setting, the <code class="code">set</code> command also accepts
+the value <code class="code">0</code> or the value <code class="code">&minus;1</code> as a synonym for
+<code class="code">unlimited</code>.
+For example, <code class="code">set height unlimited</code> is equivalent to
+<code class="code">set height 0</code>.
+</p>
+<p>Some other settings that accept the <code class="code">unlimited</code> value
+use the value <code class="code">0</code> to literally mean zero.
+For example, <code class="code">set history size 0</code> indicates to not
+record any <small class="sc">GDB</small> commands in the command history.
+For such settings, <code class="code">&minus;1</code> is the synonym
+for <code class="code">unlimited</code>.
+</p>
+<p>See the documentation of the corresponding <code class="code">set</code> command for
+the numerical value equivalent to <code class="code">unlimited</code>.
+</p>
+<p>The <code class="code">$_gdb_setting</code> function converts the unlimited value
+to a <code class="code">0</code> or a <code class="code">&minus;1</code> value according to what the
+<code class="code">set</code> command uses.
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) p $_gdb_setting_str(&quot;height&quot;)
+$1 = &quot;30&quot;
+(gdb) p $_gdb_setting(&quot;height&quot;)
+$2 = 30
+(gdb) set height unlimited
+(gdb) p $_gdb_setting_str(&quot;height&quot;)
+$3 = &quot;unlimited&quot;
+(gdb) p $_gdb_setting(&quot;height&quot;)
+$4 = 0
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) p $_gdb_setting_str(&quot;history size&quot;)
+$5 = &quot;unlimited&quot;
+(gdb) p $_gdb_setting(&quot;history size&quot;)
+$6 = -1
+(gdb) p $_gdb_setting_str(&quot;disassemble-next-line&quot;)
+$7 = &quot;auto&quot;
+(gdb) p $_gdb_setting(&quot;disassemble-next-line&quot;)
+$8 = -1
+(gdb)
+</pre></div></div>
+
+<p>Other setting types (enum, filename, optional filename, string, string noescape)
+are returned as string values.
+</p>
+
+</dd>
+<dt><a id="index-_0024_005fgdb_005fmaint_005fsetting_005fstr_002c-convenience-function"></a><span><code class="code">$_gdb_maint_setting_str (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fmaint_005fsetting_005fstr_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Like the <code class="code">$_gdb_setting_str</code> function, but works with
+<code class="code">maintenance set</code> variables.
+</p>
+</dd>
+<dt><a id="index-_0024_005fgdb_005fmaint_005fsetting_002c-convenience-function"></a><span><code class="code">$_gdb_maint_setting (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fmaint_005fsetting_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Like the <code class="code">$_gdb_setting</code> function, but works with
+<code class="code">maintenance set</code> variables.
+</p>
+<a class="anchor" id="g_t_0024_005fshell-convenience-function"></a></dd>
+<dt><a id="index-_0024_005fshell_002c-convenience-function"></a><span><code class="code">$_shell (<var class="var">command-string</var>)</code><a class="copiable-link" href="#index-_0024_005fshell_002c-convenience-function"> &para;</a></span></dt>
+<dd>
+<p>Invoke a shell to execute <var class="var">command-string</var>.  <var class="var">command-string</var>
+must be a string.  The shell runs on the host machine, the machine
+<small class="sc">GDB</small> is running on.  Returns the command&rsquo;s exit status.  On
+Unix systems, a command which exits with a zero exit status has
+succeeded, and non-zero exit status indicates failure.  When a command
+terminates on a fatal signal whose number is <var class="var">N</var>, <small class="sc">GDB</small>
+uses the value 128+<var class="var">N</var> as the exit status, as is standard in Unix
+shells.  Note that <var class="var">N</var> is a host signal number, not a target
+signal number.  If you&rsquo;re native debugging, they will be the same, but
+if cross debugging, the host vs target signal numbers may be
+completely unrelated.  Please consult your host operating system&rsquo;s
+documentation for the mapping between host signal numbers and signal
+names.  The shell to run is determined in the same way as for the
+<code class="code">shell</code> command.  See <a class="xref" href="Shell-Commands.html">Shell Commands</a>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $_shell(&quot;true&quot;)
+$1 = 0
+(gdb) print $_shell(&quot;false&quot;)
+$2 = 1
+(gdb) p $_shell(&quot;echo hello&quot;)
+hello
+$3 = 0
+(gdb) p $_shell(&quot;foobar&quot;)
+bash: line 1: foobar: command not found
+$4 = 127
+</pre></div>
+
+<p>This may also be useful in breakpoint conditions.  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break function if $_shell(&quot;some command&quot;) == 0
+</pre></div>
+
+<p>In this scenario, you&rsquo;ll want to make sure that the shell command you
+run in the breakpoint condition takes the least amount of time
+possible.  For example, avoid running a command that may block
+indefinitely, or that sleeps for a while before exiting.  Prefer a
+command or script which analyzes some state and exits immediately.
+This is important because the debugged program stops for the
+breakpoint every time, and then <small class="sc">GDB</small> evaluates the breakpoint
+condition.  If the condition is false, the program is re-resumed
+transparently, without informing you of the stop.  A quick shell
+command thus avoids significantly slowing down the debugged program
+unnecessarily.
+</p>
+<p>Note: unlike the <code class="code">shell</code> command, the <code class="code">$_shell</code> convenience
+function does not affect the <code class="code">$_shell_exitcode</code> and
+<code class="code">$_shell_exitsignal</code> convenience variables.
+</p>
+</dd>
+</dl>
+
+<p>The following functions require <small class="sc">GDB</small> to be configured with
+<code class="code">Python</code> support.
+</p>
+<dl class="table">
+<dt><a id="index-_0024_005fmemeq_002c-convenience-function"></a><span><code class="code">$_memeq(<var class="var">buf1</var>, <var class="var">buf2</var>, <var class="var">length</var>)</code><a class="copiable-link" href="#index-_0024_005fmemeq_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if the <var class="var">length</var> bytes at the addresses given by
+<var class="var">buf1</var> and <var class="var">buf2</var> are equal.
+Otherwise it returns zero.
+</p>
+</dd>
+<dt><a id="index-_0024_005fregex_002c-convenience-function"></a><span><code class="code">$_regex(<var class="var">str</var>, <var class="var">regex</var>)</code><a class="copiable-link" href="#index-_0024_005fregex_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if the string <var class="var">str</var> matches the regular expression
+<var class="var">regex</var>.  Otherwise it returns zero.
+The syntax of the regular expression is that specified by <code class="code">Python</code>&rsquo;s
+regular expression support.
+</p>
+</dd>
+<dt><a id="index-_0024_005fstreq_002c-convenience-function"></a><span><code class="code">$_streq(<var class="var">str1</var>, <var class="var">str2</var>)</code><a class="copiable-link" href="#index-_0024_005fstreq_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if the strings <var class="var">str1</var> and <var class="var">str2</var> are equal.
+Otherwise it returns zero.
+</p>
+</dd>
+<dt><a id="index-_0024_005fstrlen_002c-convenience-function"></a><span><code class="code">$_strlen(<var class="var">str</var>)</code><a class="copiable-link" href="#index-_0024_005fstrlen_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns the length of string <var class="var">str</var>.
+</p>
+</dd>
+<dt><a id="index-_0024_005fcaller_005fis_002c-convenience-function"></a><span><code class="code">$_caller_is(<var class="var">name</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fcaller_005fis_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if the calling function&rsquo;s name is equal to <var class="var">name</var>.
+Otherwise it returns zero.
+</p>
+<p>If the optional argument <var class="var">number_of_frames</var> is provided,
+it is the number of frames up in the stack to look.
+The default is 1.
+</p>
+<p>Example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) backtrace
+#0  bottom_func ()
+    at testsuite/gdb.python/py-caller-is.c:21
+#1  0x00000000004005a0 in middle_func ()
+    at testsuite/gdb.python/py-caller-is.c:27
+#2  0x00000000004005ab in top_func ()
+    at testsuite/gdb.python/py-caller-is.c:33
+#3  0x00000000004005b6 in main ()
+    at testsuite/gdb.python/py-caller-is.c:39
+(gdb) print $_caller_is (&quot;middle_func&quot;)
+$1 = 1
+(gdb) print $_caller_is (&quot;top_func&quot;, 2)
+$1 = 1
+</pre></div>
+
+</dd>
+<dt><a id="index-_0024_005fcaller_005fmatches_002c-convenience-function"></a><span><code class="code">$_caller_matches(<var class="var">regexp</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fcaller_005fmatches_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if the calling function&rsquo;s name matches the regular expression
+<var class="var">regexp</var>.  Otherwise it returns zero.
+</p>
+<p>If the optional argument <var class="var">number_of_frames</var> is provided,
+it is the number of frames up in the stack to look.
+The default is 1.
+</p>
+</dd>
+<dt><a id="index-_0024_005fany_005fcaller_005fis_002c-convenience-function"></a><span><code class="code">$_any_caller_is(<var class="var">name</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fany_005fcaller_005fis_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if any calling function&rsquo;s name is equal to <var class="var">name</var>.
+Otherwise it returns zero.
+</p>
+<p>If the optional argument <var class="var">number_of_frames</var> is provided,
+it is the number of frames up in the stack to look.
+The default is 1.
+</p>
+<p>This function differs from <code class="code">$_caller_is</code> in that this function
+checks all stack frames from the immediate caller to the frame specified
+by <var class="var">number_of_frames</var>, whereas <code class="code">$_caller_is</code> only checks the
+frame specified by <var class="var">number_of_frames</var>.
+</p>
+</dd>
+<dt><a id="index-_0024_005fany_005fcaller_005fmatches_002c-convenience-function"></a><span><code class="code">$_any_caller_matches(<var class="var">regexp</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fany_005fcaller_005fmatches_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>Returns one if any calling function&rsquo;s name matches the regular expression
+<var class="var">regexp</var>.  Otherwise it returns zero.
+</p>
+<p>If the optional argument <var class="var">number_of_frames</var> is provided,
+it is the number of frames up in the stack to look.
+The default is 1.
+</p>
+<p>This function differs from <code class="code">$_caller_matches</code> in that this function
+checks all stack frames from the immediate caller to the frame specified
+by <var class="var">number_of_frames</var>, whereas <code class="code">$_caller_matches</code> only checks the
+frame specified by <var class="var">number_of_frames</var>.
+</p>
+</dd>
+<dt><a id="index-_0024_005fas_005fstring_002c-convenience-function"></a><span><code class="code">$_as_string(<var class="var">value</var>)</code><a class="copiable-link" href="#index-_0024_005fas_005fstring_002c-convenience-function"> &para;</a></span></dt>
+<dd><p>This convenience function is considered deprecated, and could be
+removed from future versions of <small class="sc">GDB</small>.  Use the &lsquo;<samp class="samp">%V</samp>&rsquo; format
+specifier instead (see <a class="pxref" href="Output.html#g_t_0025V-Format-Specifier">%V Format Specifier</a>).
+</p>
+<p>Return the string representation of <var class="var">value</var>.
+</p>
+<p>This function is useful to obtain the textual label (enumerator) of an
+enumeration value.  For example, assuming the variable <var class="var">node</var> is of
+an enumerated type:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) printf &quot;Visiting node of type %s\n&quot;, $_as_string(node)
+Visiting node of type NODE_INTEGER
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-_0024_005fcreal_002c-convenience-function"></a>
+<a id="index-_0024_005fcimag_002c-convenience-function"></a><span><code class="code">$_cimag(<var class="var">value</var>)</code><a class="copiable-link" href="#index-_0024_005fcimag_002c-convenience-function"> &para;</a></span></dt>
+<dt><code class="code">$_creal(<var class="var">value</var>)</code></dt>
+<dd><p>Return the imaginary (<code class="code">$_cimag</code>) or real (<code class="code">$_creal</code>) part of
+the complex number <var class="var">value</var>.
+</p>
+<p>The type of the imaginary or real part depends on the type of the
+complex number, e.g., using <code class="code">$_cimag</code> on a <code class="code">float complex</code>
+will return an imaginary part of type <code class="code">float</code>.
+</p>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> provides the ability to list and get help on
+convenience functions.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-all-convenience-functions"></a>
+<a id="index-help-function"></a><span><code class="code">help function</code><a class="copiable-link" href="#index-help-function"> &para;</a></span></dt>
+<dd><p>Print a list of all convenience functions.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Registers.html">Registers</a>, Previous: <a href="Convenience-Vars.html">Convenience Variables</a>, Up: <a href="Data.html">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Debugging C Plus Plus (Debugging with GDB)</title>
+
+<meta name="description" content="Debugging C Plus Plus (Debugging with GDB)">
+<meta name="keywords" content="Debugging C Plus Plus (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C.html" rel="up" title="C">
+<link href="Decimal-Floating-Point.html" rel="next" title="Decimal Floating Point">
+<link href="Debugging-C.html" rel="prev" title="Debugging C">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Debugging-C-Plus-Plus">
+<div class="nav-panel">
+<p>
+Next: <a href="Decimal-Floating-Point.html" accesskey="n" rel="next">Decimal Floating Point format</a>, Previous: <a href="Debugging-C.html" accesskey="p" rel="prev"><small class="sc">GDB</small> and C</a>, Up: <a href="C.html" accesskey="u" rel="up">C and C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb-Features-for-C_002b_002b"><span>15.4.1.7 <small class="sc">GDB</small> Features for C<code class="t">++</code><a class="copiable-link" href="#gdb-Features-for-C_002b_002b"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-commands-for-C_002b_002b"></a>
+
+<p>Some <small class="sc">GDB</small> commands are particularly useful with C<code class="t">++</code>, and some are
+designed specifically for use with C<code class="t">++</code>.  Here is a summary:
+</p>
+<dl class="table">
+<dt><a id="index-break-in-overloaded-functions"></a><span><code class="code"><span class="r">breakpoint menus</span></code><a class="copiable-link" href="#index-break-in-overloaded-functions"> &para;</a></span></dt>
+<dd><p>When you want a breakpoint in a function whose name is overloaded,
+<small class="sc">GDB</small> has the capability to display a menu of possible breakpoint
+locations to help you specify which function definition you want.
+See <a class="xref" href="Ambiguous-Expressions.html">Ambiguous Expressions</a>.
+</p>
+</dd>
+<dt><a id="index-overloading-in-C_002b_002b"></a><span><code class="code">rbreak <var class="var">regex</var></code><a class="copiable-link" href="#index-overloading-in-C_002b_002b"> &para;</a></span></dt>
+<dd><p>Setting breakpoints using regular expressions is helpful for setting
+breakpoints on overloaded functions that are not members of any special
+classes.
+See <a class="xref" href="Set-Breaks.html">Setting Breakpoints</a>.
+</p>
+</dd>
+<dt><a id="index-C_002b_002b-exception-handling"></a><span><code class="code">catch throw</code><a class="copiable-link" href="#index-C_002b_002b-exception-handling"> &para;</a></span></dt>
+<dt><code class="code">catch rethrow</code></dt>
+<dt><code class="code">catch catch</code></dt>
+<dd><p>Debug C<code class="t">++</code> exception handling using these commands.  See <a class="xref" href="Set-Catchpoints.html">Setting Catchpoints</a>.
+</p>
+</dd>
+<dt><a id="index-inheritance"></a><span><code class="code">ptype <var class="var">typename</var></code><a class="copiable-link" href="#index-inheritance"> &para;</a></span></dt>
+<dd><p>Print inheritance relationships as well as other information for type
+<var class="var">typename</var>.
+See <a class="xref" href="Symbols.html">Examining the Symbol Table</a>.
+</p>
+</dd>
+<dt><code class="code">info vtbl <var class="var">expression</var>.</code></dt>
+<dd><p>The <code class="code">info vtbl</code> command can be used to display the virtual
+method tables of the object computed by <var class="var">expression</var>.  This shows
+one entry per virtual table; there may be multiple virtual tables when
+multiple inheritance is in use.
+</p>
+</dd>
+<dt><a id="index-C_002b_002b-demangling"></a><span><code class="code">demangle <var class="var">name</var></code><a class="copiable-link" href="#index-C_002b_002b-demangling"> &para;</a></span></dt>
+<dd><p>Demangle <var class="var">name</var>.
+See <a class="xref" href="Symbols.html">Examining the Symbol Table</a>, for a more complete description of the <code class="code">demangle</code> command.
+</p>
+</dd>
+<dt><a id="index-C_002b_002b-symbol-display"></a><span><code class="code">set print demangle</code><a class="copiable-link" href="#index-C_002b_002b-symbol-display"> &para;</a></span></dt>
+<dt><code class="code">show print demangle</code></dt>
+<dt><code class="code">set print asm-demangle</code></dt>
+<dt><code class="code">show print asm-demangle</code></dt>
+<dd><p>Control whether C<code class="t">++</code> symbols display in their source form, both when
+displaying code as C<code class="t">++</code> source and when displaying disassemblies.
+See <a class="xref" href="Print-Settings.html">Print Settings</a>.
+</p>
+</dd>
+<dt><code class="code">set print object</code></dt>
+<dt><code class="code">show print object</code></dt>
+<dd><p>Choose whether to print derived (actual) or declared types of objects.
+See <a class="xref" href="Print-Settings.html">Print Settings</a>.
+</p>
+</dd>
+<dt><code class="code">set print vtbl</code></dt>
+<dt><code class="code">show print vtbl</code></dt>
+<dd><p>Control the format for printing virtual function tables.
+See <a class="xref" href="Print-Settings.html">Print Settings</a>.
+(The <code class="code">vtbl</code> commands do not work on programs compiled with the HP
+ANSI C<code class="t">++</code> compiler (<code class="code">aCC</code>).)
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-overloaded-functions_002c-overload-resolution"></a>
+<a id="index-set-overload_002dresolution"></a><span><code class="code">set overload-resolution on</code><a class="copiable-link" href="#index-set-overload_002dresolution"> &para;</a></span></dt>
+<dd><p>Enable overload resolution for C<code class="t">++</code> expression evaluation.  The default
+is on.  For overloaded functions, <small class="sc">GDB</small> evaluates the arguments
+and searches for a function whose signature matches the argument types,
+using the standard C<code class="t">++</code> conversion rules (see <a class="ref" href="C-Plus-Plus-Expressions.html">C<code class="t">++</code> Expressions</a>, for details).
+If it cannot find a match, it emits a message.
+</p>
+</dd>
+<dt><code class="code">set overload-resolution off</code></dt>
+<dd><p>Disable overload resolution for C<code class="t">++</code> expression evaluation.  For
+overloaded functions that are not class member functions, <small class="sc">GDB</small>
+chooses the first function of the specified name that it finds in the
+symbol table, whether or not its arguments are of the correct type.  For
+overloaded functions that are class member functions, <small class="sc">GDB</small>
+searches for a function whose signature <em class="emph">exactly</em> matches the
+argument types.
+</p>
+</dd>
+<dt><a id="index-show-overload_002dresolution"></a><span><code class="code">show overload-resolution</code><a class="copiable-link" href="#index-show-overload_002dresolution"> &para;</a></span></dt>
+<dd><p>Show the current setting of overload resolution.
+</p>
+</dd>
+<dt><code class="code"><span class="r">Overloaded symbol names</span></code></dt>
+<dd><p>You can specify a particular definition of an overloaded symbol, using
+the same notation that is used to declare such symbols in C<code class="t">++</code>: type
+<code class="code"><var class="var">symbol</var>(<var class="var">types</var>)</code> rather than just <var class="var">symbol</var>.  You can
+also use the <small class="sc">GDB</small> command-line word completion facilities to list the
+available choices, or to finish the type list for you.
+See <a class="xref" href="Completion.html">Command Completion</a>, for details on how to do this.
+</p>
+</dd>
+<dt><code class="code"><span class="r">Breakpoints in template functions</span></code></dt>
+<dd>
+<p>Similar to how overloaded symbols are handled, <small class="sc">GDB</small> will ignore
+template parameter lists when it encounters a symbol which includes a
+C<code class="t">++</code> template.  This permits setting breakpoints on families of template functions
+or functions whose parameters include template types.
+</p>
+<p>The <kbd class="kbd">-qualified</kbd> flag may be used to override this behavior, causing
+<small class="sc">GDB</small> to search for a specific function or type.
+</p>
+<p>The <small class="sc">GDB</small> command-line word completion facility also understands
+template parameters and may be used to list available choices or finish
+template parameter lists for you. See <a class="xref" href="Completion.html">Command Completion</a>, for
+details on how to do this.
+</p>
+</dd>
+<dt><code class="code"><span class="r">Breakpoints in functions with ABI tags</span></code></dt>
+<dd>
+<p>The GNU C<code class="t">++</code> compiler introduced the notion of ABI &ldquo;tags&rdquo;, which
+correspond to changes in the ABI of a type, function, or variable that
+would not otherwise be reflected in a mangled name.  See
+<a class="url" href="https://developers.redhat.com/blog/2015/02/05/gcc5-and-the-c11-abi/">https://developers.redhat.com/blog/2015/02/05/gcc5-and-the-c11-abi/</a>
+for more detail.
+</p>
+<p>The ABI tags are visible in C<code class="t">++</code> demangled names.  For example, a
+function that returns a std::string:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">std::string function(int);
+</pre></div>
+
+<p>when compiled for the C++11 ABI is marked with the <code class="code">cxx11</code> ABI
+tag, and <small class="sc">GDB</small> displays the symbol like this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function[abi:cxx11](int)
+</pre></div>
+
+<p>You can set a breakpoint on such functions simply as if they had no
+tag.  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b function(int)
+Breakpoint 2 at 0x40060d: file main.cc, line 10.
+(gdb) info breakpoints
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x0040060d in function[abi:cxx11](int)
+                                           at main.cc:10
+</pre></div>
+
+<p>On the rare occasion you need to disambiguate between different ABI
+tags, you can do so by simply including the ABI tag in the function
+name, like:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b ambiguous[abi:other_tag](int)
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Decimal-Floating-Point.html">Decimal Floating Point format</a>, Previous: <a href="Debugging-C.html"><small class="sc">GDB</small> and C</a>, Up: <a href="C.html">C and C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

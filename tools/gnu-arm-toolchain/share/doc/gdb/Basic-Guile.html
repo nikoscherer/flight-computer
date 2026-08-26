@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Basic Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Basic Guile (Debugging with GDB)">
+<meta name="keywords" content="Basic Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Guile-Configuration.html" rel="next" title="Guile Configuration">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Basic-Guile">
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Configuration.html" accesskey="n" rel="next">Guile Configuration</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Basic-Guile-1"><span>23.4.3.1 Basic Guile<a class="copiable-link" href="#Basic-Guile-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-stdout"></a>
+<a class="index-entry-id" id="index-guile-pagination"></a>
+<p>At startup, <small class="sc">GDB</small> overrides Guile&rsquo;s <code class="code">current-output-port</code> and
+<code class="code">current-error-port</code> to print using <small class="sc">GDB</small>&rsquo;s output-paging streams.
+A Guile program which outputs to one of these streams may have its
+output interrupted by the user (see <a class="pxref" href="Screen-Size.html">Screen Size</a>).  In this
+situation, a Guile <code class="code">signal</code> exception is thrown with value <code class="code">SIGINT</code>.
+</p>
+<p>Guile&rsquo;s history mechanism uses the same naming as <small class="sc">GDB</small>&rsquo;s,
+namely the user of dollar-variables (e.g., $1, $2, etc.).
+The results of evaluations in Guile and in GDB are counted separately,
+<code class="code">$1</code> in Guile is not the same value as <code class="code">$1</code> in <small class="sc">GDB</small>.
+</p>
+<p><small class="sc">GDB</small> is not thread-safe.  If your Guile program uses multiple
+threads, you must be careful to only call <small class="sc">GDB</small>-specific
+functions in the <small class="sc">GDB</small> thread.
+</p>
+<p>Some care must be taken when writing Guile code to run in
+<small class="sc">GDB</small>.  Two things are worth noting in particular:
+</p>
+<ul class="itemize mark-bullet">
+<li><small class="sc">GDB</small> installs handlers for <code class="code">SIGCHLD</code> and <code class="code">SIGINT</code>.
+Guile code must not override these, or even change the options using
+<code class="code">sigaction</code>.  If your program changes the handling of these
+signals, <small class="sc">GDB</small> will most likely stop working correctly.  Note
+that it is unfortunately common for GUI toolkits to install a
+<code class="code">SIGCHLD</code> handler.
+
+</li><li><small class="sc">GDB</small> takes care to mark its internal file descriptors as
+close-on-exec.  However, this cannot be done in a thread-safe way on
+all platforms.  Your Guile programs should be aware of this and
+should both create new file descriptors with the close-on-exec flag
+set and arrange to close unneeded file descriptors before starting a
+child process.
+</li></ul>
+
+<a class="index-entry-id" id="index-guile-gdb-module"></a>
+<p><small class="sc">GDB</small> introduces a new Guile module, named <code class="code">gdb</code>.  All
+methods and classes added by <small class="sc">GDB</small> are placed in this module.
+<small class="sc">GDB</small> does not automatically <code class="code">import</code> the <code class="code">gdb</code> module,
+scripts must do this themselves.  There are various options for how to
+import a module, so <small class="sc">GDB</small> leaves the choice of how the <code class="code">gdb</code>
+module is imported to the user.
+To simplify interactive use, it is recommended to add one of the following
+to your ~/.gdbinit.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">guile (use-modules (gdb))
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">guile (use-modules ((gdb) #:renamer (symbol-prefix-proc 'gdb:)))
+</pre></div>
+
+<p>Which one to choose depends on your preference.
+The second one adds <code class="code">gdb:</code> as a prefix to all module functions
+and variables.
+</p>
+<p>The rest of this manual assumes the <code class="code">gdb</code> module has been imported
+without any prefix.  See the Guile documentation for <code class="code">use-modules</code>
+for more information
+(see <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-Modules.html#Using-Guile-Modules">Using Guile Modules</a> in <cite class="cite">GNU Guile Reference Manual</cite>).
+</p>
+<p>Example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (value-type (make-value 1))
+ERROR: Unbound variable: value-type
+Error while executing Scheme code.
+(gdb) guile (use-modules (gdb))
+(gdb) guile (value-type (make-value 1))
+int
+(gdb)
+</pre></div>
+
+<p>The <code class="code">(gdb)</code> module provides these basic Guile functions.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-execute"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">execute</strong> <var class="def-var-arguments">command <span class="r">[</span>#:from-tty&nbsp;boolean<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:to-string&nbsp;boolean<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-execute"> &para;</a></span></dt>
+<dd><p>Evaluate <var class="var">command</var>, a string, as a <small class="sc">GDB</small> CLI command.
+If a <small class="sc">GDB</small> exception happens while <var class="var">command</var> runs, it is
+translated as described in
+<a class="ref" href="Guile-Exception-Handling.html">Guile Exception Handling</a>.
+</p>
+<p><var class="var">from-tty</var> specifies whether <small class="sc">GDB</small> ought to consider this
+command as having originated from the user invoking it interactively.
+It must be a boolean value.  If omitted, it defaults to <code class="code">#f</code>.
+</p>
+<p>By default, any output produced by <var class="var">command</var> is sent to
+<small class="sc">GDB</small>&rsquo;s standard output (and to the log output if logging is
+turned on).  If the <var class="var">to-string</var> parameter is
+<code class="code">#t</code>, then output will be collected by <code class="code">execute</code> and
+returned as a string.  The default is <code class="code">#f</code>, in which case the
+return value is unspecified.  If <var class="var">to-string</var> is <code class="code">#t</code>, the
+<small class="sc">GDB</small> virtual terminal will be temporarily set to unlimited width
+and height, and its pagination will be disabled; see <a class="pxref" href="Screen-Size.html">Screen Size</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-history_002dref"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">history-ref</strong> <var class="def-var-arguments">number</var><a class="copiable-link" href="#index-history_002dref"> &para;</a></span></dt>
+<dd><p>Return a value from <small class="sc">GDB</small>&rsquo;s value history (see <a class="pxref" href="Value-History.html">Value History</a>).  The <var class="var">number</var> argument indicates which history element to return.
+If <var class="var">number</var> is negative, then <small class="sc">GDB</small> will take its absolute value
+and count backward from the last element (i.e., the most recent element) to
+find the value to return.  If <var class="var">number</var> is zero, then <small class="sc">GDB</small> will
+return the most recent element.  If the element specified by <var class="var">number</var>
+doesn&rsquo;t exist in the value history, a <code class="code">gdb:error</code> exception will be
+raised.
+</p>
+<p>If no exception is raised, the return value is always an instance of
+<code class="code">&lt;gdb:value&gt;</code> (see <a class="pxref" href="Values-From-Inferior-In-Guile.html">Values From Inferior In Guile</a>).
+</p>
+<p><em class="emph">Note:</em> <small class="sc">GDB</small>&rsquo;s value history is independent of Guile&rsquo;s.
+<code class="code">$1</code> in <small class="sc">GDB</small>&rsquo;s value history contains the result of evaluating
+an expression from <small class="sc">GDB</small>&rsquo;s command line and <code class="code">$1</code> from Guile&rsquo;s
+history contains the result of evaluating an expression from Guile&rsquo;s
+command line.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-history_002dappend_0021"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">history-append!</strong> <var class="def-var-arguments">value</var><a class="copiable-link" href="#index-history_002dappend_0021"> &para;</a></span></dt>
+<dd><p>Append <var class="var">value</var>, an instance of <code class="code">&lt;gdb:value&gt;</code>, to <small class="sc">GDB</small>&rsquo;s
+value history.  Return its index in the history.
+</p>
+<p>Putting into history values returned by Guile extensions will allow
+the user convenient access to those values via CLI history
+facilities.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-parse_002dand_002deval"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">parse-and-eval</strong> <var class="def-var-arguments">expression</var><a class="copiable-link" href="#index-parse_002dand_002deval"> &para;</a></span></dt>
+<dd><p>Parse <var class="var">expression</var> as an expression in the current language,
+evaluate it, and return the result as a <code class="code">&lt;gdb:value&gt;</code>.
+The <var class="var">expression</var> must be a string.
+</p>
+<p>This function can be useful when implementing a new command
+(see <a class="pxref" href="Commands-In-Guile.html">Commands In Guile</a>), as it provides a way to parse the
+command&rsquo;s arguments as an expression.
+It is also is useful when computing values.
+For example, it is the only way to get the value of a
+convenience variable (see <a class="pxref" href="Convenience-Vars.html">Convenience Variables</a>) as a <code class="code">&lt;gdb:value&gt;</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Configuration.html">Guile Configuration</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

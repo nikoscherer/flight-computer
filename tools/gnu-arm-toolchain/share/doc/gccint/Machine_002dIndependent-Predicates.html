@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Machine-Independent Predicates (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Machine-Independent Predicates (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Machine-Independent Predicates (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Predicates.html" rel="up" title="Predicates">
+<link href="Defining-Predicates.html" rel="next" title="Defining Predicates">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Machine_002dIndependent-Predicates">
+<div class="nav-panel">
+<p>
+Next: <a href="Defining-Predicates.html" accesskey="n" rel="next">Defining Machine-Specific Predicates</a>, Up: <a href="Predicates.html" accesskey="u" rel="up">Predicates</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Machine_002dIndependent-Predicates-1"><span>16.8.1 Machine-Independent Predicates<a class="copiable-link" href="#Machine_002dIndependent-Predicates-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-machine_002dindependent-predicates"></a>
+<a class="index-entry-id" id="index-generic-predicates"></a>
+
+<p>These are the generic predicates available to all back ends.  They are
+defined in <samp class="file">recog.cc</samp>.  The first category of predicates allow
+only constant, or <em class="dfn">immediate</em>, operands.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-immediate_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">immediate_operand</strong><a class="copiable-link" href="#index-immediate_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any sort of constant that fits in <var class="var">mode</var>.
+It is an appropriate choice for instructions that take operands that
+must be constant.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-const_005fint_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">const_int_operand</strong><a class="copiable-link" href="#index-const_005fint_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any <code class="code">CONST_INT</code> expression that fits in
+<var class="var">mode</var>.  It is an appropriate choice for an immediate operand that
+does not allow a symbol or label.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-const_005fdouble_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">const_double_operand</strong><a class="copiable-link" href="#index-const_005fdouble_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate accepts any <code class="code">CONST_DOUBLE</code> expression that has
+exactly <var class="var">mode</var>.  If <var class="var">mode</var> is <code class="code">VOIDmode</code>, it will also
+accept <code class="code">CONST_INT</code>.  It is intended for immediate floating point
+constants.
+</p></dd></dl>
+
+<p>The second category of predicates allow only some kind of machine
+register.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-register_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">register_operand</strong><a class="copiable-link" href="#index-register_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any <code class="code">REG</code> or <code class="code">SUBREG</code> expression that
+is valid for <var class="var">mode</var>.  It is often suitable for arithmetic
+instruction operands on a RISC machine.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-pmode_005fregister_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">pmode_register_operand</strong><a class="copiable-link" href="#index-pmode_005fregister_005foperand"> &para;</a></span></dt>
+<dd><p>This is a slight variant on <code class="code">register_operand</code> which works around
+a limitation in the machine-description reader.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(match_operand <var class="var">n</var> &quot;pmode_register_operand&quot; <var class="var">constraint</var>)
+</pre></div>
+
+<p>means exactly what
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(match_operand:P <var class="var">n</var> &quot;register_operand&quot; <var class="var">constraint</var>)
+</pre></div>
+
+<p>would mean, if the machine-description reader accepted &lsquo;<samp class="samp">:P</samp>&rsquo;
+mode suffixes.  Unfortunately, it cannot, because <code class="code">Pmode</code> is an
+alias for some other mode, and might vary with machine-specific
+options.  See <a class="xref" href="Misc.html">Miscellaneous Parameters</a>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-scratch_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">scratch_operand</strong><a class="copiable-link" href="#index-scratch_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows hard registers and <code class="code">SCRATCH</code> expressions,
+but not pseudo-registers.  It is used internally by <code class="code">match_scratch</code>;
+it should not be used directly.
+</p></dd></dl>
+
+<p>The third category of predicates allow only some kind of memory reference.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-memory_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">memory_operand</strong><a class="copiable-link" href="#index-memory_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any valid reference to a quantity of mode
+<var class="var">mode</var> in memory, as determined by the weak form of
+<code class="code">GO_IF_LEGITIMATE_ADDRESS</code> (see <a class="pxref" href="Addressing-Modes.html">Addressing Modes</a>).
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-address_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">address_operand</strong><a class="copiable-link" href="#index-address_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate is a little unusual; it allows any operand that is a
+valid expression for the <em class="emph">address</em> of a quantity of mode
+<var class="var">mode</var>, again determined by the weak form of
+<code class="code">GO_IF_LEGITIMATE_ADDRESS</code>.  To first order, if
+&lsquo;<samp class="samp">(mem:<var class="var">mode</var>&nbsp;(<var class="var">exp</var>))<!-- /@w --></samp>&rsquo; is acceptable to
+<code class="code">memory_operand</code>, then <var class="var">exp</var> is acceptable to
+<code class="code">address_operand</code>.  Note that <var class="var">exp</var> does not necessarily have
+the mode <var class="var">mode</var>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-indirect_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">indirect_operand</strong><a class="copiable-link" href="#index-indirect_005foperand"> &para;</a></span></dt>
+<dd><p>This is a stricter form of <code class="code">memory_operand</code> which allows only
+memory references with a <code class="code">general_operand</code> as the address
+expression.  New uses of this predicate are discouraged, because
+<code class="code">general_operand</code> is very permissive, so it&rsquo;s hard to tell what
+an <code class="code">indirect_operand</code> does or does not allow.  If a target has
+different requirements for memory operands for different instructions,
+it is better to define target-specific predicates which enforce the
+hardware&rsquo;s requirements explicitly.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-push_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">push_operand</strong><a class="copiable-link" href="#index-push_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows a memory reference suitable for pushing a value
+onto the stack.  This will be a <code class="code">MEM</code> which refers to
+<code class="code">stack_pointer_rtx</code>, with a side effect in its address expression
+(see <a class="pxref" href="Incdec.html">Embedded Side-Effects on Addresses</a>); which one is determined by the
+<code class="code">STACK_PUSH_CODE</code> macro (see <a class="pxref" href="Frame-Layout.html">Basic Stack Layout</a>).
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-pop_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">pop_operand</strong><a class="copiable-link" href="#index-pop_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows a memory reference suitable for popping a value
+off the stack.  Again, this will be a <code class="code">MEM</code> referring to
+<code class="code">stack_pointer_rtx</code>, with a side effect in its address
+expression.  However, this time <code class="code">STACK_POP_CODE</code> is expected.
+</p></dd></dl>
+
+<p>The fourth category of predicates allow some combination of the above
+operands.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-nonmemory_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">nonmemory_operand</strong><a class="copiable-link" href="#index-nonmemory_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any immediate or register operand valid for <var class="var">mode</var>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-nonimmediate_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">nonimmediate_operand</strong><a class="copiable-link" href="#index-nonimmediate_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any register or memory operand valid for <var class="var">mode</var>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-general_005foperand"><span class="category-def">Function: </span><span><strong class="def-name">general_operand</strong><a class="copiable-link" href="#index-general_005foperand"> &para;</a></span></dt>
+<dd><p>This predicate allows any immediate, register, or memory operand
+valid for <var class="var">mode</var>.
+</p></dd></dl>
+
+<p>Finally, there are two generic operator predicates.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-comparison_005foperator"><span class="category-def">Function: </span><span><strong class="def-name">comparison_operator</strong><a class="copiable-link" href="#index-comparison_005foperator"> &para;</a></span></dt>
+<dd><p>This predicate matches any expression which performs an arithmetic
+comparison in <var class="var">mode</var>; that is, <code class="code">COMPARISON_P</code> is true for the
+expression code.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ordered_005fcomparison_005foperator"><span class="category-def">Function: </span><span><strong class="def-name">ordered_comparison_operator</strong><a class="copiable-link" href="#index-ordered_005fcomparison_005foperator"> &para;</a></span></dt>
+<dd><p>This predicate matches any expression which performs an arithmetic
+comparison in <var class="var">mode</var> and whose expression code is valid for integer
+modes; that is, the expression code will be one of <code class="code">eq</code>, <code class="code">ne</code>,
+<code class="code">lt</code>, <code class="code">ltu</code>, <code class="code">le</code>, <code class="code">leu</code>, <code class="code">gt</code>, <code class="code">gtu</code>,
+<code class="code">ge</code>, <code class="code">geu</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Defining-Predicates.html">Defining Machine-Specific Predicates</a>, Up: <a href="Predicates.html">Predicates</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

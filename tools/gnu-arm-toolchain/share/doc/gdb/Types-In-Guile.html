@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Types In Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Types In Guile (Debugging with GDB)">
+<meta name="keywords" content="Types In Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Guile-Pretty-Printing-API.html" rel="next" title="Guile Pretty Printing API">
+<link href="Arithmetic-In-Guile.html" rel="prev" title="Arithmetic In Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Types-In-Guile">
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Pretty-Printing-API.html" accesskey="n" rel="next">Guile Pretty Printing API</a>, Previous: <a href="Arithmetic-In-Guile.html" accesskey="p" rel="prev">Arithmetic In Guile</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Types-In-Guile-1"><span>23.4.3.7 Types In Guile<a class="copiable-link" href="#Types-In-Guile-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-types-in-guile"></a>
+<a class="index-entry-id" id="index-guile_002c-working-with-types"></a>
+
+<a class="index-entry-id" id="index-_003cgdb_003atype_003e"></a>
+<p><small class="sc">GDB</small> represents types from the inferior in objects of type
+<code class="code">&lt;gdb:type&gt;</code>.
+</p>
+<p>The following type-related procedures are provided by the
+<code class="code">(gdb)</code> module.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-type_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:type&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lookup_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lookup-type</strong> <var class="def-var-arguments">name <span class="r">[</span>#:block block<span class="r">]</span></var><a class="copiable-link" href="#index-lookup_002dtype"> &para;</a></span></dt>
+<dd><p>This function looks up a type by its <var class="var">name</var>, which must be a string.
+</p>
+<p>If <var class="var">block</var> is given, it is an object of type <code class="code">&lt;gdb:block&gt;</code>,
+and <var class="var">name</var> is looked up in that scope.
+Otherwise, it is searched for globally.
+</p>
+<p>Ordinarily, this function will return an instance of <code class="code">&lt;gdb:type&gt;</code>.
+If the named type cannot be found, it will throw an exception.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dcode"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-code</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dcode"> &para;</a></span></dt>
+<dd><p>Return the type code of <var class="var">type</var>.  The type code will be one of the
+<code class="code">TYPE_CODE_</code> constants defined below.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dtag"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-tag</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dtag"> &para;</a></span></dt>
+<dd><p>Return the tag name of <var class="var">type</var>.  The tag name is the name after
+<code class="code">struct</code>, <code class="code">union</code>, or <code class="code">enum</code> in C and C<code class="t">++</code>; not all
+languages have this concept.  If this type has no tag name, then
+<code class="code">#f</code> is returned.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dname"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-name</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dname"> &para;</a></span></dt>
+<dd><p>Return the name of <var class="var">type</var>.
+If this type has no name, then <code class="code">#f</code> is returned.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dprint_002dname"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-print-name</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dprint_002dname"> &para;</a></span></dt>
+<dd><p>Return the print name of <var class="var">type</var>.
+This returns something even for anonymous types.
+For example, for an anonymous C struct <code class="code">&quot;struct {...}&quot;</code> is returned.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dsizeof"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-sizeof</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dsizeof"> &para;</a></span></dt>
+<dd><p>Return the size of this type, in target <code class="code">char</code> units.  Usually, a
+target&rsquo;s <code class="code">char</code> type will be an 8-bit byte.  However, on some
+unusual platforms, this type may have a different size.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dstrip_002dtypedefs"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-strip-typedefs</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dstrip_002dtypedefs"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> that represents the real type of <var class="var">type</var>,
+after removing all layers of typedefs.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002darray"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-array</strong> <var class="def-var-arguments">type n1 <span class="r">[</span>n2<span class="r">]</span></var><a class="copiable-link" href="#index-type_002darray"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents an array of this
+type.  If one argument is given, it is the inclusive upper bound of
+the array; in this case the lower bound is zero.  If two arguments are
+given, the first argument is the lower bound of the array, and the
+second argument is the upper bound of the array.  An array&rsquo;s length
+must not be negative, but the bounds can be.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dvector"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-vector</strong> <var class="def-var-arguments">type n1 <span class="r">[</span>n2<span class="r">]</span></var><a class="copiable-link" href="#index-type_002dvector"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents a vector of this
+type.  If one argument is given, it is the inclusive upper bound of
+the vector; in this case the lower bound is zero.  If two arguments are
+given, the first argument is the lower bound of the vector, and the
+second argument is the upper bound of the vector.  A vector&rsquo;s length
+must not be negative, but the bounds can be.
+</p>
+<p>The difference between an <code class="code">array</code> and a <code class="code">vector</code> is that
+arrays behave like in C: when used in expressions they decay to a pointer
+to the first element whereas vectors are treated as first class values.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dpointer"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-pointer</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dpointer"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents a pointer to
+<var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002drange"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-range</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002drange"> &para;</a></span></dt>
+<dd><p>Return a list of two elements: the low bound and high bound of <var class="var">type</var>.
+If <var class="var">type</var> does not have a range, an exception is thrown.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dreference"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-reference</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dreference"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents a reference to
+<var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dtarget"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-target</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dtarget"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents the target type
+of <var class="var">type</var>.
+</p>
+<p>For a pointer type, the target type is the type of the pointed-to
+object.  For an array type (meaning C-like arrays), the target type is
+the type of the elements of the array.  For a function or method type,
+the target type is the type of the return value.  For a complex type,
+the target type is the type of the elements.  For a typedef, the
+target type is the aliased type.
+</p>
+<p>If the type does not have a target, this method will throw an
+exception.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dconst"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-const</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dconst"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents a
+<code class="code">const</code>-qualified variant of <var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dvolatile"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-volatile</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dvolatile"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents a
+<code class="code">volatile</code>-qualified variant of <var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dunqualified"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-unqualified</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dunqualified"> &para;</a></span></dt>
+<dd><p>Return a new <code class="code">&lt;gdb:type&gt;</code> object which represents an unqualified
+variant of <var class="var">type</var>.  That is, the result is neither <code class="code">const</code> nor
+<code class="code">volatile</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dnum_002dfields"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-num-fields</strong><a class="copiable-link" href="#index-type_002dnum_002dfields"> &para;</a></span></dt>
+<dd><p>Return the number of fields of <code class="code">&lt;gdb:type&gt;</code> <var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dfields"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-fields</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dfields"> &para;</a></span></dt>
+<dd><p>Return the fields of <var class="var">type</var> as a list.
+For structure and union types, <code class="code">fields</code> has the usual meaning.
+Range types have two fields, the minimum and maximum values.  Enum types
+have one field per enum constant.  Function and method types have one
+field per parameter.  The base types of C<code class="t">++</code> classes are also
+represented as fields.  If the type has no fields, or does not fit
+into one of these categories, an empty list will be returned.
+See <a class="xref" href="#Fields-of-a-type-in-Guile">Fields of a type in Guile</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dfield_002diterator"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">make-field-iterator</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-make_002dfield_002diterator"> &para;</a></span></dt>
+<dd><p>Return the fields of <var class="var">type</var> as a &lt;gdb:iterator&gt; object.
+See <a class="xref" href="Iterators-In-Guile.html">Iterators In Guile</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dfield"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-field</strong> <var class="def-var-arguments">type field-name</var><a class="copiable-link" href="#index-type_002dfield"> &para;</a></span></dt>
+<dd><p>Return field named <var class="var">field-name</var> in <var class="var">type</var>.
+The result is an object of type <code class="code">&lt;gdb:field&gt;</code>.
+See <a class="xref" href="#Fields-of-a-type-in-Guile">Fields of a type in Guile</a>.
+If the type does not have fields, or <var class="var">field-name</var> is not a field
+of <var class="var">type</var>, an exception is thrown.
+</p>
+<p>For example, if <code class="code">some-type</code> is a <code class="code">&lt;gdb:type&gt;</code> instance holding
+a structure type, you can access its <code class="code">foo</code> field with:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define bar (type-field some-type &quot;foo&quot;))
+</pre></div>
+
+<p><code class="code">bar</code> will be a <code class="code">&lt;gdb:field&gt;</code> object.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dhas_002dfield_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">type-has-field?</strong> <var class="def-var-arguments">type name</var><a class="copiable-link" href="#index-type_002dhas_002dfield_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <code class="code">&lt;gdb:type&gt;</code> <var class="var">type</var> has field named <var class="var">name</var>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<p>Each type has a code, which indicates what category this type falls
+into.  The available type categories are represented by constants
+defined in the <code class="code">(gdb)</code> module:
+</p>
+<dl class="vtable">
+<dt><a id="index-TYPE_005fCODE_005fPTR-1"></a><span><code class="code">TYPE_CODE_PTR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fPTR-1"> &para;</a></span></dt>
+<dd><p>The type is a pointer.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fARRAY-1"></a><span><code class="code">TYPE_CODE_ARRAY</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fARRAY-1"> &para;</a></span></dt>
+<dd><p>The type is an array.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fSTRUCT-1"></a><span><code class="code">TYPE_CODE_STRUCT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fSTRUCT-1"> &para;</a></span></dt>
+<dd><p>The type is a structure.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fUNION-1"></a><span><code class="code">TYPE_CODE_UNION</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fUNION-1"> &para;</a></span></dt>
+<dd><p>The type is a union.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fENUM-1"></a><span><code class="code">TYPE_CODE_ENUM</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fENUM-1"> &para;</a></span></dt>
+<dd><p>The type is an enum.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fFLAGS-1"></a><span><code class="code">TYPE_CODE_FLAGS</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fFLAGS-1"> &para;</a></span></dt>
+<dd><p>A bit flags type, used for things such as status registers.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fFUNC-1"></a><span><code class="code">TYPE_CODE_FUNC</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fFUNC-1"> &para;</a></span></dt>
+<dd><p>The type is a function.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fINT-1"></a><span><code class="code">TYPE_CODE_INT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fINT-1"> &para;</a></span></dt>
+<dd><p>The type is an integer type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fFLT-1"></a><span><code class="code">TYPE_CODE_FLT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fFLT-1"> &para;</a></span></dt>
+<dd><p>A floating point type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fVOID-1"></a><span><code class="code">TYPE_CODE_VOID</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fVOID-1"> &para;</a></span></dt>
+<dd><p>The special type <code class="code">void</code>.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fSET-1"></a><span><code class="code">TYPE_CODE_SET</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fSET-1"> &para;</a></span></dt>
+<dd><p>A Pascal set type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fRANGE-1"></a><span><code class="code">TYPE_CODE_RANGE</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fRANGE-1"> &para;</a></span></dt>
+<dd><p>A range type, that is, an integer type with bounds.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fSTRING-1"></a><span><code class="code">TYPE_CODE_STRING</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fSTRING-1"> &para;</a></span></dt>
+<dd><p>A string type.  Note that this is only used for certain languages with
+language-defined string types; C strings are not represented this way.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fBITSTRING-1"></a><span><code class="code">TYPE_CODE_BITSTRING</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fBITSTRING-1"> &para;</a></span></dt>
+<dd><p>A string of bits.  It is deprecated.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fERROR-1"></a><span><code class="code">TYPE_CODE_ERROR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fERROR-1"> &para;</a></span></dt>
+<dd><p>An unknown or erroneous type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fMETHOD-1"></a><span><code class="code">TYPE_CODE_METHOD</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fMETHOD-1"> &para;</a></span></dt>
+<dd><p>A method type, as found in C<code class="t">++</code>.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fMETHODPTR-1"></a><span><code class="code">TYPE_CODE_METHODPTR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fMETHODPTR-1"> &para;</a></span></dt>
+<dd><p>A pointer-to-member-function.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fMEMBERPTR-1"></a><span><code class="code">TYPE_CODE_MEMBERPTR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fMEMBERPTR-1"> &para;</a></span></dt>
+<dd><p>A pointer-to-member.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fREF-1"></a><span><code class="code">TYPE_CODE_REF</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fREF-1"> &para;</a></span></dt>
+<dd><p>A reference type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fRVALUE_005fREF-1"></a><span><code class="code">TYPE_CODE_RVALUE_REF</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fRVALUE_005fREF-1"> &para;</a></span></dt>
+<dd><p>A C<code class="t">++</code>11 rvalue reference type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fCHAR-1"></a><span><code class="code">TYPE_CODE_CHAR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fCHAR-1"> &para;</a></span></dt>
+<dd><p>A character type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fBOOL-1"></a><span><code class="code">TYPE_CODE_BOOL</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fBOOL-1"> &para;</a></span></dt>
+<dd><p>A boolean type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fCOMPLEX-1"></a><span><code class="code">TYPE_CODE_COMPLEX</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fCOMPLEX-1"> &para;</a></span></dt>
+<dd><p>A complex float type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fTYPEDEF-1"></a><span><code class="code">TYPE_CODE_TYPEDEF</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fTYPEDEF-1"> &para;</a></span></dt>
+<dd><p>A typedef to some other type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fNAMESPACE-2"></a><span><code class="code">TYPE_CODE_NAMESPACE</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fNAMESPACE-2"> &para;</a></span></dt>
+<dd><p>A C<code class="t">++</code> namespace.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fDECFLOAT-1"></a><span><code class="code">TYPE_CODE_DECFLOAT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fDECFLOAT-1"> &para;</a></span></dt>
+<dd><p>A decimal floating point type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fINTERNAL_005fFUNCTION-1"></a><span><code class="code">TYPE_CODE_INTERNAL_FUNCTION</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fINTERNAL_005fFUNCTION-1"> &para;</a></span></dt>
+<dd><p>A function internal to <small class="sc">GDB</small>.  This is the type used to represent
+convenience functions (see <a class="pxref" href="Convenience-Funs.html">Convenience Functions</a>).
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-TYPE_005fCODE_005fXMETHOD-1"></a>
+<a id="index-gdb_002eTYPE_005fCODE_005fXMETHOD-1"></a><span><code class="code">gdb.TYPE_CODE_XMETHOD</code><a class="copiable-link" href="#index-gdb_002eTYPE_005fCODE_005fXMETHOD-1"> &para;</a></span></dt>
+<dd><p>A method internal to <small class="sc">GDB</small>.  This is the type used to represent
+xmethods (see <a class="pxref" href="Writing-an-Xmethod.html">Writing an Xmethod</a>).
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-TYPE_005fCODE_005fFIXED_005fPOINT-1"></a>
+<a id="index-gdb_002eTYPE_005fCODE_005fFIXED_005fPOINT-1"></a><span><code class="code">gdb.TYPE_CODE_FIXED_POINT</code><a class="copiable-link" href="#index-gdb_002eTYPE_005fCODE_005fFIXED_005fPOINT-1"> &para;</a></span></dt>
+<dd><p>A fixed-point number.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-TYPE_005fCODE_005fNAMESPACE-3"></a>
+<a id="index-gdb_002eTYPE_005fCODE_005fNAMESPACE-2"></a><span><code class="code">gdb.TYPE_CODE_NAMESPACE</code><a class="copiable-link" href="#index-gdb_002eTYPE_005fCODE_005fNAMESPACE-2"> &para;</a></span></dt>
+<dd><p>A Fortran namelist.
+</p></dd>
+</dl>
+
+<p>Further support for types is provided in the <code class="code">(gdb types)</code>
+Guile module (see <a class="pxref" href="Guile-Types-Module.html">Guile Types Module</a>).
+</p>
+<a class="anchor" id="Fields-of-a-type-in-Guile"></a><p>Each field is represented as an object of type <code class="code">&lt;gdb:field&gt;</code>.
+</p>
+<p>The following field-related procedures are provided by the
+<code class="code">(gdb)</code> module:
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-field_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:field&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dname"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-name</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dname"> &para;</a></span></dt>
+<dd><p>Return the name of the field, or <code class="code">#f</code> for anonymous fields.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-type</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dtype"> &para;</a></span></dt>
+<dd><p>Return the type of the field.  This is usually an instance of
+<code class="code">&lt;gdb:type&gt;</code>, but it can be <code class="code">#f</code> in some situations.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002denumval"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-enumval</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002denumval"> &para;</a></span></dt>
+<dd><p>Return the enum value represented by <code class="code">&lt;gdb:field&gt;</code> <var class="var">field</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dbitpos"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-bitpos</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dbitpos"> &para;</a></span></dt>
+<dd><p>Return the bit position of <code class="code">&lt;gdb:field&gt;</code> <var class="var">field</var>.
+This attribute is not available for <code class="code">static</code> fields (as in
+C<code class="t">++</code>).
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dbitsize"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-bitsize</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dbitsize"> &para;</a></span></dt>
+<dd><p>If the field is packed, or is a bitfield, return the size of
+<code class="code">&lt;gdb:field&gt;</code> <var class="var">field</var> in bits.  Otherwise, zero is returned;
+in which case the field&rsquo;s size is given by its type.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dartificial_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-artificial?</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dartificial_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if the field is artificial, usually meaning that
+it was provided by the compiler and not the user.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dbase_002dclass_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">field-base-class?</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dbase_002dclass_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if the field represents a base class of a C<code class="t">++</code>
+structure.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Pretty-Printing-API.html">Guile Pretty Printing API</a>, Previous: <a href="Arithmetic-In-Guile.html">Arithmetic In Guile</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

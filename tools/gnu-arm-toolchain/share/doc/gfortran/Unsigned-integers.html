@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1999-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Unsigned integers (The GNU Fortran Compiler)</title>
+
+<meta name="description" content="Unsigned integers (The GNU Fortran Compiler)">
+<meta name="keywords" content="Unsigned integers (The GNU Fortran Compiler)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Experimental-features-for-future-Fortran-versions.html" rel="up" title="Experimental features for future Fortran versions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Unsigned-integers">
+<div class="nav-panel">
+<p>
+Up: <a href="Experimental-features-for-future-Fortran-versions.html" accesskey="u" rel="up">Experimental features future Fortran versions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Unsigned-integers-1"><span>5.3.1 Unsigned integers<a class="copiable-link" href="#Unsigned-integers-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Unsigned-integers"></a>
+<p>If the <samp class="option">-funsigned</samp> option is given, GNU Fortran supports
+unsigned integers according to
+<a class="uref" href="https://j3-fortran.org/doc/year/24/24-116.txt">J3/24-116</a>.  The
+data type is called <code class="code">UNSIGNED</code>.  For an unsigned type with <code class="code">n</code>
+bits, it implements integer arithmetic modulo <code class="code">2**n</code>, comparable
+to the <code class="code">unsigned</code> data type in C.
+</p>
+<p>The data type has <code class="code">KIND</code> numbers comparable to other Fortran data
+types, which can be selected via the <code class="code">SELECTED_UNSIGNED_KIND</code>
+function.
+</p>
+<p>Mixed arithmetic, comparisons and assignment between <code class="code">UNSIGNED</code>
+and other types are only possible via explicit conversion.  Conversion
+from <code class="code">UNSIGNED</code> to other types is done via type conversion
+functions like <code class="code">INT</code> or <code class="code">REAL</code>. Conversion from other types
+to <code class="code">UNSIGNED</code> is done via <code class="code">UINT</code>. Unsigned variables cannot be
+used as index variables in <code class="code">DO</code> loops or as array indices.
+</p>
+<p>Unsigned numbers have a trailing <code class="code">u</code> as suffix, optionally followed
+by a <code class="code">KIND</code> number separated by an underscore.
+</p>
+<p>Input and output can be done using the &lsquo;<samp class="samp">I</samp>&rsquo;, &lsquo;<samp class="samp">B</samp>&rsquo;, &lsquo;<samp class="samp">O</samp>&rsquo;
+and &lsquo;<samp class="samp">Z</samp>&rsquo; descriptors, plus unformatted I/O.
+</p>
+<p>Here is a small, somewhat contrived example of their use:
+</p><div class="example smallexample">
+<pre class="example-preformatted">program main
+  use iso_fortran_env, only : uint64
+  unsigned(kind=uint64) :: v
+  v = huge(v) - 32u_uint64
+  print *,v
+end program main
+</pre></div>
+<p>which outputs the number 18446744073709551583.
+</p>
+<p>Arithmetic operations work on unsigned integers, also for
+exponentiation.  As an extension to J3/24-116.txt, unary minus
+and exponentiation of unsigned integers are permitted unless
+<code class="code">-pedantic</code> is in force.
+</p>
+<p>In intrinsic procedures, unsigned arguments are typically permitted
+for arguments for the data to be processed, analogous to the
+use of <code class="code">REAL</code> arguments. Unsigned values are prohibited
+as index variables in <code class="code">DO</code> loops and as array indices.
+</p>
+<p>Unsigned numbers can be read and written using list-directed,
+formatted and unformatted I/O.  For formatted I/O, the &lsquo;<samp class="samp">B</samp>&rsquo;,
+&lsquo;<samp class="samp">I</samp>&rsquo;, &lsquo;<samp class="samp">O</samp>&rsquo; and &lsquo;<samp class="samp">Z</samp>&rsquo; descriptors are valid.  Negative
+values and values that would overflow are rejected with
+<code class="code">-pedantic</code>.
+</p>
+<p><code class="code">SELECT CASE</code> is supported for unsigned integers.
+</p>
+<p>The following intrinsics take unsigned arguments:
+</p><ul class="itemize mark-bullet">
+<li><code class="code">BGE</code>, see <a class="pxref" href="BGE.html"><code class="code">BGE</code> &mdash; Bitwise greater than or equal to</a>
+</li><li><code class="code">BGT</code>, see <a class="pxref" href="BGT.html"><code class="code">BGT</code> &mdash; Bitwise greater than</a>
+</li><li><code class="code">BIT_SIZE</code>, see <a class="pxref" href="BIT_005fSIZE.html"><code class="code">BIT_SIZE</code> &mdash; Bit size inquiry function</a>
+</li><li><code class="code">BLE</code>, see <a class="pxref" href="BLE.html"><code class="code">BLE</code> &mdash; Bitwise less than or equal to</a>
+</li><li><code class="code">BLT</code>, see <a class="pxref" href="BLT.html"><code class="code">BLT</code> &mdash; Bitwise less than</a>
+</li><li><code class="code">CMPLX</code>, see <a class="pxref" href="CMPLX.html"><code class="code">CMPLX</code> &mdash; Complex conversion function</a>
+</li><li><code class="code">CSHIFT</code>, see <a class="pxref" href="CSHIFT.html"><code class="code">CSHIFT</code> &mdash; Circular shift elements of an array</a>
+</li><li><code class="code">DIGITS</code>, see <a class="pxref" href="DIGITS.html"><code class="code">DIGITS</code> &mdash; Significant binary digits function</a>
+</li><li><code class="code">DOT_PRODUCT</code>, see <a class="pxref" href="DOT_005fPRODUCT.html"><code class="code">DOT_PRODUCT</code> &mdash; Dot product function</a>
+</li><li><code class="code">DSHIFTL</code>, see <a class="pxref" href="DSHIFTL.html"><code class="code">DSHIFTL</code> &mdash; Combined left shift</a>
+</li><li><code class="code">DSHIFTR</code>, see <a class="pxref" href="DSHIFTR.html"><code class="code">DSHIFTR</code> &mdash; Combined right shift</a>
+</li><li><code class="code">EOSHIFT</code>, see <a class="pxref" href="EOSHIFT.html"><code class="code">EOSHIFT</code> &mdash; End-off shift elements of an array</a>
+</li><li><code class="code">FINDLOC</code>, see <a class="pxref" href="FINDLOC.html"><code class="code">FINDLOC</code> &mdash; Search an array for a value</a>
+</li><li><code class="code">HUGE</code>, see <a class="pxref" href="HUGE.html"><code class="code">HUGE</code> &mdash; Largest number of a kind</a>
+</li><li><code class="code">IALL</code>, see <a class="pxref" href="IALL.html"><code class="code">IALL</code> &mdash; Bitwise AND of array elements</a>
+</li><li><code class="code">IAND</code>, see <a class="pxref" href="IAND.html"><code class="code">IAND</code> &mdash; Bitwise logical and</a>
+</li><li><code class="code">IANY</code>, see <a class="pxref" href="IANY.html"><code class="code">IANY</code> &mdash; Bitwise OR of array elements</a>
+</li><li><code class="code">IBCLR</code>, see <a class="pxref" href="IBCLR.html"><code class="code">IBCLR</code> &mdash; Clear bit</a>
+</li><li><code class="code">IBITS</code>, see <a class="pxref" href="IBITS.html"><code class="code">IBITS</code> &mdash; Bit extraction</a>
+</li><li><code class="code">IBSET</code>, see <a class="pxref" href="IBSET.html"><code class="code">IBSET</code> &mdash; Set bit</a>
+</li><li><code class="code">IEOR</code>, see <a class="pxref" href="IEOR.html"><code class="code">IEOR</code> &mdash; Bitwise logical exclusive or</a>
+</li><li><code class="code">INT</code>, see <a class="pxref" href="INT.html"><code class="code">INT</code> &mdash; Convert to integer type</a>
+</li><li><code class="code">IOR</code>, see <a class="pxref" href="IOR.html"><code class="code">IOR</code> &mdash; Bitwise logical or</a>
+</li><li><code class="code">IPARITY</code>, see <a class="pxref" href="IPARITY.html"><code class="code">IPARITY</code> &mdash; Bitwise XOR of array elements</a>
+</li><li><code class="code">ISHFT</code>, see <a class="pxref" href="ISHFT.html"><code class="code">ISHFT</code> &mdash; Shift bits</a>
+</li><li><code class="code">ISHFTC</code>, see <a class="pxref" href="ISHFTC.html"><code class="code">ISHFTC</code> &mdash; Shift bits circularly</a>
+</li><li><code class="code">MATMUL</code>, see <a class="pxref" href="MATMUL.html"><code class="code">MATMUL</code> &mdash; matrix multiplication</a>
+</li><li><code class="code">MAX</code>, see <a class="pxref" href="MAX.html"><code class="code">MAX</code> &mdash; Maximum value of an argument list</a>
+</li><li><code class="code">MAXLOC</code>, see <a class="pxref" href="MAXLOC.html"><code class="code">MAXLOC</code> &mdash; Location of the maximum value within an array</a>
+</li><li><code class="code">MAXVAL</code>, see <a class="pxref" href="MAXVAL.html"><code class="code">MAXVAL</code> &mdash; Maximum value of an array</a>
+</li><li><code class="code">MERGE</code>, see <a class="pxref" href="MERGE.html"><code class="code">MERGE</code> &mdash; Merge variables</a>
+</li><li><code class="code">MERGE_BITS</code>, see <a class="pxref" href="MERGE_005fBITS.html"><code class="code">MERGE_BITS</code> &mdash; Merge of bits under mask</a>
+</li><li><code class="code">MIN</code>, see <a class="pxref" href="MIN.html"><code class="code">MIN</code> &mdash; Minimum value of an argument list</a>
+</li><li><code class="code">MINLOC</code>, see <a class="pxref" href="MINLOC.html"><code class="code">MINLOC</code> &mdash; Location of the minimum value within an array</a>
+</li><li><code class="code">MINVAL</code>, see <a class="pxref" href="MINVAL.html"><code class="code">MINVAL</code> &mdash; Minimum value of an array</a>
+</li><li><code class="code">MOD</code>, see <a class="pxref" href="MOD.html"><code class="code">MOD</code> &mdash; Remainder function</a>
+</li><li><code class="code">MODULO</code>, see <a class="pxref" href="MODULO.html"><code class="code">MODULO</code> &mdash; Modulo function</a>
+</li><li><code class="code">MVBITS</code>, see <a class="pxref" href="MVBITS.html"><code class="code">MVBITS</code> &mdash; Move bits from one integer to another</a>
+</li><li><code class="code">NOT</code>, see <a class="pxref" href="NOT.html"><code class="code">NOT</code> &mdash; Logical negation</a>
+</li><li><code class="code">OUT_OF_RANGE</code>, see <a class="pxref" href="OUT_005fOF_005fRANGE.html"><code class="code">OUT_OF_RANGE</code> &mdash; Range check for numerical conversion</a>
+</li><li><code class="code">PRODUCT</code>, see <a class="pxref" href="PRODUCT.html"><code class="code">PRODUCT</code> &mdash; Product of array elements</a>
+</li><li><code class="code">RANDOM_NUMBER</code>, see <a class="pxref" href="RANDOM_005fNUMBER.html"><code class="code">RANDOM_NUMBER</code> &mdash; Pseudo-random number</a>
+</li><li><code class="code">RANGE</code>, see <a class="pxref" href="RANGE.html"><code class="code">RANGE</code> &mdash; Decimal exponent range</a>
+</li><li><code class="code">REAL</code>, see <a class="pxref" href="REAL.html"><code class="code">REAL</code> &mdash; Convert to real type</a>
+</li><li><code class="code">SHIFTA</code>, see <a class="pxref" href="SHIFTA.html"><code class="code">SHIFTA</code> &mdash; Right shift with fill</a>
+</li><li><code class="code">SHIFTL</code>, see <a class="pxref" href="SHIFTL.html"><code class="code">SHIFTL</code> &mdash; Left shift</a>
+</li><li><code class="code">SHIFTR</code>, see <a class="pxref" href="SHIFTR.html"><code class="code">SHIFTR</code> &mdash; Right shift</a>
+</li><li><code class="code">SUM</code>, see <a class="pxref" href="SUM.html"><code class="code">SUM</code> &mdash; Sum of array elements</a>
+</li><li><code class="code">TRANSPOSE</code>, see <a class="pxref" href="TRANSPOSE.html"><code class="code">TRANSPOSE</code> &mdash; Transpose an array of rank two</a>
+</li><li><code class="code">TRANSFER</code>, see <a class="pxref" href="TRANSFER.html"><code class="code">TRANSFER</code> &mdash; Transfer bit patterns</a>
+</li></ul>
+
+<p>The following intrinsics are enabled with <samp class="option">-funsigned</samp>:
+</p><ul class="itemize mark-bullet">
+<li><code class="code">UINT</code>, see <a class="pxref" href="UINT.html"><code class="code">UINT</code> &ndash; Convert to <code class="code">UNSIGNED</code> type</a>
+</li><li><code class="code">UMASKL</code>, see <a class="pxref" href="UMASKL.html"><code class="code">UMASKL</code> &mdash; Unsigned left justified mask</a>
+</li><li><code class="code">UMASKR</code>, see <a class="pxref" href="UMASKR.html"><code class="code">UMASKR</code> &mdash; Unsigned right justified mask</a>
+</li><li><code class="code">SELECTED_UNSIGNED_KIND</code>, see <a class="pxref" href="SELECTED_005fUNSIGNED_005fKIND.html"><code class="code">SELECTED_UNSIGNED_KIND</code> &mdash; Choose unsigned kind</a>
+</li></ul>
+
+<p>The following constants have been added to the intrinsic
+<code class="code">ISO_C_BINDING</code> module: <code class="code">c_unsigned</code>,
+<code class="code">c_unsigned_short</code>, <code class="code">c_unsigned_char</code>,
+<code class="code">c_unsigned_long</code>, <code class="code">c_unsigned_long_long</code>,
+<code class="code">c_uintmax_t</code>, <code class="code">c_uint8_t</code>, <code class="code">c_uint16_t</code>,
+<code class="code">c_uint32_t</code>, <code class="code">c_uint64_t</code>, <code class="code">c_uint128_t</code>,
+<code class="code">c_uint_fast8_t</code>, <code class="code">c_uint_fast16_t</code>, <code class="code">c_uint_fast32_t</code>,
+<code class="code">c_uint_fast64_t</code>, <code class="code">c_uint_fast128_t</code>,
+<code class="code">c_uint_least8_t</code>, <code class="code">c_uint_least16_t</code>, <code class="code">c_uint_least32_t</code>,
+<code class="code">c_uint_least64_t</code> and <code class="code">c_uint_least128_t</code>.
+</p>
+<p>The following constants have been added to the intrinsic
+<code class="code">ISO_FORTRAN_ENV</code> module: <code class="code">uint8</code>, <code class="code">uint16</code>,
+<code class="code">uint32</code> and <code class="code">uint64</code>.
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Up: <a href="Experimental-features-for-future-Fortran-versions.html">Experimental features future Fortran versions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

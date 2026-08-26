@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>gdb man (Debugging with GDB)</title>
+
+<meta name="description" content="gdb man (Debugging with GDB)">
+<meta name="keywords" content="gdb man (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gdb-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gdb-man-1"><span>gdb man<a class="copiable-link" href="#gdb-man-1"> &para;</a></span></h3>
+
+
+<p>gdb [OPTIONS] [<var class="var">prog</var>|<var class="var">prog</var> <var class="var">procID</var>|<var class="var">prog</var> <var class="var">core</var>]
+</p>
+<p>The purpose of a debugger such as <small class="sc">GDB</small> is to allow you to see what is
+going on &ldquo;inside&rdquo; another program while it executes &ndash; or what another
+program was doing at the moment it crashed.
+</p>
+<p><small class="sc">GDB</small> can do four main kinds of things (plus other things in support of
+these) to help you catch bugs in the act:
+</p>
+<ul class="itemize mark-bullet">
+<li>Start your program, specifying anything that might affect its behavior.
+
+</li><li>Make your program stop on specified conditions.
+
+</li><li>Examine what has happened, when your program has stopped.
+
+</li><li>Change things in your program, so you can experiment with correcting the
+effects of one bug and go on to learn about another.
+</li></ul>
+
+<p>You can use <small class="sc">GDB</small> to debug programs written in C, C<code class="t">++</code>, Fortran and
+Modula-2.
+</p>
+<p><small class="sc">GDB</small> is invoked with the shell command <code class="code">gdb</code>.  Once started, it reads
+commands from the terminal until you tell it to exit with the <small class="sc">GDB</small>
+command <code class="code">quit</code> or <code class="code">exit</code>.  You can get online help from <small class="sc">GDB</small> itself
+by using the command <code class="code">help</code>.
+</p>
+<p>You can run <code class="code">gdb</code> with no arguments or options; but the most
+usual way to start <small class="sc">GDB</small> is with one argument or two, specifying an
+executable program as the argument:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb program
+</pre></div>
+
+<p>You can also start with both an executable program and a core file specified:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb program core
+</pre></div>
+
+<p>You can, instead, specify a process ID as a second argument or use option
+<code class="code">-p</code>, if you want to debug a running process:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb program 1234
+gdb -p 1234
+</pre></div>
+
+<p>would attach <small class="sc">GDB</small> to process <code class="code">1234</code>.  With option <samp class="option">-p</samp> you
+can omit the <var class="var">program</var> filename.
+</p>
+<p>Here are some of the most frequently needed <small class="sc">GDB</small> commands:
+</p>
+<dl class="table">
+<dt><code class="env">break [<var class="var">file</var>:][<var class="var">function</var>|<var class="var">line</var>]</code></dt>
+<dd><p>Set a breakpoint at <var class="var">function</var> or <var class="var">line</var> (in <var class="var">file</var>).
+</p>
+</dd>
+<dt><code class="env">run [<var class="var">arglist</var>]</code></dt>
+<dd><p>Start your program (with <var class="var">arglist</var>, if specified).
+</p>
+</dd>
+<dt><code class="env">bt</code></dt>
+<dd><p>Backtrace: display the program stack.
+</p>
+</dd>
+<dt><code class="env">print <var class="var">expr</var></code></dt>
+<dd><p>Display the value of an expression.
+</p>
+</dd>
+<dt><code class="env">c</code></dt>
+<dd><p>Continue running your program (after stopping, e.g. at a breakpoint).
+</p>
+</dd>
+<dt><code class="env">next</code></dt>
+<dd><p>Execute next program line (after stopping); step <em class="emph">over</em> any
+function calls in the line.
+</p>
+</dd>
+<dt><code class="env">edit [<var class="var">file</var>:]<var class="var">function</var></code></dt>
+<dd><p>look at the program line where it is presently stopped.
+</p>
+</dd>
+<dt><code class="env">list [<var class="var">file</var>:]<var class="var">function</var></code></dt>
+<dd><p>type the text of the program in the vicinity of where it is presently stopped.
+</p>
+</dd>
+<dt><code class="env">step</code></dt>
+<dd><p>Execute next program line (after stopping); step <em class="emph">into</em> any
+function calls in the line.
+</p>
+</dd>
+<dt><code class="env">help [<var class="var">name</var>]</code></dt>
+<dd><p>Show information about <small class="sc">GDB</small> command <var class="var">name</var>, or general information
+about using <small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><code class="env">quit</code></dt>
+<dt><code class="env">exit</code></dt>
+<dd><p>Exit from <small class="sc">GDB</small>.
+</p></dd>
+</dl>
+
+
+<p>Any arguments other than options specify an executable
+file and core file (or process ID); that is, the first argument
+encountered with no
+associated option flag is equivalent to a <samp class="option">--se</samp> option, and the second,
+if any, is equivalent to a <samp class="option">-c</samp> option if it&rsquo;s the name of a file.
+Many options have
+both long and abbreviated forms; both are shown here.  The long forms are also
+recognized if you truncate them, so long as enough of the option is
+present to be unambiguous.
+</p>
+<p>The abbreviated forms are shown here with &lsquo;<samp class="samp">-</samp>&rsquo; and long forms are shown
+with &lsquo;<samp class="samp">--</samp>&rsquo; to reflect how they are shown in <samp class="option">--help</samp>. However,
+<small class="sc">GDB</small> recognizes all of the following conventions for most options:
+</p>
+<dl class="table">
+<dt><code class="code">--option=<var class="var">value</var></code></dt>
+<dt><code class="code">--option <var class="var">value</var></code></dt>
+<dt><code class="code">-option=<var class="var">value</var></code></dt>
+<dt><code class="code">-option <var class="var">value</var></code></dt>
+<dt><code class="code">--o=<var class="var">value</var></code></dt>
+<dt><code class="code">--o <var class="var">value</var></code></dt>
+<dt><code class="code">-o=<var class="var">value</var></code></dt>
+<dt><code class="code">-o <var class="var">value</var></code></dt>
+</dl>
+
+<p>All the options and command line arguments you give are processed
+in sequential order.  The order makes a difference when the <samp class="option">-x</samp>
+option is used.
+</p>
+<dl class="table">
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>List all options, with brief explanations.
+</p>
+</dd>
+<dt><code class="env">--symbols=<var class="var">file</var></code></dt>
+<dt><code class="env">-s <var class="var">file</var></code></dt>
+<dd><p>Read symbol table from <var class="var">file</var>.
+</p>
+</dd>
+<dt><code class="env">--write</code></dt>
+<dd><p>Enable writing into executable and core files.
+</p>
+</dd>
+<dt><code class="env">--exec=<var class="var">file</var></code></dt>
+<dt><code class="env">-e <var class="var">file</var></code></dt>
+<dd><p>Use <var class="var">file</var> as the executable file to execute when
+appropriate, and for examining pure data in conjunction with a core
+dump.
+</p>
+</dd>
+<dt><code class="env">--se=<var class="var">file</var></code></dt>
+<dd><p>Read symbol table from <var class="var">file</var> and use it as the executable
+file.
+</p>
+</dd>
+<dt><code class="env">--core=<var class="var">file</var></code></dt>
+<dt><code class="env">-c <var class="var">file</var></code></dt>
+<dd><p>Use <var class="var">file</var> as a core dump to examine.
+</p>
+</dd>
+<dt><code class="env">--command=<var class="var">file</var></code></dt>
+<dt><code class="env">-x <var class="var">file</var></code></dt>
+<dd><p>Execute <small class="sc">GDB</small> commands from <var class="var">file</var>.
+</p>
+</dd>
+<dt><code class="env">--eval-command=<var class="var">command</var></code></dt>
+<dt><code class="env">-ex <var class="var">command</var></code></dt>
+<dd><p>Execute given <small class="sc">GDB</small> <var class="var">command</var>.
+</p>
+</dd>
+<dt><code class="env">--init-eval-command=<var class="var">command</var></code></dt>
+<dt><code class="env">-iex</code></dt>
+<dd><p>Execute <small class="sc">GDB</small> <var class="var">command</var> before loading the inferior.
+</p>
+</dd>
+<dt><code class="env">--directory=<var class="var">directory</var></code></dt>
+<dt><code class="env">-d <var class="var">directory</var></code></dt>
+<dd><p>Add <var class="var">directory</var> to the path to search for source files.
+</p>
+</dd>
+<dt><code class="env">--nh</code></dt>
+<dd><p>Do not execute commands from <samp class="file">~/.config/gdb/gdbinit</samp>,
+<samp class="file">~/.gdbinit</samp>, <samp class="file">~/.config/gdb/gdbearlyinit</samp>, or
+<samp class="file">~/.gdbearlyinit</samp>
+</p>
+</dd>
+<dt><code class="env">--nx</code></dt>
+<dt><code class="env">-n</code></dt>
+<dd><p>Do not execute commands from any <samp class="file">.gdbinit</samp> or
+<samp class="file">.gdbearlyinit</samp> initialization files.
+</p>
+</dd>
+<dt><code class="env">--quiet</code></dt>
+<dt><code class="env">--silent</code></dt>
+<dt><code class="env">-q</code></dt>
+<dd><p>&ldquo;Quiet&rdquo;.  Do not print the introductory and copyright messages.  These
+messages are also suppressed in batch mode.
+</p>
+</dd>
+<dt><code class="env">--batch</code></dt>
+<dd><p>Run in batch mode.  Exit with status <code class="code">0</code> after processing all the command
+files specified with <samp class="option">-x</samp> (and <samp class="file">.gdbinit</samp>, if not inhibited).
+Exit with nonzero status if an error occurs in executing the <small class="sc">GDB</small>
+commands in the command files.
+</p>
+<p>Batch mode may be useful for running <small class="sc">GDB</small> as a filter, for example to
+download and run a program on another computer; in order to make this
+more useful, the message
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Program exited normally.
+</pre></div>
+
+<p>(which is ordinarily issued whenever a program running under <small class="sc">GDB</small> control
+terminates) is not issued when running in batch mode.
+</p>
+</dd>
+<dt><code class="env">--batch-silent</code></dt>
+<dd><p>Run in batch mode, just like <samp class="option">--batch</samp>, but totally silent.  All <small class="sc">GDB</small>
+output is suppressed (stderr is unaffected).  This is much quieter than
+<samp class="option">--silent</samp> and would be useless for an interactive session.
+</p>
+<p>This is particularly useful when using targets that give &lsquo;<samp class="samp">Loading section</samp>&rsquo;
+messages, for example.
+</p>
+<p>Note that targets that give their output via <small class="sc">GDB</small>, as opposed to writing
+directly to <code class="code">stdout</code>, will also be made silent.
+</p>
+</dd>
+<dt><code class="env">--args <var class="var">prog</var> [<var class="var">arglist</var>]</code></dt>
+<dd><p>Change interpretation of command line so that arguments following this
+option are passed as arguments to the inferior.  As an example, take
+the following command:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb ./a.out -q
+</pre></div>
+
+<p>It would start <small class="sc">GDB</small> with <samp class="option">-q</samp>, not printing the introductory message.  On
+the other hand, using:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb --args ./a.out -q
+</pre></div>
+
+<p>starts <small class="sc">GDB</small> with the introductory message, and passes the option to the inferior.
+</p>
+</dd>
+<dt><code class="env">--pid=<var class="var">pid</var></code></dt>
+<dd><p>Attach <small class="sc">GDB</small> to an already running program, with the PID <var class="var">pid</var>.
+</p>
+</dd>
+<dt><code class="env">--tui</code></dt>
+<dd><p>Open the terminal user interface.
+</p>
+</dd>
+<dt><code class="env">--readnow</code></dt>
+<dd><p>Read all symbols from the given symfile on the first access.
+</p>
+</dd>
+<dt><code class="env">--readnever</code></dt>
+<dd><p>Do not read symbol files.
+</p>
+</dd>
+<dt><code class="env">--return-child-result</code></dt>
+<dd><p><small class="sc">GDB</small>&rsquo;s exit code will be the same as the child&rsquo;s exit code.
+</p>
+</dd>
+<dt><code class="env">--configuration</code></dt>
+<dd><p>Print details about GDB configuration and then exit.
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dd><p>Print version information and then exit.
+</p>
+</dd>
+<dt><code class="env">--cd=<var class="var">directory</var></code></dt>
+<dd><p>Run <small class="sc">GDB</small> using <var class="var">directory</var> as its working directory,
+instead of the current directory.
+</p>
+</dd>
+<dt><code class="env">--data-directory=<var class="var">directory</var></code></dt>
+<dt><code class="env">-D</code></dt>
+<dd><p>Run <small class="sc">GDB</small> using <var class="var">directory</var> as its data directory.  The data
+directory is where <small class="sc">GDB</small> searches for its auxiliary files.
+</p>
+</dd>
+<dt><code class="env">--fullname</code></dt>
+<dt><code class="env">-f</code></dt>
+<dd><p>Emacs sets this option when it runs <small class="sc">GDB</small> as a subprocess.  It tells
+<small class="sc">GDB</small> to output the full file name and line number in a standard,
+recognizable fashion each time a stack frame is displayed (which
+includes each time the program stops).  This recognizable format looks
+like two &lsquo;<samp class="samp">\032</samp>&rsquo; characters, followed by the file name, line number
+and character position separated by colons, and a newline.  The
+Emacs-to-<small class="sc">GDB</small> interface program uses the two &lsquo;<samp class="samp">\032</samp>&rsquo;
+characters as a signal to display the source code for the frame.
+</p>
+</dd>
+<dt><code class="env">-b <var class="var">baudrate</var></code></dt>
+<dd><p>Set the line speed (baud rate or bits per second) of any serial
+interface used by <small class="sc">GDB</small> for remote debugging.
+</p>
+</dd>
+<dt><code class="env">-l <var class="var">timeout</var></code></dt>
+<dd><p>Set timeout, in seconds, for remote debugging.
+</p>
+</dd>
+<dt><code class="env">--tty=<var class="var">device</var></code></dt>
+<dd><p>Run using <var class="var">device</var> for your program&rsquo;s standard input and output.
+</p></dd>
+</dl>
+
+
+<hr>
+<div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

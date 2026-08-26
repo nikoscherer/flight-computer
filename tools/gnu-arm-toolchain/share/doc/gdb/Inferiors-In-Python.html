@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Inferiors In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Inferiors In Python (Debugging with GDB)">
+<meta name="keywords" content="Inferiors In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Events-In-Python.html" rel="next" title="Events In Python">
+<link href="Writing-an-Xmethod.html" rel="prev" title="Writing an Xmethod">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Inferiors-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Events-In-Python.html" accesskey="n" rel="next">Events In Python</a>, Previous: <a href="Writing-an-Xmethod.html" accesskey="p" rel="prev">Writing an Xmethod</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Inferiors-In-Python-1"><span>23.3.2.17 Inferiors In Python<a class="copiable-link" href="#Inferiors-In-Python-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-inferiors-in-Python"></a>
+
+<a class="index-entry-id" id="index-gdb_002eInferior"></a>
+<p>Programs which are being run under <small class="sc">GDB</small> are called inferiors
+(see <a class="pxref" href="Inferiors-Connections-and-Programs.html">Debugging Multiple Inferiors Connections and Programs</a>).  Python scripts can access
+information about and manipulate inferiors controlled by <small class="sc">GDB</small>
+via objects of the <code class="code">gdb.Inferior</code> class.
+</p>
+<p>The following inferior-related functions are available in the <code class="code">gdb</code>
+module:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002einferiors"><span class="category-def">Function: </span><span><strong class="def-name">gdb.inferiors</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002einferiors"> &para;</a></span></dt>
+<dd><p>Return a tuple containing all inferior objects.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eselected_005finferior"><span class="category-def">Function: </span><span><strong class="def-name">gdb.selected_inferior</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eselected_005finferior"> &para;</a></span></dt>
+<dd><p>Return an object representing the current inferior.
+</p></dd></dl>
+
+<p>A <code class="code">gdb.Inferior</code> object has the following attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002enum"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.num</strong><a class="copiable-link" href="#index-Inferior_002enum"> &para;</a></span></dt>
+<dd><p>ID of inferior, as assigned by <small class="sc">GDB</small>.  You can use this to make
+Python breakpoints inferior-specific, for example
+(see <a class="pxref" href="Breakpoints-In-Python.html#python_005fbreakpoint_005finferior">The Breakpoint.inferior
+attribute</a>).
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005finferior_005fconnection"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002econnection"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.connection</strong><a class="copiable-link" href="#index-Inferior_002econnection"> &para;</a></span></dt>
+<dd><p>The <code class="code">gdb.TargetConnection</code> for this inferior (see <a class="pxref" href="Connections-In-Python.html">Connections In Python</a>), or <code class="code">None</code> if this inferior has no connection.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002econnection_005fnum"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.connection_num</strong><a class="copiable-link" href="#index-Inferior_002econnection_005fnum"> &para;</a></span></dt>
+<dd><p>ID of inferior&rsquo;s connection as assigned by <small class="sc">GDB</small>, or None if
+the inferior is not connected to a target.  See <a class="xref" href="Inferiors-Connections-and-Programs.html">Debugging Multiple Inferiors Connections and Programs</a>.  This is equivalent to
+<code class="code">gdb.Inferior.connection.num</code> in the case where
+<code class="code">gdb.Inferior.connection</code> is not <code class="code">None</code>.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002epid"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.pid</strong><a class="copiable-link" href="#index-Inferior_002epid"> &para;</a></span></dt>
+<dd><p>Process ID of the inferior, as assigned by the underlying operating
+system.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002ewas_005fattached"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.was_attached</strong><a class="copiable-link" href="#index-Inferior_002ewas_005fattached"> &para;</a></span></dt>
+<dd><p>Boolean signaling whether the inferior was created using &lsquo;attach&rsquo;, or
+started by <small class="sc">GDB</small> itself.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002emain_005fname"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.main_name</strong><a class="copiable-link" href="#index-Inferior_002emain_005fname"> &para;</a></span></dt>
+<dd><p>A string holding the name of this inferior&rsquo;s &ldquo;main&rdquo; function, if it
+can be determined.  If the name of main is not known, this is
+<code class="code">None</code>.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002eprogspace"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.progspace</strong><a class="copiable-link" href="#index-Inferior_002eprogspace"> &para;</a></span></dt>
+<dd><p>The inferior&rsquo;s program space.  See <a class="xref" href="Progspaces-In-Python.html">Program Spaces In Python</a>.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002earguments"><span class="category-def">Variable: </span><span><strong class="def-name">Inferior.arguments</strong><a class="copiable-link" href="#index-Inferior_002earguments"> &para;</a></span></dt>
+<dd><p>The inferior&rsquo;s command line arguments, if known.  This corresponds to
+the <code class="code">set args</code> and <code class="code">show args</code> commands.  See <a class="xref" href="Arguments.html">Your Program&rsquo;s Arguments</a>.
+</p>
+<p>When accessed, the value is a string holding all the arguments.  The
+contents are quoted as they would be when passed to the shell.  If
+there are no arguments, the value is <code class="code">None</code>.
+</p>
+<p>Either a string or a sequence of strings can be assigned to this
+attribute.  When a string is assigned, it is assumed to have any
+necessary quoting for the shell; when a sequence is assigned, the
+quoting is applied by <small class="sc">GDB</small>.
+</p></dd></dl>
+
+<p>A <code class="code">gdb.Inferior</code> object has the following methods:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eis_005fvalid"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002eis_005fvalid"> &para;</a></span></dt>
+<dd><p>Returns <code class="code">True</code> if the <code class="code">gdb.Inferior</code> object is valid,
+<code class="code">False</code> if not.  A <code class="code">gdb.Inferior</code> object will become invalid
+if the inferior no longer exists within <small class="sc">GDB</small>.  All other
+<code class="code">gdb.Inferior</code> methods will throw an exception if it is invalid
+at the time the method is called.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002ethreads"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.threads</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002ethreads"> &para;</a></span></dt>
+<dd><p>This method returns a tuple holding all the threads which are valid
+when it is called.  If there are no valid threads, the method will
+return an empty tuple.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002earchitecture"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.architecture</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002earchitecture"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">gdb.Architecture</code> (see <a class="pxref" href="Architectures-In-Python.html">Python representation of architectures</a>)
+for this inferior.  This represents the architecture of the inferior
+as a whole.  Some platforms can have multiple architectures in a
+single address space, so this may not match the architecture of a
+particular frame (see <a class="pxref" href="Frames-In-Python.html">Accessing inferior stack frames from Python</a>).
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005finferior_005fread_005fmemory"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eread_005fmemory"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.read_memory</strong> <var class="def-var-arguments">(address, length)</var><a class="copiable-link" href="#index-Inferior_002eread_005fmemory"> &para;</a></span></dt>
+<dd><p>Read <var class="var">length</var> addressable memory units from the inferior, starting
+at <var class="var">address</var>.  Returns a <code class="code">memoryview</code> object, which behaves
+much like an array or a string.  It can be modified and given to the
+<code class="code">Inferior.write_memory</code> function.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002ewrite_005fmemory"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.write_memory</strong> <var class="def-var-arguments">(address, buffer <span class="r">[</span>, length<span class="r">]</span>)</var><a class="copiable-link" href="#index-Inferior_002ewrite_005fmemory"> &para;</a></span></dt>
+<dd><p>Write the contents of <var class="var">buffer</var> to the inferior, starting at
+<var class="var">address</var>.  The <var class="var">buffer</var> parameter must be a Python object
+which supports the buffer protocol, i.e., a string, an array or the
+object returned from <code class="code">Inferior.read_memory</code>.  If given, <var class="var">length</var>
+determines the number of addressable memory units from <var class="var">buffer</var> to be
+written.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002esearch_005fmemory"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.search_memory</strong> <var class="def-var-arguments">(address, length, pattern)</var><a class="copiable-link" href="#index-Inferior_002esearch_005fmemory"> &para;</a></span></dt>
+<dd><p>Search a region of the inferior memory starting at <var class="var">address</var> with
+the given <var class="var">length</var> using the search pattern supplied in
+<var class="var">pattern</var>.  The <var class="var">pattern</var> parameter must be a Python object
+which supports the buffer protocol, i.e., a string, an array or the
+object returned from <code class="code">gdb.read_memory</code>.  Returns a Python <code class="code">Long</code>
+containing the address where the pattern was found, or <code class="code">None</code> if
+the pattern could not be found.
+</p></dd></dl>
+
+<a class="index-entry-id" id="index-Inferior_002ethread_005ffrom_005fthread_005fhandle"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002ethread_005ffrom_005fhandle"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.thread_from_handle</strong> <var class="def-var-arguments">(handle)</var><a class="copiable-link" href="#index-Inferior_002ethread_005ffrom_005fhandle"> &para;</a></span></dt>
+<dd><p>Return the thread object corresponding to <var class="var">handle</var>, a thread
+library specific data structure such as <code class="code">pthread_t</code> for pthreads
+library implementations.
+</p>
+<p>The function <code class="code">Inferior.thread_from_thread_handle</code> provides
+the same functionality, but use of <code class="code">Inferior.thread_from_thread_handle</code>
+is deprecated.
+</p></dd></dl>
+
+
+<p>The environment that will be passed to the inferior can be changed
+from Python by using the following methods.  These methods only take
+effect when the inferior is started &ndash; they will not affect an
+inferior that is already executing.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eclear_005fenv"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.clear_env</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002eclear_005fenv"> &para;</a></span></dt>
+<dd><p>Clear the current environment variables that will be passed to this
+inferior.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eset_005fenv"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.set_env</strong> <var class="def-var-arguments">(name, value)</var><a class="copiable-link" href="#index-Inferior_002eset_005fenv"> &para;</a></span></dt>
+<dd><p>Set the environment variable <var class="var">name</var> to have the indicated value.
+Both parameters must be strings.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eunset_005fenv"><span class="category-def">Function: </span><span><strong class="def-name">Inferior.unset_env</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-Inferior_002eunset_005fenv"> &para;</a></span></dt>
+<dd><p>Unset the environment variable <var class="var">name</var>.  <var class="var">name</var> must be a
+string.
+</p></dd></dl>
+
+<p>One may add arbitrary attributes to <code class="code">gdb.Inferior</code> objects in the
+usual Python way.  This is useful if, for example, one needs to do
+some extra record keeping associated with the inferior.
+</p>
+<a class="anchor" id="choosing-attribute-names"></a><p>When selecting a name for a new attribute, avoid starting the new
+attribute name with a lower case letter; future attributes added by
+<small class="sc">GDB</small> will start with a lower case letter.  Additionally, avoid
+starting attribute names with two underscore characters, as these
+could clash with Python builtin attribute names.
+</p>
+<p>In this contrived example we record the time when an inferior last
+stopped:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python
+import datetime
+
+def thread_stopped(event):
+    if event.inferior_thread is not None:
+        thread = event.inferior_thread
+    else:
+        thread = gdb.selected_thread()
+    inferior = thread.inferior
+    inferior._last_stop_time = datetime.datetime.today()
+
+gdb.events.stop.connect(thread_stopped)
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) file /tmp/hello
+Reading symbols from /tmp/hello...
+(gdb) start
+Temporary breakpoint 1 at 0x401198: file /tmp/hello.c, line 18.
+Starting program: /tmp/hello
+
+Temporary breakpoint 1, main () at /tmp/hello.c:18
+18	  printf (&quot;Hello World\n&quot;);
+(gdb) python print(gdb.selected_inferior()._last_stop_time)
+2024-01-04 14:48:41.347036
+</pre></div></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Events-In-Python.html">Events In Python</a>, Previous: <a href="Writing-an-Xmethod.html">Writing an Xmethod</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

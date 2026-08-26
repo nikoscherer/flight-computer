@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Data Output (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Data Output (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Data Output (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Assembler-Format.html" rel="up" title="Assembler Format">
+<link href="Uninitialized-Data.html" rel="next" title="Uninitialized Data">
+<link href="File-Framework.html" rel="prev" title="File Framework">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Data-Output">
+<div class="nav-panel">
+<p>
+Next: <a href="Uninitialized-Data.html" accesskey="n" rel="next">Output of Uninitialized Variables</a>, Previous: <a href="File-Framework.html" accesskey="p" rel="prev">The Overall Framework of an Assembler File</a>, Up: <a href="Assembler-Format.html" accesskey="u" rel="up">Defining the Output Assembler Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Output-of-Data"><span>17.20.2 Output of Data<a class="copiable-link" href="#Output-of-Data"> &para;</a></span></h4>
+
+
+<dl class="first-deftypevr">
+<dt class="deftypevr" id="index-TARGET_005fASM_005fBYTE_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_BYTE_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fBYTE_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fHI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_HI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fHI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fPSI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_PSI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fPSI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fSI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_SI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fSI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fPDI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_PDI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fPDI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fDI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_DI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fDI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fPTI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_PTI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fPTI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fALIGNED_005fTI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_ALIGNED_TI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fALIGNED_005fTI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fHI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_HI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fHI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fPSI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_PSI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fPSI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fSI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_SI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fSI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fPDI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_PDI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fPDI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fDI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_DI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fDI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fPTI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_PTI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fPTI_005fOP"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fUNALIGNED_005fTI_005fOP"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_UNALIGNED_TI_OP</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fUNALIGNED_005fTI_005fOP"> &para;</a></span></dt>
+<dd><p>These hooks specify assembly directives for creating certain kinds
+of integer object.  The <code class="code">TARGET_ASM_BYTE_OP</code> directive creates a
+byte-sized object, the <code class="code">TARGET_ASM_ALIGNED_HI_OP</code> one creates an
+aligned two-byte object, and so on.  Any of the hooks may be
+<code class="code">NULL</code>, indicating that no suitable directive is available.
+</p>
+<p>The compiler will print these strings at the start of a new line,
+followed immediately by the object&rsquo;s initial value.  In most cases,
+the string should contain a tab, a pseudo-op, and then another tab.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fINTEGER"><span class="category-def">Target Hook: </span><span><code class="def-type">bool</code> <strong class="def-name">TARGET_ASM_INTEGER</strong> <code class="def-code-arguments">(rtx <var class="var">x</var>, unsigned int <var class="var">size</var>, int <var class="var">aligned_p</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fINTEGER"> &para;</a></span></dt>
+<dd><p>The <code class="code">assemble_integer</code> function uses this hook to output an
+integer object.  <var class="var">x</var> is the object&rsquo;s value, <var class="var">size</var> is its size
+in bytes and <var class="var">aligned_p</var> indicates whether it is aligned.  The
+function should return <code class="code">true</code> if it was able to output the
+object.  If it returns false, <code class="code">assemble_integer</code> will try to
+split the object into smaller parts.
+</p>
+<p>The default implementation of this hook will use the
+<code class="code">TARGET_ASM_BYTE_OP</code> family of strings, returning <code class="code">false</code>
+when the relevant string is <code class="code">NULL</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fDECL_005fEND"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_DECL_END</strong> <code class="def-code-arguments">(void)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fDECL_005fEND"> &para;</a></span></dt>
+<dd><p>Define this hook if the target assembler requires a special marker to
+terminate an initialized variable declaration.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fOUTPUT_005fADDR_005fCONST_005fEXTRA"><span class="category-def">Target Hook: </span><span><code class="def-type">bool</code> <strong class="def-name">TARGET_ASM_OUTPUT_ADDR_CONST_EXTRA</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>, rtx <var class="var">x</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fOUTPUT_005fADDR_005fCONST_005fEXTRA"> &para;</a></span></dt>
+<dd><p>A target hook to recognize <var class="var">rtx</var> patterns that <code class="code">output_addr_const</code>
+can&rsquo;t deal with, and output assembly code to <var class="var">file</var> corresponding to
+the pattern <var class="var">x</var>.  This may be used to allow machine-dependent
+<code class="code">UNSPEC</code>s to appear within constants.
+</p>
+<p>If target hook fails to recognize a pattern, it must return <code class="code">false</code>,
+so that a standard error message is printed.  If it prints an error message
+itself, by calling, for example, <code class="code">output_operand_lossage</code>, it may just
+return <code class="code">true</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fOUTPUT_005fASCII"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_OUTPUT_ASCII</strong> <var class="def-var-arguments">(<var class="var">stream</var>, <var class="var">ptr</var>, <var class="var">len</var>)</var><a class="copiable-link" href="#index-ASM_005fOUTPUT_005fASCII"> &para;</a></span></dt>
+<dd><p>A C statement to output to the stdio stream <var class="var">stream</var> an assembler
+instruction to assemble a string constant containing the <var class="var">len</var>
+bytes at <var class="var">ptr</var>.  <var class="var">ptr</var> will be a C expression of type
+<code class="code">char *</code> and <var class="var">len</var> a C expression of type <code class="code">int</code>.
+</p>
+<p>If the assembler has a <code class="code">.ascii</code> pseudo-op as found in the
+Berkeley Unix assembler, do not define the macro
+<code class="code">ASM_OUTPUT_ASCII</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fOUTPUT_005fFDESC"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_OUTPUT_FDESC</strong> <var class="def-var-arguments">(<var class="var">stream</var>, <var class="var">decl</var>, <var class="var">n</var>)</var><a class="copiable-link" href="#index-ASM_005fOUTPUT_005fFDESC"> &para;</a></span></dt>
+<dd><p>A C statement to output word <var class="var">n</var> of a function descriptor for
+<var class="var">decl</var>.  This must be defined if <code class="code">TARGET_VTABLE_USES_DESCRIPTORS</code>
+is defined, and is otherwise unused.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-CONSTANT_005fPOOL_005fBEFORE_005fFUNCTION"><span class="category-def">Macro: </span><span><strong class="def-name">CONSTANT_POOL_BEFORE_FUNCTION</strong><a class="copiable-link" href="#index-CONSTANT_005fPOOL_005fBEFORE_005fFUNCTION"> &para;</a></span></dt>
+<dd><p>You may define this macro as a C expression.  You should define the
+expression to have a nonzero value if GCC should output the constant
+pool for a function before the code for the function, or a zero value if
+GCC should output the constant pool after the function.  If you do
+not define this macro, the usual case, GCC will output the constant
+pool before the function.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fOUTPUT_005fPOOL_005fPROLOGUE"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_OUTPUT_POOL_PROLOGUE</strong> <var class="def-var-arguments">(<var class="var">file</var>, <var class="var">funname</var>, <var class="var">fundecl</var>, <var class="var">size</var>)</var><a class="copiable-link" href="#index-ASM_005fOUTPUT_005fPOOL_005fPROLOGUE"> &para;</a></span></dt>
+<dd><p>A C statement to output assembler commands to define the start of the
+constant pool for a function.  <var class="var">funname</var> is a string giving
+the name of the function.  Should the return type of the function
+be required, it can be obtained via <var class="var">fundecl</var>.  <var class="var">size</var>
+is the size, in bytes, of the constant pool that will be written
+immediately after this call.
+</p>
+<p>If no constant-pool prefix is required, the usual case, this macro need
+not be defined.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fOUTPUT_005fSPECIAL_005fPOOL_005fENTRY"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_OUTPUT_SPECIAL_POOL_ENTRY</strong> <var class="def-var-arguments">(<var class="var">file</var>, <var class="var">x</var>, <var class="var">mode</var>, <var class="var">align</var>, <var class="var">labelno</var>, <var class="var">jumpto</var>)</var><a class="copiable-link" href="#index-ASM_005fOUTPUT_005fSPECIAL_005fPOOL_005fENTRY"> &para;</a></span></dt>
+<dd><p>A C statement (with or without semicolon) to output a constant in the
+constant pool, if it needs special treatment.  (This macro need not do
+anything for RTL expressions that can be output normally.)
+</p>
+<p>The argument <var class="var">file</var> is the standard I/O stream to output the
+assembler code on.  <var class="var">x</var> is the RTL expression for the constant to
+output, and <var class="var">mode</var> is the machine mode (in case <var class="var">x</var> is a
+&lsquo;<samp class="samp">const_int</samp>&rsquo;).  <var class="var">align</var> is the required alignment for the value
+<var class="var">x</var>; you should output an assembler directive to force this much
+alignment.
+</p>
+<p>The argument <var class="var">labelno</var> is a number to use in an internal label for
+the address of this pool entry.  The definition of this macro is
+responsible for outputting the label definition at the proper place.
+Here is how to do this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">(*targetm.asm_out.internal_label)</code> (<var class="var">file</var>, &quot;LC&quot;, <var class="var">labelno</var>);
+</pre></div>
+
+<p>When you output a pool entry specially, you should end with a
+<code class="code">goto</code> to the label <var class="var">jumpto</var>.  This will prevent the same pool
+entry from being output a second time in the usual manner.
+</p>
+<p>You need not define this macro if it would do nothing.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fOUTPUT_005fPOOL_005fEPILOGUE"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_OUTPUT_POOL_EPILOGUE</strong> <var class="def-var-arguments">(<var class="var">file</var> <var class="var">funname</var> <var class="var">fundecl</var> <var class="var">size</var>)</var><a class="copiable-link" href="#index-ASM_005fOUTPUT_005fPOOL_005fEPILOGUE"> &para;</a></span></dt>
+<dd><p>A C statement to output assembler commands to at the end of the constant
+pool for a function.  <var class="var">funname</var> is a string giving the name of the
+function.  Should the return type of the function be required, you can
+obtain it via <var class="var">fundecl</var>.  <var class="var">size</var> is the size, in bytes, of the
+constant pool that GCC wrote immediately before this call.
+</p>
+<p>If no constant-pool epilogue is required, the usual case, you need not
+define this macro.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-IS_005fASM_005fLOGICAL_005fLINE_005fSEPARATOR"><span class="category-def">Macro: </span><span><strong class="def-name">IS_ASM_LOGICAL_LINE_SEPARATOR</strong> <var class="def-var-arguments">(<var class="var">C</var>, <var class="var">STR</var>)</var><a class="copiable-link" href="#index-IS_005fASM_005fLOGICAL_005fLINE_005fSEPARATOR"> &para;</a></span></dt>
+<dd><p>Define this macro as a C expression which is nonzero if <var class="var">C</var> is
+used as a logical line separator by the assembler.  <var class="var">STR</var> points
+to the position in the string where <var class="var">C</var> was found; this can be used if
+a line separator uses multiple characters.
+</p>
+<p>If you do not define this macro, the default is that only
+the character &lsquo;<samp class="samp">;</samp>&rsquo; is treated as a logical line separator.
+</p></dd></dl>
+
+<dl class="first-deftypevr">
+<dt class="deftypevr" id="index-TARGET_005fASM_005fOPEN_005fPAREN"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_OPEN_PAREN</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fOPEN_005fPAREN"> &para;</a></span></dt>
+<dt class="deftypevrx def-cmd-deftypevr" id="index-TARGET_005fASM_005fCLOSE_005fPAREN"><span class="category-def">Target Hook: </span><span><code class="def-type">const char *</code> <strong class="def-name">TARGET_ASM_CLOSE_PAREN</strong><a class="copiable-link" href="#index-TARGET_005fASM_005fCLOSE_005fPAREN"> &para;</a></span></dt>
+<dd><p>These target hooks are C string constants, describing the syntax in the
+assembler for grouping arithmetic expressions.  If not overridden, they
+default to normal parentheses, which is correct for most assemblers.
+</p></dd></dl>
+
+<p>These macros are provided by <samp class="file">real.h</samp> for writing the definitions
+of <code class="code">ASM_OUTPUT_DOUBLE</code> and the like:
+</p>
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-REAL_005fVALUE_005fTO_005fTARGET_005fSINGLE"><span class="category-def">Macro: </span><span><strong class="def-name">REAL_VALUE_TO_TARGET_SINGLE</strong> <var class="def-var-arguments">(<var class="var">x</var>, <var class="var">l</var>)</var><a class="copiable-link" href="#index-REAL_005fVALUE_005fTO_005fTARGET_005fSINGLE"> &para;</a></span></dt>
+<dt class="deffnx defmacx-alias-deffnx def-cmd-deffn" id="index-REAL_005fVALUE_005fTO_005fTARGET_005fDOUBLE"><span class="category-def">Macro: </span><span><strong class="def-name">REAL_VALUE_TO_TARGET_DOUBLE</strong> <var class="def-var-arguments">(<var class="var">x</var>, <var class="var">l</var>)</var><a class="copiable-link" href="#index-REAL_005fVALUE_005fTO_005fTARGET_005fDOUBLE"> &para;</a></span></dt>
+<dt class="deffnx defmacx-alias-deffnx def-cmd-deffn" id="index-REAL_005fVALUE_005fTO_005fTARGET_005fLONG_005fDOUBLE"><span class="category-def">Macro: </span><span><strong class="def-name">REAL_VALUE_TO_TARGET_LONG_DOUBLE</strong> <var class="def-var-arguments">(<var class="var">x</var>, <var class="var">l</var>)</var><a class="copiable-link" href="#index-REAL_005fVALUE_005fTO_005fTARGET_005fLONG_005fDOUBLE"> &para;</a></span></dt>
+<dt class="deffnx defmacx-alias-deffnx def-cmd-deffn" id="index-REAL_005fVALUE_005fTO_005fTARGET_005fDECIMAL32"><span class="category-def">Macro: </span><span><strong class="def-name">REAL_VALUE_TO_TARGET_DECIMAL32</strong> <var class="def-var-arguments">(<var class="var">x</var>, <var class="var">l</var>)</var><a class="copiable-link" href="#index-REAL_005fVALUE_005fTO_005fTARGET_005fDECIMAL32"> &para;</a></span></dt>
+<dt class="deffnx defmacx-alias-deffnx def-cmd-deffn" id="index-REAL_005fVALUE_005fTO_005fTARGET_005fDECIMAL64"><span class="category-def">Macro: </span><span><strong class="def-name">REAL_VALUE_TO_TARGET_DECIMAL64</strong> <var class="def-var-arguments">(<var class="var">x</var>, <var class="var">l</var>)</var><a class="copiable-link" href="#index-REAL_005fVALUE_005fTO_005fTARGET_005fDECIMAL64"> &para;</a></span></dt>
+<dt class="deffnx defmacx-alias-deffnx def-cmd-deffn" id="index-REAL_005fVALUE_005fTO_005fTARGET_005fDECIMAL128"><span class="category-def">Macro: </span><span><strong class="def-name">REAL_VALUE_TO_TARGET_DECIMAL128</strong> <var class="def-var-arguments">(<var class="var">x</var>, <var class="var">l</var>)</var><a class="copiable-link" href="#index-REAL_005fVALUE_005fTO_005fTARGET_005fDECIMAL128"> &para;</a></span></dt>
+<dd><p>These translate <var class="var">x</var>, of type <code class="code">REAL_VALUE_TYPE</code>, to the
+target&rsquo;s floating point representation, and store its bit pattern in
+the variable <var class="var">l</var>.  For <code class="code">REAL_VALUE_TO_TARGET_SINGLE</code> and
+<code class="code">REAL_VALUE_TO_TARGET_DECIMAL32</code>, this variable should be a
+simple <code class="code">long int</code>.  For the others, it should be an array of
+<code class="code">long int</code>.  The number of elements in this array is determined
+by the size of the desired target floating point data type: 32 bits of
+it go in each <code class="code">long int</code> array element.  Each array element holds
+32 bits of the result, even if <code class="code">long int</code> is wider than 32 bits
+on the host machine.
+</p>
+<p>The array element values are designed so that you can print them out
+using <code class="code">fprintf</code> in the order they should appear in the target
+machine&rsquo;s memory.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Uninitialized-Data.html">Output of Uninitialized Variables</a>, Previous: <a href="File-Framework.html">The Overall Framework of an Assembler File</a>, Up: <a href="Assembler-Format.html">Defining the Output Assembler Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

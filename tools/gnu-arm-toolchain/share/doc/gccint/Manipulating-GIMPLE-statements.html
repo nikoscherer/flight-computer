@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Manipulating GIMPLE statements (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Manipulating GIMPLE statements (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Manipulating GIMPLE statements (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GIMPLE.html" rel="up" title="GIMPLE">
+<link href="Tuple-specific-accessors.html" rel="next" title="Tuple specific accessors">
+<link href="Operands.html" rel="prev" title="Operands">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Manipulating-GIMPLE-statements">
+<div class="nav-panel">
+<p>
+Next: <a href="Tuple-specific-accessors.html" accesskey="n" rel="next">Tuple specific accessors</a>, Previous: <a href="Operands.html" accesskey="p" rel="prev">Operands</a>, Up: <a href="GIMPLE.html" accesskey="u" rel="up">GIMPLE</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Manipulating-GIMPLE-statements-1"><span>11.7 Manipulating GIMPLE statements<a class="copiable-link" href="#Manipulating-GIMPLE-statements-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-Manipulating-GIMPLE-statements"></a>
+
+<p>This section documents all the functions available to handle each
+of the GIMPLE instructions.
+</p>
+<ul class="mini-toc">
+<li><a href="#Common-accessors" accesskey="1">Common accessors</a></li>
+</ul>
+<div class="subsection-level-extent" id="Common-accessors">
+<h4 class="subsection"><span>11.7.1 Common accessors<a class="copiable-link" href="#Common-accessors"> &para;</a></span></h4>
+<p>The following are common accessors for gimple statements.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fcode"><span class="category-def">GIMPLE function: </span><span><code class="def-type">enum gimple_code</code> <strong class="def-name">gimple_code</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fcode"> &para;</a></span></dt>
+<dd><p>Return the code for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fbb"><span class="category-def">GIMPLE function: </span><span><code class="def-type">basic_block</code> <strong class="def-name">gimple_bb</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fbb"> &para;</a></span></dt>
+<dd><p>Return the basic block to which statement <code class="code">G</code> belongs to.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fblock"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_block</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fblock"> &para;</a></span></dt>
+<dd><p>Return the lexical scope block holding statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fexpr_005fcode"><span class="category-def">GIMPLE function: </span><span><code class="def-type">enum tree_code</code> <strong class="def-name">gimple_expr_code</strong> <code class="def-code-arguments">(gimple stmt)</code><a class="copiable-link" href="#index-gimple_005fexpr_005fcode"> &para;</a></span></dt>
+<dd><p>Return the tree code for the expression computed by <code class="code">STMT</code>.  This
+is only meaningful for <code class="code">GIMPLE_CALL</code>, <code class="code">GIMPLE_ASSIGN</code> and
+<code class="code">GIMPLE_COND</code>.  If <code class="code">STMT</code> is <code class="code">GIMPLE_CALL</code>, it will return <code class="code">CALL_EXPR</code>.
+For <code class="code">GIMPLE_COND</code>, it returns the code of the comparison predicate.
+For <code class="code">GIMPLE_ASSIGN</code> it returns the code of the operation performed
+by the <code class="code">RHS</code> of the assignment.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fblock"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_block</strong> <code class="def-code-arguments">(gimple g, tree block)</code><a class="copiable-link" href="#index-gimple_005fset_005fblock"> &para;</a></span></dt>
+<dd><p>Set the lexical scope block of <code class="code">G</code> to <code class="code">BLOCK</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005flocus"><span class="category-def">GIMPLE function: </span><span><code class="def-type">location_t</code> <strong class="def-name">gimple_locus</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005flocus"> &para;</a></span></dt>
+<dd><p>Return locus information for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005flocus"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_locus</strong> <code class="def-code-arguments">(gimple g, location_t locus)</code><a class="copiable-link" href="#index-gimple_005fset_005flocus"> &para;</a></span></dt>
+<dd><p>Set locus information for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005flocus_005fempty_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_locus_empty_p</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005flocus_005fempty_005fp"> &para;</a></span></dt>
+<dd><p>Return true if <code class="code">G</code> does not have locus information.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fno_005fwarning_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_no_warning_p</strong> <code class="def-code-arguments">(gimple stmt)</code><a class="copiable-link" href="#index-gimple_005fno_005fwarning_005fp"> &para;</a></span></dt>
+<dd><p>Return true if no warnings should be emitted for statement <code class="code">STMT</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fvisited"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_visited</strong> <code class="def-code-arguments">(gimple stmt, bool visited_p)</code><a class="copiable-link" href="#index-gimple_005fset_005fvisited"> &para;</a></span></dt>
+<dd><p>Set the visited status on statement <code class="code">STMT</code> to <code class="code">VISITED_P</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fvisited_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_visited_p</strong> <code class="def-code-arguments">(gimple stmt)</code><a class="copiable-link" href="#index-gimple_005fvisited_005fp"> &para;</a></span></dt>
+<dd><p>Return the visited status on statement <code class="code">STMT</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fplf"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_plf</strong> <code class="def-code-arguments">(gimple stmt, enum plf_mask plf, bool val_p)</code><a class="copiable-link" href="#index-gimple_005fset_005fplf"> &para;</a></span></dt>
+<dd><p>Set pass local flag <code class="code">PLF</code> on statement <code class="code">STMT</code> to <code class="code">VAL_P</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fplf"><span class="category-def">GIMPLE function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">gimple_plf</strong> <code class="def-code-arguments">(gimple stmt, enum plf_mask plf)</code><a class="copiable-link" href="#index-gimple_005fplf"> &para;</a></span></dt>
+<dd><p>Return the value of pass local flag <code class="code">PLF</code> on statement <code class="code">STMT</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fhas_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_has_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fhas_005fops"> &para;</a></span></dt>
+<dd><p>Return true if statement <code class="code">G</code> has register or memory operands.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fhas_005fmem_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_has_mem_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fhas_005fmem_005fops"> &para;</a></span></dt>
+<dd><p>Return true if statement <code class="code">G</code> has memory operands.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fnum_005fops-1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">unsigned</code> <strong class="def-name">gimple_num_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fnum_005fops-1"> &para;</a></span></dt>
+<dd><p>Return the number of operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fops-1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fops-1"> &para;</a></span></dt>
+<dd><p>Return the array of operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fop-1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_op</strong> <code class="def-code-arguments">(gimple g, unsigned i)</code><a class="copiable-link" href="#index-gimple_005fop-1"> &para;</a></span></dt>
+<dd><p>Return operand <code class="code">I</code> for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fop_005fptr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_op_ptr</strong> <code class="def-code-arguments">(gimple g, unsigned i)</code><a class="copiable-link" href="#index-gimple_005fop_005fptr"> &para;</a></span></dt>
+<dd><p>Return a pointer to operand <code class="code">I</code> for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_op</strong> <code class="def-code-arguments">(gimple g, unsigned i, tree op)</code><a class="copiable-link" href="#index-gimple_005fset_005fop"> &para;</a></span></dt>
+<dd><p>Set operand <code class="code">I</code> of statement <code class="code">G</code> to <code class="code">OP</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005faddresses_005ftaken"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bitmap</code> <strong class="def-name">gimple_addresses_taken</strong> <code class="def-code-arguments">(gimple stmt)</code><a class="copiable-link" href="#index-gimple_005faddresses_005ftaken"> &para;</a></span></dt>
+<dd><p>Return the set of symbols that have had their address taken by
+<code class="code">STMT</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fdef_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">struct def_optype_d *</code> <strong class="def-name">gimple_def_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fdef_005fops"> &para;</a></span></dt>
+<dd><p>Return the set of <code class="code">DEF</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fdef_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_def_ops</strong> <code class="def-code-arguments">(gimple g, struct def_optype_d *def)</code><a class="copiable-link" href="#index-gimple_005fset_005fdef_005fops"> &para;</a></span></dt>
+<dd><p>Set <code class="code">DEF</code> to be the set of <code class="code">DEF</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fuse_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">struct use_optype_d *</code> <strong class="def-name">gimple_use_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fuse_005fops"> &para;</a></span></dt>
+<dd><p>Return the set of <code class="code">USE</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fuse_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_use_ops</strong> <code class="def-code-arguments">(gimple g, struct use_optype_d *use)</code><a class="copiable-link" href="#index-gimple_005fset_005fuse_005fops"> &para;</a></span></dt>
+<dd><p>Set <code class="code">USE</code> to be the set of <code class="code">USE</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fvuse_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">struct voptype_d *</code> <strong class="def-name">gimple_vuse_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fvuse_005fops"> &para;</a></span></dt>
+<dd><p>Return the set of <code class="code">VUSE</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fvuse_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_vuse_ops</strong> <code class="def-code-arguments">(gimple g, struct voptype_d *ops)</code><a class="copiable-link" href="#index-gimple_005fset_005fvuse_005fops"> &para;</a></span></dt>
+<dd><p>Set <code class="code">OPS</code> to be the set of <code class="code">VUSE</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fvdef_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">struct voptype_d *</code> <strong class="def-name">gimple_vdef_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fvdef_005fops"> &para;</a></span></dt>
+<dd><p>Return the set of <code class="code">VDEF</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fvdef_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_vdef_ops</strong> <code class="def-code-arguments">(gimple g, struct voptype_d *ops)</code><a class="copiable-link" href="#index-gimple_005fset_005fvdef_005fops"> &para;</a></span></dt>
+<dd><p>Set <code class="code">OPS</code> to be the set of <code class="code">VDEF</code> operands for statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005floaded_005fsyms"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bitmap</code> <strong class="def-name">gimple_loaded_syms</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005floaded_005fsyms"> &para;</a></span></dt>
+<dd><p>Return the set of symbols loaded by statement <code class="code">G</code>.  Each element of
+the set is the <code class="code">DECL_UID</code> of the corresponding symbol.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fstored_005fsyms"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bitmap</code> <strong class="def-name">gimple_stored_syms</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fstored_005fsyms"> &para;</a></span></dt>
+<dd><p>Return the set of symbols stored by statement <code class="code">G</code>.  Each element of
+the set is the <code class="code">DECL_UID</code> of the corresponding symbol.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fmodified_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_modified_p</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fmodified_005fp"> &para;</a></span></dt>
+<dd><p>Return true if statement <code class="code">G</code> has operands and the modified field
+has been set.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fhas_005fvolatile_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_has_volatile_ops</strong> <code class="def-code-arguments">(gimple stmt)</code><a class="copiable-link" href="#index-gimple_005fhas_005fvolatile_005fops"> &para;</a></span></dt>
+<dd><p>Return true if statement <code class="code">STMT</code> contains volatile operands.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fset_005fhas_005fvolatile_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_set_has_volatile_ops</strong> <code class="def-code-arguments">(gimple stmt, bool volatilep)</code><a class="copiable-link" href="#index-gimple_005fset_005fhas_005fvolatile_005fops"> &para;</a></span></dt>
+<dd><p>Return true if statement <code class="code">STMT</code> contains volatile operands.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-update_005fstmt"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">update_stmt</strong> <code class="def-code-arguments">(gimple s)</code><a class="copiable-link" href="#index-update_005fstmt"> &para;</a></span></dt>
+<dd><p>Mark statement <code class="code">S</code> as modified, and update it.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-update_005fstmt_005fif_005fmodified"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">update_stmt_if_modified</strong> <code class="def-code-arguments">(gimple s)</code><a class="copiable-link" href="#index-update_005fstmt_005fif_005fmodified"> &para;</a></span></dt>
+<dd><p>Update statement <code class="code">S</code> if it has been marked modified.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fcopy"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gimple</code> <strong class="def-name">gimple_copy</strong> <code class="def-code-arguments">(gimple stmt)</code><a class="copiable-link" href="#index-gimple_005fcopy"> &para;</a></span></dt>
+<dd><p>Return a deep copy of statement <code class="code">STMT</code>.
+</p></dd></dl>
+
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Tuple-specific-accessors.html">Tuple specific accessors</a>, Previous: <a href="Operands.html">Operands</a>, Up: <a href="GIMPLE.html">GIMPLE</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

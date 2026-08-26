@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Set Watchpoints (Debugging with GDB)</title>
+
+<meta name="description" content="Set Watchpoints (Debugging with GDB)">
+<meta name="keywords" content="Set Watchpoints (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Breakpoints.html" rel="up" title="Breakpoints">
+<link href="Set-Catchpoints.html" rel="next" title="Set Catchpoints">
+<link href="Set-Breaks.html" rel="prev" title="Set Breaks">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Set-Watchpoints">
+<div class="nav-panel">
+<p>
+Next: <a href="Set-Catchpoints.html" accesskey="n" rel="next">Setting Catchpoints</a>, Previous: <a href="Set-Breaks.html" accesskey="p" rel="prev">Setting Breakpoints</a>, Up: <a href="Breakpoints.html" accesskey="u" rel="up">Breakpoints, Watchpoints, and Catchpoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Setting-Watchpoints"><span>5.1.2 Setting Watchpoints<a class="copiable-link" href="#Setting-Watchpoints"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-setting-watchpoints"></a>
+<p>You can use a watchpoint to stop execution whenever the value of an
+expression changes, without having to predict a particular place where
+this may happen.  (This is sometimes called a <em class="dfn">data breakpoint</em>.)
+The expression may be as simple as the value of a single variable, or
+as complex as many variables combined by operators.  Examples include:
+</p>
+<ul class="itemize mark-bullet">
+<li>A reference to the value of a single variable.
+
+</li><li>An address cast to an appropriate data type.  For example,
+&lsquo;<samp class="samp">*(int *)0x12345678</samp>&rsquo; will watch a 4-byte region at the specified
+address (assuming an <code class="code">int</code> occupies 4 bytes).
+
+</li><li>An arbitrarily complex expression, such as &lsquo;<samp class="samp">a*b + c/d</samp>&rsquo;.  The
+expression can use any operators valid in the program&rsquo;s native
+language (see <a class="pxref" href="Languages.html">Using <small class="sc">GDB</small> with Different Languages</a>).
+</li></ul>
+
+<p>You can set a watchpoint on an expression even if the expression can
+not be evaluated yet.  For instance, you can set a watchpoint on
+&lsquo;<samp class="samp">*global_ptr</samp>&rsquo; before &lsquo;<samp class="samp">global_ptr</samp>&rsquo; is initialized.
+<small class="sc">GDB</small> will stop when your program sets &lsquo;<samp class="samp">global_ptr</samp>&rsquo; and
+the expression produces a valid value.  If the expression becomes
+valid in some other way than changing a variable (e.g. if the memory
+pointed to by &lsquo;<samp class="samp">*global_ptr</samp>&rsquo; becomes readable as the result of a
+<code class="code">malloc</code> call), <small class="sc">GDB</small> may not stop until the next time
+the expression changes.
+</p>
+<a class="index-entry-id" id="index-software-watchpoints"></a>
+<a class="index-entry-id" id="index-hardware-watchpoints"></a>
+<p>Depending on your system, watchpoints may be implemented in software or
+hardware.  <small class="sc">GDB</small> does software watchpointing by single-stepping your
+program and testing the variable&rsquo;s value each time, which is hundreds of
+times slower than normal execution.  (But this may still be worth it, to
+catch errors where you have no clue what part of your program is the
+culprit.)
+</p>
+<p>On some systems, such as most PowerPC or x86-based targets,
+<small class="sc">GDB</small> includes support for hardware watchpoints, which do not
+slow down the running of your program.
+</p>
+<dl class="table">
+<dt><a id="index-watch"></a><span><code class="code">watch <span class="r">[</span>-l<span class="r">|</span>-location<span class="r">]</span> <var class="var">expr</var> <span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span> <span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span> <span class="r">[</span>task <var class="var">task-id</var><span class="r">]</span></code><a class="copiable-link" href="#index-watch"> &para;</a></span></dt>
+<dd><p>Set a watchpoint for an expression.  <small class="sc">GDB</small> will break when the
+expression <var class="var">expr</var> is written into by the program and its value
+changes.  The simplest (and the most popular) use of this command is
+to watch the value of a single variable:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch foo
+</pre></div>
+
+<p>If the command includes a <code class="code"><span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span></code>
+argument, <small class="sc">GDB</small> breaks only when the thread identified by
+<var class="var">thread-id</var> changes the value of <var class="var">expr</var>.  If any other threads
+change the value of <var class="var">expr</var>, <small class="sc">GDB</small> will not break.  Note
+that watchpoints restricted to a single thread in this way only work
+with Hardware Watchpoints.
+</p>
+<p>Similarly, if the <code class="code">task</code> argument is given, then the watchpoint
+will be specific to the indicated Ada task (see <a class="pxref" href="Ada-Tasks.html">Extensions for Ada Tasks</a>).
+</p>
+<p>Ordinarily a watchpoint respects the scope of variables in <var class="var">expr</var>
+(see below).  The <code class="code">-location</code> argument tells <small class="sc">GDB</small> to
+instead watch the memory referred to by <var class="var">expr</var>.  In this case,
+<small class="sc">GDB</small> will evaluate <var class="var">expr</var>, take the address of the result,
+and watch the memory at that address.  The type of the result is used
+to determine the size of the watched memory.  If the expression&rsquo;s
+result does not have an address, then <small class="sc">GDB</small> will print an
+error.
+</p>
+<p>The <code class="code"><span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span></code> argument allows creation
+of masked watchpoints, if the current architecture supports this
+feature (e.g., PowerPC Embedded architecture, see <a class="ref" href="PowerPC-Embedded.html">PowerPC Embedded</a>.)  A <em class="dfn">masked watchpoint</em> specifies a mask in addition
+to an address to watch.  The mask specifies that some bits of an address
+(the bits which are reset in the mask) should be ignored when matching
+the address accessed by the inferior against the watchpoint address.
+Thus, a masked watchpoint watches many addresses simultaneously&mdash;those
+addresses whose unmasked bits are identical to the unmasked bits in the
+watchpoint address.  The <code class="code">mask</code> argument implies <code class="code">-location</code>.
+Examples:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch foo mask 0xffff00ff
+(gdb) watch *0xdeadbeef mask 0xffffff00
+</pre></div>
+
+</dd>
+<dt><a id="index-rwatch"></a><span><code class="code">rwatch <span class="r">[</span>-l<span class="r">|</span>-location<span class="r">]</span> <var class="var">expr</var> <span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span> <span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span></code><a class="copiable-link" href="#index-rwatch"> &para;</a></span></dt>
+<dd><p>Set a watchpoint that will break when the value of <var class="var">expr</var> is read
+by the program.
+</p>
+</dd>
+<dt><a id="index-awatch"></a><span><code class="code">awatch <span class="r">[</span>-l<span class="r">|</span>-location<span class="r">]</span> <var class="var">expr</var> <span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span> <span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span></code><a class="copiable-link" href="#index-awatch"> &para;</a></span></dt>
+<dd><p>Set a watchpoint that will break when <var class="var">expr</var> is either read from
+or written into by the program.
+</p>
+</dd>
+<dt><a id="index-info-watchpoints-_005blist_2026_005d"></a><span><code class="code">info watchpoints <span class="r">[</span><var class="var">list</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-info-watchpoints-_005blist_2026_005d"> &para;</a></span></dt>
+<dd><p>This command prints a list of watchpoints, using the same format as
+<code class="code">info break</code> (see <a class="pxref" href="Set-Breaks.html">Setting Breakpoints</a>).
+</p></dd>
+</dl>
+
+<p>If you watch for a change in a numerically entered address you need to
+dereference it, as the address itself is just a constant number which will
+never change.  <small class="sc">GDB</small> refuses to create a watchpoint that watches
+a never-changing value:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch 0x600850
+Cannot watch constant value 0x600850.
+(gdb) watch *(int *) 0x600850
+Watchpoint 1: *(int *) 6293584
+</pre></div>
+
+<p><small class="sc">GDB</small> sets a <em class="dfn">hardware watchpoint</em> if possible.  Hardware
+watchpoints execute very quickly, and the debugger reports a change in
+value at the exact instruction where the change occurs.  If <small class="sc">GDB</small>
+cannot set a hardware watchpoint, it sets a software watchpoint, which
+executes more slowly and reports the change in value at the next
+<em class="emph">statement</em>, not the instruction, after the change occurs.
+</p>
+<a class="index-entry-id" id="index-use-only-software-watchpoints"></a>
+<p>You can force <small class="sc">GDB</small> to use only software watchpoints with the
+<kbd class="kbd">set can-use-hw-watchpoints 0</kbd> command.  With this variable set to
+zero, <small class="sc">GDB</small> will never try to use hardware watchpoints, even if
+the underlying system supports them.  (Note that hardware-assisted
+watchpoints that were set <em class="emph">before</em> setting
+<code class="code">can-use-hw-watchpoints</code> to zero will still use the hardware
+mechanism of watching expression values.)
+</p>
+<dl class="table">
+<dt><a id="index-set-can_002duse_002dhw_002dwatchpoints"></a><span><code class="code">set can-use-hw-watchpoints</code><a class="copiable-link" href="#index-set-can_002duse_002dhw_002dwatchpoints"> &para;</a></span></dt>
+<dd><p>Set whether or not to use hardware watchpoints.
+</p>
+</dd>
+<dt><a id="index-show-can_002duse_002dhw_002dwatchpoints"></a><span><code class="code">show can-use-hw-watchpoints</code><a class="copiable-link" href="#index-show-can_002duse_002dhw_002dwatchpoints"> &para;</a></span></dt>
+<dd><p>Show the current mode of using hardware watchpoints.
+</p></dd>
+</dl>
+
+<p>For remote targets, you can restrict the number of hardware
+watchpoints <small class="sc">GDB</small> will use, see <a class="ref" href="Remote-Configuration.html#set-remote-hardware_002dbreakpoint_002dlimit">set remote hardware-breakpoint-limit</a>.
+</p>
+<p>When you issue the <code class="code">watch</code> command, <small class="sc">GDB</small> reports
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Hardware watchpoint <var class="var">num</var>: <var class="var">expr</var>
+</pre></div>
+
+<p>if it was able to set a hardware watchpoint.
+</p>
+<p>Currently, the <code class="code">awatch</code> and <code class="code">rwatch</code> commands can only set
+hardware watchpoints, because accesses to data that don&rsquo;t change the
+value of the watched expression cannot be detected without examining
+every instruction as it is being executed, and <small class="sc">GDB</small> does not do
+that currently.  If <small class="sc">GDB</small> finds that it is unable to set a
+hardware breakpoint with the <code class="code">awatch</code> or <code class="code">rwatch</code> command, it
+will print a message like this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Expression cannot be implemented with read/access watchpoint.
+</pre></div>
+
+<p>Sometimes, <small class="sc">GDB</small> cannot set a hardware watchpoint because the
+data type of the watched expression is wider than what a hardware
+watchpoint on the target machine can handle.  For example, some systems
+can only watch regions that are up to 4 bytes wide; on such systems you
+cannot set hardware watchpoints for an expression that yields a
+double-precision floating-point number (which is typically 8 bytes
+wide).  As a work-around, it might be possible to break the large region
+into a series of smaller ones and watch them with separate watchpoints.
+</p>
+<p>If you set too many hardware watchpoints, <small class="sc">GDB</small> might be unable
+to insert all of them when you resume the execution of your program.
+Since the precise number of active watchpoints is unknown until such
+time as the program is about to be resumed, <small class="sc">GDB</small> might not be
+able to warn you about this when you set the watchpoints, and the
+warning will be printed only when the program is resumed:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Hardware watchpoint <var class="var">num</var>: Could not insert watchpoint
+</pre></div>
+
+<p>If this happens, delete or disable some of the watchpoints.
+</p>
+<p>Watching complex expressions that reference many variables can also
+exhaust the resources available for hardware-assisted watchpoints.
+That&rsquo;s because <small class="sc">GDB</small> needs to watch every variable in the
+expression with separately allocated resources.
+</p>
+<p>If you call a function interactively using <code class="code">print</code> or <code class="code">call</code>,
+any watchpoints you have set will be inactive until <small class="sc">GDB</small> reaches another
+kind of breakpoint or the call completes.
+</p>
+<p><small class="sc">GDB</small> automatically deletes watchpoints that watch local
+(automatic) variables, or expressions that involve such variables, when
+they go out of scope, that is, when the execution leaves the block in
+which these variables were defined.  In particular, when the program
+being debugged terminates, <em class="emph">all</em> local variables go out of scope,
+and so only watchpoints that watch global variables remain set.  If you
+rerun the program, you will need to set all such watchpoints again.  One
+way of doing that would be to set a code breakpoint at the entry to the
+<code class="code">main</code> function and when it breaks, set all the watchpoints.
+</p>
+<a class="index-entry-id" id="index-watchpoints-and-threads"></a>
+<a class="index-entry-id" id="index-threads-and-watchpoints"></a>
+<p>In multi-threaded programs, watchpoints will detect changes to the
+watched expression from every thread.
+</p>
+<blockquote class="quotation">
+<p><em class="emph">Warning:</em> In multi-threaded programs, software watchpoints
+have only limited usefulness.  If <small class="sc">GDB</small> creates a software
+watchpoint, it can only watch the value of an expression <em class="emph">in a
+single thread</em>.  If you are confident that the expression can only
+change due to the current thread&rsquo;s activity (and if you are also
+confident that no other thread can become current), then you can use
+software watchpoints as usual.  However, <small class="sc">GDB</small> may not notice
+when a non-current thread&rsquo;s activity changes the expression.  (Hardware
+watchpoints, in contrast, watch an expression in all threads.)
+</p></blockquote>
+
+<p>See <a class="xref" href="Remote-Configuration.html#set-remote-hardware_002dwatchpoint_002dlimit">set remote hardware-watchpoint-limit</a>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Set-Catchpoints.html">Setting Catchpoints</a>, Previous: <a href="Set-Breaks.html">Setting Breakpoints</a>, Up: <a href="Breakpoints.html">Breakpoints, Watchpoints, and Catchpoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Readline vi Mode (Debugging with GDB)</title>
+
+<meta name="description" content="Readline vi Mode (Debugging with GDB)">
+<meta name="keywords" content="Readline vi Mode (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Command-Line-Editing.html" rel="up" title="Command Line Editing">
+<link href="Bindable-Readline-Commands.html" rel="prev" title="Bindable Readline Commands">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Readline-vi-Mode">
+<div class="nav-panel">
+<p>
+Previous: <a href="Bindable-Readline-Commands.html" accesskey="p" rel="prev">Bindable Readline Commands</a>, Up: <a href="Command-Line-Editing.html" accesskey="u" rel="up">Command Line Editing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Readline-vi-Mode-1"><span>33.5 Readline vi Mode<a class="copiable-link" href="#Readline-vi-Mode-1"> &para;</a></span></h3>
+
+<p>While the Readline library does not have a full set of <code class="code">vi</code>
+editing functions, it does contain enough to allow simple editing
+of the line.  The Readline <code class="code">vi</code> mode behaves as specified in
+the <small class="sc">POSIX</small> standard.
+</p>
+<p>In order to switch interactively between <code class="code">emacs</code> and <code class="code">vi</code>
+editing modes, use the command <kbd class="kbd">M-C-j</kbd> (bound to emacs-editing-mode
+when in <code class="code">vi</code> mode and to vi-editing-mode in <code class="code">emacs</code> mode).
+The Readline default is <code class="code">emacs</code> mode.
+</p>
+<p>When you enter a line in <code class="code">vi</code> mode, you are already placed in
+&lsquo;insertion&rsquo; mode, as if you had typed an &lsquo;<samp class="samp">i</samp>&rsquo;.  Pressing <kbd class="key">ESC</kbd>
+switches you into &lsquo;command&rsquo; mode, where you can edit the text of the
+line with the standard <code class="code">vi</code> movement keys, move to previous
+history lines with &lsquo;<samp class="samp">k</samp>&rsquo; and subsequent lines with &lsquo;<samp class="samp">j</samp>&rsquo;, and
+so forth.
+</p>
+
+</div>
+
+
+
+</body>
+</html>

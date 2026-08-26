@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Pretty-Printer Example (Debugging with GDB)</title>
+
+<meta name="description" content="Pretty-Printer Example (Debugging with GDB)">
+<meta name="keywords" content="Pretty-Printer Example (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Pretty-Printing.html" rel="up" title="Pretty Printing">
+<link href="Pretty_002dPrinter-Commands.html" rel="next" title="Pretty-Printer Commands">
+<link href="Pretty_002dPrinter-Introduction.html" rel="prev" title="Pretty-Printer Introduction">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Pretty_002dPrinter-Example">
+<div class="nav-panel">
+<p>
+Next: <a href="Pretty_002dPrinter-Commands.html" accesskey="n" rel="next">Pretty-Printer Commands</a>, Previous: <a href="Pretty_002dPrinter-Introduction.html" accesskey="p" rel="prev">Pretty-Printer Introduction</a>, Up: <a href="Pretty-Printing.html" accesskey="u" rel="up">Pretty Printing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Pretty_002dPrinter-Example-1"><span>10.10.2 Pretty-Printer Example<a class="copiable-link" href="#Pretty_002dPrinter-Example-1"> &para;</a></span></h4>
+
+<p>Here is how a C<code class="t">++</code> <code class="code">std::string</code> looks without a pretty-printer:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+$1 = {
+  static npos = 4294967295, 
+  _M_dataplus = {
+    &lt;std::allocator&lt;char&gt;&gt; = {
+      &lt;__gnu_cxx::new_allocator&lt;char&gt;&gt; = {
+        &lt;No data fields&gt;}, &lt;No data fields&gt;
+      },
+    members of std::basic_string&lt;char, std::char_traits&lt;char&gt;,
+      std::allocator&lt;char&gt; &gt;::_Alloc_hider:
+    _M_p = 0x804a014 &quot;abcd&quot;
+  }
+}
+</pre></div>
+
+<p>With a pretty-printer for <code class="code">std::string</code> only the contents are printed:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+$2 = &quot;abcd&quot;
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

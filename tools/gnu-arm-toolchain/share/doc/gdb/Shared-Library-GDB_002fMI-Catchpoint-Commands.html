@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Shared Library GDB/MI Catchpoint Commands (Debugging with GDB)</title>
+
+<meta name="description" content="Shared Library GDB/MI Catchpoint Commands (Debugging with GDB)">
+<meta name="keywords" content="Shared Library GDB/MI Catchpoint Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="up" title="GDB/MI Catchpoint Commands">
+<link href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" rel="next" title="Ada Exception GDB/MI Catchpoint Commands">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Shared-Library-GDB_002fMI-Catchpoint-Commands">
+<div class="nav-panel">
+<p>
+Next: <a href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" accesskey="n" rel="next">Ada Exception <small class="sc">GDB/MI</small> Catchpoints</a>, Up: <a href="GDB_002fMI-Catchpoint-Commands.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small> Catchpoint Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Shared-Library-gdb_002fmi-Catchpoints"><span>27.9.1 Shared Library <small class="sc">GDB/MI</small> Catchpoints<a class="copiable-link" href="#Shared-Library-gdb_002fmi-Catchpoints"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-_002dcatch_002dload"></a>
+<h4 class="subheading" id="The-_002dcatch_002dload-Command"><span>The <code class="code">-catch-load</code> Command<a class="copiable-link" href="#The-_002dcatch_002dload-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-13"><span>Synopsis<a class="copiable-link" href="#Synopsis-13"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-load [ -t ] [ -d ] <var class="var">regexp</var>
+</pre></div>
+
+<p>Add a catchpoint for library load events.  If the &lsquo;<samp class="samp">-t</samp>&rsquo; option is used,
+the catchpoint is a temporary one (see <a class="pxref" href="Set-Breaks.html">Setting
+Breakpoints</a>).  If the &lsquo;<samp class="samp">-d</samp>&rsquo; option is used, the catchpoint is created
+in a disabled state.  The &lsquo;<samp class="samp">regexp</samp>&rsquo; argument is a regular
+expression used to match the name of the loaded library.
+</p>
+
+<h4 class="subsubheading" id="gdb-Command-12"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-12"> &para;</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is &lsquo;<samp class="samp">catch load</samp>&rsquo;.
+</p>
+<h4 class="subsubheading" id="Example-12"><span>Example<a class="copiable-link" href="#Example-12"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-load -t foo.so
+^done,bkpt={number=&quot;1&quot;,type=&quot;catchpoint&quot;,disp=&quot;del&quot;,enabled=&quot;y&quot;,
+what=&quot;load of library matching foo.so&quot;,catch-type=&quot;load&quot;,times=&quot;0&quot;}
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dcatch_002dunload"></a>
+<h4 class="subheading" id="The-_002dcatch_002dunload-Command"><span>The <code class="code">-catch-unload</code> Command<a class="copiable-link" href="#The-_002dcatch_002dunload-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-14"><span>Synopsis<a class="copiable-link" href="#Synopsis-14"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-unload [ -t ] [ -d ] <var class="var">regexp</var>
+</pre></div>
+
+<p>Add a catchpoint for library unload events.  If the &lsquo;<samp class="samp">-t</samp>&rsquo; option is
+used, the catchpoint is a temporary one (see <a class="pxref" href="Set-Breaks.html">Setting
+Breakpoints</a>).  If the &lsquo;<samp class="samp">-d</samp>&rsquo; option is used, the catchpoint is
+created in a disabled state.  The &lsquo;<samp class="samp">regexp</samp>&rsquo; argument is a regular
+expression used to match the name of the unloaded library.
+</p>
+<h4 class="subsubheading" id="gdb-Command-13"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-13"> &para;</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is &lsquo;<samp class="samp">catch unload</samp>&rsquo;.
+</p>
+<h4 class="subsubheading" id="Example-13"><span>Example<a class="copiable-link" href="#Example-13"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-unload -d bar.so
+^done,bkpt={number=&quot;2&quot;,type=&quot;catchpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;n&quot;,
+what=&quot;load of library matching bar.so&quot;,catch-type=&quot;unload&quot;,times=&quot;0&quot;}
+(gdb)
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

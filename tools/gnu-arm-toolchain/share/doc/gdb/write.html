@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>write (Debugging with GDB)</title>
+
+<meta name="description" content="write (Debugging with GDB)">
+<meta name="keywords" content="write (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="List-of-Supported-Calls.html" rel="up" title="List of Supported Calls">
+<link href="lseek.html" rel="next" title="lseek">
+<link href="read.html" rel="prev" title="read">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="write">
+<div class="nav-panel">
+<p>
+Next: <a href="lseek.html" accesskey="n" rel="next">lseek</a>, Previous: <a href="read.html" accesskey="p" rel="prev">read</a>, Up: <a href="List-of-Supported-Calls.html" accesskey="u" rel="up">List of Supported Calls</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="write-1"><span>write<a class="copiable-link" href="#write-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-write_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+<dt>Synopsis:</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">int write(int fd, const void *buf, unsigned int count);
+</pre></div>
+
+</dd>
+<dt>Request:</dt>
+<dd><p>&lsquo;<samp class="samp">Fwrite,<var class="var">fd</var>,<var class="var">bufptr</var>,<var class="var">count</var></samp>&rsquo;
+</p>
+</dd>
+<dt>Return value:</dt>
+<dd><p>On success, the number of bytes written are returned.
+Zero indicates nothing was written.  On error, -1
+is returned.
+</p>
+</dd>
+<dt>Errors:</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EBADF</code></dt>
+<dd><p><var class="var">fd</var> is not a valid file descriptor or is not open for
+writing.
+</p>
+</dd>
+<dt><code class="code">EFAULT</code></dt>
+<dd><p><var class="var">bufptr</var> is an invalid pointer value.
+</p>
+</dd>
+<dt><code class="code">EFBIG</code></dt>
+<dd><p>An attempt was made to write a file that exceeds the
+host-specific maximum file size allowed.
+</p>
+</dd>
+<dt><code class="code">ENOSPC</code></dt>
+<dd><p>No space on device to write the data.
+</p>
+</dd>
+<dt><code class="code">EINTR</code></dt>
+<dd><p>The call was interrupted by the user.
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

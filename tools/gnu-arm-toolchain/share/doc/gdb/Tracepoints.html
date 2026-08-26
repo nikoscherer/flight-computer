@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Tracepoints (Debugging with GDB)</title>
+
+<meta name="description" content="Tracepoints (Debugging with GDB)">
+<meta name="keywords" content="Tracepoints (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Overlays.html" rel="next" title="Overlays">
+<link href="Macros.html" rel="prev" title="Macros">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Tracepoints">
+<div class="nav-panel">
+<p>
+Next: <a href="Overlays.html" accesskey="n" rel="next">Debugging Programs That Use Overlays</a>, Previous: <a href="Macros.html" accesskey="p" rel="prev">C Preprocessor Macros</a>, Up: <a href="index.html" accesskey="u" rel="up">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Tracepoints-1"><span>13 Tracepoints<a class="copiable-link" href="#Tracepoints-1"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-tracepoints"></a>
+<p>In some applications, it is not feasible for the debugger to interrupt
+the program&rsquo;s execution long enough for the developer to learn
+anything helpful about its behavior.  If the program&rsquo;s correctness
+depends on its real-time behavior, delays introduced by a debugger
+might cause the program to change its behavior drastically, or perhaps
+fail, even when the code itself is correct.  It is useful to be able
+to observe the program&rsquo;s behavior without interrupting it.
+</p>
+<p>Using <small class="sc">GDB</small>&rsquo;s <code class="code">trace</code> and <code class="code">collect</code> commands, you can
+specify locations in the program, called <em class="dfn">tracepoints</em>, and
+arbitrary expressions to evaluate when those tracepoints are reached.
+Later, using the <code class="code">tfind</code> command, you can examine the values
+those expressions had when the program hit the tracepoints.  The
+expressions may also denote objects in memory&mdash;structures or arrays,
+for example&mdash;whose values <small class="sc">GDB</small> should record; while visiting
+a particular tracepoint, you may inspect those objects as if they were
+in memory at that moment.  However, because <small class="sc">GDB</small> records these
+values without interacting with you, it can do so quickly and
+unobtrusively, hopefully not disturbing the program&rsquo;s behavior.
+</p>
+<p>The tracepoint facility is currently available only for remote
+targets.  See <a class="xref" href="Targets.html">Specifying a Debugging Target</a>.  In addition, your remote target must know
+how to collect trace data.  This functionality is implemented in the
+remote stub; however, none of the stubs distributed with <small class="sc">GDB</small>
+support tracepoints as of this writing.  The format of the remote
+packets used to implement tracepoints are described in <a class="ref" href="Tracepoint-Packets.html">Tracepoint Packets</a>.
+</p>
+<p>It is also possible to get trace data from a file, in a manner reminiscent
+of corefiles; you specify the filename, and use <code class="code">tfind</code> to search
+through the file.  See <a class="xref" href="Trace-Files.html">Using Trace Files</a>, for more details.
+</p>
+<p>This chapter describes the tracepoint commands and features.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Set-Tracepoints.html" accesskey="1">Commands to Set Tracepoints</a></li>
+<li><a href="Analyze-Collected-Data.html" accesskey="2">Using the Collected Data</a></li>
+<li><a href="Tracepoint-Variables.html" accesskey="3">Convenience Variables for Tracepoints</a></li>
+<li><a href="Trace-Files.html" accesskey="4">Using Trace Files</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Overlays.html">Debugging Programs That Use Overlays</a>, Previous: <a href="Macros.html">C Preprocessor Macros</a>, Up: <a href="index.html">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

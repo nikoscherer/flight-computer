@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>RTL SSA Accesses (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="RTL SSA Accesses (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="RTL SSA Accesses (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="RTL-SSA.html" rel="up" title="RTL SSA">
+<link href="RTL-SSA-Phi-Nodes.html" rel="next" title="RTL SSA Phi Nodes">
+<link href="RTL-SSA-Resources.html" rel="prev" title="RTL SSA Resources">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="RTL-SSA-Accesses">
+<div class="nav-panel">
+<p>
+Next: <a href="RTL-SSA-Phi-Nodes.html" accesskey="n" rel="next">RTL SSA Phi Nodes</a>, Previous: <a href="RTL-SSA-Resources.html" accesskey="p" rel="prev">RTL SSA Resources</a>, Up: <a href="RTL-SSA.html" accesskey="u" rel="up">On-the-Side SSA Form for RTL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="RTL-SSA-Register-and-Memory-Accesses"><span>13.21.5 RTL SSA Register and Memory Accesses<a class="copiable-link" href="#RTL-SSA-Register-and-Memory-Accesses"> &para;</a></span></h4>
+
+<p>In the RTL SSA form, most reads or writes of a resource are
+represented as a <code class="code">rtl_ssa::access_info</code><a class="footnote" id="DOCF6" href="#FOOT6"><sup>6</sup></a>.
+These <code class="code">rtl_ssa::access_info</code>s are organized into the following
+class hierarchy:
+</p>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003aaccess_005finfo"></a>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003ause_005finfo"></a>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003adef_005finfo"></a>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003aclobber_005finfo"></a>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003aset_005finfo"></a>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003aphi_005finfo"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">rtl_ssa::access_info
+  |
+  +-- rtl_ssa::use_info
+  |
+  +-- rtl_ssa::def_info
+        |
+        +-- rtl_ssa::clobber_info
+        |
+        +-- rtl_ssa::set_info
+              |
+              +-- rtl_ssa::phi_info
+</pre></div>
+
+<p>A <code class="code">rtl_ssa::use_info</code> represents a read or use of a resource and
+a <code class="code">rtl_ssa::def_info</code> represents a write or definition of a resource.
+As in the main RTL representation, there are two basic types of
+definition: clobbers and sets.  The difference is that a clobber
+leaves the register with an unspecified value that cannot be used
+or relied on by later instructions, while a set leaves the register
+with a known value that later instructions could use if they wanted to.
+A <code class="code">rtl_ssa::clobber_info</code> represents a clobber and
+a <code class="code">rtl_ssa::set_info</code> represent a set.
+</p>
+<p>Each <code class="code">rtl_ssa::use_info</code> records which single <code class="code">rtl_ssa::set_info</code>
+provides the value of the resource; this is null if the resource is
+completely undefined at the point of use.  Each <code class="code">rtl_ssa::set_info</code>
+in turn records all the <code class="code">rtl_ssa::use_info</code>s that use its value.
+</p>
+<p>If a value of a resource can come from multiple sources,
+a <code class="code">rtl_ssa::phi_info</code> brings those multiple sources together
+into a single definition (see <a class="pxref" href="RTL-SSA-Phi-Nodes.html">RTL SSA Phi Nodes</a>).
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT6" href="#DOCF6">(6)</a></h5>
+<p>The exceptions
+are call clobbers, which are generally represented separately.
+See the comment above <code class="code">rtl_ssa::insn_info</code> for details.</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Liveness information (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Liveness information (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Liveness information (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Control-Flow.html" rel="up" title="Control Flow">
+<link href="Maintaining-the-CFG.html" rel="prev" title="Maintaining the CFG">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Liveness-information">
+<div class="nav-panel">
+<p>
+Previous: <a href="Maintaining-the-CFG.html" accesskey="p" rel="prev">Maintaining the CFG</a>, Up: <a href="Control-Flow.html" accesskey="u" rel="up">Control Flow Graph</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Liveness-information-1"><span>14.5 Liveness information<a class="copiable-link" href="#Liveness-information-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-Liveness-representation"></a>
+<p>Liveness information is useful to determine whether some register is
+&ldquo;live&rdquo; at given point of program, i.e. that it contains a value that
+may be used at a later point in the program.  This information is
+used, for instance, during register allocation, as the pseudo
+registers only need to be assigned to a unique hard register or to a
+stack slot if they are live.  The hard registers and stack slots may
+be freely reused for other values when a register is dead.
+</p>
+<p>Liveness information is available in the back end starting with
+<code class="code">pass_df_initialize</code> and ending with <code class="code">pass_df_finish</code>.  Three
+flavors of live analysis are available: With <code class="code">LR</code>, it is possible
+to determine at any point <code class="code">P</code> in the function if the register may be
+used on some path from <code class="code">P</code> to the end of the function.  With
+<code class="code">UR</code>, it is possible to determine if there is a path from the
+beginning of the function to <code class="code">P</code> that defines the variable.
+<code class="code">LIVE</code> is the intersection of the <code class="code">LR</code> and <code class="code">UR</code> and a
+variable is live at <code class="code">P</code> if there is both an assignment that reaches
+it from the beginning of the function and a use that can be reached on
+some path from <code class="code">P</code> to the end of the function.
+</p>
+<p>In general <code class="code">LIVE</code> is the most useful of the three.  The macros
+<code class="code">DF_[LR,UR,LIVE]_[IN,OUT]</code> can be used to access this information.
+The macros take a basic block number and return a bitmap that is indexed
+by the register number.  This information is only guaranteed to be up to
+date after calls are made to <code class="code">df_analyze</code>.  See the file
+<code class="code">df-core.cc</code> for details on using the dataflow.
+</p>
+
+<a class="index-entry-id" id="index-REG_005fDEAD_002c-REG_005fUNUSED"></a>
+<p>The liveness information is stored partly in the RTL instruction stream
+and partly in the flow graph.  Local information is stored in the
+instruction stream: Each instruction may contain <code class="code">REG_DEAD</code> notes
+representing that the value of a given register is no longer needed, or
+<code class="code">REG_UNUSED</code> notes representing that the value computed by the
+instruction is never used.  The second is useful for instructions
+computing multiple values at once.
+</p>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Maintaining-the-CFG.html">Maintaining the CFG</a>, Up: <a href="Control-Flow.html">Control Flow Graph</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Selection (Debugging with GDB)</title>
+
+<meta name="description" content="Selection (Debugging with GDB)">
+<meta name="keywords" content="Selection (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stack.html" rel="up" title="Stack">
+<link href="Frame-Info.html" rel="next" title="Frame Info">
+<link href="Backtrace.html" rel="prev" title="Backtrace">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Selection">
+<div class="nav-panel">
+<p>
+Next: <a href="Frame-Info.html" accesskey="n" rel="next">Information About a Frame</a>, Previous: <a href="Backtrace.html" accesskey="p" rel="prev">Backtraces</a>, Up: <a href="Stack.html" accesskey="u" rel="up">Examining the Stack</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Selecting-a-Frame"><span>8.3 Selecting a Frame<a class="copiable-link" href="#Selecting-a-Frame"> &para;</a></span></h3>
+
+<p>Most commands for examining the stack and other data in your program work on
+whichever stack frame is selected at the moment.  Here are the commands for
+selecting a stack frame; all of them finish by printing a brief description
+of the stack frame just selected.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-f-_0028frame_0029"></a>
+<a id="index-frame_002c-selecting"></a><span><code class="code">frame <span class="r">[</span> <var class="var">frame-selection-spec</var> <span class="r">]</span></code><a class="copiable-link" href="#index-frame_002c-selecting"> &para;</a></span></dt>
+<dt><code class="code">f <span class="r">[</span> <var class="var">frame-selection-spec</var> <span class="r">]</span></code></dt>
+<dd><p>The <code class="command">frame</code> command allows different stack frames to be
+selected.  The <var class="var">frame-selection-spec</var> can be any of the following:
+</p>
+<dl class="table">
+<dt><a id="index-frame-level-1"></a><span><code class="code"><var class="var">num</var></code><a class="copiable-link" href="#index-frame-level-1"> &para;</a></span></dt>
+<dt><code class="code">level <var class="var">num</var></code></dt>
+<dd><p>Select frame level <var class="var">num</var>.  Recall that frame zero is the innermost
+(currently executing) frame, frame one is the frame that called the
+innermost one, and so on.  The highest level frame is usually the one
+for <code class="code">main</code>.
+</p>
+<p>As this is the most common method of navigating the frame stack, the
+string <code class="command">level</code> can be omitted.  For example, the following two
+commands are equivalent:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) frame 3
+(gdb) frame level 3
+</pre></div>
+
+</dd>
+<dt><a id="index-frame-address"></a><span><code class="code">address <var class="var">stack-address</var></code><a class="copiable-link" href="#index-frame-address"> &para;</a></span></dt>
+<dd><p>Select the frame with stack address <var class="var">stack-address</var>.  The
+<var class="var">stack-address</var> for a frame can be seen in the output of
+<code class="command">info frame</code>, for example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info frame
+Stack level 1, frame at 0x7fffffffda30:
+ rip = 0x40066d in b (amd64-entry-value.cc:59); saved rip 0x4004c5
+ tail call frame, caller of frame at 0x7fffffffda30
+ source language c++.
+ Arglist at unknown address.
+ Locals at unknown address, Previous frame's sp is 0x7fffffffda30
+</pre></div>
+
+<p>The <var class="var">stack-address</var> for this frame is <code class="code">0x7fffffffda30</code> as
+indicated by the line:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Stack level 1, frame at 0x7fffffffda30:
+</pre></div>
+
+</dd>
+<dt><a id="index-frame-function"></a><span><code class="code">function <var class="var">function-name</var></code><a class="copiable-link" href="#index-frame-function"> &para;</a></span></dt>
+<dd><p>Select the stack frame for function <var class="var">function-name</var>.  If there are
+multiple stack frames for function <var class="var">function-name</var> then the inner
+most stack frame is selected.
+</p>
+</dd>
+<dt><a id="index-frame-view"></a><span><code class="code">view <var class="var">stack-address</var> <span class="r">[</span> <var class="var">pc-addr</var> <span class="r">]</span></code><a class="copiable-link" href="#index-frame-view"> &para;</a></span></dt>
+<dd><p>View a frame that is not part of <small class="sc">GDB</small>&rsquo;s backtrace.  The frame
+viewed has stack address <var class="var">stack-addr</var>, and optionally, a program
+counter address of <var class="var">pc-addr</var>.
+</p>
+<p>This is useful mainly if the chaining of stack frames has been
+damaged by a bug, making it impossible for <small class="sc">GDB</small> to assign
+numbers properly to all frames.  In addition, this can be useful
+when your program has multiple stacks and switches between them.
+</p>
+<p>When viewing a frame outside the current backtrace using
+<code class="command">frame view</code> then you can always return to the original
+stack using one of the previous stack frame selection instructions,
+for example <code class="command">frame level 0</code>.
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-up"></a><span><code class="code">up <var class="var">n</var></code><a class="copiable-link" href="#index-up"> &para;</a></span></dt>
+<dd><p>Move <var class="var">n</var> frames up the stack; <var class="var">n</var> defaults to 1.  For positive
+numbers <var class="var">n</var>, this advances toward the outermost frame, to higher
+frame numbers, to frames that have existed longer.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-do-_0028down_0029"></a>
+<a id="index-down"></a><span><code class="code">down <var class="var">n</var></code><a class="copiable-link" href="#index-down"> &para;</a></span></dt>
+<dd><p>Move <var class="var">n</var> frames down the stack; <var class="var">n</var> defaults to 1.  For
+positive numbers <var class="var">n</var>, this advances toward the innermost frame, to
+lower frame numbers, to frames that were created more recently.
+You may abbreviate <code class="code">down</code> as <code class="code">do</code>.
+</p></dd>
+</dl>
+
+<p>All of these commands end by printing two lines of output describing the
+frame.  The first line shows the frame number, the function name, the
+arguments, and the source file and line number of execution in that
+frame.  The second line shows the text of that source line.
+</p>
+<p>For example:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) up
+#1  0x22f0 in main (argc=1, argv=0xf7fffbf4, env=0xf7fffbfc)
+    at env.c:10
+10              read_input_file (argv[i]);
+</pre></div></div>
+
+<p>After such a printout, the <code class="code">list</code> command with no arguments
+prints ten lines centered on the point of execution in the frame.
+You can also edit the program at the point of execution with your favorite
+editing program by typing <code class="code">edit</code>.
+See <a class="xref" href="List.html">Printing Source Lines</a>,
+for details.
+</p>
+<dl class="table">
+<dt><a id="index-select_002dframe"></a><span><code class="code">select-frame <span class="r">[</span> <var class="var">frame-selection-spec</var> <span class="r">]</span></code><a class="copiable-link" href="#index-select_002dframe"> &para;</a></span></dt>
+<dd><p>The <code class="code">select-frame</code> command is a variant of <code class="code">frame</code> that does
+not display the new frame after selecting it.  This command is
+intended primarily for use in <small class="sc">GDB</small> command scripts, where the
+output might be unnecessary and distracting.  The
+<var class="var">frame-selection-spec</var> is as for the <code class="command">frame</code> command
+described in <a class="ref" href="#Selection">Selecting a Frame</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-up_002dsilently"></a>
+<a id="index-down_002dsilently"></a><span><code class="code">up-silently <var class="var">n</var></code><a class="copiable-link" href="#index-down_002dsilently"> &para;</a></span></dt>
+<dt><code class="code">down-silently <var class="var">n</var></code></dt>
+<dd><p>These two commands are variants of <code class="code">up</code> and <code class="code">down</code>,
+respectively; they differ in that they do their work silently, without
+causing display of the new frame.  They are intended primarily for use
+in <small class="sc">GDB</small> command scripts, where the output might be unnecessary and
+distracting.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Frame-Info.html">Information About a Frame</a>, Previous: <a href="Backtrace.html">Backtraces</a>, Up: <a href="Stack.html">Examining the Stack</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

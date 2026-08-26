@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Tagging Insns (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Tagging Insns (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Tagging Insns (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Insn-Attributes.html" rel="up" title="Insn Attributes">
+<link href="Attr-Example.html" rel="next" title="Attr Example">
+<link href="Expressions.html" rel="prev" title="Expressions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tagging-Insns">
+<div class="nav-panel">
+<p>
+Next: <a href="Attr-Example.html" accesskey="n" rel="next">Example of Attribute Specifications</a>, Previous: <a href="Expressions.html" accesskey="p" rel="prev">Attribute Expressions</a>, Up: <a href="Insn-Attributes.html" accesskey="u" rel="up">Instruction Attributes</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Assigning-Attribute-Values-to-Insns"><span>16.20.3 Assigning Attribute Values to Insns<a class="copiable-link" href="#Assigning-Attribute-Values-to-Insns"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-tagging-insns"></a>
+<a class="index-entry-id" id="index-assigning-attribute-values-to-insns"></a>
+
+<p>The value assigned to an attribute of an insn is primarily determined by
+which pattern is matched by that insn (or which <code class="code">define_peephole</code>
+generated it).  Every <code class="code">define_insn</code> and <code class="code">define_peephole</code> can
+have an optional last argument to specify the values of attributes for
+matching insns.  The value of any attribute not specified in a particular
+insn is set to the default value for that attribute, as specified in its
+<code class="code">define_attr</code>.  Extensive use of default values for attributes
+permits the specification of the values for only one or two attributes
+in the definition of most insn patterns, as seen in the example in the
+next section.
+</p>
+<p>The optional last argument of <code class="code">define_insn</code> and
+<code class="code">define_peephole</code> is a vector of expressions, each of which defines
+the value for a single attribute.  The most general way of assigning an
+attribute&rsquo;s value is to use a <code class="code">set</code> expression whose first operand is an
+<code class="code">attr</code> expression giving the name of the attribute being set.  The
+second operand of the <code class="code">set</code> is an attribute expression
+(see <a class="pxref" href="Expressions.html">Attribute Expressions</a>) giving the value of the attribute.
+</p>
+<p>When the attribute value depends on the &lsquo;<samp class="samp">alternative</samp>&rsquo; attribute
+(i.e., which is the applicable alternative in the constraint of the
+insn), the <code class="code">set_attr_alternative</code> expression can be used.  It
+allows the specification of a vector of attribute expressions, one for
+each alternative.
+</p>
+<a class="index-entry-id" id="index-set_005fattr"></a>
+<p>When the generality of arbitrary attribute expressions is not required,
+the simpler <code class="code">set_attr</code> expression can be used, which allows
+specifying a string giving either a single attribute value or a list
+of attribute values, one for each alternative.
+</p>
+<p>The form of each of the above specifications is shown below.  In each case,
+<var class="var">name</var> is a string specifying the attribute to be set.
+</p>
+<dl class="table">
+<dt><code class="code">(set_attr <var class="var">name</var> <var class="var">value-string</var>)</code></dt>
+<dd><p><var class="var">value-string</var> is either a string giving the desired attribute value,
+or a string containing a comma-separated list giving the values for
+succeeding alternatives.  The number of elements must match the number
+of alternatives in the constraint of the insn pattern.
+</p>
+<p>Note that it may be useful to specify &lsquo;<samp class="samp">*</samp>&rsquo; for some alternative, in
+which case the attribute will assume its default value for insns matching
+that alternative.
+</p>
+</dd>
+<dt><a id="index-set_005fattr_005falternative"></a><span><code class="code">(set_attr_alternative <var class="var">name</var> [<var class="var">value1</var> <var class="var">value2</var> &hellip;])</code><a class="copiable-link" href="#index-set_005fattr_005falternative"> &para;</a></span></dt>
+<dd><p>Depending on the alternative of the insn, the value will be one of the
+specified values.  This is a shorthand for using a <code class="code">cond</code> with
+tests on the &lsquo;<samp class="samp">alternative</samp>&rsquo; attribute.
+</p>
+</dd>
+<dt><a id="index-attr-1"></a><span><code class="code">(set (attr <var class="var">name</var>) <var class="var">value</var>)</code><a class="copiable-link" href="#index-attr-1"> &para;</a></span></dt>
+<dd><p>The first operand of this <code class="code">set</code> must be the special RTL expression
+<code class="code">attr</code>, whose sole operand is a string giving the name of the
+attribute being set.  <var class="var">value</var> is the value of the attribute.
+</p></dd>
+</dl>
+
+<p>The following shows three different ways of representing the same
+attribute value specification:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(set_attr &quot;type&quot; &quot;load,store,arith&quot;)
+
+(set_attr_alternative &quot;type&quot;
+                      [(const_string &quot;load&quot;) (const_string &quot;store&quot;)
+                       (const_string &quot;arith&quot;)])
+
+(set (attr &quot;type&quot;)
+     (cond [(eq_attr &quot;alternative&quot; &quot;1&quot;) (const_string &quot;load&quot;)
+            (eq_attr &quot;alternative&quot; &quot;2&quot;) (const_string &quot;store&quot;)]
+           (const_string &quot;arith&quot;)))
+</pre></div>
+
+<a class="index-entry-id" id="index-define_005fasm_005fattributes"></a>
+<p>The <code class="code">define_asm_attributes</code> expression provides a mechanism to
+specify the attributes assigned to insns produced from an <code class="code">asm</code>
+statement.  It has the form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_asm_attributes [<var class="var">attr-sets</var>])
+</pre></div>
+
+<p>where <var class="var">attr-sets</var> is specified the same as for both the
+<code class="code">define_insn</code> and the <code class="code">define_peephole</code> expressions.
+</p>
+<p>These values will typically be the &ldquo;worst case&rdquo; attribute values.  For
+example, they might indicate that the condition code will be clobbered.
+</p>
+<p>A specification for a <code class="code">length</code> attribute is handled specially.  The
+way to compute the length of an <code class="code">asm</code> insn is to multiply the
+length specified in the expression <code class="code">define_asm_attributes</code> by the
+number of machine instructions specified in the <code class="code">asm</code> statement,
+determined by counting the number of semicolons and newlines in the
+string.  Therefore, the value of the <code class="code">length</code> attribute specified
+in a <code class="code">define_asm_attributes</code> should be the maximum possible length
+of a single machine instruction.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Attr-Example.html">Example of Attribute Specifications</a>, Previous: <a href="Expressions.html">Attribute Expressions</a>, Up: <a href="Insn-Attributes.html">Instruction Attributes</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

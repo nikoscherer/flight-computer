@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Add Options (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Add Options (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Add Options (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Test-Directives.html" rel="up" title="Test Directives">
+<link href="Remove-Options.html" rel="next" title="Remove Options">
+<link href="Effective_002dTarget-Keywords.html" rel="prev" title="Effective-Target Keywords">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Add-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="Remove-Options.html" accesskey="n" rel="next">Features for <code class="code">dg-remove-options</code></a>, Previous: <a href="Effective_002dTarget-Keywords.html" accesskey="p" rel="prev">Keywords describing target attributes</a>, Up: <a href="Test-Directives.html" accesskey="u" rel="up">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Features-for-dg_002dadd_002doptions"><span>6.2.4 Features for <code class="code">dg-add-options</code><a class="copiable-link" href="#Features-for-dg_002dadd_002doptions"> &para;</a></span></h4>
+
+<p>The supported values of <var class="var">feature</var> for directive <code class="code">dg-add-options</code>
+are:
+</p>
+<dl class="table">
+<dt><code class="code">arm_fp</code></dt>
+<dd><p><code class="code">__ARM_FP</code> definition.  Only ARM targets support this feature, and only then
+in certain modes; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005ffp_005fok">arm_fp_ok effective target
+keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_fp_dp</code></dt>
+<dd><p><code class="code">__ARM_FP</code> definition with double-precision support.  Only ARM
+targets support this feature, and only then in certain modes; see the
+<a class="ref" href="Effective_002dTarget-Keywords.html#arm_005ffp_005fdp_005fok">arm_fp_dp_ok effective target keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_neon</code></dt>
+<dd><p>NEON support.  Only ARM targets support this feature, and only then
+in certain modes; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fneon_005fok">arm_neon_ok effective target
+keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_fp16</code></dt>
+<dd><p>VFP half-precision floating point support.  This does not select the
+FP16 format; for that, use <a class="ref" href="#arm_005ffp16_005fieee">arm_fp16_ieee</a> or
+<a class="ref" href="#arm_005ffp16_005falternative">arm_fp16_alternative</a> instead.  This
+feature is only supported by ARM targets and then only in certain
+modes; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005ffp16_005fok">arm_fp16_ok effective target
+keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_fp16_ieee</code></dt>
+<dd><a class="anchor" id="arm_005ffp16_005fieee"></a><p>ARM IEEE 754-2008 format VFP half-precision floating point support.
+This feature is only supported by ARM targets and then only in certain
+modes; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005ffp16_005fok">arm_fp16_ok effective target
+keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_fp16_alternative</code></dt>
+<dd><a class="anchor" id="arm_005ffp16_005falternative"></a><p>ARM Alternative format VFP half-precision floating point support.
+This feature is only supported by ARM targets and then only in certain
+modes; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005ffp16_005fok">arm_fp16_ok effective target
+keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_neon_fp16</code></dt>
+<dd><p>NEON and half-precision floating point support.  Only ARM targets
+support this feature, and only then in certain modes; see
+the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fneon_005ffp16_005fok">arm_neon_fp16_ok effective target keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_vfp3</code></dt>
+<dd><p>arm vfp3 floating point support; see
+the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fvfp3_005fok">arm_vfp3_ok effective target keyword</a>.
+</p>
+</dd>
+<dt><code class="code">arm_arch_v8a_hard</code></dt>
+<dd><p>Add options for ARMv8-A and the hard-float variant of the AAPCS,
+if this is supported by the compiler; see the
+<a class="ref" href="Effective_002dTarget-Keywords.html#arm_005farch_005fv8a_005fhard_005fok">arm_arch_v8a_hard_ok</a> effective target keyword.
+</p>
+</dd>
+<dt><code class="code">arm_v8_1a_neon</code></dt>
+<dd><p>Add options for ARMv8.1-A with Adv.SIMD support, if this is supported
+by the target; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fv8_005f1a_005fneon_005fok">arm_v8_1a_neon_ok</a>
+effective target keyword.
+</p>
+</dd>
+<dt><code class="code">arm_v8_2a_fp16_scalar</code></dt>
+<dd><p>Add options for ARMv8.2-A with scalar FP16 support, if this is
+supported by the target; see the
+<a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fv8_005f2a_005ffp16_005fscalar_005fok">arm_v8_2a_fp16_scalar_ok</a> effective
+target keyword.
+</p>
+</dd>
+<dt><code class="code">arm_v8_2a_fp16_neon</code></dt>
+<dd><p>Add options for ARMv8.2-A with Adv.SIMD FP16 support, if this is
+supported by the target; see the
+<a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fv8_005f2a_005ffp16_005fneon_005fok">arm_v8_2a_fp16_neon_ok</a> effective target
+keyword.
+</p>
+</dd>
+<dt><code class="code">arm_v8_2a_dotprod_neon</code></dt>
+<dd><p>Add options for ARMv8.2-A with Adv.SIMD Dot Product support, if this is
+supported by the target; see the
+<a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fv8_005f2a_005fdotprod_005fneon_005fok">arm_v8_2a_dotprod_neon_ok</a> effective target keyword.
+</p>
+</dd>
+<dt><code class="code">arm_fp16fml_neon</code></dt>
+<dd><p>Add options to enable generation of the <code class="code">VFMAL</code> and <code class="code">VFMSL</code>
+instructions, if this is supported by the target; see the
+<a class="ref" href="Effective_002dTarget-Keywords.html#arm_005ffp16fml_005fneon_005fok">arm_fp16fml_neon_ok</a> effective target keyword.
+</p>
+</dd>
+<dt><code class="code">arm_dsp</code></dt>
+<dd><p>Add options for ARM DSP intrinsics support, if this is supported by
+the target; see the <a class="ref" href="Effective_002dTarget-Keywords.html#arm_005fdsp_005fok">arm_dsp_ok effective target
+keyword</a>.
+</p>
+</dd>
+<dt><code class="code">bind_pic_locally</code></dt>
+<dd><p>Add the target-specific flags needed to enable functions to bind
+locally when using pic/PIC passes in the testsuite.
+</p>
+</dd>
+<dt><code class="code">float<var class="var">n</var></code></dt>
+<dd><p>Add the target-specific flags needed to use the <code class="code">_Float<var class="var">n</var></code> type.
+</p>
+</dd>
+<dt><code class="code">float<var class="var">n</var>x</code></dt>
+<dd><p>Add the target-specific flags needed to use the <code class="code">_Float<var class="var">n</var>x</code> type.
+</p>
+</dd>
+<dt><code class="code">ieee</code></dt>
+<dd><p>Add the target-specific flags needed to enable full IEEE
+compliance mode.
+</p>
+</dd>
+<dt><code class="code">mips16_attribute</code></dt>
+<dd><p><code class="code">mips16</code> function attributes.
+Only MIPS targets support this feature, and only then in certain modes.
+</p>
+</dd>
+<dt><code class="code">nvptx_alias_ptx</code></dt>
+<dd><p>Enable using the PTX ISA directive <code class="code">.alias</code> on nvptx targets.
+</p>
+</dd>
+<dt><code class="code">nvptx_alloca_ptx</code></dt>
+<dd><p>Enable PTX &rsquo;alloca&rsquo; on nvptx targets.
+</p>
+</dd>
+<dt><code class="code">riscv_a</code></dt>
+<dd><p>Add the &rsquo;A&rsquo; extension to the -march string on RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">riscv_zaamo</code></dt>
+<dd><p>Add the zaamo extension to the -march string on RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">riscv_zabha</code></dt>
+<dd><p>Add the zabha extension to the -march string on RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">riscv_zacas</code></dt>
+<dd><p>Add the zacas extension to the -march string on RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">riscv_zalrsc</code></dt>
+<dd><p>Add the zalrsc extension to the -march string on RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">riscv_ztso</code></dt>
+<dd><p>Add the ztso extension to the -march string on RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">stack_size</code></dt>
+<dd><a class="anchor" id="stack_005fsize_005fao"></a><p>Add the flags needed to define macro STACK_SIZE and set it to the stack size
+limit associated with the <a class="ref" href="Effective_002dTarget-Keywords.html#stack_005fsize_005fet"><code class="code">stack_size</code> effective
+target</a>.
+</p>
+</dd>
+<dt><code class="code">sqrt_insn</code></dt>
+<dd><p>Add the target-specific flags needed to enable hardware square root
+instructions, if any.
+</p>
+</dd>
+<dt><code class="code">tls</code></dt>
+<dd><p>Add the target-specific flags needed to use thread-local storage.
+</p>
+</dd>
+<dt><code class="code">vect_early_break</code></dt>
+<dd><p>Add the target-specific flags needed to enable early break vectorization for
+a target, if any.  This requires the target to have an implementation of the
+<code class="code">cbranch</code> optab.
+</p>
+</dd>
+<dt><code class="code">weak_undefined</code></dt>
+<dd><p>Add the flags needed to enable support for weak undefined symbols.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Remove-Options.html">Features for <code class="code">dg-remove-options</code></a>, Previous: <a href="Effective_002dTarget-Keywords.html">Keywords describing target attributes</a>, Up: <a href="Test-Directives.html">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

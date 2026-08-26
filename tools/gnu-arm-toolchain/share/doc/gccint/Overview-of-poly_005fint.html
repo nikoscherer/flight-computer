@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Overview of poly_int (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Overview of poly_int (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Overview of poly_int (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="poly_005fint.html" rel="up" title="poly_int">
+<link href="Consequences-of-using-poly_005fint.html" rel="next" title="Consequences of using poly_int">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Overview-of-poly_005fint">
+<div class="nav-panel">
+<p>
+Next: <a href="Consequences-of-using-poly_005fint.html" accesskey="n" rel="next">Consequences of using <code class="code">poly_int</code></a>, Up: <a href="poly_005fint.html" accesskey="u" rel="up">Sizes and offsets as runtime invariants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Overview-of-poly_005fint-1"><span>9.1 Overview of <code class="code">poly_int</code><a class="copiable-link" href="#Overview-of-poly_005fint-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-poly_005fint_002c-runtime-value"></a>
+<p>We define indeterminates <var class="var">x1</var>, &hellip;, <var class="var">xn</var> whose values are
+only known at runtime and use polynomials of the form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><var class="var">c0</var> + <var class="var">c1</var> * <var class="var">x1</var> + ... + <var class="var">cn</var> * <var class="var">xn</var>
+</pre></div>
+
+<p>to represent a size or offset whose value might depend on some
+of these indeterminates.  The coefficients <var class="var">c0</var>, &hellip;, <var class="var">cn</var>
+are always known at compile time, with the <var class="var">c0</var> term being the
+&ldquo;constant&rdquo; part that does not depend on any runtime value.
+</p>
+<p>GCC uses the <code class="code">poly_int</code> class to represent these coefficients.
+The class has two template parameters: the first specifies the number of
+coefficients (<var class="var">n</var> + 1) and the second specifies the type of the
+coefficients.  For example, &lsquo;<samp class="samp">poly_int&lt;2, unsigned short&gt;</samp>&rsquo; represents
+a polynomial with two coefficients (and thus one indeterminate), with each
+coefficient having type <code class="code">unsigned short</code>.  When <var class="var">n</var> is 0,
+the class degenerates to a single compile-time constant <var class="var">c0</var>.
+</p>
+<a class="index-entry-id" id="index-poly_005fint_002c-template-parameters"></a>
+<a class="index-entry-id" id="index-NUM_005fPOLY_005fINT_005fCOEFFS"></a>
+<p>The number of coefficients needed for compilation is a fixed
+property of each target and is specified by the configuration macro
+<code class="code">NUM_POLY_INT_COEFFS</code>.  The default value is 1, since most targets
+do not have such runtime invariants.  Targets that need a different
+value should <code class="code">#define</code> the macro in their <samp class="file"><var class="var">cpu</var>-modes.def</samp>
+file.  See <a class="xref" href="Back-End.html">Anatomy of a Target Back End</a>.
+</p>
+<a class="index-entry-id" id="index-poly_005fint_002c-invariant-range"></a>
+<p><code class="code">poly_int</code> makes the simplifying requirement that each indeterminate
+must be a nonnegative integer.  An indeterminate value of 0 should usually
+represent the minimum possible runtime value, with <var class="var">c0</var> specifying
+the value in that case.
+</p>
+<p>For example, when targetting the Arm SVE ISA, the single indeterminate
+represents the number of 128-bit blocks in a vector <em class="emph">beyond the minimum
+length of 128 bits</em>.  Thus the number of 64-bit doublewords in a vector
+is 2 + 2 * <var class="var">x1</var>.  If an aggregate has a single SVE vector and 16
+additional bytes, its total size is 32 + 16 * <var class="var">x1</var> bytes.
+</p>
+<p>The header file <samp class="file">poly-int-types.h</samp> provides typedefs for the
+most common forms of <code class="code">poly_int</code>, all having
+<code class="code">NUM_POLY_INT_COEFFS</code> coefficients:
+</p>
+<a class="index-entry-id" id="index-poly_005fint_002c-main-typedefs"></a>
+<dl class="table">
+<dt><code class="code">poly_uint16</code></dt>
+<dd><p>a &lsquo;<samp class="samp">poly_int</samp>&rsquo; with <code class="code">unsigned short</code> coefficients.
+</p>
+</dd>
+<dt><code class="code">poly_int64</code></dt>
+<dd><p>a &lsquo;<samp class="samp">poly_int</samp>&rsquo; with <code class="code">HOST_WIDE_INT</code> coefficients.
+</p>
+</dd>
+<dt><code class="code">poly_uint64</code></dt>
+<dd><p>a &lsquo;<samp class="samp">poly_int</samp>&rsquo; with <code class="code">unsigned HOST_WIDE_INT</code> coefficients.
+</p>
+</dd>
+<dt><code class="code">poly_offset_int</code></dt>
+<dd><p>a &lsquo;<samp class="samp">poly_int</samp>&rsquo; with <code class="code">offset_int</code> coefficients.
+</p>
+</dd>
+<dt><code class="code">poly_wide_int</code></dt>
+<dd><p>a &lsquo;<samp class="samp">poly_int</samp>&rsquo; with <code class="code">wide_int</code> coefficients.
+</p>
+</dd>
+<dt><code class="code">poly_widest_int</code></dt>
+<dd><p>a &lsquo;<samp class="samp">poly_int</samp>&rsquo; with <code class="code">widest_int</code> coefficients.
+</p></dd>
+</dl>
+
+<p>Since the main purpose of <code class="code">poly_int</code> is to represent sizes and
+offsets, the last two typedefs are only rarely used.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Consequences-of-using-poly_005fint.html">Consequences of using <code class="code">poly_int</code></a>, Up: <a href="poly_005fint.html">Sizes and offsets as runtime invariants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

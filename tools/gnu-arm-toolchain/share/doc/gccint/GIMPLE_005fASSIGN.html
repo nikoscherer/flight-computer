@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>GIMPLE_ASSIGN (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="GIMPLE_ASSIGN (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="GIMPLE_ASSIGN (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Tuple-specific-accessors.html" rel="up" title="Tuple specific accessors">
+<link href="GIMPLE_005fBIND.html" rel="next" title="GIMPLE_BIND">
+<link href="GIMPLE_005fASM.html" rel="prev" title="GIMPLE_ASM">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GIMPLE_005fASSIGN">
+<div class="nav-panel">
+<p>
+Next: <a href="GIMPLE_005fBIND.html" accesskey="n" rel="next"><code class="code">GIMPLE_BIND</code></a>, Previous: <a href="GIMPLE_005fASM.html" accesskey="p" rel="prev"><code class="code">GIMPLE_ASM</code></a>, Up: <a href="Tuple-specific-accessors.html" accesskey="u" rel="up">Tuple specific accessors</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="GIMPLE_005fASSIGN-1"><span>11.8.2 <code class="code">GIMPLE_ASSIGN</code><a class="copiable-link" href="#GIMPLE_005fASSIGN-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-GIMPLE_005fASSIGN"></a>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_002agimple_005fbuild_005fassign"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gassign</code> <strong class="def-name">*gimple_build_assign</strong> <code class="def-code-arguments">(tree lhs, tree rhs)</code><a class="copiable-link" href="#index-_002agimple_005fbuild_005fassign"> &para;</a></span></dt>
+<dd><p>Build a <code class="code">GIMPLE_ASSIGN</code> statement.  The left-hand side is an lvalue
+passed in lhs.  The right-hand side can be either a unary or
+binary tree expression.  The expression tree rhs will be
+flattened and its operands assigned to the corresponding operand
+slots in the new statement.  This function is useful when you
+already have a tree expression that you want to convert into a
+tuple.  However, try to avoid building expression trees for the
+sole purpose of calling this function.  If you already have the
+operands in separate trees, it is better to use
+<code class="code">gimple_build_assign</code> with <code class="code">enum tree_code</code> argument and separate
+arguments for each operand.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_002agimple_005fbuild_005fassign-1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gassign</code> <strong class="def-name">*gimple_build_assign</strong> <code class="def-code-arguments">(tree lhs, enum tree_code subcode, tree op1, tree op2, tree op3)</code><a class="copiable-link" href="#index-_002agimple_005fbuild_005fassign-1"> &para;</a></span></dt>
+<dd><p>This function is similar to two operand <code class="code">gimple_build_assign</code>,
+but is used to build a <code class="code">GIMPLE_ASSIGN</code> statement when the operands of the
+right-hand side of the assignment are already split into
+different operands.
+</p>
+<p>The left-hand side is an lvalue passed in lhs.  Subcode is the
+<code class="code">tree_code</code> for the right-hand side of the assignment.  Op1, op2 and op3
+are the operands.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_002agimple_005fbuild_005fassign-2"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gassign</code> <strong class="def-name">*gimple_build_assign</strong> <code class="def-code-arguments">(tree lhs, enum tree_code subcode, tree op1, tree op2)</code><a class="copiable-link" href="#index-_002agimple_005fbuild_005fassign-2"> &para;</a></span></dt>
+<dd><p>Like the above 5 operand <code class="code">gimple_build_assign</code>, but with the last
+argument <code class="code">NULL</code> - this overload should not be used for
+<code class="code">GIMPLE_TERNARY_RHS</code> assignments.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_002agimple_005fbuild_005fassign-3"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gassign</code> <strong class="def-name">*gimple_build_assign</strong> <code class="def-code-arguments">(tree lhs, enum tree_code subcode, tree op1)</code><a class="copiable-link" href="#index-_002agimple_005fbuild_005fassign-3"> &para;</a></span></dt>
+<dd><p>Like the above 4 operand <code class="code">gimple_build_assign</code>, but with the last
+argument <code class="code">NULL</code> - this overload should be used only for
+<code class="code">GIMPLE_UNARY_RHS</code> and <code class="code">GIMPLE_SINGLE_RHS</code> assignments.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimplify_005fassign"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gimple</code> <strong class="def-name">gimplify_assign</strong> <code class="def-code-arguments">(tree dst, tree src, gimple_seq *seq_p)</code><a class="copiable-link" href="#index-gimplify_005fassign"> &para;</a></span></dt>
+<dd><p>Build a new <code class="code">GIMPLE_ASSIGN</code> tuple and append it to the end of
+<code class="code">*SEQ_P</code>.
+</p></dd></dl>
+
+<p><code class="code">DST</code>/<code class="code">SRC</code> are the destination and source respectively.  You can
+pass ungimplified trees in <code class="code">DST</code> or <code class="code">SRC</code>, in which
+case they will be converted to a gimple operand if necessary.
+</p>
+<p>This function returns the newly created <code class="code">GIMPLE_ASSIGN</code> tuple.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs_005fcode"><span class="category-def">GIMPLE function: </span><span><code class="def-type">enum tree_code</code> <strong class="def-name">gimple_assign_rhs_code</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs_005fcode"> &para;</a></span></dt>
+<dd><p>Return the code of the expression computed on the <code class="code">RHS</code> of
+assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs_005fclass"><span class="category-def">GIMPLE function: </span><span><code class="def-type">enum gimple_rhs_class</code> <strong class="def-name">gimple_assign_rhs_class</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs_005fclass"> &para;</a></span></dt>
+<dd><p>Return the gimple rhs class of the code for the expression
+computed on the rhs of assignment statement <code class="code">G</code>.  This will never
+return <code class="code">GIMPLE_INVALID_RHS</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005flhs"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_assign_lhs</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005flhs"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">LHS</code> of assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005flhs_005fptr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_assign_lhs_ptr</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005flhs_005fptr"> &para;</a></span></dt>
+<dd><p>Return a pointer to the <code class="code">LHS</code> of assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_assign_rhs1</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs1"> &para;</a></span></dt>
+<dd><p>Return the first operand on the <code class="code">RHS</code> of assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs1_005fptr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_assign_rhs1_ptr</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs1_005fptr"> &para;</a></span></dt>
+<dd><p>Return the address of the first operand on the <code class="code">RHS</code> of assignment
+statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs2"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_assign_rhs2</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs2"> &para;</a></span></dt>
+<dd><p>Return the second operand on the <code class="code">RHS</code> of assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs2_005fptr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_assign_rhs2_ptr</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs2_005fptr"> &para;</a></span></dt>
+<dd><p>Return the address of the second operand on the <code class="code">RHS</code> of assignment
+statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs3"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_assign_rhs3</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs3"> &para;</a></span></dt>
+<dd><p>Return the third operand on the <code class="code">RHS</code> of assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005frhs3_005fptr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_assign_rhs3_ptr</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005frhs3_005fptr"> &para;</a></span></dt>
+<dd><p>Return the address of the third operand on the <code class="code">RHS</code> of assignment
+statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005fset_005flhs"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_assign_set_lhs</strong> <code class="def-code-arguments">(gimple g, tree lhs)</code><a class="copiable-link" href="#index-gimple_005fassign_005fset_005flhs"> &para;</a></span></dt>
+<dd><p>Set <code class="code">LHS</code> to be the <code class="code">LHS</code> operand of assignment statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005fset_005frhs1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_assign_set_rhs1</strong> <code class="def-code-arguments">(gimple g, tree rhs)</code><a class="copiable-link" href="#index-gimple_005fassign_005fset_005frhs1"> &para;</a></span></dt>
+<dd><p>Set <code class="code">RHS</code> to be the first operand on the <code class="code">RHS</code> of assignment
+statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005fset_005frhs2"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_assign_set_rhs2</strong> <code class="def-code-arguments">(gimple g, tree rhs)</code><a class="copiable-link" href="#index-gimple_005fassign_005fset_005frhs2"> &para;</a></span></dt>
+<dd><p>Set <code class="code">RHS</code> to be the second operand on the <code class="code">RHS</code> of assignment
+statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005fset_005frhs3"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_assign_set_rhs3</strong> <code class="def-code-arguments">(gimple g, tree rhs)</code><a class="copiable-link" href="#index-gimple_005fassign_005fset_005frhs3"> &para;</a></span></dt>
+<dd><p>Set <code class="code">RHS</code> to be the third operand on the <code class="code">RHS</code> of assignment
+statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005fcast_005fp-1"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_assign_cast_p</strong> <code class="def-code-arguments">(const_gimple s)</code><a class="copiable-link" href="#index-gimple_005fassign_005fcast_005fp-1"> &para;</a></span></dt>
+<dd><p>Return true if <code class="code">S</code> is a type-cast assignment.
+</p></dd></dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="GIMPLE_005fBIND.html"><code class="code">GIMPLE_BIND</code></a>, Previous: <a href="GIMPLE_005fASM.html"><code class="code">GIMPLE_ASM</code></a>, Up: <a href="Tuple-specific-accessors.html">Tuple specific accessors</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

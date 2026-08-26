@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Index Files (Debugging with GDB)</title>
+
+<meta name="description" content="Index Files (Debugging with GDB)">
+<meta name="keywords" content="Index Files (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB-Files.html" rel="up" title="GDB Files">
+<link href="Debug-Names.html" rel="next" title="Debug Names">
+<link href="MiniDebugInfo.html" rel="prev" title="MiniDebugInfo">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Index-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="Debug-Names.html" accesskey="n" rel="next">Extensions to &lsquo;<samp class="samp">.debug_names</samp>&rsquo;</a>, Previous: <a href="MiniDebugInfo.html" accesskey="p" rel="prev">Debugging information in a special section</a>, Up: <a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small> Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Index-Files-Speed-Up-gdb"><span>18.5 Index Files Speed Up <small class="sc">GDB</small><a class="copiable-link" href="#Index-Files-Speed-Up-gdb"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-index-files"></a>
+<a class="index-entry-id" id="index-_002egdb_005findex-section"></a>
+
+<p>When <small class="sc">GDB</small> finds a symbol file, it scans the symbols in the
+file in order to construct an internal symbol table.  This lets most
+<small class="sc">GDB</small> operations work quickly&mdash;at the cost of a delay early
+on.  For large programs, this delay can be quite lengthy, so
+<small class="sc">GDB</small> provides a way to build an index, which speeds up
+startup.
+</p>
+<p>For convenience, <small class="sc">GDB</small> comes with a program,
+<code class="command">gdb-add-index</code>, which can be used to add the index to a
+symbol file.  It takes the symbol file as its only argument:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb-add-index symfile
+</pre></div>
+
+<p>See <a class="xref" href="gdb_002dadd_002dindex-man.html#gdb_002dadd_002dindex">gdb-add-index</a>.
+</p>
+<p>It is also possible to do the work manually.  Here is what
+<code class="command">gdb-add-index</code> does behind the curtains.
+</p>
+<p>The index is stored as a section in the symbol file.  <small class="sc">GDB</small> can
+write the index to a file, then you can put it into the symbol file
+using <code class="command">objcopy</code>.
+</p>
+<p>To create an index file, use the <code class="code">save gdb-index</code> command:
+</p>
+<dl class="table">
+<dt><a id="index-save-gdb_002dindex"></a><span><code class="code">save gdb-index [-dwarf-5] <var class="var">directory</var></code><a class="copiable-link" href="#index-save-gdb_002dindex"> &para;</a></span></dt>
+<dd><p>Create index files for all symbol files currently known by
+<small class="sc">GDB</small>.  For each known <var class="var">symbol-file</var>, this command by
+default creates it produces a single file
+<samp class="file"><var class="var">symbol-file</var>.gdb-index</samp>.  If you invoke this command with
+the <samp class="option">-dwarf-5</samp> option, it produces 2 files:
+<samp class="file"><var class="var">symbol-file</var>.debug_names</samp> and
+<samp class="file"><var class="var">symbol-file</var>.debug_str</samp>.  The files are created in the
+given <var class="var">directory</var>.
+</p>
+<p>The <var class="var">directory</var> argument supports escaping and quoting, see
+<a class="ref" href="Filename-Arguments.html">Filenames As Command Arguments</a>.
+</p></dd>
+</dl>
+
+<p>Once you have created an index file you can merge it into your symbol
+file, here named <samp class="file">symfile</samp>, using <code class="command">objcopy</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ objcopy --add-section .gdb_index=symfile.gdb-index \
+    --set-section-flags .gdb_index=readonly symfile symfile
+</pre></div>
+
+<p>Or for <code class="code">-dwarf-5</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ objcopy --dump-section .debug_str=symfile.debug_str.new symfile
+$ cat symfile.debug_str &gt;&gt;symfile.debug_str.new
+$ objcopy --add-section .debug_names=symfile.gdb-index \
+    --set-section-flags .debug_names=readonly \
+    --update-section .debug_str=symfile.debug_str.new symfile symfile
+</pre></div>
+
+<p><small class="sc">GDB</small> will normally ignore older versions of <samp class="file">.gdb_index</samp>
+sections that have been deprecated.  Usually they are deprecated because
+they are missing a new feature or have performance issues.
+To tell <small class="sc">GDB</small> to use a deprecated index section anyway
+specify <code class="code">set use-deprecated-index-sections on</code>.
+The default is <code class="code">off</code>.
+This can speed up startup, but may result in some functionality being lost.
+See <a class="xref" href="Index-Section-Format.html"><code class="code">.gdb_index</code> section format</a>.
+</p>
+<p><em class="emph">Warning:</em> Setting <code class="code">use-deprecated-index-sections</code> to <code class="code">on</code>
+must be done before gdb reads the file.  The following will not work:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -ex &quot;set use-deprecated-index-sections on&quot; &lt;program&gt;
+</pre></div>
+
+<p>Instead you must do, for example,
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -iex &quot;set use-deprecated-index-sections on&quot; &lt;program&gt;
+</pre></div>
+
+<p>Indices only work when using DWARF debugging information, not stabs.
+</p>
+<ul class="mini-toc">
+<li><a href="#Automatic-symbol-index-cache" accesskey="1">Automatic symbol index cache</a></li>
+<li><a href="#Building-the-index-with-GNU-gold" accesskey="2">Building the index with GNU <code class="command">gold</code></a></li>
+</ul>
+<div class="subsection-level-extent" id="Automatic-symbol-index-cache">
+<h4 class="subsection"><span>18.5.1 Automatic symbol index cache<a class="copiable-link" href="#Automatic-symbol-index-cache"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-automatic-symbol-index-cache"></a>
+<p>It is possible for <small class="sc">GDB</small> to automatically save a copy of this index in a
+cache on disk and retrieve it from there when loading the same binary in the
+future.  This feature can be turned on with <kbd class="kbd">set index-cache enabled on</kbd>.
+The following commands can be used to tweak the behavior of the index cache.
+</p>
+<dl class="table">
+<dt><a id="index-set-index_002dcache"></a><span><code class="code">set index-cache enabled on</code><a class="copiable-link" href="#index-set-index_002dcache"> &para;</a></span></dt>
+<dt><code class="code">set index-cache enabled off</code></dt>
+<dd><p>Enable or disable the use of the symbol index cache.
+</p>
+</dd>
+<dt><code class="code">set index-cache directory <var class="var">directory</var></code></dt>
+<dd><a class="index-entry-id" id="index-show-index_002dcache"></a>
+</dd>
+<dt><code class="code">show index-cache directory</code></dt>
+<dd><p>Set/show the directory where index files will be saved.
+</p>
+<p>The default value for this directory depends on the host platform.  On
+most systems, the index is cached in the <samp class="file">gdb</samp> subdirectory of
+the directory pointed to by the <code class="env">XDG_CACHE_HOME</code> environment
+variable, if it is defined, else in the <samp class="file">.cache/gdb</samp> subdirectory
+of your home directory.  However, on some systems, the default may
+differ according to local convention.
+</p>
+<p>There is no limit on the disk space used by index cache.  It is perfectly safe
+to delete the content of that directory to free up disk space.
+</p>
+</dd>
+<dt><code class="code">show index-cache stats</code></dt>
+<dd><p>Print the number of cache hits and misses since the launch of <small class="sc">GDB</small>.
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="subsection-level-extent" id="Building-the-index-with-GNU-gold">
+<h4 class="subsection"><span>18.5.2 Building the index with GNU <code class="command">gold</code><a class="copiable-link" href="#Building-the-index-with-GNU-gold"> &para;</a></span></h4>
+
+<p>The GNU <code class="command">gold</code> linker can write the index at link time into
+the resulting ELF file, by passing the <code class="command">--gdb-index</code> flag to
+<code class="command">gold</code>.
+</p>
+<p>This is especially helpful if you intend to build a program and immediately
+run it under <small class="sc">GDB</small>.  You may find that it is faster overall for
+the linker to write the index while it has the relevant information in
+memory anyways, rather than re-reloading the data from disk with
+<code class="command">gdb-add-index</code>, or debugging the program without an index at
+all, especially for large programs.
+</p>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Debug-Names.html">Extensions to &lsquo;<samp class="samp">.debug_names</samp>&rsquo;</a>, Previous: <a href="MiniDebugInfo.html">Debugging information in a special section</a>, Up: <a href="GDB-Files.html"><small class="sc">GDB</small> Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Caching Target Data (Debugging with GDB)</title>
+
+<meta name="description" content="Caching Target Data (Debugging with GDB)">
+<meta name="keywords" content="Caching Target Data (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data.html" rel="up" title="Data">
+<link href="Searching-Memory.html" rel="next" title="Searching Memory">
+<link href="Character-Sets.html" rel="prev" title="Character Sets">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Caching-Target-Data">
+<div class="nav-panel">
+<p>
+Next: <a href="Searching-Memory.html" accesskey="n" rel="next">Search Memory</a>, Previous: <a href="Character-Sets.html" accesskey="p" rel="prev">Character Sets</a>, Up: <a href="Data.html" accesskey="u" rel="up">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Caching-Data-of-Targets"><span>10.22 Caching Data of Targets<a class="copiable-link" href="#Caching-Data-of-Targets"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-caching-data-of-targets"></a>
+
+<p><small class="sc">GDB</small> caches data exchanged between the debugger and a target.
+Each cache is associated with the address space of the inferior.
+See <a class="xref" href="Inferiors-Connections-and-Programs.html">Debugging Multiple Inferiors Connections and Programs</a>, about inferior and address space.
+Such caching generally improves performance in remote debugging
+(see <a class="pxref" href="Remote-Debugging.html">Debugging Remote Programs</a>), because it reduces the overhead of the
+remote protocol by bundling memory reads and writes into large chunks.
+Unfortunately, simply caching everything would lead to incorrect results,
+since <small class="sc">GDB</small> does not necessarily know anything about volatile
+values, memory-mapped I/O addresses, etc.  Furthermore, in non-stop mode
+(see <a class="pxref" href="Non_002dStop-Mode.html">Non-Stop Mode</a>) memory can be changed <em class="emph">while</em> a gdb command
+is executing.
+Therefore, by default, <small class="sc">GDB</small> only caches data
+known to be on the stack<a class="footnote" id="DOCF13" href="#FOOT13"><sup>13</sup></a> or
+in the code segment.
+Other regions of memory can be explicitly marked as
+cacheable; see <a class="pxref" href="Memory-Region-Attributes.html">Memory Region Attributes</a>.
+</p>
+<dl class="table">
+<dt><a id="index-set-remotecache"></a><span><code class="code">set remotecache on</code><a class="copiable-link" href="#index-set-remotecache"> &para;</a></span></dt>
+<dt><code class="code">set remotecache off</code></dt>
+<dd><p>This option no longer does anything; it exists for compatibility
+with old scripts.
+</p>
+</dd>
+<dt><a id="index-show-remotecache"></a><span><code class="code">show remotecache</code><a class="copiable-link" href="#index-show-remotecache"> &para;</a></span></dt>
+<dd><p>Show the current state of the obsolete remotecache flag.
+</p>
+</dd>
+<dt><a id="index-set-stack_002dcache"></a><span><code class="code">set stack-cache on</code><a class="copiable-link" href="#index-set-stack_002dcache"> &para;</a></span></dt>
+<dt><code class="code">set stack-cache off</code></dt>
+<dd><p>Enable or disable caching of stack accesses.  When <code class="code">on</code>, use
+caching.  By default, this option is <code class="code">on</code>.
+</p>
+</dd>
+<dt><a id="index-show-stack_002dcache"></a><span><code class="code">show stack-cache</code><a class="copiable-link" href="#index-show-stack_002dcache"> &para;</a></span></dt>
+<dd><p>Show the current state of data caching for memory accesses.
+</p>
+</dd>
+<dt><a id="index-set-code_002dcache"></a><span><code class="code">set code-cache on</code><a class="copiable-link" href="#index-set-code_002dcache"> &para;</a></span></dt>
+<dt><code class="code">set code-cache off</code></dt>
+<dd><p>Enable or disable caching of code segment accesses.  When <code class="code">on</code>,
+use caching.  By default, this option is <code class="code">on</code>.  This improves
+performance of disassembly in remote debugging.
+</p>
+</dd>
+<dt><a id="index-show-code_002dcache"></a><span><code class="code">show code-cache</code><a class="copiable-link" href="#index-show-code_002dcache"> &para;</a></span></dt>
+<dd><p>Show the current state of target memory cache for code segment
+accesses.
+</p>
+</dd>
+<dt><a id="index-info-dcache"></a><span><code class="code">info dcache <span class="r">[</span>line<span class="r">]</span></code><a class="copiable-link" href="#index-info-dcache"> &para;</a></span></dt>
+<dd><p>Print the information about the performance of data cache of the
+current inferior&rsquo;s address space.  The information displayed
+includes the dcache width and depth, and for each cache line, its
+number, address, and how many times it was referenced.  This
+command is useful for debugging the data cache operation.
+</p>
+<p>If a line number is specified, the contents of that line will be
+printed in hex.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-dcache-size"></a>
+<a id="index-dcache-size"></a><span><code class="code">set dcache size <var class="var">size</var></code><a class="copiable-link" href="#index-dcache-size"> &para;</a></span></dt>
+<dd><p>Set maximum number of entries in dcache (dcache depth above).
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-dcache-line_002dsize"></a>
+<a id="index-dcache-line_002dsize"></a><span><code class="code">set dcache line-size <var class="var">line-size</var></code><a class="copiable-link" href="#index-dcache-line_002dsize"> &para;</a></span></dt>
+<dd><p>Set number of bytes each dcache entry caches (dcache width above).
+Must be a power of 2.
+</p>
+</dd>
+<dt><a id="index-show-dcache-size"></a><span><code class="code">show dcache size</code><a class="copiable-link" href="#index-show-dcache-size"> &para;</a></span></dt>
+<dd><p>Show maximum number of dcache entries.  See <a class="xref" href="#Caching-Target-Data">info dcache</a>.
+</p>
+</dd>
+<dt><a id="index-show-dcache-line_002dsize"></a><span><code class="code">show dcache line-size</code><a class="copiable-link" href="#index-show-dcache-line_002dsize"> &para;</a></span></dt>
+<dd><p>Show default size of dcache lines.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-flush-dcache"></a>
+<a id="index-dcache_002c-flushing"></a><span><code class="code">maint flush dcache</code><a class="copiable-link" href="#index-dcache_002c-flushing"> &para;</a></span></dt>
+<dd><p>Flush the contents (if any) of the dcache.  This maintainer command is
+useful when debugging the dcache implementation.
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT13" href="#DOCF13">(13)</a></h5>
+<p>In non-stop mode, it is moderately
+rare for a running thread to modify the stack of a stopped thread
+in a way that would interfere with a backtrace, and caching of
+stack reads provides a significant speed up of remote backtraces.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Searching-Memory.html">Search Memory</a>, Previous: <a href="Character-Sets.html">Character Sets</a>, Up: <a href="Data.html">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

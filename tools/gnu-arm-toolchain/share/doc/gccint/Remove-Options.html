@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Remove Options (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Remove Options (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Remove Options (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Test-Directives.html" rel="up" title="Test Directives">
+<link href="Require-Support.html" rel="next" title="Require Support">
+<link href="Add-Options.html" rel="prev" title="Add Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Remove-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="Require-Support.html" accesskey="n" rel="next">Variants of <code class="code">dg-require-<var class="var">support</var></code></a>, Previous: <a href="Add-Options.html" accesskey="p" rel="prev">Features for <code class="code">dg-add-options</code></a>, Up: <a href="Test-Directives.html" accesskey="u" rel="up">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Features-for-dg_002dremove_002doptions"><span>6.2.5 Features for <code class="code">dg-remove-options</code><a class="copiable-link" href="#Features-for-dg_002dremove_002doptions"> &para;</a></span></h4>
+
+<p>The supported values of <var class="var">feature</var> for directive <code class="code">dg-remove-options</code>
+are:
+</p>
+<dl class="table">
+<dt><code class="code">riscv_a</code></dt>
+<dd><p>Remove the &rsquo;A&rsquo; extension and all implied extensions from the -march string on
+RISC-V targets.
+</p>
+</dd>
+<dt><code class="code">riscv_zaamo</code></dt>
+<dd><p>Remove the zaamo extension from the -march string on RISC-V. If the &rsquo;A&rsquo;
+extension is present downgrade it to zalrsc.
+</p>
+</dd>
+<dt><code class="code">riscv_zabha</code></dt>
+<dd><p>Remove the zabha extension and implied zaamo extension from the -march string
+on RISC-V.
+</p>
+</dd>
+<dt><code class="code">riscv_zacas</code></dt>
+<dd><p>Remove the zacas extension and implied zaamo extension from the -march string
+on RISC-V.
+</p>
+</dd>
+<dt><code class="code">riscv_zalrsc</code></dt>
+<dd><p>Remove the zalrsc extension from the -march string on RISC-V. If the &rsquo;A&rsquo;
+extension is present downgrade it to zaamo.
+</p>
+</dd>
+<dt><code class="code">riscv_ztso</code></dt>
+<dd><p>Remove the ztso extension from the -march string on RISC-V targets.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

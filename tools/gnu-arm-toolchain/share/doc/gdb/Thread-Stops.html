@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Thread Stops (Debugging with GDB)</title>
+
+<meta name="description" content="Thread Stops (Debugging with GDB)">
+<meta name="keywords" content="Thread Stops (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stopping.html" rel="up" title="Stopping">
+<link href="Signals.html" rel="prev" title="Signals">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Thread-Stops">
+<div class="nav-panel">
+<p>
+Previous: <a href="Signals.html" accesskey="p" rel="prev">Signals</a>, Up: <a href="Stopping.html" accesskey="u" rel="up">Stopping and Continuing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Stopping-and-Starting-Multi_002dthread-Programs"><span>5.5 Stopping and Starting Multi-thread Programs<a class="copiable-link" href="#Stopping-and-Starting-Multi_002dthread-Programs"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-stopped-threads"></a>
+<a class="index-entry-id" id="index-threads_002c-stopped"></a>
+
+<a class="index-entry-id" id="index-continuing-threads"></a>
+<a class="index-entry-id" id="index-threads_002c-continuing"></a>
+
+<p><small class="sc">GDB</small> supports debugging programs with multiple threads
+(see <a class="pxref" href="Threads.html">Debugging Programs with Multiple Threads</a>).  There
+are two modes of controlling execution of your program within the
+debugger.  In the default mode, referred to as <em class="dfn">all-stop mode</em>,
+when any thread in your program stops (for example, at a breakpoint 
+or while being stepped), all other threads in the program are also stopped by 
+<small class="sc">GDB</small>.  On some targets, <small class="sc">GDB</small> also supports 
+<em class="dfn">non-stop mode</em>, in which other threads can continue to run freely while
+you examine the stopped thread in the debugger.
+</p>
+
+<ul class="mini-toc">
+<li><a href="All_002dStop-Mode.html" accesskey="1">All-Stop Mode</a></li>
+<li><a href="Non_002dStop-Mode.html" accesskey="2">Non-Stop Mode</a></li>
+<li><a href="Background-Execution.html" accesskey="3">Background Execution</a></li>
+<li><a href="Thread_002dSpecific-Breakpoints.html" accesskey="4">Thread-Specific Breakpoints</a></li>
+<li><a href="Interrupted-System-Calls.html" accesskey="5">Interrupted System Calls</a></li>
+<li><a href="Observer-Mode.html" accesskey="6">Observer Mode</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

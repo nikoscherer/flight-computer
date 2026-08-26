@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Mode Options (Debugging with GDB)</title>
+
+<meta name="description" content="Mode Options (Debugging with GDB)">
+<meta name="keywords" content="Mode Options (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invoking-GDB.html" rel="up" title="Invoking GDB">
+<link href="Startup.html" rel="next" title="Startup">
+<link href="File-Options.html" rel="prev" title="File Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Mode-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="Startup.html" accesskey="n" rel="next">What <small class="sc">GDB</small> Does During Startup</a>, Previous: <a href="File-Options.html" accesskey="p" rel="prev">Choosing Files</a>, Up: <a href="Invoking-GDB.html" accesskey="u" rel="up">Invoking <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Choosing-Modes"><span>2.1.2 Choosing Modes<a class="copiable-link" href="#Choosing-Modes"> &para;</a></span></h4>
+
+<p>You can run <small class="sc">GDB</small> in various alternative modes&mdash;for example, in
+batch mode or quiet mode.
+</p>
+<dl class="table">
+<dd><a class="anchor" id="g_t_002dnx"></a></dd>
+<dt><a class="index-entry-id" id="index-_002dn"></a>
+<a id="index-_002d_002dnx"></a><span><code class="code">-nx</code><a class="copiable-link" href="#index-_002d_002dnx"> &para;</a></span></dt>
+<dt><code class="code">-n</code></dt>
+<dd><p>Do not execute commands found in any initialization files
+(see <a class="pxref" href="Initialization-Files.html">Initialization Files</a>).
+</p>
+<a class="anchor" id="g_t_002dnh"></a></dd>
+<dt><a id="index-_002d_002dnh"></a><span><code class="code">-nh</code><a class="copiable-link" href="#index-_002d_002dnh"> &para;</a></span></dt>
+<dd><p>Do not execute commands found in any home directory initialization
+file (see <a class="pxref" href="Initialization-Files.html">Home directory initialization
+file</a>).  The system wide and current directory initialization files
+are still loaded.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002d_002dsilent"></a>
+<a class="index-entry-id" id="index-_002dq"></a>
+<a id="index-_002d_002dquiet"></a><span><code class="code">-quiet</code><a class="copiable-link" href="#index-_002d_002dquiet"> &para;</a></span></dt>
+<dt><code class="code">-silent</code></dt>
+<dt><code class="code">-q</code></dt>
+<dd><p>&ldquo;Quiet&rdquo;.  Do not print the introductory and copyright messages.  These
+messages are also suppressed in batch mode.
+</p>
+<a class="index-entry-id" id="index-set-startup_002dquietly"></a>
+<a class="index-entry-id" id="index-show-startup_002dquietly"></a>
+<p>This can also be enabled using <code class="code">set startup-quietly on</code>.  The
+default is <code class="code">off</code>.  Use <code class="code">show startup-quietly</code> to see the
+current setting.  Place <code class="code">set startup-quietly on</code> into your early
+initialization file (see <a class="pxref" href="Initialization-Files.html">Initialization
+Files</a>) to have future <small class="sc">GDB</small> sessions startup quietly.
+</p>
+</dd>
+<dt><a id="index-_002d_002dbatch"></a><span><code class="code">-batch</code><a class="copiable-link" href="#index-_002d_002dbatch"> &para;</a></span></dt>
+<dd><p>Run in batch mode.  Exit with status <code class="code">0</code> after processing all the
+command files specified with &lsquo;<samp class="samp">-x</samp>&rsquo; (and all commands from
+initialization files, if not inhibited with &lsquo;<samp class="samp">-n</samp>&rsquo;).  Exit with
+nonzero status if an error occurs in executing the <small class="sc">GDB</small> commands
+in the command files.  Batch mode also disables pagination, sets unlimited
+terminal width and height see <a class="pxref" href="Screen-Size.html">Screen Size</a>, and acts as if <kbd class="kbd">set confirm
+off</kbd> were in effect (see <a class="pxref" href="Messages_002fWarnings.html">Optional Warnings and Messages</a>).
+</p>
+<p>Batch mode may be useful for running <small class="sc">GDB</small> as a filter, for
+example to download and run a program on another computer; in order to
+make this more useful, the message
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Program exited normally.
+</pre></div>
+
+<p>(which is ordinarily issued whenever a program running under
+<small class="sc">GDB</small> control terminates) is not issued when running in batch
+mode.
+</p>
+</dd>
+<dt><a id="index-_002d_002dbatch_002dsilent"></a><span><code class="code">-batch-silent</code><a class="copiable-link" href="#index-_002d_002dbatch_002dsilent"> &para;</a></span></dt>
+<dd><p>Run in batch mode exactly like &lsquo;<samp class="samp">-batch</samp>&rsquo;, but totally silently.  All
+<small class="sc">GDB</small> output to <code class="code">stdout</code> is prevented (<code class="code">stderr</code> is
+unaffected).  This is much quieter than &lsquo;<samp class="samp">-silent</samp>&rsquo; and would be useless
+for an interactive session.
+</p>
+<p>This is particularly useful when using targets that give &lsquo;<samp class="samp">Loading section</samp>&rsquo;
+messages, for example.
+</p>
+<p>Note that targets that give their output via <small class="sc">GDB</small>, as opposed to
+writing directly to <code class="code">stdout</code>, will also be made silent.
+</p>
+</dd>
+<dt><a id="index-_002d_002dreturn_002dchild_002dresult"></a><span><code class="code">-return-child-result</code><a class="copiable-link" href="#index-_002d_002dreturn_002dchild_002dresult"> &para;</a></span></dt>
+<dd><p>The return code from <small class="sc">GDB</small> will be the return code from the child
+process (the process being debugged), with the following exceptions:
+</p>
+<ul class="itemize mark-bullet">
+<li><small class="sc">GDB</small> exits abnormally.  E.g., due to an incorrect argument or an
+internal error.  In this case the exit code is the same as it would have been
+without &lsquo;<samp class="samp">-return-child-result</samp>&rsquo;.
+</li><li>The user quits with an explicit value.  E.g., &lsquo;<samp class="samp">quit 1</samp>&rsquo;.
+</li><li>The child process never runs, or is not allowed to terminate, in which case
+the exit code will be -1.
+</li></ul>
+
+<p>This option is useful in conjunction with &lsquo;<samp class="samp">-batch</samp>&rsquo; or &lsquo;<samp class="samp">-batch-silent</samp>&rsquo;,
+when <small class="sc">GDB</small> is being used as a remote program loader or simulator
+interface.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dnw"></a>
+<a id="index-_002d_002dnowindows"></a><span><code class="code">-nowindows</code><a class="copiable-link" href="#index-_002d_002dnowindows"> &para;</a></span></dt>
+<dt><code class="code">-nw</code></dt>
+<dd><p>&ldquo;No windows&rdquo;.  If <small class="sc">GDB</small> comes with a graphical user interface
+(GUI) built in, then this option tells <small class="sc">GDB</small> to only use the command-line
+interface.  If no GUI is available, this option has no effect.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dw"></a>
+<a id="index-_002d_002dwindows"></a><span><code class="code">-windows</code><a class="copiable-link" href="#index-_002d_002dwindows"> &para;</a></span></dt>
+<dt><code class="code">-w</code></dt>
+<dd><p>If <small class="sc">GDB</small> includes a GUI, then this option requires it to be
+used if possible.
+</p>
+</dd>
+<dt><a id="index-_002d_002dcd"></a><span><code class="code">-cd <var class="var">directory</var></code><a class="copiable-link" href="#index-_002d_002dcd"> &para;</a></span></dt>
+<dd><p>Run <small class="sc">GDB</small> using <var class="var">directory</var> as its working directory,
+instead of the current directory.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dD"></a>
+<a id="index-_002d_002ddata_002ddirectory"></a><span><code class="code">-data-directory <var class="var">directory</var></code><a class="copiable-link" href="#index-_002d_002ddata_002ddirectory"> &para;</a></span></dt>
+<dt><code class="code">-D <var class="var">directory</var></code></dt>
+<dd><p>Run <small class="sc">GDB</small> using <var class="var">directory</var> as its data directory.
+The data directory is where <small class="sc">GDB</small> searches for its
+auxiliary files.  See <a class="xref" href="Data-Files.html">GDB Data Files</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002df"></a>
+<a id="index-_002d_002dfullname"></a><span><code class="code">-fullname</code><a class="copiable-link" href="#index-_002d_002dfullname"> &para;</a></span></dt>
+<dt><code class="code">-f</code></dt>
+<dd><p><small class="sc">GNU</small> Emacs sets this option when it runs <small class="sc">GDB</small> as a
+subprocess.  It tells <small class="sc">GDB</small> to output the full file name and line
+number in a standard, recognizable fashion each time a stack frame is
+displayed (which includes each time your program stops).  This
+recognizable format looks like two &lsquo;<samp class="samp">\032</samp>&rsquo; characters, followed by
+the file name, line number and character position separated by colons,
+and a newline.  The Emacs-to-<small class="sc">GDB</small> interface program uses the two
+&lsquo;<samp class="samp">\032</samp>&rsquo; characters as a signal to display the source code for the
+frame.
+</p>
+</dd>
+<dt><a id="index-_002d_002dannotate"></a><span><code class="code">-annotate <var class="var">level</var></code><a class="copiable-link" href="#index-_002d_002dannotate"> &para;</a></span></dt>
+<dd><p>This option sets the <em class="dfn">annotation level</em> inside <small class="sc">GDB</small>.  Its
+effect is identical to using &lsquo;<samp class="samp">set annotate <var class="var">level</var></samp>&rsquo;
+(see <a class="pxref" href="Annotations.html"><small class="sc">GDB</small> Annotations</a>).  The annotation <var class="var">level</var> controls how much
+information <small class="sc">GDB</small> prints together with its prompt, values of
+expressions, source lines, and other types of output.  Level 0 is the
+normal, level 1 is for use when <small class="sc">GDB</small> is run as a subprocess of
+<small class="sc">GNU</small> Emacs, level 3 is the maximum annotation suitable for programs
+that control <small class="sc">GDB</small>, and level 2 has been deprecated.
+</p>
+<p>The annotation mechanism has largely been superseded by <small class="sc">GDB/MI</small>
+(see <a class="pxref" href="GDB_002fMI.html">The <small class="sc">GDB/MI</small> Interface</a>).
+</p>
+</dd>
+<dt><a id="index-_002d_002dargs"></a><span><code class="code">--args</code><a class="copiable-link" href="#index-_002d_002dargs"> &para;</a></span></dt>
+<dd><p>Change interpretation of command line so that arguments following the
+executable file are passed as command line arguments to the inferior.
+This option stops option processing.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002db"></a>
+<a id="index-_002d_002dbaud"></a><span><code class="code">-baud <var class="var">bps</var></code><a class="copiable-link" href="#index-_002d_002dbaud"> &para;</a></span></dt>
+<dt><code class="code">-b <var class="var">bps</var></code></dt>
+<dd><p>Set the line speed (baud rate or bits per second) of any serial
+interface used by <small class="sc">GDB</small> for remote debugging.
+</p>
+</dd>
+<dt><a id="index-_002dl"></a><span><code class="code">-l <var class="var">timeout</var></code><a class="copiable-link" href="#index-_002dl"> &para;</a></span></dt>
+<dd><p>Set the timeout (in seconds) of any communication used by <small class="sc">GDB</small>
+for remote debugging.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dt"></a>
+<a id="index-_002d_002dtty"></a><span><code class="code">-tty <var class="var">device</var></code><a class="copiable-link" href="#index-_002d_002dtty"> &para;</a></span></dt>
+<dt><code class="code">-t <var class="var">device</var></code></dt>
+<dd><p>Run using <var class="var">device</var> for your program&rsquo;s standard input and output.
+</p>
+</dd>
+<dt><a id="index-_002d_002dtui"></a><span><code class="code">-tui</code><a class="copiable-link" href="#index-_002d_002dtui"> &para;</a></span></dt>
+<dd><p>Activate the <em class="dfn">Text User Interface</em> when starting.  The Text User
+Interface manages several text windows on the terminal, showing
+source, assembly, registers and <small class="sc">GDB</small> command outputs
+(see <a class="pxref" href="TUI.html"><small class="sc">GDB</small> Text User Interface</a>).  Do not use this
+option if you run <small class="sc">GDB</small> from Emacs (see <a class="pxref" href="Emacs.html">Using <small class="sc">GDB</small> under <small class="sc">GNU</small> Emacs</a>).
+</p>
+</dd>
+<dt><a id="index-_002d_002dinterpreter"></a><span><code class="code">-interpreter <var class="var">interp</var></code><a class="copiable-link" href="#index-_002d_002dinterpreter"> &para;</a></span></dt>
+<dd><p>Use the interpreter <var class="var">interp</var> for interface with the controlling
+program or device.  This option is meant to be set by programs which
+communicate with <small class="sc">GDB</small> using it as a back end.
+See <a class="xref" href="Interpreters.html">Command Interpreters</a>.
+</p>
+<p>&lsquo;<samp class="samp">--interpreter=mi</samp>&rsquo; (or &lsquo;<samp class="samp">--interpreter=mi3</samp>&rsquo;) causes
+<small class="sc">GDB</small> to use the <em class="dfn"><small class="sc">GDB/MI</small> interface</em> version 3 (see <a class="pxref" href="GDB_002fMI.html">The <small class="sc">GDB/MI</small> Interface</a>) included since <small class="sc">GDB</small> version 9.1.  <small class="sc">GDB/MI</small>
+version 2 (<code class="code">mi2</code>), included in <small class="sc">GDB</small> 6.0 and version 1 (<code class="code">mi1</code>),
+included in <small class="sc">GDB</small> 5.3, are also available.  Earlier <small class="sc">GDB/MI</small>
+interfaces are no longer supported.
+</p>
+</dd>
+<dt><a id="index-_002d_002dwrite"></a><span><code class="code">-write</code><a class="copiable-link" href="#index-_002d_002dwrite"> &para;</a></span></dt>
+<dd><p>Open the executable and core files for both reading and writing.  This
+is equivalent to the &lsquo;<samp class="samp">set write on</samp>&rsquo; command inside <small class="sc">GDB</small>
+(see <a class="pxref" href="Patching.html">Patching Programs</a>).
+</p>
+</dd>
+<dt><a id="index-_002d_002dstatistics"></a><span><code class="code">-statistics</code><a class="copiable-link" href="#index-_002d_002dstatistics"> &para;</a></span></dt>
+<dd><p>This option causes <small class="sc">GDB</small> to print statistics about time and
+memory usage after it completes each command and returns to the prompt.
+</p>
+</dd>
+<dt><a id="index-_002d_002dversion"></a><span><code class="code">-version</code><a class="copiable-link" href="#index-_002d_002dversion"> &para;</a></span></dt>
+<dd><p>This option causes <small class="sc">GDB</small> to print its version number and
+no-warranty blurb, and exit.
+</p>
+</dd>
+<dt><a id="index-_002d_002dconfiguration"></a><span><code class="code">-configuration</code><a class="copiable-link" href="#index-_002d_002dconfiguration"> &para;</a></span></dt>
+<dd><p>This option causes <small class="sc">GDB</small> to print details about its build-time
+configuration parameters, and then exit.  These details can be
+important when reporting <small class="sc">GDB</small> bugs (see <a class="pxref" href="GDB-Bugs.html">Reporting Bugs in <small class="sc">GDB</small></a>).
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>, Previous: <a href="File-Options.html">Choosing Files</a>, Up: <a href="Invoking-GDB.html">Invoking <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

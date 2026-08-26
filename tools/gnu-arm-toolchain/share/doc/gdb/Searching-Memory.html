@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Searching Memory (Debugging with GDB)</title>
+
+<meta name="description" content="Searching Memory (Debugging with GDB)">
+<meta name="keywords" content="Searching Memory (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data.html" rel="up" title="Data">
+<link href="Value-Sizes.html" rel="next" title="Value Sizes">
+<link href="Caching-Target-Data.html" rel="prev" title="Caching Target Data">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Searching-Memory">
+<div class="nav-panel">
+<p>
+Next: <a href="Value-Sizes.html" accesskey="n" rel="next">Value Sizes</a>, Previous: <a href="Caching-Target-Data.html" accesskey="p" rel="prev">Caching Data of Targets</a>, Up: <a href="Data.html" accesskey="u" rel="up">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Search-Memory"><span>10.23 Search Memory<a class="copiable-link" href="#Search-Memory"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-searching-memory"></a>
+
+<p>Memory can be searched for a particular sequence of bytes with the
+<code class="code">find</code> command.
+</p>
+<dl class="table">
+<dt><a id="index-find"></a><span><code class="code">find <span class="r">[</span>/<var class="var">sn</var><span class="r">]</span> <var class="var">start_addr</var>, +<var class="var">len</var>, <var class="var">val1</var> <span class="r">[</span>, <var class="var">val2</var>, &hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-find"> &para;</a></span></dt>
+<dt><code class="code">find <span class="r">[</span>/<var class="var">sn</var><span class="r">]</span> <var class="var">start_addr</var>, <var class="var">end_addr</var>, <var class="var">val1</var> <span class="r">[</span>, <var class="var">val2</var>, &hellip;<span class="r">]</span></code></dt>
+<dd><p>Search memory for the sequence of bytes specified by <var class="var">val1</var>, <var class="var">val2</var>,
+etc.  The search begins at address <var class="var">start_addr</var> and continues for either
+<var class="var">len</var> bytes or through to <var class="var">end_addr</var> inclusive.
+</p></dd>
+</dl>
+
+<p><var class="var">s</var> and <var class="var">n</var> are optional parameters.
+They may be specified in either order, apart or together.
+</p>
+<dl class="table">
+<dt><span class="r"><var class="var">s</var>, search query size</span></dt>
+<dd><p>The size of each search query value.
+</p>
+<dl class="table">
+<dt><code class="code">b</code></dt>
+<dd><p>bytes
+</p></dd>
+<dt><code class="code">h</code></dt>
+<dd><p>halfwords (two bytes)
+</p></dd>
+<dt><code class="code">w</code></dt>
+<dd><p>words (four bytes)
+</p></dd>
+<dt><code class="code">g</code></dt>
+<dd><p>giant words (eight bytes)
+</p></dd>
+</dl>
+
+<p>All values are interpreted in the current language.
+This means, for example, that if the current source language is C/C<code class="t">++</code>
+then searching for the string &ldquo;hello&rdquo; includes the trailing &rsquo;\0&rsquo;.
+The null terminator can be removed from searching by using casts,
+e.g.: &lsquo;<samp class="samp">{char[5]}&quot;hello&quot;</samp>&rsquo;.
+</p>
+<p>If the value size is not specified, it is taken from the
+value&rsquo;s type in the current language.
+This is useful when one wants to specify the search
+pattern as a mixture of types.
+Note that this means, for example, that in the case of C-like languages
+a search for an untyped 0x42 will search for &lsquo;<samp class="samp">(int) 0x42</samp>&rsquo;
+which is typically four bytes.
+</p>
+</dd>
+<dt><span class="r"><var class="var">n</var>, maximum number of finds</span></dt>
+<dd><p>The maximum number of matches to print.  The default is to print all finds.
+</p></dd>
+</dl>
+
+<p>You can use strings as search values.  Quote them with double-quotes
+ (<code class="code">&quot;</code>).
+The string value is copied into the search pattern byte by byte,
+regardless of the endianness of the target and the size specification.
+</p>
+<p>The address of each match found is printed as well as a count of the
+number of matches found.
+</p>
+<p>The address of the last value found is stored in convenience variable
+&lsquo;<samp class="samp">$_</samp>&rsquo;.
+A count of the number of matches is stored in &lsquo;<samp class="samp">$numfound</samp>&rsquo;.
+</p>
+<p>For example, if stopped at the <code class="code">printf</code> in this function:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void
+hello ()
+{
+  static char hello[] = &quot;hello-hello&quot;;
+  static struct { char c; short s; int i; }
+    __attribute__ ((packed)) mixed
+    = { 'c', 0x1234, 0x87654321 };
+  printf (&quot;%s\n&quot;, hello);
+}
+</pre></div>
+
+<p>you get during debugging:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) find &amp;hello[0], +sizeof(hello), &quot;hello&quot;
+0x804956d &lt;hello.1620+6&gt;
+1 pattern found
+(gdb) find &amp;hello[0], +sizeof(hello), 'h', 'e', 'l', 'l', 'o'
+0x8049567 &lt;hello.1620&gt;
+0x804956d &lt;hello.1620+6&gt;
+2 patterns found.
+(gdb) find &amp;hello[0], +sizeof(hello), {char[5]}&quot;hello&quot;
+0x8049567 &lt;hello.1620&gt;
+0x804956d &lt;hello.1620+6&gt;
+2 patterns found.
+(gdb) find /b1 &amp;hello[0], +sizeof(hello), 'h', 0x65, 'l'
+0x8049567 &lt;hello.1620&gt;
+1 pattern found
+(gdb) find &amp;mixed, +sizeof(mixed), (char) 'c', (short) 0x1234, (int) 0x87654321
+0x8049560 &lt;mixed.1625&gt;
+1 pattern found
+(gdb) print $numfound
+$1 = 1
+(gdb) print $_
+$2 = (void *) 0x8049560
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Value-Sizes.html">Value Sizes</a>, Previous: <a href="Caching-Target-Data.html">Caching Data of Targets</a>, Up: <a href="Data.html">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

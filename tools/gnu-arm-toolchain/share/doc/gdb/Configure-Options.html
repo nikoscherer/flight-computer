@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Configure Options (Debugging with GDB)</title>
+
+<meta name="description" content="Configure Options (Debugging with GDB)">
+<meta name="keywords" content="Configure Options (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Installing-GDB.html" rel="up" title="Installing GDB">
+<link href="System_002dwide-configuration.html" rel="next" title="System-wide configuration">
+<link href="Config-Names.html" rel="prev" title="Config Names">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Configure-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="System_002dwide-configuration.html" accesskey="n" rel="next">System-wide configuration and settings</a>, Previous: <a href="Config-Names.html" accesskey="p" rel="prev">Specifying Names for Hosts and Targets</a>, Up: <a href="Installing-GDB.html" accesskey="u" rel="up">Installing <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="configure-Options"><span>C.5 <samp class="file">configure</samp> Options<a class="copiable-link" href="#configure-Options"> &para;</a></span></h3>
+
+<p>Here is a summary of the <samp class="file">configure</samp> options and arguments that
+are most often useful for building <small class="sc">GDB</small>.  <samp class="file">configure</samp>
+also has several other options not listed here.  See <a data-manual="autoconf" href="https://www.gnu.org/software/autoconf/manual/html_node/Running-configure-Scripts.html#Running-configure-Scripts">(autoconf)Running
+configure Scripts</a>, for a full
+explanation of <samp class="file">configure</samp>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">configure <span class="r">[</span>--help<span class="r">]</span>
+          <span class="r">[</span>--prefix=<var class="var">dir</var><span class="r">]</span>
+          <span class="r">[</span>--exec-prefix=<var class="var">dir</var><span class="r">]</span>
+          <span class="r">[</span>--srcdir=<var class="var">dirname</var><span class="r">]</span>
+          <span class="r">[</span>--target=<var class="var">target</var><span class="r">]</span>
+</pre></div>
+
+<p>You may introduce options with a single &lsquo;<samp class="samp">-</samp>&rsquo; rather than
+&lsquo;<samp class="samp">--</samp>&rsquo; if you prefer; but you may abbreviate option names if you use
+&lsquo;<samp class="samp">--</samp>&rsquo;.
+</p>
+<dl class="table">
+<dt><code class="code">--help</code></dt>
+<dd><p>Display a quick summary of how to invoke <samp class="file">configure</samp>.
+</p>
+</dd>
+<dt><code class="code">--prefix=<var class="var">dir</var></code></dt>
+<dd><p>Configure the source to install programs and files under directory
+<samp class="file"><var class="var">dir</var></samp>.
+</p>
+</dd>
+<dt><code class="code">--exec-prefix=<var class="var">dir</var></code></dt>
+<dd><p>Configure the source to install programs under directory
+<samp class="file"><var class="var">dir</var></samp>.
+</p>
+</dd>
+<dt><code class="code">--srcdir=<var class="var">dirname</var></code></dt>
+<dd><p>Use this option to make configurations in directories separate from the
+<small class="sc">GDB</small> source directories.  Among other things, you can use this to
+build (or maintain) several configurations simultaneously, in separate
+directories.  <samp class="file">configure</samp> writes configuration-specific files in
+the current directory, but arranges for them to use the source in the
+directory <var class="var">dirname</var>.  <samp class="file">configure</samp> creates directories under
+the working directory in parallel to the source directories below
+<var class="var">dirname</var>.
+</p>
+</dd>
+<dt><code class="code">--target=<var class="var">target</var></code></dt>
+<dd><p>Configure <small class="sc">GDB</small> for cross-debugging programs running on the specified
+<var class="var">target</var>.  Without this option, <small class="sc">GDB</small> is configured to debug
+programs that run on the same machine (<var class="var">host</var>) as <small class="sc">GDB</small> itself.
+</p>
+<p>There is no convenient way to generate a list of all available
+targets.  Also see the <code class="code">--enable-targets</code> option, below.
+</p></dd>
+</dl>
+
+<p>There are many other options that are specific to <small class="sc">GDB</small>.  This
+lists just the most common ones; there are some very specialized
+options not described here.
+</p>
+<dl class="table">
+<dt><code class="code">--enable-targets=<span class="r">[</span><var class="var">target</var><span class="r">]</span>&hellip;</code></dt>
+<dt><code class="code">--enable-targets=all</code></dt>
+<dd><p>Configure <small class="sc">GDB</small> for cross-debugging programs running on the
+specified list of targets.  The special value &lsquo;<samp class="samp">all</samp>&rsquo; configures
+<small class="sc">GDB</small> for debugging programs running on any target it supports.
+</p>
+</dd>
+<dt><code class="code">--with-gdb-datadir=<var class="var">path</var></code></dt>
+<dd><p>Set the <small class="sc">GDB</small>-specific data directory.  <small class="sc">GDB</small> will look
+here for certain supporting files or scripts.  This defaults to the
+<samp class="file">gdb</samp> subdirectory of &lsquo;<samp class="samp">datadir</samp>&rsquo; (which can be set using
+<code class="code">--datadir</code>).
+</p>
+</dd>
+<dt><code class="code">--with-relocated-sources=<var class="var">dir</var></code></dt>
+<dd><p>Sets up the default source path substitution rule so that directory
+names recorded in debug information will be automatically adjusted for
+any directory under <var class="var">dir</var>.  <var class="var">dir</var> should be a subdirectory of
+<small class="sc">GDB</small>&rsquo;s configured prefix, the one mentioned in the
+<code class="code">--prefix</code> or <code class="code">--exec-prefix</code> options to configure.  This
+option is useful if GDB is supposed to be moved to a different place
+after it is built.
+</p>
+</dd>
+<dt><code class="code">--enable-64-bit-bfd</code></dt>
+<dd><p>Enable 64-bit support in BFD on 32-bit hosts.
+</p>
+</dd>
+<dt><code class="code">--disable-gdbmi</code></dt>
+<dd><p>Build <small class="sc">GDB</small> without the GDB/MI machine interface
+(see <a class="pxref" href="GDB_002fMI.html">The <small class="sc">GDB/MI</small> Interface</a>).
+</p>
+</dd>
+<dt><code class="code">--enable-tui</code></dt>
+<dd><p>Build <small class="sc">GDB</small> with the text-mode full-screen user interface
+(TUI).  Requires a curses library (ncurses and cursesX are also
+supported).
+</p>
+</dd>
+<dt><code class="code">--with-curses</code></dt>
+<dd><p>Use the curses library instead of the termcap library, for text-mode
+terminal operations.
+</p>
+</dd>
+<dt><code class="code">--with-debuginfod</code></dt>
+<dd><p>Build <small class="sc">GDB</small> with <samp class="file">libdebuginfod</samp>, the <code class="code">debuginfod</code> client
+library.  Used to automatically fetch ELF, DWARF and source files from
+<code class="code">debuginfod</code> servers using build IDs associated with any missing
+files.  Enabled by default if <samp class="file">libdebuginfod</samp> is installed and found
+at configure time.  For more information regarding <code class="code">debuginfod</code> see
+<a class="ref" href="Debuginfod.html">Download debugging resources with Debuginfod</a>.
+</p>
+</dd>
+<dt><code class="code">--with-libunwind-ia64</code></dt>
+<dd><p>Use the libunwind library for unwinding function call stack on ia64
+target platforms.  See <a class="url" href="http://www.nongnu.org/libunwind/index.html">http://www.nongnu.org/libunwind/index.html</a> for
+details.
+</p>
+</dd>
+<dt><code class="code">--with-system-readline</code></dt>
+<dd><p>Use the readline library installed on the host, rather than the
+library supplied as part of <small class="sc">GDB</small>.  Readline 7 or newer is
+required; this is enforced by the build system.
+</p>
+</dd>
+<dt><code class="code">--with-system-zlib</code></dt>
+<dd><p>Use the zlib library installed on the host, rather than the library
+supplied as part of <small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><code class="code">--with-expat</code></dt>
+<dd><p>Build <small class="sc">GDB</small> with Expat, a library for XML parsing.  (Done by
+default if libexpat is installed and found at configure time.)  This
+library is used to read XML files supplied with <small class="sc">GDB</small>.  If it
+is unavailable, some features, such as remote protocol memory maps,
+target descriptions, and shared library lists, that are based on XML
+files, will not be available in <small class="sc">GDB</small>.  If your host does not
+have libexpat installed, you can get the latest version from
+<a class="url" href="http://expat.sourceforge.net">http://expat.sourceforge.net</a>.
+</p>
+</dd>
+<dt><code class="code">--with-libiconv-prefix<span class="r">[</span>=<var class="var">dir</var><span class="r">]</span></code></dt>
+<dd><p>Build <small class="sc">GDB</small> with GNU libiconv, a character set encoding
+conversion library.  This is not done by default, as on GNU systems
+the <code class="code">iconv</code> that is built in to the C library is sufficient.  If
+your host does not have a working <code class="code">iconv</code>, you can get the latest
+version of GNU iconv from <a class="url" href="https://www.gnu.org/software/libiconv/">https://www.gnu.org/software/libiconv/</a>.
+</p>
+<p><small class="sc">GDB</small>&rsquo;s build system also supports building GNU libiconv as
+part of the overall build.   See <a class="xref" href="Requirements.html">Requirements for Building <small class="sc">GDB</small></a>.
+</p>
+</dd>
+<dt><code class="code">--with-lzma</code></dt>
+<dd><p>Build <small class="sc">GDB</small> with LZMA, a compression library.  (Done by default
+if liblzma is installed and found at configure time.)  LZMA is used by
+<small class="sc">GDB</small>&rsquo;s &quot;mini debuginfo&quot; feature, which is only useful on
+platforms using the ELF object file format.  If your host does not
+have liblzma installed, you can get the latest version from
+<a class="url" href="https://tukaani.org/xz/">https://tukaani.org/xz/</a>.
+</p>
+</dd>
+<dt><code class="code">--with-python<span class="r">[</span>=<var class="var">python</var><span class="r">]</span></code></dt>
+<dd><p>Build <small class="sc">GDB</small> with Python scripting support.  (Done by default if
+libpython is present and found at configure time.)  Python makes
+<small class="sc">GDB</small> scripting much more powerful than the restricted CLI
+scripting language.  If your host does not have Python installed, you
+can find it on <a class="url" href="http://www.python.org/download/">http://www.python.org/download/</a>.  The oldest version
+of Python supported by GDB is 3.0.1.  The optional argument <var class="var">python</var>
+is used to find the Python headers and libraries.  It can be either
+the name of a Python executable, or the name of the directory in which
+Python is installed.
+</p>
+</dd>
+<dt><code class="code">--with-guile[=<var class="var">guile</var>]</code></dt>
+<dd><p>Build <small class="sc">GDB</small> with GNU Guile scripting support.  (Done by default
+if libguile is present and found at configure time.)  If your host
+does not have Guile installed, you can find it at
+<a class="url" href="https://www.gnu.org/software/guile/">https://www.gnu.org/software/guile/</a>.  The optional argument <var class="var">guile</var>
+can be a version number, which will cause <code class="code">configure</code> to try to
+use that version of Guile; or the file name of a <code class="code">pkg-config</code>
+executable, which will be queried to find the information needed to
+compile and link against Guile.
+</p>
+</dd>
+<dt><code class="code">--without-included-regex</code></dt>
+<dd><p>Don&rsquo;t use the regex library included with <small class="sc">GDB</small> (as part of the
+libiberty library).  This is the default on hosts with version 2 of
+the GNU C library.
+</p>
+</dd>
+<dt><code class="code">--with-sysroot=<var class="var">dir</var></code></dt>
+<dd><p>Use <var class="var">dir</var> as the default system root directory for libraries whose
+file names begin with <samp class="file">/lib</samp>&rsquo; or <samp class="file">/usr/lib'</samp>.  (The value of
+<var class="var">dir</var> can be modified at run time by using the <code class="command">set
+sysroot</code> command.)  If <var class="var">dir</var> is under the <small class="sc">GDB</small> configured
+prefix (set with <code class="code">--prefix</code> or <code class="code">--exec-prefix options</code>, the
+default system root will be automatically adjusted if and when
+<small class="sc">GDB</small> is moved to a different location.
+</p>
+</dd>
+<dt><code class="code">--with-system-gdbinit=<var class="var">file</var></code></dt>
+<dd><p>Configure <small class="sc">GDB</small> to automatically load a system-wide init file.
+<var class="var">file</var> should be an absolute file name.  If <var class="var">file</var> is in a
+directory under the configured prefix, and <small class="sc">GDB</small> is moved to
+another location after being built, the location of the system-wide
+init file will be adjusted accordingly.
+</p>
+</dd>
+<dt><code class="code">--with-system-gdbinit-dir=<var class="var">directory</var></code></dt>
+<dd><p>Configure <small class="sc">GDB</small> to automatically load init files from a
+system-wide directory.  <var class="var">directory</var> should be an absolute directory
+name.  If <var class="var">directory</var> is in a directory under the configured
+prefix, and <small class="sc">GDB</small> is moved to another location after being
+built, the location of the system-wide init directory will be
+adjusted accordingly.
+</p>
+</dd>
+<dt><code class="code">--enable-build-warnings</code></dt>
+<dd><p>When building the <small class="sc">GDB</small> sources, ask the compiler to warn about
+any code which looks even vaguely suspicious.  It passes many
+different warning flags, depending on the exact version of the
+compiler you are using.
+</p>
+</dd>
+<dt><code class="code">--enable-werror</code></dt>
+<dd><p>Treat compiler warnings as errors.  It adds the <code class="code">-Werror</code> flag
+to the compiler, which will fail the compilation if the compiler
+outputs any warning messages.
+</p>
+</dd>
+<dt><code class="code">--enable-ubsan</code></dt>
+<dd><p>Enable the GCC undefined behavior sanitizer.  This is disabled by
+default, but passing <code class="code">--enable-ubsan=yes</code> or
+<code class="code">--enable-ubsan=auto</code> to <code class="code">configure</code> will enable it.  The
+undefined behavior sanitizer checks for C<code class="t">++</code> undefined behavior.
+It has a performance cost, so if you are looking at <small class="sc">GDB</small>&rsquo;s
+performance, you should disable it.  The undefined behavior sanitizer
+was first introduced in GCC 4.9.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="System_002dwide-configuration.html">System-wide configuration and settings</a>, Previous: <a href="Config-Names.html">Specifying Names for Hosts and Targets</a>, Up: <a href="Installing-GDB.html">Installing <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

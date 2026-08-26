@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Environment (Debugging with GDB)</title>
+
+<meta name="description" content="Environment (Debugging with GDB)">
+<meta name="keywords" content="Environment (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running.html" rel="up" title="Running">
+<link href="Working-Directory.html" rel="next" title="Working Directory">
+<link href="Arguments.html" rel="prev" title="Arguments">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Environment">
+<div class="nav-panel">
+<p>
+Next: <a href="Working-Directory.html" accesskey="n" rel="next">Your Program&rsquo;s Working Directory</a>, Previous: <a href="Arguments.html" accesskey="p" rel="prev">Your Program&rsquo;s Arguments</a>, Up: <a href="Running.html" accesskey="u" rel="up">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Your-Program_0027s-Environment"><span>4.4 Your Program&rsquo;s Environment<a class="copiable-link" href="#Your-Program_0027s-Environment"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-environment-_0028of-your-program_0029"></a>
+<p>The <em class="dfn">environment</em> consists of a set of environment variables and
+their values.  Environment variables conventionally record such things as
+your user name, your home directory, your terminal type, and your search
+path for programs to run.  Usually you set up environment variables with
+the shell and they are inherited by all the other programs you run.  When
+debugging, it can be useful to try running your program with a modified
+environment without having to start <small class="sc">GDB</small> over again.
+</p>
+<dl class="table">
+<dt><a id="index-path"></a><span><code class="code">path <var class="var">directory</var></code><a class="copiable-link" href="#index-path"> &para;</a></span></dt>
+<dd><p>Add <var class="var">directory</var> to the front of the <code class="env">PATH</code> environment variable
+(the search path for executables) that will be passed to your program.
+The value of <code class="env">PATH</code> used by <small class="sc">GDB</small> does not change.
+You may specify several directory names, separated by whitespace or by a
+system-dependent separator character (&lsquo;<samp class="samp">:</samp>&rsquo; on Unix, &lsquo;<samp class="samp">;</samp>&rsquo; on
+MS-DOS and MS-Windows).  If <var class="var">directory</var> is already in the path, it
+is moved to the front, so it is searched sooner.
+</p>
+<p>You can use the string &lsquo;<samp class="samp">$cwd</samp>&rsquo; to refer to whatever is the current
+working directory at the time <small class="sc">GDB</small> searches the path.  If you
+use &lsquo;<samp class="samp">.</samp>&rsquo; instead, it refers to the directory where you executed the
+<code class="code">path</code> command.  <small class="sc">GDB</small> replaces &lsquo;<samp class="samp">.</samp>&rsquo; in the
+<var class="var">directory</var> argument (with the current path) before adding
+<var class="var">directory</var> to the search path.
+</p>
+</dd>
+<dt><a id="index-show-paths"></a><span><code class="code">show paths</code><a class="copiable-link" href="#index-show-paths"> &para;</a></span></dt>
+<dd><p>Display the list of search paths for executables (the <code class="env">PATH</code>
+environment variable).
+</p>
+</dd>
+<dt><a id="index-show-environment"></a><span><code class="code">show environment <span class="r">[</span><var class="var">varname</var><span class="r">]</span></code><a class="copiable-link" href="#index-show-environment"> &para;</a></span></dt>
+<dd><p>Print the value of environment variable <var class="var">varname</var> to be given to
+your program when it starts.  If you do not supply <var class="var">varname</var>,
+print the names and values of all environment variables to be given to
+your program.  You can abbreviate <code class="code">environment</code> as <code class="code">env</code>.
+</p>
+<a class="index-entry-id" id="index-set-environment"></a>
+<a class="anchor" id="set-environment"></a></dd>
+<dt><code class="code">set environment <var class="var">varname</var> <span class="r">[</span>=<var class="var">value</var><span class="r">]</span></code></dt>
+<dd><p>Set environment variable <var class="var">varname</var> to <var class="var">value</var>.  The value
+changes for your program (and the shell <small class="sc">GDB</small> uses to launch
+it), not for <small class="sc">GDB</small> itself.  The <var class="var">value</var> may be any string; the
+values of environment variables are just strings, and any
+interpretation is supplied by your program itself.  The <var class="var">value</var>
+parameter is optional; if it is eliminated, the variable is set to a
+null value.
+</p>
+<p>For example, this command:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set env USER = foo
+</pre></div>
+
+<p>tells the debugged program, when subsequently run, that its user is named
+&lsquo;<samp class="samp">foo</samp>&rsquo;.  (The spaces around &lsquo;<samp class="samp">=</samp>&rsquo; are used for clarity here; they
+are not actually required.)
+</p>
+<p>Note that on Unix systems, <small class="sc">GDB</small> runs your program via a shell,
+which also inherits the environment set with <code class="code">set environment</code>.
+If necessary, you can avoid that by using the &lsquo;<samp class="samp">env</samp>&rsquo; program as a
+wrapper instead of using <code class="code">set environment</code>.  See <a class="xref" href="Starting.html#set-exec_002dwrapper">set exec-wrapper</a>, for an example doing just that.
+</p>
+<p>Environment variables that are set by the user are also transmitted to
+<code class="command">gdbserver</code> to be used when starting the remote inferior.
+see <a class="pxref" href="General-Query-Packets.html#QEnvironmentHexEncoded">QEnvironmentHexEncoded</a>.
+</p>
+<a class="index-entry-id" id="index-unset-environment"></a>
+<a class="anchor" id="unset-environment"></a></dd>
+<dt><code class="code">unset environment <var class="var">varname</var></code></dt>
+<dd><p>Remove variable <var class="var">varname</var> from the environment to be passed to your
+program.  This is different from &lsquo;<samp class="samp">set env <var class="var">varname</var> =</samp>&rsquo;;
+<code class="code">unset environment</code> removes the variable from the environment,
+rather than assigning it an empty value.
+</p>
+<p>Environment variables that are unset by the user are also unset on
+<code class="command">gdbserver</code> when starting the remote inferior.
+see <a class="pxref" href="General-Query-Packets.html#QEnvironmentUnset">QEnvironmentUnset</a>.
+</p></dd>
+</dl>
+
+<p><em class="emph">Warning:</em> On Unix systems, <small class="sc">GDB</small> runs your program using
+the shell indicated by your <code class="env">SHELL</code> environment variable if it
+exists (or <code class="code">/bin/sh</code> if not).  If your <code class="env">SHELL</code> variable
+names a shell that runs an initialization file when started
+non-interactively&mdash;such as <samp class="file">.cshrc</samp> for C-shell, $<samp class="file">.zshenv</samp>
+for the Z shell, or the file specified in the <code class="env">BASH_ENV</code>
+environment variable for BASH&mdash;any variables you set in that file
+affect your program.  You may wish to move setting of environment
+variables to files that are only run when you sign on, such as
+<samp class="file">.login</samp> or <samp class="file">.profile</samp>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Working-Directory.html">Your Program&rsquo;s Working Directory</a>, Previous: <a href="Arguments.html">Your Program&rsquo;s Arguments</a>, Up: <a href="Running.html">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ambiguous Expressions (Debugging with GDB)</title>
+
+<meta name="description" content="Ambiguous Expressions (Debugging with GDB)">
+<meta name="keywords" content="Ambiguous Expressions (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data.html" rel="up" title="Data">
+<link href="Variables.html" rel="next" title="Variables">
+<link href="Expressions.html" rel="prev" title="Expressions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Ambiguous-Expressions">
+<div class="nav-panel">
+<p>
+Next: <a href="Variables.html" accesskey="n" rel="next">Program Variables</a>, Previous: <a href="Expressions.html" accesskey="p" rel="prev">Expressions</a>, Up: <a href="Data.html" accesskey="u" rel="up">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Ambiguous-Expressions-1"><span>10.2 Ambiguous Expressions<a class="copiable-link" href="#Ambiguous-Expressions-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-ambiguous-expressions"></a>
+
+<p>Expressions can sometimes contain some ambiguous elements.  For instance,
+some programming languages (notably Ada, C<code class="t">++</code> and Objective-C) permit
+a single function name to be defined several times, for application in
+different contexts.  This is called <em class="dfn">overloading</em>.  Another example
+involving Ada is generics.  A <em class="dfn">generic package</em> is similar to C<code class="t">++</code>
+templates and is typically instantiated several times, resulting in
+the same function name being defined in different contexts.
+</p>
+<p>In some cases and depending on the language, it is possible to adjust
+the expression to remove the ambiguity.  For instance in C<code class="t">++</code>, you
+can specify the signature of the function you want to break on, as in
+<kbd class="kbd">break <var class="var">function</var>(<var class="var">types</var>)</kbd>.  In Ada, using the fully
+qualified name of your function often makes the expression unambiguous
+as well.
+</p>
+<p>When an ambiguity that needs to be resolved is detected, the debugger
+has the capability to display a menu of numbered choices for each
+possibility, and then waits for the selection with the prompt &lsquo;<samp class="samp">&gt;</samp>&rsquo;.
+The first option is always &lsquo;<samp class="samp">[0] cancel</samp>&rsquo;, and typing <kbd class="kbd">0 <kbd class="key">RET</kbd></kbd>
+aborts the current command.  If the command in which the expression was
+used allows more than one choice to be selected, the next option in the
+menu is &lsquo;<samp class="samp">[1] all</samp>&rsquo;, and typing <kbd class="kbd">1 <kbd class="key">RET</kbd></kbd> selects all possible
+choices.
+</p>
+<p>For example, the following session excerpt shows an attempt to set a
+breakpoint at the overloaded symbol <code class="code">String::after</code>.
+We choose three particular definitions of that function name:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) b String::after
+[0] cancel
+[1] all
+[2] file:String.cc; line number:867
+[3] file:String.cc; line number:860
+[4] file:String.cc; line number:875
+[5] file:String.cc; line number:853
+[6] file:String.cc; line number:846
+[7] file:String.cc; line number:735
+&gt; 2 4 6
+Breakpoint 1 at 0xb26c: file String.cc, line 867.
+Breakpoint 2 at 0xb344: file String.cc, line 875.
+Breakpoint 3 at 0xafcc: file String.cc, line 846.
+Multiple breakpoints were set.
+Use the &quot;delete&quot; command to delete unwanted
+ breakpoints.
+(gdb)
+</pre></div></div>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set-multiple_002dsymbols"></a>
+<a id="index-multiple_002dsymbols-menu"></a><span><code class="code">set multiple-symbols <var class="var">mode</var></code><a class="copiable-link" href="#index-multiple_002dsymbols-menu"> &para;</a></span></dt>
+<dd>
+<p>This option allows you to adjust the debugger behavior when an expression
+is ambiguous.
+</p>
+<p>By default, <var class="var">mode</var> is set to <code class="code">all</code>.  If the command with which
+the expression is used allows more than one choice, then <small class="sc">GDB</small>
+automatically selects all possible choices.  For instance, inserting
+a breakpoint on a function using an ambiguous name results in a breakpoint
+inserted on each possible match.  However, if a unique choice must be made,
+then <small class="sc">GDB</small> uses the menu to help you disambiguate the expression.
+For instance, printing the address of an overloaded function will result
+in the use of the menu.
+</p>
+<p>When <var class="var">mode</var> is set to <code class="code">ask</code>, the debugger always uses the menu
+when an ambiguity is detected.
+</p>
+<p>Finally, when <var class="var">mode</var> is set to <code class="code">cancel</code>, the debugger reports
+an error due to the ambiguity and the command is aborted.
+</p>
+</dd>
+<dt><a id="index-show-multiple_002dsymbols"></a><span><code class="code">show multiple-symbols</code><a class="copiable-link" href="#index-show-multiple_002dsymbols"> &para;</a></span></dt>
+<dd><p>Show the current value of the <code class="code">multiple-symbols</code> setting.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Variables.html">Program Variables</a>, Previous: <a href="Expressions.html">Expressions</a>, Up: <a href="Data.html">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

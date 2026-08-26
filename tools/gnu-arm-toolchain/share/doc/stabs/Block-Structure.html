@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Block Structure (STABS)</title>
+
+<meta name="description" content="Block Structure (STABS)">
+<meta name="keywords" content="Block Structure (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Program-Structure.html" rel="up" title="Program Structure">
+<link href="Alternate-Entry-Points.html" rel="next" title="Alternate Entry Points">
+<link href="Nested-Procedures.html" rel="prev" title="Nested Procedures">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Block-Structure">
+<div class="nav-panel">
+<p>
+Next: <a href="Alternate-Entry-Points.html" accesskey="n" rel="next">Alternate Entry Points</a>, Previous: <a href="Nested-Procedures.html" accesskey="p" rel="prev">Nested Procedures</a>, Up: <a href="Program-Structure.html" accesskey="u" rel="up">Encoding the Structure of the Program</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Block-Structure-1"><span>2.7 Block Structure<a class="copiable-link" href="#Block-Structure-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-N_005fLBRAC"></a>
+<a class="index-entry-id" id="index-N_005fRBRAC"></a>
+<p>The program&rsquo;s block structure is represented by the <code class="code">N_LBRAC</code> (left
+brace) and the <code class="code">N_RBRAC</code> (right brace) stab types.  The variables
+defined inside a block precede the <code class="code">N_LBRAC</code> symbol for most
+compilers, including GCC.  Other compilers, such as the Convex, Acorn
+RISC machine, and Sun <code class="code">acc</code> compilers, put the variables after the
+<code class="code">N_LBRAC</code> symbol.  The values of the <code class="code">N_LBRAC</code> and
+<code class="code">N_RBRAC</code> symbols are the start and end addresses of the code of
+the block, respectively.  For most machines, they are relative to the
+starting address of this source file.  For the Gould NP1, they are
+absolute.  For stabs in sections (see <a class="pxref" href="Stab-Sections.html">Using Stabs in Their Own Sections</a>), they are
+relative to the function in which they occur.
+</p>
+<p>The <code class="code">N_LBRAC</code> and <code class="code">N_RBRAC</code> stabs that describe the block
+scope of a procedure are located after the <code class="code">N_FUN</code> stab that
+represents the procedure itself.
+</p>
+<p>Sun documents the desc field of <code class="code">N_LBRAC</code> and
+<code class="code">N_RBRAC</code> symbols as containing the nesting level of the block.
+However, dbx seems to not care, and GCC always sets desc to
+zero.
+</p>
+<a class="index-entry-id" id="index-_002ebb"></a>
+<a class="index-entry-id" id="index-_002ebe"></a>
+<a class="index-entry-id" id="index-C_005fBLOCK"></a>
+<p>For XCOFF, block scope is indicated with <code class="code">C_BLOCK</code> symbols.  If the
+name of the symbol is &lsquo;<samp class="samp">.bb</samp>&rsquo;, then it is the beginning of the block;
+if the name of the symbol is &lsquo;<samp class="samp">.be</samp>&rsquo;; it is the end of the block.
+</p>
+</div>
+
+
+
+</body>
+</html>

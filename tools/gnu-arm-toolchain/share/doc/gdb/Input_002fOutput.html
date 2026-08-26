@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Input/Output (Debugging with GDB)</title>
+
+<meta name="description" content="Input/Output (Debugging with GDB)">
+<meta name="keywords" content="Input/Output (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running.html" rel="up" title="Running">
+<link href="Attach.html" rel="next" title="Attach">
+<link href="Working-Directory.html" rel="prev" title="Working Directory">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Input_002fOutput">
+<div class="nav-panel">
+<p>
+Next: <a href="Attach.html" accesskey="n" rel="next">Debugging an Already-running Process</a>, Previous: <a href="Working-Directory.html" accesskey="p" rel="prev">Your Program&rsquo;s Working Directory</a>, Up: <a href="Running.html" accesskey="u" rel="up">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Your-Program_0027s-Input-and-Output"><span>4.6 Your Program&rsquo;s Input and Output<a class="copiable-link" href="#Your-Program_0027s-Input-and-Output"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-redirection"></a>
+<a class="index-entry-id" id="index-i_002fo"></a>
+<a class="index-entry-id" id="index-terminal"></a>
+<p>By default, the program you run under <small class="sc">GDB</small> does input and output to
+the same terminal that <small class="sc">GDB</small> uses.  <small class="sc">GDB</small> switches the terminal
+to its own terminal modes to interact with you, but it records the terminal
+modes your program was using and switches back to them when you continue
+running your program.
+</p>
+<dl class="table">
+<dt><a id="index-info-terminal"></a><span><code class="code">info terminal</code><a class="copiable-link" href="#index-info-terminal"> &para;</a></span></dt>
+<dd><p>Displays information recorded by <small class="sc">GDB</small> about the terminal modes your
+program is using.
+</p></dd>
+</dl>
+
+<p>You can redirect your program&rsquo;s input and/or output using shell
+redirection with the <code class="code">run</code> command.  For example,
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">run &gt; outfile
+</pre></div>
+
+<p>starts your program, diverting its output to the file <samp class="file">outfile</samp>.
+</p>
+<a class="index-entry-id" id="index-tty"></a>
+<a class="index-entry-id" id="index-controlling-terminal"></a>
+<p>Another way to specify where your program should do input and output is
+with the <code class="code">tty</code> command.  This command accepts a file name as
+argument, and causes this file to be the default for future <code class="code">run</code>
+commands.  It also resets the controlling terminal for the child
+process, for future <code class="code">run</code> commands.  For example,
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">tty /dev/ttyb
+</pre></div>
+
+<p>directs that processes started with subsequent <code class="code">run</code> commands
+default to do input and output on the terminal <samp class="file">/dev/ttyb</samp> and have
+that as their controlling terminal.
+</p>
+<p>An explicit redirection in <code class="code">run</code> overrides the <code class="code">tty</code> command&rsquo;s
+effect on the input/output device, but not its effect on the controlling
+terminal.
+</p>
+<p>When you use the <code class="code">tty</code> command or redirect input in the <code class="code">run</code>
+command, only the input <em class="emph">for your program</em> is affected.  The input
+for <small class="sc">GDB</small> still comes from your terminal.  <code class="code">tty</code> is an alias
+for <code class="code">set inferior-tty</code>.
+</p>
+<a class="index-entry-id" id="index-inferior-tty"></a>
+<a class="index-entry-id" id="index-set-inferior-controlling-terminal"></a>
+<p>You can use the <code class="code">show inferior-tty</code> command to tell <small class="sc">GDB</small> to
+display the name of the terminal that will be used for future runs of your
+program.
+</p>
+<dl class="table">
+<dt><a id="index-set-inferior_002dtty"></a><span><code class="code">set inferior-tty [ <var class="var">tty</var> ]</code><a class="copiable-link" href="#index-set-inferior_002dtty"> &para;</a></span></dt>
+<dd><p>Set the tty for the program being debugged to <var class="var">tty</var>.  Omitting <var class="var">tty</var>
+restores the default behavior, which is to use the same terminal as
+<small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><a id="index-show-inferior_002dtty"></a><span><code class="code">show inferior-tty</code><a class="copiable-link" href="#index-show-inferior_002dtty"> &para;</a></span></dt>
+<dd><p>Show the current tty for the program being debugged.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Attach.html">Debugging an Already-running Process</a>, Previous: <a href="Working-Directory.html">Your Program&rsquo;s Working Directory</a>, Up: <a href="Running.html">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

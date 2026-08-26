@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Selectors (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Selectors (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Selectors (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Test-Directives.html" rel="up" title="Test Directives">
+<link href="Effective_002dTarget-Keywords.html" rel="next" title="Effective-Target Keywords">
+<link href="Directives.html" rel="prev" title="Directives">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Selectors">
+<div class="nav-panel">
+<p>
+Next: <a href="Effective_002dTarget-Keywords.html" accesskey="n" rel="next">Keywords describing target attributes</a>, Previous: <a href="Directives.html" accesskey="p" rel="prev">Syntax and Descriptions of test directives</a>, Up: <a href="Test-Directives.html" accesskey="u" rel="up">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Selecting-targets-to-which-a-test-applies"><span>6.2.2 Selecting targets to which a test applies<a class="copiable-link" href="#Selecting-targets-to-which-a-test-applies"> &para;</a></span></h4>
+
+<p>Several test directives include <var class="var">selector</var>s to limit the targets
+for which a test is run or to declare that a test is expected to fail
+on particular targets.
+</p>
+<p>A selector is:
+</p><ul class="itemize mark-bullet">
+<li>one or more target triplets, possibly including wildcard characters;
+use &lsquo;<samp class="samp">*-*-*</samp>&rsquo; to match any target
+</li><li>a single effective-target keyword (see <a class="pxref" href="Effective_002dTarget-Keywords.html">Keywords describing target attributes</a>)
+</li><li>a list of compiler options that should be included or excluded
+(as described in more detail below)
+</li><li>a logical expression
+</li></ul>
+
+<p>Depending on the context, the selector specifies whether a test is
+skipped and reported as unsupported or is expected to fail.  A context
+that allows either &lsquo;<samp class="samp">target</samp>&rsquo; or &lsquo;<samp class="samp">xfail</samp>&rsquo; also allows
+&lsquo;<samp class="samp">{ target <var class="var">selector1</var> xfail <var class="var">selector2</var> }</samp>&rsquo;
+to skip the test for targets that don&rsquo;t match <var class="var">selector1</var> and the
+test to fail for targets that match <var class="var">selector2</var>.
+</p>
+<p>A selector expression appears within curly braces and uses a single
+logical operator: one of &lsquo;<samp class="samp">!</samp>&rsquo;, &lsquo;<samp class="samp">&amp;&amp;</samp>&rsquo;, or &lsquo;<samp class="samp">||</samp>&rsquo;.  An
+operand is one of the following:
+</p>
+<ul class="itemize mark-bullet">
+<li>another selector expression, in curly braces
+
+</li><li>an effective-target keyword, such as <code class="code">lp64</code>
+
+</li><li>a single target triplet
+
+</li><li>a list of target triplets within quotes or curly braces
+
+</li><li>one of the following:
+
+<dl class="table">
+<dt>&lsquo;<samp class="samp">{ any-opts <var class="var">opt1</var> &hellip; <var class="var">optn</var> }</samp>&rsquo;</dt>
+<dd><p>Each of <var class="var">opt1</var> to <var class="var">optn</var> is a space-separated list of option globs.
+The selector expression evaluates to true if, for one of these strings,
+every glob in the string matches an option that was passed to the compiler.
+For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">{ any-opts &quot;-O3 -flto&quot; &quot;-O[2g]&quot; }
+</pre></div>
+
+<p>is true if any of the following are true:
+</p>
+<ul class="itemize mark-bullet">
+<li><samp class="option">-O2</samp> was passed to the compiler
+
+</li><li><samp class="option">-Og</samp> was passed to the compiler
+
+</li><li>both <samp class="option">-O3</samp> and <samp class="option">-flto</samp> were passed to the compiler
+</li></ul>
+
+<p>This kind of selector can only be used within <code class="code">dg-final</code> directives.
+Use <code class="code">dg-skip-if</code>, <code class="code">dg-xfail-if</code> or <code class="code">dg-xfail-run-if</code> to
+skip whole tests based on options, or to mark them as expected to fail
+with certain options.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">{ no-opts <var class="var">opt1</var> &hellip; <var class="var">optn</var> }</samp>&rsquo;</dt>
+<dd><p>As for <code class="code">any-opts</code> above, each of <var class="var">opt1</var> to <var class="var">optn</var> is a
+space-separated list of option globs.  The selector expression
+evaluates to true if, for all of these strings, there is at least
+one glob that does not match an option that was passed to the compiler.
+It is shorthand for:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">{ ! { any-opts <var class="var">opt1</var> ... <var class="var">optn</var> } }
+</pre></div>
+
+<p>For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">{ no-opts &quot;-O3 -flto&quot; &quot;-O[2g]&quot; }
+</pre></div>
+
+<p>is true if all of the following are true:
+</p>
+<ul class="itemize mark-bullet">
+<li><samp class="option">-O2</samp> was not passed to the compiler
+
+</li><li><samp class="option">-Og</samp> was not passed to the compiler
+
+</li><li>at least one of <samp class="option">-O3</samp> or <samp class="option">-flto</samp> was not passed to the compiler
+</li></ul>
+
+<p>Like <code class="code">any-opts</code>, this kind of selector can only be used within
+<code class="code">dg-final</code> directives.
+</p>
+</dd>
+</dl>
+</li></ul>
+
+<p>Here are some examples of full target selectors:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">{ target { ! &quot;hppa*-*-* ia64*-*-*&quot; } }
+{ target { powerpc*-*-* &amp;&amp; lp64 } }
+{ xfail { lp64 || vect_no_align } }
+{ xfail { aarch64*-*-* &amp;&amp; { any-opts &quot;-O2&quot; } } }
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Effective_002dTarget-Keywords.html">Keywords describing target attributes</a>, Previous: <a href="Directives.html">Syntax and Descriptions of test directives</a>, Up: <a href="Test-Directives.html">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

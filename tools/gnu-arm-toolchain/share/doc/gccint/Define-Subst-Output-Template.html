@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Define Subst Output Template (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Define Subst Output Template (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Define Subst Output Template (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Define-Subst.html" rel="up" title="Define Subst">
+<link href="Define-Subst-Pattern-Matching.html" rel="prev" title="Define Subst Pattern Matching">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Define-Subst-Output-Template">
+<div class="nav-panel">
+<p>
+Previous: <a href="Define-Subst-Pattern-Matching.html" accesskey="p" rel="prev">Pattern Matching in <code class="code">define_subst</code></a>, Up: <a href="Define-Subst.html" accesskey="u" rel="up">RTL Templates Transformations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Generation-of-output-template-in-define_005fsubst"><span>16.22.3 Generation of output template in <code class="code">define_subst</code><a class="copiable-link" href="#Generation-of-output-template-in-define_005fsubst"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-define_005fsubst-3"></a>
+
+<p>If all necessary checks for <code class="code">define_subst</code> application pass, a new
+RTL-pattern, based on the output-template, is created to replace the old
+template.  Like in input-patterns, meanings of some RTL expressions are
+changed when they are used in output-patterns of a <code class="code">define_subst</code>.
+Thus, <code class="code">match_dup</code> is used for copying the whole expression from the
+original pattern, which matched corresponding <code class="code">match_operand</code> from
+the input pattern.
+</p>
+<p><code class="code">match_dup N</code> is used in the output template to be replaced with
+the expression from the original pattern, which matched
+<code class="code">match_operand N</code> from the input pattern.  As a consequence,
+<code class="code">match_dup</code> cannot be used to point to <code class="code">match_operand</code>s from
+the output pattern, it should always refer to a <code class="code">match_operand</code>
+from the input pattern.  If a <code class="code">match_dup N</code> occurs more than once
+in the output template, its first occurrence is replaced with the
+expression from the original pattern, and the subsequent expressions
+are replaced with <code class="code">match_dup N</code>, i.e., a reference to the first
+expression.
+</p>
+<p>In the output template one can refer to the expressions from the
+original pattern and create new ones.  For instance, some operands could
+be added by means of standard <code class="code">match_operand</code>.
+</p>
+<p>After replacing <code class="code">match_dup</code> with some RTL-subtree from the original
+pattern, it could happen that several <code class="code">match_operand</code>s in the
+output pattern have the same indexes.  It is unknown, how many and what
+indexes would be used in the expression which would replace
+<code class="code">match_dup</code>, so such conflicts in indexes are inevitable.  To
+overcome this issue, <code class="code">match_operands</code> and <code class="code">match_operators</code>,
+which were introduced into the output pattern, are renumerated when all
+<code class="code">match_dup</code>s are replaced.
+</p>
+<p>Number of alternatives in <code class="code">match_operand</code>s introduced into the
+output template <code class="code">M</code> could differ from the number of alternatives in
+the original pattern <code class="code">N</code>, so in the resultant pattern there would
+be <code class="code">N*M</code> alternatives.  Thus, constraints from the original pattern
+would be duplicated <code class="code">N</code> times, constraints from the output pattern
+would be duplicated <code class="code">M</code> times, producing all possible combinations.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Define-Subst-Pattern-Matching.html">Pattern Matching in <code class="code">define_subst</code></a>, Up: <a href="Define-Subst.html">RTL Templates Transformations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

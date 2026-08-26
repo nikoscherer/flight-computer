@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Plugins loading (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Plugins loading (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Plugins loading (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Plugins.html" rel="up" title="Plugins">
+<link href="Plugin-API.html" rel="next" title="Plugin API">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Plugins-loading">
+<div class="nav-panel">
+<p>
+Next: <a href="Plugin-API.html" accesskey="n" rel="next">Plugin API</a>, Up: <a href="Plugins.html" accesskey="u" rel="up">Plugins</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Loading-Plugins"><span>23.1 Loading Plugins<a class="copiable-link" href="#Loading-Plugins"> &para;</a></span></h3>
+
+<p>Plugins are supported on platforms that support <samp class="option">-ldl
+-rdynamic</samp> as well as Windows/MinGW. They are loaded by the compiler
+using <code class="code">dlopen</code> or equivalent and invoked at pre-determined
+locations in the compilation process.
+</p>
+<p>Plugins are loaded with
+</p>
+<p><samp class="option">-fplugin=/path/to/<var class="var">name</var>.<var class="var">ext</var></samp> <samp class="option">-fplugin-arg-<var class="var">name</var>-<var class="var">key1</var>[=<var class="var">value1</var>]</samp>
+</p>
+<p>Where <var class="var">name</var> is the plugin name and <var class="var">ext</var> is the platform-specific
+dynamic library extension. It should be <code class="code">dll</code> on Windows/MinGW,
+<code class="code">dylib</code> on Darwin/macOS, and <code class="code">so</code> on all other platforms.
+The plugin arguments are parsed by GCC and passed to respective
+plugins as key-value pairs. Multiple plugins can be invoked by
+specifying multiple <samp class="option">-fplugin</samp> arguments.
+</p>
+<p>A plugin can be simply given by its short name (no dots or
+slashes). When simply passing <samp class="option">-fplugin=<var class="var">name</var></samp>, the plugin is
+loaded from the <samp class="file">plugin</samp> directory, so <samp class="option">-fplugin=<var class="var">name</var></samp> is
+the same as <samp class="option">-fplugin=`gcc -print-file-name=plugin`/<var class="var">name</var>.<var class="var">ext</var></samp>,
+using backquote shell syntax to query the <samp class="file">plugin</samp> directory.
+</p>
+</div>
+
+
+
+</body>
+</html>

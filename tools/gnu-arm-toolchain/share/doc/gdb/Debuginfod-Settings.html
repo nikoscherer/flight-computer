@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Debuginfod Settings (Debugging with GDB)</title>
+
+<meta name="description" content="Debuginfod Settings (Debugging with GDB)">
+<meta name="keywords" content="Debuginfod Settings (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Debuginfod.html" rel="up" title="Debuginfod">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Debuginfod-Settings">
+<div class="nav-panel">
+<p>
+Up: <a href="Debuginfod.html" accesskey="u" rel="up">Download debugging resources with Debuginfod</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Debuginfod-Settings-1"><span>K.1 Debuginfod Settings<a class="copiable-link" href="#Debuginfod-Settings-1"> &para;</a></span></h3>
+
+<p><small class="sc">GDB</small> provides the following commands for configuring <code class="code">debuginfod</code>.
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-set-debuginfod-enabled"></a>
+<a class="anchor" id="set-debuginfod-enabled"></a></dd>
+<dt><a id="index-enable-debuginfod"></a><span><code class="code">set debuginfod enabled</code><a class="copiable-link" href="#index-enable-debuginfod"> &para;</a></span></dt>
+<dt><code class="code">set debuginfod enabled on</code></dt>
+<dd><p><small class="sc">GDB</small> may query <code class="code">debuginfod</code> servers for missing debug info and
+source files.  <small class="sc">GDB</small> may also download individual ELF/DWARF sections
+such as <code class="code">.gdb_index</code> to help reduce the total amount of data downloaded
+from <code class="code">debuginfod</code> servers; this can be controlled by <code class="code">maint&nbsp;set&nbsp;debuginfod&nbsp;download-sections</code><!-- /@w --> (see <a class="pxref" href="Maintenance-Commands.html">maint set
+debuginfod download-sections</a>).
+</p>
+</dd>
+<dt><code class="code">set debuginfod enabled off</code></dt>
+<dd><p><small class="sc">GDB</small> will not attempt to query <code class="code">debuginfod</code> servers when missing
+debug info or source files.  By default, <code class="code">debuginfod enabled</code> is set to
+<code class="code">off</code> for non-interactive sessions.
+</p>
+</dd>
+<dt><code class="code">set debuginfod enabled ask</code></dt>
+<dd><p><small class="sc">GDB</small> will prompt the user to enable or disable <code class="code">debuginfod</code> before
+attempting to perform the next query.  By default, <code class="code">debuginfod enabled</code>
+is set to <code class="code">ask</code> for interactive sessions.
+</p>
+</dd>
+<dt><a id="index-show-debuginfod-enabled"></a><span><code class="code">show debuginfod enabled</code><a class="copiable-link" href="#index-show-debuginfod-enabled"> &para;</a></span></dt>
+<dd><p>Display whether <code class="code">debuginfod enabled</code> is set to <code class="code">on</code>, <code class="code">off</code> or
+<code class="code">ask</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-configure-debuginfod-URLs"></a>
+<a id="index-set-debuginfod-urls"></a><span><code class="code">set debuginfod urls</code><a class="copiable-link" href="#index-set-debuginfod-urls"> &para;</a></span></dt>
+<dt><code class="code">set debuginfod urls <var class="var">urls</var></code></dt>
+<dd><p>Set the space-separated list of URLs that <code class="code">debuginfod</code> will attempt to
+query.  Only <code class="code">http://</code>, <code class="code">https://</code> and <code class="code">file://</code> protocols
+should be used.  The default value of <code class="code">debuginfod urls</code> is copied from
+the <var class="var">DEBUGINFOD_URLS</var> environment variable.
+</p>
+</dd>
+<dt><a id="index-show-debuginfod-urls"></a><span><code class="code">show debuginfod urls</code><a class="copiable-link" href="#index-show-debuginfod-urls"> &para;</a></span></dt>
+<dd><p>Display the list of URLs that <code class="code">debuginfod</code> will attempt to query.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-debuginfod-verbosity"></a>
+<a id="index-set-debuginfod-verbose"></a><span><code class="code">set debuginfod verbose</code><a class="copiable-link" href="#index-set-debuginfod-verbose"> &para;</a></span></dt>
+<dt><code class="code">set debuginfod verbose <var class="var">n</var></code></dt>
+<dd><p>Enable or disable <code class="code">debuginfod</code>-related output.  Use a non-zero value
+to enable and <code class="code">0</code> to disable.  <code class="code">debuginfod</code> output is shown by
+default.
+</p>
+</dd>
+<dt><a id="index-show-debuginfod-verbose"></a><span><code class="code">show debuginfod verbose</code><a class="copiable-link" href="#index-show-debuginfod-verbose"> &para;</a></span></dt>
+<dd><p>Show the current verbosity setting.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Up: <a href="Debuginfod.html">Download debugging resources with Debuginfod</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

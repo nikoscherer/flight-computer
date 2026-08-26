@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Targets (Debugging with GDB)</title>
+
+<meta name="description" content="Targets (Debugging with GDB)">
+<meta name="keywords" content="Targets (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Remote-Debugging.html" rel="next" title="Remote Debugging">
+<link href="GDB-Files.html" rel="prev" title="GDB Files">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Targets">
+<div class="nav-panel">
+<p>
+Next: <a href="Remote-Debugging.html" accesskey="n" rel="next">Debugging Remote Programs</a>, Previous: <a href="GDB-Files.html" accesskey="p" rel="prev"><small class="sc">GDB</small> Files</a>, Up: <a href="index.html" accesskey="u" rel="up">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Specifying-a-Debugging-Target"><span>19 Specifying a Debugging Target<a class="copiable-link" href="#Specifying-a-Debugging-Target"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-debugging-target"></a>
+<p>A <em class="dfn">target</em> is the execution environment occupied by your program.
+</p>
+<p>Often, <small class="sc">GDB</small> runs in the same host environment as your program;
+in that case, the debugging target is specified as a side effect when
+you use the <code class="code">file</code> or <code class="code">core</code> commands.  When you need more
+flexibility&mdash;for example, running <small class="sc">GDB</small> on a physically separate
+host, or controlling a standalone system over a serial port or a
+realtime system over a TCP/IP connection&mdash;you can use the <code class="code">target</code>
+command to specify one of the target types configured for <small class="sc">GDB</small>
+(see <a class="pxref" href="Target-Commands.html">Commands for Managing Targets</a>).
+</p>
+<a class="index-entry-id" id="index-target-architecture"></a>
+<p>It is possible to build <small class="sc">GDB</small> for several different <em class="dfn">target
+architectures</em>.  When <small class="sc">GDB</small> is built like that, you can choose
+one of the available architectures with the <kbd class="kbd">set architecture</kbd>
+command.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-architecture"></a>
+<a id="index-set-architecture"></a><span><code class="code">set architecture <var class="var">arch</var></code><a class="copiable-link" href="#index-set-architecture"> &para;</a></span></dt>
+<dd><p>This command sets the current target architecture to <var class="var">arch</var>.  The
+value of <var class="var">arch</var> can be <code class="code">&quot;auto&quot;</code>, in addition to one of the
+supported architectures.
+</p>
+</dd>
+<dt><code class="code">show architecture</code></dt>
+<dd><p>Show the current target architecture.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-processor"></a>
+<a id="index-set-processor"></a><span><code class="code">set processor</code><a class="copiable-link" href="#index-set-processor"> &para;</a></span></dt>
+<dt><code class="code">processor</code></dt>
+<dd><p>These are alias commands for, respectively, <code class="code">set architecture</code>
+and <code class="code">show architecture</code>.
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="Active-Targets.html" accesskey="1">Active Targets</a></li>
+<li><a href="Target-Commands.html" accesskey="2">Commands for Managing Targets</a></li>
+<li><a href="Byte-Order.html" accesskey="3">Choosing Target Byte Order</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

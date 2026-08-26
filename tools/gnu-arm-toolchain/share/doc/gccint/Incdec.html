@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Incdec (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Incdec (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Incdec (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="RTL.html" rel="up" title="RTL">
+<link href="Assembler.html" rel="next" title="Assembler">
+<link href="Side-Effects.html" rel="prev" title="Side Effects">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Incdec">
+<div class="nav-panel">
+<p>
+Next: <a href="Assembler.html" accesskey="n" rel="next">Assembler Instructions as Expressions</a>, Previous: <a href="Side-Effects.html" accesskey="p" rel="prev">Side Effect Expressions</a>, Up: <a href="RTL.html" accesskey="u" rel="up">RTL Representation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Embedded-Side_002dEffects-on-Addresses"><span>13.16 Embedded Side-Effects on Addresses<a class="copiable-link" href="#Embedded-Side_002dEffects-on-Addresses"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-RTL-preincrement"></a>
+<a class="index-entry-id" id="index-RTL-postincrement"></a>
+<a class="index-entry-id" id="index-RTL-predecrement"></a>
+<a class="index-entry-id" id="index-RTL-postdecrement"></a>
+
+<p>Six special side-effect expression codes appear as memory addresses.
+</p>
+<dl class="table">
+<dt><a id="index-pre_005fdec"></a><span><code class="code">(pre_dec:<var class="var">m</var> <var class="var">x</var>)</code><a class="copiable-link" href="#index-pre_005fdec"> &para;</a></span></dt>
+<dd><p>Represents the side effect of decrementing <var class="var">x</var> by a standard
+amount and represents also the value that <var class="var">x</var> has after being
+decremented.  <var class="var">x</var> must be a <code class="code">reg</code> or <code class="code">mem</code>, but most
+machines allow only a <code class="code">reg</code>.  <var class="var">m</var> must be the machine mode
+for pointers on the machine in use.  The amount <var class="var">x</var> is decremented
+by is the length in bytes of the machine mode of the containing memory
+reference of which this expression serves as the address.  Here is an
+example of its use:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(mem:DF (pre_dec:SI (reg:SI 39)))
+</pre></div>
+
+<p>This says to decrement pseudo register 39 by the length of a <code class="code">DFmode</code>
+value and use the result to address a <code class="code">DFmode</code> value.
+</p>
+</dd>
+<dt><a id="index-pre_005finc"></a><span><code class="code">(pre_inc:<var class="var">m</var> <var class="var">x</var>)</code><a class="copiable-link" href="#index-pre_005finc"> &para;</a></span></dt>
+<dd><p>Similar, but specifies incrementing <var class="var">x</var> instead of decrementing it.
+</p>
+</dd>
+<dt><a id="index-post_005fdec"></a><span><code class="code">(post_dec:<var class="var">m</var> <var class="var">x</var>)</code><a class="copiable-link" href="#index-post_005fdec"> &para;</a></span></dt>
+<dd><p>Represents the same side effect as <code class="code">pre_dec</code> but a different
+value.  The value represented here is the value <var class="var">x</var> has <i class="i">before</i>
+being decremented.
+</p>
+</dd>
+<dt><a id="index-post_005finc"></a><span><code class="code">(post_inc:<var class="var">m</var> <var class="var">x</var>)</code><a class="copiable-link" href="#index-post_005finc"> &para;</a></span></dt>
+<dd><p>Similar, but specifies incrementing <var class="var">x</var> instead of decrementing it.
+</p>
+</dd>
+<dt><a id="index-post_005fmodify"></a><span><code class="code">(post_modify:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-post_005fmodify"> &para;</a></span></dt>
+<dd>
+<p>Represents the side effect of setting <var class="var">x</var> to <var class="var">y</var> and
+represents <var class="var">x</var> before <var class="var">x</var> is modified.  <var class="var">x</var> must be a
+<code class="code">reg</code> or <code class="code">mem</code>, but most machines allow only a <code class="code">reg</code>.
+<var class="var">m</var> must be the machine mode for pointers on the machine in use.
+</p>
+<p>The expression <var class="var">y</var> must be one of three forms:
+<code class="code">(plus:<var class="var">m</var> <var class="var">x</var> <var class="var">z</var>)</code>,
+<code class="code">(minus:<var class="var">m</var> <var class="var">x</var> <var class="var">z</var>)</code>, or
+<code class="code">(plus:<var class="var">m</var> <var class="var">x</var> <var class="var">i</var>)</code>,
+where <var class="var">z</var> is an index register and <var class="var">i</var> is a constant.
+</p>
+<p>Here is an example of its use:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(mem:SF (post_modify:SI (reg:SI 42) (plus (reg:SI 42)
+                                          (reg:SI 48))))
+</pre></div>
+
+<p>This says to modify pseudo register 42 by adding the contents of pseudo
+register 48 to it, after the use of what ever 42 points to.
+</p>
+</dd>
+<dt><a id="index-pre_005fmodify"></a><span><code class="code">(pre_modify:<var class="var">m</var> <var class="var">x</var> <var class="var">expr</var>)</code><a class="copiable-link" href="#index-pre_005fmodify"> &para;</a></span></dt>
+<dd><p>Similar except side effects happen before the use.
+</p></dd>
+</dl>
+
+<p>These embedded side effect expressions must be used with care.  Instruction
+patterns may not use them.  Until the &lsquo;<samp class="samp">flow</samp>&rsquo; pass of the compiler,
+they may occur only to represent pushes onto the stack.  The &lsquo;<samp class="samp">flow</samp>&rsquo;
+pass finds cases where registers are incremented or decremented in one
+instruction and used as an address shortly before or after; these cases are
+then transformed to use pre- or post-increment or -decrement.
+</p>
+<p>If a register used as the operand of these expressions is used in
+another address in an insn, the original value of the register is used.
+Uses of the register outside of an address are not permitted within the
+same insn as a use in an embedded side effect expression because such
+insns behave differently on different machines and hence must be treated
+as ambiguous and disallowed.
+</p>
+<p>An instruction that can be represented with an embedded side effect
+could also be represented using <code class="code">parallel</code> containing an additional
+<code class="code">set</code> to describe how the address register is altered.  This is not
+done because machines that allow these operations at all typically
+allow them wherever a memory address is called for.  Describing them as
+additional parallel stores would require doubling the number of entries
+in the machine description.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Assembler.html">Assembler Instructions as Expressions</a>, Previous: <a href="Side-Effects.html">Side Effect Expressions</a>, Up: <a href="RTL.html">RTL Representation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

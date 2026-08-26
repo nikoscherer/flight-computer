@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Tracepoint Variables (Debugging with GDB)</title>
+
+<meta name="description" content="Tracepoint Variables (Debugging with GDB)">
+<meta name="keywords" content="Tracepoint Variables (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Tracepoints.html" rel="up" title="Tracepoints">
+<link href="Trace-Files.html" rel="next" title="Trace Files">
+<link href="Analyze-Collected-Data.html" rel="prev" title="Analyze Collected Data">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Tracepoint-Variables">
+<div class="nav-panel">
+<p>
+Next: <a href="Trace-Files.html" accesskey="n" rel="next">Using Trace Files</a>, Previous: <a href="Analyze-Collected-Data.html" accesskey="p" rel="prev">Using the Collected Data</a>, Up: <a href="Tracepoints.html" accesskey="u" rel="up">Tracepoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Convenience-Variables-for-Tracepoints"><span>13.3 Convenience Variables for Tracepoints<a class="copiable-link" href="#Convenience-Variables-for-Tracepoints"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-tracepoint-variables"></a>
+<a class="index-entry-id" id="index-convenience-variables-for-tracepoints"></a>
+
+<dl class="table">
+<dt><a id="index-_0024trace_005fframe"></a><span><code class="code">(int) $trace_frame</code><a class="copiable-link" href="#index-_0024trace_005fframe"> &para;</a></span></dt>
+<dd><p>The current trace snapshot (a.k.a. <em class="dfn">frame</em>) number, or -1 if no
+snapshot is selected.
+</p>
+</dd>
+<dt><a id="index-_0024tracepoint"></a><span><code class="code">(int) $tracepoint</code><a class="copiable-link" href="#index-_0024tracepoint"> &para;</a></span></dt>
+<dd><p>The tracepoint for the current trace snapshot.
+</p>
+</dd>
+<dt><a id="index-_0024trace_005fline"></a><span><code class="code">(int) $trace_line</code><a class="copiable-link" href="#index-_0024trace_005fline"> &para;</a></span></dt>
+<dd><p>The line number for the current trace snapshot.
+</p>
+</dd>
+<dt><a id="index-_0024trace_005ffile"></a><span><code class="code">(char []) $trace_file</code><a class="copiable-link" href="#index-_0024trace_005ffile"> &para;</a></span></dt>
+<dd><p>The source file for the current trace snapshot.
+</p>
+</dd>
+<dt><a id="index-_0024trace_005ffunc"></a><span><code class="code">(char []) $trace_func</code><a class="copiable-link" href="#index-_0024trace_005ffunc"> &para;</a></span></dt>
+<dd><p>The name of the function containing <code class="code">$tracepoint</code>.
+</p></dd>
+</dl>
+
+<p>Note: <code class="code">$trace_file</code> is not suitable for use in <code class="code">printf</code>,
+use <code class="code">output</code> instead.
+</p>
+<p>Here&rsquo;s a simple example of using these convenience variables for
+stepping through all the trace snapshots and printing some of their
+data.  Note that these are not the same as trace state variables,
+which are managed by the target.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">tfind start</b>
+
+(gdb) <b class="b">while $trace_frame != -1</b>
+&gt; output $trace_file
+&gt; printf &quot;, line %d (tracepoint #%d)\n&quot;, $trace_line, $tracepoint
+&gt; tfind
+&gt; end
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

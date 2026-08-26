@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Memory Ports in Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Memory Ports in Guile (Debugging with GDB)">
+<meta name="keywords" content="Memory Ports in Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Iterators-In-Guile.html" rel="next" title="Iterators In Guile">
+<link href="I_002fO-Ports-in-Guile.html" rel="prev" title="I/O Ports in Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Memory-Ports-in-Guile">
+<div class="nav-panel">
+<p>
+Next: <a href="Iterators-In-Guile.html" accesskey="n" rel="next">Iterators In Guile</a>, Previous: <a href="I_002fO-Ports-in-Guile.html" accesskey="p" rel="prev">I/O Ports in Guile</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Memory-Ports-in-Guile-1"><span>23.4.3.24 Memory Ports in Guile<a class="copiable-link" href="#Memory-Ports-in-Guile-1"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> provides a <code class="code">port</code> interface to target memory.
+This allows Guile code to read/write target memory using Guile&rsquo;s port and
+bytevector functionality.  The main routine is <code class="code">open-memory</code> which
+returns a port object.  One can then read/write memory using that object.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-open_002dmemory"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">open-memory</strong> <var class="def-var-arguments"><span class="r">[</span>#:mode&nbsp;mode<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:start&nbsp;address<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:size&nbsp;size<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-open_002dmemory"> &para;</a></span></dt>
+<dd><p>Return a port object that can be used for reading and writing memory.
+The port will be open according to <var class="var">mode</var>, which is the standard
+mode argument to Guile port open routines, except that the &lsquo;<samp class="samp">&quot;a&quot;</samp>&rsquo;
+and &lsquo;<samp class="samp">&quot;l&quot;</samp>&rsquo; modes are not supported.
+See <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/File-Ports.html#File-Ports">File Ports</a> in <cite class="cite">GNU Guile Reference Manual</cite>.
+The &lsquo;<samp class="samp">&quot;b&quot;</samp>&rsquo; (binary) character may be present, but is ignored:
+memory ports are binary only.  If &lsquo;<samp class="samp">&quot;0&quot;</samp>&rsquo; is appended then
+the port is marked as unbuffered.
+The default is &lsquo;<samp class="samp">&quot;r&quot;</samp>&rsquo;, read-only and buffered.
+</p>
+<p>The chunk of memory that can be accessed can be bounded.
+If both <var class="var">start</var> and <var class="var">size</var> are unspecified, all of memory can be
+accessed.  If only <var class="var">start</var> is specified, all of memory from that point
+on can be accessed.  If only <var class="var">size</var> if specified, all memory in the
+range [0,<var class="var">size</var>) can be accessed.  If both are specified, all memory
+in the rane [<var class="var">start</var>,<var class="var">start</var>+<var class="var">size</var>) can be accessed.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">memory-port?</strong><a class="copiable-link" href="#index-memory_002dport_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:memory-port&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_002drange"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">memory-port-range</strong> <var class="def-var-arguments">memory-port</var><a class="copiable-link" href="#index-memory_002dport_002drange"> &para;</a></span></dt>
+<dd><p>Return the range of <code class="code">&lt;gdb:memory-port&gt;</code> <var class="var">memory-port</var> as a list
+of two elements: <code class="code">(start end)</code>.  The range is <var class="var">start</var> to <var class="var">end</var>
+inclusive.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_002dread_002dbuffer_002dsize"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">memory-port-read-buffer-size</strong> <var class="def-var-arguments">memory-port</var><a class="copiable-link" href="#index-memory_002dport_002dread_002dbuffer_002dsize"> &para;</a></span></dt>
+<dd><p>Return the size of the read buffer of <code class="code">&lt;gdb:memory-port&gt;</code>
+<var class="var">memory-port</var>.
+</p>
+<p>This procedure is deprecated and will be removed in <small class="sc">GDB</small> 11.
+It returns 0 when using Guile 2.2 or later.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dmemory_002dport_002dread_002dbuffer_002dsize_0021"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">set-memory-port-read-buffer-size!</strong> <var class="def-var-arguments">memory-port size</var><a class="copiable-link" href="#index-set_002dmemory_002dport_002dread_002dbuffer_002dsize_0021"> &para;</a></span></dt>
+<dd><p>Set the size of the read buffer of <code class="code">&lt;gdb:memory-port&gt;</code>
+<var class="var">memory-port</var> to <var class="var">size</var>.  The result is unspecified.
+</p>
+<p>This procedure is deprecated and will be removed in <small class="sc">GDB</small> 11.
+When <small class="sc">GDB</small> is built with Guile 2.2 or later, you can call
+<code class="code">setvbuf</code> instead (see <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Buffering.html#Buffering"><code class="code">setvbuf</code></a> in <cite class="cite">GNU
+Guile Reference Manual</cite>).
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_002dwrite_002dbuffer_002dsize"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">memory-port-write-buffer-size</strong> <var class="def-var-arguments">memory-port</var><a class="copiable-link" href="#index-memory_002dport_002dwrite_002dbuffer_002dsize"> &para;</a></span></dt>
+<dd><p>Return the size of the write buffer of <code class="code">&lt;gdb:memory-port&gt;</code>
+<var class="var">memory-port</var>.
+</p>
+<p>This procedure is deprecated and will be removed in <small class="sc">GDB</small> 11.
+It returns 0 when <small class="sc">GDB</small> is built with Guile 2.2 or later.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dmemory_002dport_002dwrite_002dbuffer_002dsize_0021"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">set-memory-port-write-buffer-size!</strong> <var class="def-var-arguments">memory-port size</var><a class="copiable-link" href="#index-set_002dmemory_002dport_002dwrite_002dbuffer_002dsize_0021"> &para;</a></span></dt>
+<dd><p>Set the size of the write buffer of <code class="code">&lt;gdb:memory-port&gt;</code>
+<var class="var">memory-port</var> to <var class="var">size</var>.  The result is unspecified.
+</p>
+<p>This procedure is deprecated and will be removed in <small class="sc">GDB</small> 11.
+When <small class="sc">GDB</small> is built with Guile 2.2 or later, you can call
+<code class="code">setvbuf</code> instead.
+</p></dd></dl>
+
+<p>A memory port is closed like any other port, with <code class="code">close-port</code>.
+</p>
+<p>Combined with Guile&rsquo;s <code class="code">bytevectors</code>, memory ports provide a lot
+of utility.  For example, to fill a buffer of 10 integers in memory,
+one can do something like the following.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">;; In the program: int buffer[10];
+(use-modules (rnrs bytevectors))
+(use-modules (rnrs io ports))
+(define addr (parse-and-eval &quot;buffer&quot;))
+(define n 10)
+(define byte-size (* n 4))
+(define mem-port (open-memory #:mode &quot;r+&quot; #:start
+                              (value-&gt;integer addr) #:size byte-size))
+(define byte-vec (make-bytevector byte-size))
+(do ((i 0 (+ i 1)))
+    ((&gt;= i n))
+    (bytevector-s32-native-set! byte-vec (* i 4) (* i 42)))
+(put-bytevector mem-port byte-vec)
+(close-port mem-port)
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Iterators-In-Guile.html">Iterators In Guile</a>, Previous: <a href="I_002fO-Ports-in-Guile.html">I/O Ports in Guile</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

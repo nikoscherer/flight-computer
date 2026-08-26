@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Compact Syntax (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Compact Syntax (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Compact Syntax (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Machine-Desc.html" rel="up" title="Machine Desc">
+<link href="Predicates.html" rel="next" title="Predicates">
+<link href="Output-Statement.html" rel="prev" title="Output Statement">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Compact-Syntax">
+<div class="nav-panel">
+<p>
+Next: <a href="Predicates.html" accesskey="n" rel="next">Predicates</a>, Previous: <a href="Output-Statement.html" accesskey="p" rel="prev">C Statements for Assembler Output</a>, Up: <a href="Machine-Desc.html" accesskey="u" rel="up">Machine Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Compact-Syntax-1"><span>16.7 Compact Syntax<a class="copiable-link" href="#Compact-Syntax-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-compact-syntax"></a>
+
+<p>When a <code class="code">define_insn</code> or <code class="code">define_insn_and_split</code> has multiple
+alternatives it may be beneficial to use the compact syntax when specifying
+alternatives.
+</p>
+<p>This syntax puts the constraints and attributes on the same horizontal line as
+the instruction assembly template.
+</p>
+<p>As an example
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(define_insn_and_split &quot;&quot;
+  [(set (match_operand:SI 0 &quot;nonimmediate_operand&quot; &quot;=r,k,r,r,r,r&quot;)
+	(match_operand:SI 1 &quot;aarch64_mov_operand&quot;  &quot; r,r,k,M,n,Usv&quot;))]
+  &quot;&quot;
+  &quot;@
+   mov\\t%w0, %w1
+   mov\\t%w0, %w1
+   mov\\t%w0, %w1
+   mov\\t%w0, %1
+   #
+   * return aarch64_output_sve_cnt_immediate ('cnt', '%x0', operands[1]);&quot;
+  &quot;&amp;&amp; true&quot;
+   [(const_int 0)]
+  {
+     aarch64_expand_mov_immediate (operands[0], operands[1]);
+     DONE;
+  }
+  [(set_attr &quot;type&quot; &quot;mov_reg,mov_reg,mov_reg,mov_imm,mov_imm,mov_imm&quot;)
+   (set_attr &quot;arch&quot;   &quot;*,*,*,*,*,sve&quot;)
+   (set_attr &quot;length&quot; &quot;4,4,4,4,*,  4&quot;)
+]
+)
+</pre></div></div>
+
+<p>can be better expressed as:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(define_insn_and_split &quot;&quot;
+  [(set (match_operand:SI 0 &quot;nonimmediate_operand&quot;)
+	(match_operand:SI 1 &quot;aarch64_mov_operand&quot;))]
+  &quot;&quot;
+  {@ [cons: =0, 1; attrs: type, arch, length]
+     [r , r  ; mov_reg  , *   , 4] mov\t%w0, %w1
+     [k , r  ; mov_reg  , *   , 4] ^
+     [r , k  ; mov_reg  , *   , 4] ^
+     [r , M  ; mov_imm  , *   , 4] mov\t%w0, %1
+     [r , n  ; mov_imm  , *   , *] #
+     [r , Usv; mov_imm  , sve , 4] &lt;&lt; aarch64_output_sve_cnt_immediate (&quot;cnt&quot;, &quot;%x0&quot;, operands[1]);
+  }
+  &quot;&amp;&amp; true&quot;
+  [(const_int 0)]
+  {
+    aarch64_expand_mov_immediate (operands[0], operands[1]);
+    DONE;
+  }
+)
+</pre></div></div>
+
+<p>The syntax rules are as follows:
+</p><ul class="itemize mark-bullet">
+<li>Templates must start with &lsquo;<samp class="samp">{@</samp>&rsquo; to use the new syntax.
+
+</li><li>&lsquo;<samp class="samp">{@</samp>&rsquo; is followed by a layout in square brackets which is &lsquo;<samp class="samp">cons:</samp>&rsquo;
+followed by a comma-separated list of <code class="code">match_operand</code>/<code class="code">match_scratch</code>
+operand numbers, then a semicolon, followed by the same for attributes
+(&lsquo;<samp class="samp">attrs:</samp>&rsquo;).  Operand modifiers like <code class="code">=</code> and <code class="code">+</code> can be placed
+before an operand number.
+Both sections are optional (so you can use only &lsquo;<samp class="samp">cons</samp>&rsquo;, or only
+&lsquo;<samp class="samp">attrs</samp>&rsquo;, or both), and &lsquo;<samp class="samp">cons</samp>&rsquo; must come before &lsquo;<samp class="samp">attrs</samp>&rsquo; if
+present.
+
+</li><li>Each alternative begins with any amount of whitespace.
+
+</li><li>Following the whitespace is a comma-separated list of &quot;constraints&quot; and/or
+&quot;attributes&quot; within brackets <code class="code">[]</code>, with sections separated by a semicolon.
+
+</li><li>Should you want to copy the previous asm line, the symbol <code class="code">^</code> can be used.
+This allows less copy pasting between alternative and reduces the number of
+lines to update on changes.
+
+</li><li>When using C functions for output, the idiom &lsquo;<samp class="samp">* return <var class="var">function</var>;</samp>&rsquo;
+can be replaced with the shorthand &lsquo;<samp class="samp">&lt;&lt; <var class="var">function</var>;</samp>&rsquo;.
+
+</li><li>Following the closing &lsquo;<samp class="samp">]</samp>&rsquo; is any amount of whitespace, and then the actual
+asm output.
+
+</li><li>Spaces are allowed in the list (they will simply be removed).
+
+</li><li>All constraint alternatives should be specified.  For example, a list of
+of three blank alternatives should be written &lsquo;<samp class="samp">[,,]</samp>&rsquo; rather than
+&lsquo;<samp class="samp">[]</samp>&rsquo;.
+
+</li><li>All attribute alternatives should be non-empty, with &lsquo;<samp class="samp">*</samp>&rsquo;
+representing the default attribute value.  For example, a list of three
+default attribute values should be written &lsquo;<samp class="samp">[*,*,*]</samp>&rsquo; rather than
+&lsquo;<samp class="samp">[]</samp>&rsquo;.
+
+</li><li>Within an &lsquo;<samp class="samp">{@</samp>&rsquo; block both multiline and singleline C comments are
+allowed, but when used outside of a C block they must be the only non-whitespace
+blocks on the line.
+
+</li><li>Within an &lsquo;<samp class="samp">{@</samp>&rsquo; block, any iterators that do not get expanded will result
+in an error.  If for some reason it is required to have <code class="code">&lt;</code> or <code class="code">&gt;</code> in
+the output then these must be escaped using &lsquo;<samp class="samp">\</samp>&rsquo;.
+
+</li><li>It is possible to use the &lsquo;<samp class="samp">attrs</samp>&rsquo; list to specify some attributes and to
+use the normal <code class="code">set_attr</code> syntax to specify other attributes.  There must
+not be any overlap between the two lists.
+
+<p>In other words, the following is valid:
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(define_insn_and_split &quot;&quot;
+  [(set (match_operand:SI 0 &quot;nonimmediate_operand&quot;)
+	(match_operand:SI 1 &quot;aarch64_mov_operand&quot;))]
+  &quot;&quot;
+  {@ [cons: 0, 1; attrs: type, arch, length]}
+  ... 
+  [(set_attr &quot;foo&quot; &quot;mov_imm&quot;)]
+)
+</pre></div></div>
+
+<p>but this is not valid:
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(define_insn_and_split &quot;&quot;
+  [(set (match_operand:SI 0 &quot;nonimmediate_operand&quot;)
+	(match_operand:SI 1 &quot;aarch64_mov_operand&quot;))]
+  &quot;&quot;
+  {@ [cons: 0, 1; attrs: type, arch, length]}
+  ... 
+  [(set_attr &quot;arch&quot; &quot;bar&quot;)
+   (set_attr &quot;foo&quot; &quot;mov_imm&quot;)]
+)
+</pre></div></div>
+
+<p>because it specifies <code class="code">arch</code> twice.
+</p></li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Predicates.html">Predicates</a>, Previous: <a href="Output-Statement.html">C Statements for Assembler Output</a>, Up: <a href="Machine-Desc.html">Machine Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

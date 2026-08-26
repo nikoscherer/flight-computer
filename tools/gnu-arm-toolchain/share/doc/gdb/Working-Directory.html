@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Working Directory (Debugging with GDB)</title>
+
+<meta name="description" content="Working Directory (Debugging with GDB)">
+<meta name="keywords" content="Working Directory (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running.html" rel="up" title="Running">
+<link href="Input_002fOutput.html" rel="next" title="Input/Output">
+<link href="Environment.html" rel="prev" title="Environment">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Working-Directory">
+<div class="nav-panel">
+<p>
+Next: <a href="Input_002fOutput.html" accesskey="n" rel="next">Your Program&rsquo;s Input and Output</a>, Previous: <a href="Environment.html" accesskey="p" rel="prev">Your Program&rsquo;s Environment</a>, Up: <a href="Running.html" accesskey="u" rel="up">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Your-Program_0027s-Working-Directory"><span>4.5 Your Program&rsquo;s Working Directory<a class="copiable-link" href="#Your-Program_0027s-Working-Directory"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-working-directory-_0028of-your-program_0029"></a>
+<p>Each time you start your program with <code class="code">run</code>, the inferior will be
+initialized with the current working directory specified by the
+<kbd class="kbd">set cwd</kbd> command.  If no directory has been specified by this
+command, then the inferior will inherit <small class="sc">GDB</small>&rsquo;s current working
+directory as its working directory if native debugging, or it will
+inherit the remote server&rsquo;s current working directory if remote
+debugging.
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-set-cwd"></a>
+<a class="index-entry-id" id="index-change-inferior_0027s-working-directory"></a>
+<a class="anchor" id="set-cwd-command"></a></dd>
+<dt><code class="code">set cwd <span class="r">[</span><var class="var">directory</var><span class="r">]</span></code></dt>
+<dd><p>Set the inferior&rsquo;s working directory to <var class="var">directory</var>, which will be
+<code class="code">glob</code>-expanded in order to resolve tildes (<samp class="file">~</samp>).  If no
+argument has been specified, the command clears the setting and resets
+it to an empty state.  This setting has no effect on <small class="sc">GDB</small>&rsquo;s
+working directory, and it only takes effect the next time you start
+the inferior.  The <samp class="file">~</samp> in <var class="var">directory</var> is a short for the
+<em class="dfn">home directory</em>, usually pointed to by the <code class="env">HOME</code> environment
+variable.  On MS-Windows, if <code class="env">HOME</code> is not defined, <small class="sc">GDB</small>
+uses the concatenation of <code class="env">HOMEDRIVE</code> and <code class="env">HOMEPATH</code> as
+fallback.
+</p>
+<p>You can also change <small class="sc">GDB</small>&rsquo;s current working directory by using
+the <code class="code">cd</code> command.
+See <a class="xref" href="#cd-command">cd command</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-inferior_0027s-working-directory"></a>
+<a id="index-show-cwd"></a><span><code class="code">show cwd</code><a class="copiable-link" href="#index-show-cwd"> &para;</a></span></dt>
+<dd><p>Show the inferior&rsquo;s working directory.  If no directory has been
+specified by <kbd class="kbd">set cwd</kbd>, then the default inferior&rsquo;s working
+directory is the same as <small class="sc">GDB</small>&rsquo;s working directory.
+</p>
+<a class="index-entry-id" id="index-cd"></a>
+<a class="index-entry-id" id="index-change-gdb_0027s-working-directory"></a>
+<a class="anchor" id="cd-command"></a></dd>
+<dt><code class="code">cd <span class="r">[</span><var class="var">directory</var><span class="r">]</span></code></dt>
+<dd><p>Set the <small class="sc">GDB</small> working directory to <var class="var">directory</var>.  If not
+given, <var class="var">directory</var> uses <samp class="file">'~'</samp>.
+</p>
+<p>The <small class="sc">GDB</small> working directory serves as a default for the
+commands that specify files for <small class="sc">GDB</small> to operate on.
+See <a class="xref" href="Files.html">Commands to Specify Files</a>.
+See <a class="xref" href="#set-cwd-command">set cwd command</a>.
+</p>
+</dd>
+<dt><a id="index-pwd"></a><span><code class="code">pwd</code><a class="copiable-link" href="#index-pwd"> &para;</a></span></dt>
+<dd><p>Print the <small class="sc">GDB</small> working directory.
+</p></dd>
+</dl>
+
+<p>It is generally impossible to find the current working directory of
+the process being debugged (since a program can change its directory
+during its run).  If you work on a system where <small class="sc">GDB</small> supports
+the <code class="code">info proc</code> command (see <a class="pxref" href="Process-Information.html">Process Information</a>), you can
+use the <code class="code">info proc</code> command to find out the
+current working directory of the debuggee.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Input_002fOutput.html">Your Program&rsquo;s Input and Output</a>, Previous: <a href="Environment.html">Your Program&rsquo;s Environment</a>, Up: <a href="Running.html">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

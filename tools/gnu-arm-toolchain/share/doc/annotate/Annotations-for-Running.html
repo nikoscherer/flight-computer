@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1994-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Annotations for Running (GDB&rsquo;s Obsolete Annotations)</title>
+
+<meta name="description" content="Annotations for Running (GDB&rsquo;s Obsolete Annotations)">
+<meta name="keywords" content="Annotations for Running (GDB&rsquo;s Obsolete Annotations)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Source-Annotations.html" rel="next" title="Source Annotations">
+<link href="Invalidation.html" rel="prev" title="Invalidation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Annotations-for-Running">
+<div class="nav-panel">
+<p>
+Next: <a href="Source-Annotations.html" accesskey="n" rel="next">Displaying Source</a>, Previous: <a href="Invalidation.html" accesskey="p" rel="prev">Invalidation Notices</a>, Up: <a href="index.html" accesskey="u" rel="up">GDB Annotations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Running-the-Program"><span>12 Running the Program<a class="copiable-link" href="#Running-the-Program"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-annotations-for-running-programs"></a>
+
+<a class="index-entry-id" id="index-starting"></a>
+<a class="index-entry-id" id="index-stopping"></a>
+<p>When the program starts executing due to a <small class="sc">GDB</small> command such as
+<code class="code">step</code> or <code class="code">continue</code>, 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zstarting
+</pre></div>
+
+<p>is output.  When the program stops, 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zstopped
+</pre></div>
+
+<p>is output.  Before the <code class="code">stopped</code> annotation, a variety of
+annotations describe how the program stopped.
+</p>
+<dl class="table">
+<dt><a id="index-exited"></a><span><code class="code">^Z^Zexited <var class="var">exit-status</var></code><a class="copiable-link" href="#index-exited"> &para;</a></span></dt>
+<dd><p>The program exited, and <var class="var">exit-status</var> is the exit status (zero for
+successful exit, otherwise nonzero).
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-signal_002dname"></a>
+<a class="index-entry-id" id="index-signal_002dname_002dend"></a>
+<a class="index-entry-id" id="index-signal_002dstring"></a>
+<a class="index-entry-id" id="index-signal_002dstring_002dend"></a>
+<a id="index-signalled"></a><span><code class="code">^Z^Zsignalled</code><a class="copiable-link" href="#index-signalled"> &para;</a></span></dt>
+<dd><p>The program exited with a signal.  After the <code class="code">^Z^Zsignalled</code>, the
+annotation continues:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><var class="var">intro-text</var>
+^Z^Zsignal-name
+<var class="var">name</var>
+^Z^Zsignal-name-end
+<var class="var">middle-text</var>
+^Z^Zsignal-string
+<var class="var">string</var>
+^Z^Zsignal-string-end
+<var class="var">end-text</var>
+</pre></div>
+
+<p>where <var class="var">name</var> is the name of the signal, such as <code class="code">SIGILL</code> or
+<code class="code">SIGSEGV</code>, and <var class="var">string</var> is the explanation of the signal, such
+as <code class="code">Illegal Instruction</code> or <code class="code">Segmentation fault</code>.
+<var class="var">intro-text</var>, <var class="var">middle-text</var>, and <var class="var">end-text</var> are for the
+user&rsquo;s benefit and have no particular format.
+</p>
+</dd>
+<dt><a id="index-signal"></a><span><code class="code">^Z^Zsignal</code><a class="copiable-link" href="#index-signal"> &para;</a></span></dt>
+<dd><p>The syntax of this annotation is just like <code class="code">signalled</code>, but <small class="sc">GDB</small> is
+just saying that the program received the signal, not that it was
+terminated with it.
+</p>
+</dd>
+<dt><a id="index-breakpoint"></a><span><code class="code">^Z^Zbreakpoint <var class="var">number</var></code><a class="copiable-link" href="#index-breakpoint"> &para;</a></span></dt>
+<dd><p>The program hit breakpoint number <var class="var">number</var>.
+</p>
+</dd>
+<dt><a id="index-watchpoint"></a><span><code class="code">^Z^Zwatchpoint <var class="var">number</var></code><a class="copiable-link" href="#index-watchpoint"> &para;</a></span></dt>
+<dd><p>The program hit watchpoint number <var class="var">number</var>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Source-Annotations.html">Displaying Source</a>, Previous: <a href="Invalidation.html">Invalidation Notices</a>, Up: <a href="index.html">GDB Annotations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+
+
+
+</body>
+</html>

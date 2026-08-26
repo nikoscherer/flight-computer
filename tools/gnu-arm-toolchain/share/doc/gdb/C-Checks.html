@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>C Checks (Debugging with GDB)</title>
+
+<meta name="description" content="C Checks (Debugging with GDB)">
+<meta name="keywords" content="C Checks (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C.html" rel="up" title="C">
+<link href="Debugging-C.html" rel="next" title="Debugging C">
+<link href="C-Defaults.html" rel="prev" title="C Defaults">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="C-Checks">
+<div class="nav-panel">
+<p>
+Next: <a href="Debugging-C.html" accesskey="n" rel="next"><small class="sc">GDB</small> and C</a>, Previous: <a href="C-Defaults.html" accesskey="p" rel="prev">C and C<code class="t">++</code> Defaults</a>, Up: <a href="C.html" accesskey="u" rel="up">C and C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="C-and-C_002b_002b-Type-and-Range-Checks"><span>15.4.1.5 C and C<code class="t">++</code> Type and Range Checks<a class="copiable-link" href="#C-and-C_002b_002b-Type-and-Range-Checks"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-C-and-C_002b_002b-checks"></a>
+
+<p>By default, when <small class="sc">GDB</small> parses C or C<code class="t">++</code> expressions, strict type
+checking is used.  However, if you turn type checking off, <small class="sc">GDB</small>
+will allow certain non-standard conversions, such as promoting integer
+constants to pointers.
+</p>
+<p>Range checking, if turned on, is done on mathematical operations.  Array
+indices are not checked, since they are often used to index a pointer
+that is not itself an array.
+</p>
+</div>
+
+
+
+</body>
+</html>

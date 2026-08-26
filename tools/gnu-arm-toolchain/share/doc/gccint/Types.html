@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Types (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Types (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Types (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GENERIC.html" rel="up" title="GENERIC">
+<link href="Declarations.html" rel="next" title="Declarations">
+<link href="Tree-overview.html" rel="prev" title="Tree overview">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Types">
+<div class="nav-panel">
+<p>
+Next: <a href="Declarations.html" accesskey="n" rel="next">Declarations</a>, Previous: <a href="Tree-overview.html" accesskey="p" rel="prev">Overview</a>, Up: <a href="GENERIC.html" accesskey="u" rel="up">GENERIC</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Types-1"><span>10.3 Types<a class="copiable-link" href="#Types-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-type"></a>
+<a class="index-entry-id" id="index-pointer"></a>
+<a class="index-entry-id" id="index-reference"></a>
+<a class="index-entry-id" id="index-fundamental-type"></a>
+<a class="index-entry-id" id="index-array"></a>
+<a class="index-entry-id" id="index-VOID_005fTYPE"></a>
+<a class="index-entry-id" id="index-INTEGER_005fTYPE"></a>
+<a class="index-entry-id" id="index-TYPE_005fMIN_005fVALUE"></a>
+<a class="index-entry-id" id="index-TYPE_005fMAX_005fVALUE"></a>
+<a class="index-entry-id" id="index-BITINT_005fTYPE"></a>
+<a class="index-entry-id" id="index-REAL_005fTYPE"></a>
+<a class="index-entry-id" id="index-FIXED_005fPOINT_005fTYPE"></a>
+<a class="index-entry-id" id="index-COMPLEX_005fTYPE"></a>
+<a class="index-entry-id" id="index-ENUMERAL_005fTYPE"></a>
+<a class="index-entry-id" id="index-BOOLEAN_005fTYPE"></a>
+<a class="index-entry-id" id="index-POINTER_005fTYPE"></a>
+<a class="index-entry-id" id="index-REFERENCE_005fTYPE"></a>
+<a class="index-entry-id" id="index-FUNCTION_005fTYPE"></a>
+<a class="index-entry-id" id="index-METHOD_005fTYPE"></a>
+<a class="index-entry-id" id="index-ARRAY_005fTYPE"></a>
+<a class="index-entry-id" id="index-RECORD_005fTYPE"></a>
+<a class="index-entry-id" id="index-UNION_005fTYPE"></a>
+<a class="index-entry-id" id="index-OPAQUE_005fTYPE"></a>
+<a class="index-entry-id" id="index-UNKNOWN_005fTYPE"></a>
+<a class="index-entry-id" id="index-OFFSET_005fTYPE"></a>
+<a class="index-entry-id" id="index-TYPE_005fUNQUALIFIED"></a>
+<a class="index-entry-id" id="index-TYPE_005fQUAL_005fCONST"></a>
+<a class="index-entry-id" id="index-TYPE_005fQUAL_005fVOLATILE"></a>
+<a class="index-entry-id" id="index-TYPE_005fQUAL_005fRESTRICT"></a>
+<a class="index-entry-id" id="index-TYPE_005fMAIN_005fVARIANT"></a>
+<a class="index-entry-id" id="index-qualified-type"></a>
+<a class="index-entry-id" id="index-TYPE_005fSIZE"></a>
+<a class="index-entry-id" id="index-TYPE_005fALIGN"></a>
+<a class="index-entry-id" id="index-TYPE_005fPRECISION"></a>
+<a class="index-entry-id" id="index-TYPE_005fARG_005fTYPES"></a>
+<a class="index-entry-id" id="index-TYPE_005fMETHOD_005fBASETYPE"></a>
+<a class="index-entry-id" id="index-TYPE_005fOFFSET_005fBASETYPE"></a>
+<a class="index-entry-id" id="index-TREE_005fTYPE-1"></a>
+<a class="index-entry-id" id="index-TYPE_005fCONTEXT"></a>
+<a class="index-entry-id" id="index-TYPE_005fNAME"></a>
+<a class="index-entry-id" id="index-TYPENAME_005fTYPE_005fFULLNAME"></a>
+<a class="index-entry-id" id="index-TYPE_005fFIELDS"></a>
+<a class="index-entry-id" id="index-TYPE_005fCANONICAL"></a>
+<a class="index-entry-id" id="index-TYPE_005fSTRUCTURAL_005fEQUALITY_005fP"></a>
+<a class="index-entry-id" id="index-SET_005fTYPE_005fSTRUCTURAL_005fEQUALITY"></a>
+
+<p>All types have corresponding tree nodes.  However, you should not assume
+that there is exactly one tree node corresponding to each type.  There
+are often multiple nodes corresponding to the same type.
+</p>
+<p>For the most part, different kinds of types have different tree codes.
+(For example, pointer types use a <code class="code">POINTER_TYPE</code> code while arrays
+use an <code class="code">ARRAY_TYPE</code> code.)  However, pointers to member functions
+use the <code class="code">RECORD_TYPE</code> code.  Therefore, when writing a
+<code class="code">switch</code> statement that depends on the code associated with a
+particular type, you should take care to handle pointers to member
+functions under the <code class="code">RECORD_TYPE</code> case label.
+</p>
+<p>The following functions and macros deal with cv-qualification of types:
+</p><dl class="ftable">
+<dt><a id="index-TYPE_005fMAIN_005fVARIANT-1"></a><span><code class="code">TYPE_MAIN_VARIANT</code><a class="copiable-link" href="#index-TYPE_005fMAIN_005fVARIANT-1"> &para;</a></span></dt>
+<dd><p>This macro returns the unqualified version of a type.  It may be applied
+to an unqualified type, but it is not always the identity function in
+that case.
+</p></dd>
+</dl>
+
+<p>A few other macros and functions are usable with all types:
+</p><dl class="ftable">
+<dt><a id="index-TYPE_005fSIZE-1"></a><span><code class="code">TYPE_SIZE</code><a class="copiable-link" href="#index-TYPE_005fSIZE-1"> &para;</a></span></dt>
+<dd><p>The number of bits required to represent the type, represented as an
+<code class="code">INTEGER_CST</code>.  For an incomplete type, <code class="code">TYPE_SIZE</code> will be
+<code class="code">NULL_TREE</code>.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fALIGN-1"></a><span><code class="code">TYPE_ALIGN</code><a class="copiable-link" href="#index-TYPE_005fALIGN-1"> &para;</a></span></dt>
+<dd><p>The alignment of the type, in bits, represented as an <code class="code">int</code>.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fNAME-1"></a><span><code class="code">TYPE_NAME</code><a class="copiable-link" href="#index-TYPE_005fNAME-1"> &para;</a></span></dt>
+<dd><p>This macro returns a declaration (in the form of a <code class="code">TYPE_DECL</code>) for
+the type.  (Note this macro does <em class="emph">not</em> return an
+<code class="code">IDENTIFIER_NODE</code>, as you might expect, given its name!)  You can
+look at the <code class="code">DECL_NAME</code> of the <code class="code">TYPE_DECL</code> to obtain the
+actual name of the type.  The <code class="code">TYPE_NAME</code> will be <code class="code">NULL_TREE</code>
+for a type that is not a built-in type, the result of a typedef, or a
+named class type.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCANONICAL-1"></a><span><code class="code">TYPE_CANONICAL</code><a class="copiable-link" href="#index-TYPE_005fCANONICAL-1"> &para;</a></span></dt>
+<dd><p>This macro returns the &ldquo;canonical&rdquo; type for the given type
+node. Canonical types are used to improve performance in the C++ and
+Objective-C++ front ends by allowing efficient comparison between two
+type nodes in <code class="code">same_type_p</code>: if the <code class="code">TYPE_CANONICAL</code> values
+of the types are equal, the types are equivalent; otherwise, the types
+are not equivalent. The notion of equivalence for canonical types is
+the same as the notion of type equivalence in the language itself. For
+instance,
+</p>
+<p>When <code class="code">TYPE_CANONICAL</code> is <code class="code">NULL_TREE</code>, there is no canonical
+type for the given type node. In this case, comparison between this
+type and any other type requires the compiler to perform a deep,
+&ldquo;structural&rdquo; comparison to see if the two type nodes have the same
+form and properties.
+</p>
+<p>The canonical type for a node is always the most fundamental type in
+the equivalence class of types. For instance, <code class="code">int</code> is its own
+canonical type. A typedef <code class="code">I</code> of <code class="code">int</code> will have <code class="code">int</code>
+as its canonical type. Similarly, <code class="code">I*</code>&nbsp;and a typedef <code class="code">IP</code>&nbsp;(defined to <code class="code">I*</code>) will has <code class="code">int*</code> as their canonical
+type. When building a new type node, be sure to set
+<code class="code">TYPE_CANONICAL</code> to the appropriate canonical type. If the new
+type is a compound type (built from other types), and any of those
+other types require structural equality, use
+<code class="code">SET_TYPE_STRUCTURAL_EQUALITY</code> to ensure that the new type also
+requires structural equality. Finally, if for some reason you cannot
+guarantee that <code class="code">TYPE_CANONICAL</code> will point to the canonical type,
+use <code class="code">SET_TYPE_STRUCTURAL_EQUALITY</code> to make sure that the new
+type&ndash;and any type constructed based on it&ndash;requires structural
+equality. If you suspect that the canonical type system is
+miscomparing types, pass <code class="code">--param verify-canonical-types=1</code> to
+the compiler or configure with <code class="code">--enable-checking</code> to force the
+compiler to verify its canonical-type comparisons against the
+structural comparisons; the compiler will then print any warnings if
+the canonical types miscompare.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fSTRUCTURAL_005fEQUALITY_005fP-1"></a><span><code class="code">TYPE_STRUCTURAL_EQUALITY_P</code><a class="copiable-link" href="#index-TYPE_005fSTRUCTURAL_005fEQUALITY_005fP-1"> &para;</a></span></dt>
+<dd><p>This predicate holds when the node requires structural equality
+checks, e.g., when <code class="code">TYPE_CANONICAL</code> is <code class="code">NULL_TREE</code>.
+</p>
+</dd>
+<dt><a id="index-SET_005fTYPE_005fSTRUCTURAL_005fEQUALITY-1"></a><span><code class="code">SET_TYPE_STRUCTURAL_EQUALITY</code><a class="copiable-link" href="#index-SET_005fTYPE_005fSTRUCTURAL_005fEQUALITY-1"> &para;</a></span></dt>
+<dd><p>This macro states that the type node it is given requires structural
+equality checks, e.g., it sets <code class="code">TYPE_CANONICAL</code> to
+<code class="code">NULL_TREE</code>.
+</p>
+</dd>
+<dt><a id="index-same_005ftype_005fp"></a><span><code class="code">same_type_p</code><a class="copiable-link" href="#index-same_005ftype_005fp"> &para;</a></span></dt>
+<dd><p>This predicate takes two types as input, and holds if they are the same
+type.  For example, if one type is a <code class="code">typedef</code> for the other, or
+both are <code class="code">typedef</code>s for the same type.  This predicate also holds if
+the two trees given as input are simply copies of one another; i.e.,
+there is no difference between them at the source level, but, for
+whatever reason, a duplicate has been made in the representation.  You
+should never use <code class="code">==</code> (pointer equality) to compare types; always
+use <code class="code">same_type_p</code> instead.
+</p></dd>
+</dl>
+
+<p>Detailed below are the various kinds of types, and the macros that can
+be used to access them.  Although other kinds of types are used
+elsewhere in G++, the types described here are the only ones that you
+will encounter while examining the intermediate representation.
+</p>
+<dl class="table">
+<dt><code class="code">VOID_TYPE</code></dt>
+<dd><p>Used to represent the <code class="code">void</code> type.
+</p>
+</dd>
+<dt><code class="code">INTEGER_TYPE</code></dt>
+<dd><p>Used to represent the various integral types, including <code class="code">char</code>,
+<code class="code">short</code>, <code class="code">int</code>, <code class="code">long</code>, and <code class="code">long long</code>.  This code
+is not used for enumeration types, nor for the <code class="code">bool</code> type.
+The <code class="code">TYPE_PRECISION</code> is the number of bits used in
+the representation, represented as an <code class="code">unsigned int</code>.  (Note that
+in the general case this is not the same value as <code class="code">TYPE_SIZE</code>;
+suppose that there were a 24-bit integer type, but that alignment
+requirements for the ABI required 32-bit alignment.  Then,
+<code class="code">TYPE_SIZE</code> would be an <code class="code">INTEGER_CST</code> for 32, while
+<code class="code">TYPE_PRECISION</code> would be 24.)  The integer type is unsigned if
+<code class="code">TYPE_UNSIGNED</code> holds; otherwise, it is signed.
+</p>
+<p>The <code class="code">TYPE_MIN_VALUE</code> is an <code class="code">INTEGER_CST</code> for the smallest
+integer that may be represented by this type.  Similarly, the
+<code class="code">TYPE_MAX_VALUE</code> is an <code class="code">INTEGER_CST</code> for the largest integer
+that may be represented by this type.
+</p>
+</dd>
+<dt><code class="code">BITINT_TYPE</code></dt>
+<dd><p>Used to represent the bit-precise integer types, <code class="code">_BitInt(<var class="var">N</var>)</code>.
+These types are similar to <code class="code">INTEGER_TYPE</code>, but can have arbitrary
+user selected precisions and do or can have different alignment, function
+argument and return value passing conventions.
+Larger BITINT_TYPEs can have <code class="code">BLKmode</code> <code class="code">TYPE_MODE</code> and need to
+be lowered by a special BITINT_TYPE lowering pass.
+</p>
+</dd>
+<dt><code class="code">REAL_TYPE</code></dt>
+<dd><p>Used to represent the <code class="code">float</code>, <code class="code">double</code>, and <code class="code">long
+double</code> types.  The number of bits in the floating-point representation
+is given by <code class="code">TYPE_PRECISION</code>, as in the <code class="code">INTEGER_TYPE</code> case.
+</p>
+</dd>
+<dt><code class="code">FIXED_POINT_TYPE</code></dt>
+<dd><p>Used to represent the <code class="code">short _Fract</code>, <code class="code">_Fract</code>, <code class="code">long
+_Fract</code>, <code class="code">long long _Fract</code>, <code class="code">short _Accum</code>, <code class="code">_Accum</code>,
+<code class="code">long _Accum</code>, and <code class="code">long long _Accum</code> types.  The number of bits
+in the fixed-point representation is given by <code class="code">TYPE_PRECISION</code>,
+as in the <code class="code">INTEGER_TYPE</code> case.  There may be padding bits, fractional
+bits and integral bits.  The number of fractional bits is given by
+<code class="code">TYPE_FBIT</code>, and the number of integral bits is given by <code class="code">TYPE_IBIT</code>.
+The fixed-point type is unsigned if <code class="code">TYPE_UNSIGNED</code> holds; otherwise,
+it is signed.
+The fixed-point type is saturating if <code class="code">TYPE_SATURATING</code> holds; otherwise,
+it is not saturating.
+</p>
+</dd>
+<dt><code class="code">COMPLEX_TYPE</code></dt>
+<dd><p>Used to represent GCC built-in <code class="code">__complex__</code> data types.  The
+<code class="code">TREE_TYPE</code> is the type of the real and imaginary parts.
+</p>
+</dd>
+<dt><code class="code">ENUMERAL_TYPE</code></dt>
+<dd><p>Used to represent an enumeration type.  The <code class="code">TYPE_PRECISION</code> gives
+(as an <code class="code">int</code>), the number of bits used to represent the type.  If
+there are no negative enumeration constants, <code class="code">TYPE_UNSIGNED</code> will
+hold.  The minimum and maximum enumeration constants may be obtained
+with <code class="code">TYPE_MIN_VALUE</code> and <code class="code">TYPE_MAX_VALUE</code>, respectively; each
+of these macros returns an <code class="code">INTEGER_CST</code>.
+</p>
+<p>The actual enumeration constants themselves may be obtained by looking
+at the <code class="code">TYPE_VALUES</code>.  This macro will return a <code class="code">TREE_LIST</code>,
+containing the constants.  The <code class="code">TREE_PURPOSE</code> of each node will be
+an <code class="code">IDENTIFIER_NODE</code> giving the name of the constant; the
+<code class="code">TREE_VALUE</code> will be an <code class="code">INTEGER_CST</code> giving the value
+assigned to that constant.  These constants will appear in the order in
+which they were declared.  The <code class="code">TREE_TYPE</code> of each of these
+constants will be the type of enumeration type itself.
+</p>
+</dd>
+<dt><code class="code">OPAQUE_TYPE</code></dt>
+<dd><p>Used for things that have a <code class="code">MODE_OPAQUE</code> mode class in the
+backend. Opaque types have a size and precision, and can be held in
+memory or registers. They are used when we do not want the compiler to
+make assumptions about the availability of other operations as would
+happen with integer types.
+</p>
+</dd>
+<dt><code class="code">BOOLEAN_TYPE</code></dt>
+<dd><p>Used to represent the <code class="code">bool</code> type.
+</p>
+</dd>
+<dt><code class="code">POINTER_TYPE</code></dt>
+<dd><p>Used to represent pointer types, and pointer to data member types.  The
+<code class="code">TREE_TYPE</code> gives the type to which this type points.
+</p>
+</dd>
+<dt><code class="code">REFERENCE_TYPE</code></dt>
+<dd><p>Used to represent reference types.  The <code class="code">TREE_TYPE</code> gives the type
+to which this type refers.
+</p>
+</dd>
+<dt><code class="code">FUNCTION_TYPE</code></dt>
+<dd><p>Used to represent the type of non-member functions and of static member
+functions.  The <code class="code">TREE_TYPE</code> gives the return type of the function.
+The <code class="code">TYPE_ARG_TYPES</code> are a <code class="code">TREE_LIST</code> of the argument types.
+The <code class="code">TREE_VALUE</code> of each node in this list is the type of the
+corresponding argument; the <code class="code">TREE_PURPOSE</code> is an expression for the
+default argument value, if any.  If the last node in the list is
+<code class="code">void_list_node</code> (a <code class="code">TREE_LIST</code> node whose <code class="code">TREE_VALUE</code>
+is the <code class="code">void_type_node</code>), then functions of this type do not take
+variable arguments.  Otherwise, they do take a variable number of
+arguments.
+</p>
+<p>Note that in C (but not in C++) a function declared like <code class="code">void f()</code>
+is an unprototyped function taking a variable number of arguments; the
+<code class="code">TYPE_ARG_TYPES</code> of such a function will be <code class="code">NULL</code>.
+</p>
+</dd>
+<dt><code class="code">METHOD_TYPE</code></dt>
+<dd><p>Used to represent the type of a non-static member function.  Like a
+<code class="code">FUNCTION_TYPE</code>, the return type is given by the <code class="code">TREE_TYPE</code>.
+The type of <code class="code">*this</code>, i.e., the class of which functions of this
+type are a member, is given by the <code class="code">TYPE_METHOD_BASETYPE</code>.  The
+<code class="code">TYPE_ARG_TYPES</code> is the parameter list, as for a
+<code class="code">FUNCTION_TYPE</code>, and includes the <code class="code">this</code> argument.
+</p>
+</dd>
+<dt><code class="code">ARRAY_TYPE</code></dt>
+<dd><p>Used to represent array types.  The <code class="code">TREE_TYPE</code> gives the type of
+the elements in the array.  If the array-bound is present in the type,
+the <code class="code">TYPE_DOMAIN</code> is an <code class="code">INTEGER_TYPE</code> whose
+<code class="code">TYPE_MIN_VALUE</code> and <code class="code">TYPE_MAX_VALUE</code> will be the lower and
+upper bounds of the array, respectively.  The <code class="code">TYPE_MIN_VALUE</code> will
+always be an <code class="code">INTEGER_CST</code> for zero, while the
+<code class="code">TYPE_MAX_VALUE</code> will be one less than the number of elements in
+the array, i.e., the highest value which may be used to index an element
+in the array.
+</p>
+</dd>
+<dt><code class="code">RECORD_TYPE</code></dt>
+<dd><p>Used to represent <code class="code">struct</code> and <code class="code">class</code> types, as well as
+pointers to member functions and similar constructs in other languages.
+<code class="code">TYPE_FIELDS</code> contains the items contained in this type, each of
+which can be a <code class="code">FIELD_DECL</code>, <code class="code">VAR_DECL</code>, <code class="code">CONST_DECL</code>, or
+<code class="code">TYPE_DECL</code>.  You may not make any assumptions about the ordering
+of the fields in the type or whether one or more of them overlap.
+</p>
+</dd>
+<dt><code class="code">UNION_TYPE</code></dt>
+<dd><p>Used to represent <code class="code">union</code> types.  Similar to <code class="code">RECORD_TYPE</code>
+except that all <code class="code">FIELD_DECL</code> nodes in <code class="code">TYPE_FIELD</code> start at
+bit position zero.
+</p>
+</dd>
+<dt><code class="code">QUAL_UNION_TYPE</code></dt>
+<dd><p>Used to represent part of a variant record in Ada.  Similar to
+<code class="code">UNION_TYPE</code> except that each <code class="code">FIELD_DECL</code> has a
+<code class="code">DECL_QUALIFIER</code> field, which contains a boolean expression that
+indicates whether the field is present in the object.  The type will only
+have one field, so each field&rsquo;s <code class="code">DECL_QUALIFIER</code> is only evaluated
+if none of the expressions in the previous fields in <code class="code">TYPE_FIELDS</code>
+are nonzero.  Normally these expressions will reference a field in the
+outer object using a <code class="code">PLACEHOLDER_EXPR</code>.
+</p>
+</dd>
+<dt><code class="code">LANG_TYPE</code></dt>
+<dd><p>This node is used to represent a language-specific type.  The front
+end must handle it.
+</p>
+</dd>
+<dt><code class="code">OFFSET_TYPE</code></dt>
+<dd><p>This node is used to represent a pointer-to-data member.  For a data
+member <code class="code">X::m</code> the <code class="code">TYPE_OFFSET_BASETYPE</code> is <code class="code">X</code> and the
+<code class="code">TREE_TYPE</code> is the type of <code class="code">m</code>.
+</p>
+</dd>
+</dl>
+
+<p>There are variables whose values represent some of the basic types.
+These include:
+</p><dl class="table">
+<dt><code class="code">void_type_node</code></dt>
+<dd><p>A node for <code class="code">void</code>.
+</p>
+</dd>
+<dt><code class="code">integer_type_node</code></dt>
+<dd><p>A node for <code class="code">int</code>.
+</p>
+</dd>
+<dt><code class="code">unsigned_type_node.</code></dt>
+<dd><p>A node for <code class="code">unsigned int</code>.
+</p>
+</dd>
+<dt><code class="code">char_type_node.</code></dt>
+<dd><p>A node for <code class="code">char</code>.
+</p></dd>
+</dl>
+<p>It may sometimes be useful to compare one of these variables with a type
+in hand, using <code class="code">same_type_p</code>.
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Declarations.html">Declarations</a>, Previous: <a href="Tree-overview.html">Overview</a>, Up: <a href="GENERIC.html">GENERIC</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

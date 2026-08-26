@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Checkpoint/Restart (Debugging with GDB)</title>
+
+<meta name="description" content="Checkpoint/Restart (Debugging with GDB)">
+<meta name="keywords" content="Checkpoint/Restart (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running.html" rel="up" title="Running">
+<link href="Forks.html" rel="prev" title="Forks">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Checkpoint_002fRestart">
+<div class="nav-panel">
+<p>
+Previous: <a href="Forks.html" accesskey="p" rel="prev">Debugging Forks</a>, Up: <a href="Running.html" accesskey="u" rel="up">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Setting-a-Bookmark-to-Return-to-Later"><span>4.12 Setting a <em class="emph">Bookmark</em> to Return to Later<a class="copiable-link" href="#Setting-a-Bookmark-to-Return-to-Later"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-checkpoint"></a>
+<a class="index-entry-id" id="index-restart"></a>
+<a class="index-entry-id" id="index-bookmark"></a>
+<a class="index-entry-id" id="index-snapshot-of-a-process"></a>
+<a class="index-entry-id" id="index-rewind-program-state"></a>
+
+<p>On certain operating systems<a class="footnote" id="DOCF4" href="#FOOT4"><sup>4</sup></a>, <small class="sc">GDB</small> is able to save a <em class="dfn">snapshot</em> of a
+program&rsquo;s state, called a <em class="dfn">checkpoint</em>, and come back to it
+later.
+</p>
+<p>Returning to a checkpoint effectively undoes everything that has
+happened in the program since the <code class="code">checkpoint</code> was saved.  This
+includes changes in memory, registers, and even (within some limits)
+system state.  Effectively, it is like going back in time to the
+moment when the checkpoint was saved.
+</p>
+<p>Thus, if you&rsquo;re stepping through a program and you think you&rsquo;re
+getting close to the point where things go wrong, you can save
+a checkpoint.  Then, if you accidentally go too far and miss
+the critical statement, instead of having to restart your program
+from the beginning, you can just go back to the checkpoint and
+start again from there.
+</p>
+<p>This can be especially useful if it takes a lot of time or 
+steps to reach the point where you think the bug occurs.  
+</p>
+<p>To use the <code class="code">checkpoint</code>/<code class="code">restart</code> method of debugging:
+</p>
+<dl class="table">
+<dt><a id="index-checkpoint-1"></a><span><code class="code">checkpoint</code><a class="copiable-link" href="#index-checkpoint-1"> &para;</a></span></dt>
+<dd><p>Save a snapshot of the debugged program&rsquo;s current execution state.
+The <code class="code">checkpoint</code> command takes no arguments, but each checkpoint
+is assigned a small integer id, similar to a breakpoint id.
+</p>
+</dd>
+<dt><a id="index-info-checkpoints"></a><span><code class="code">info checkpoints</code><a class="copiable-link" href="#index-info-checkpoints"> &para;</a></span></dt>
+<dd><p>List the checkpoints that have been saved in the current debugging
+session.  For each checkpoint, the following information will be
+listed:
+</p>
+<dl class="table">
+<dt><code class="code">Checkpoint ID</code></dt>
+<dt><code class="code">Process ID</code></dt>
+<dt><code class="code">Code Address</code></dt>
+<dt><code class="code">Source line, or label</code></dt>
+</dl>
+
+</dd>
+<dt><a id="index-restart-checkpoint_002did"></a><span><code class="code">restart <var class="var">checkpoint-id</var></code><a class="copiable-link" href="#index-restart-checkpoint_002did"> &para;</a></span></dt>
+<dd><p>Restore the program state that was saved as checkpoint number
+<var class="var">checkpoint-id</var>.  All program variables, registers, stack frames
+etc.  will be returned to the values that they had when the checkpoint
+was saved.  In essence, gdb will &ldquo;wind back the clock&rdquo; to the point
+in time when the checkpoint was saved.
+</p>
+<p>Note that breakpoints, <small class="sc">GDB</small> variables, command history etc.
+are not affected by restoring a checkpoint.  In general, a checkpoint
+only restores things that reside in the program being debugged, not in
+the debugger.
+</p>
+</dd>
+<dt><a id="index-delete-checkpoint-checkpoint_002did"></a><span><code class="code">delete checkpoint <var class="var">checkpoint-id</var></code><a class="copiable-link" href="#index-delete-checkpoint-checkpoint_002did"> &para;</a></span></dt>
+<dd><p>Delete the previously-saved checkpoint identified by <var class="var">checkpoint-id</var>.
+</p>
+</dd>
+</dl>
+
+<p>Returning to a previously saved checkpoint will restore the user state
+of the program being debugged, plus a significant subset of the system
+(OS) state, including file pointers.  It won&rsquo;t &ldquo;un-write&rdquo; data from
+a file, but it will rewind the file pointer to the previous location,
+so that the previously written data can be overwritten.  For files
+opened in read mode, the pointer will also be restored so that the
+previously read data can be read again.
+</p>
+<p>Of course, characters that have been sent to a printer (or other
+external device) cannot be &ldquo;snatched back&rdquo;, and characters received
+from eg. a serial device can be removed from internal program buffers,
+but they cannot be &ldquo;pushed back&rdquo; into the serial pipeline, ready to
+be received again.  Similarly, the actual contents of files that have
+been changed cannot be restored (at this time).
+</p>
+<p>However, within those constraints, you actually can &ldquo;rewind&rdquo; your
+program to a previously saved point in time, and begin debugging it
+again &mdash; and you can change the course of events so as to debug a
+different execution path this time.
+</p>
+<a class="index-entry-id" id="index-checkpoints-and-process-id"></a>
+<p>Finally, there is one bit of internal program state that will be
+different when you return to a checkpoint &mdash; the program&rsquo;s process
+id.  Each checkpoint will have a unique process id (or <var class="var">pid</var>), 
+and each will be different from the program&rsquo;s original <var class="var">pid</var>.
+If your program has saved a local copy of its process id, this could
+potentially pose a problem.
+</p>
+<ul class="mini-toc">
+<li><a href="#A-Non_002dobvious-Benefit-of-Using-Checkpoints" accesskey="1">A Non-obvious Benefit of Using Checkpoints</a></li>
+</ul>
+<div class="subsection-level-extent" id="A-Non_002dobvious-Benefit-of-Using-Checkpoints">
+<h4 class="subsection"><span>4.12.1 A Non-obvious Benefit of Using Checkpoints<a class="copiable-link" href="#A-Non_002dobvious-Benefit-of-Using-Checkpoints"> &para;</a></span></h4>
+
+<p>On some systems such as <small class="sc">GNU</small>/Linux, address space randomization
+is performed on new processes for security reasons.  This makes it 
+difficult or impossible to set a breakpoint, or watchpoint, on an
+absolute address if you have to restart the program, since the 
+absolute location of a symbol will change from one execution to the
+next.
+</p>
+<p>A checkpoint, however, is an <em class="emph">identical</em> copy of a process. 
+Therefore if you create a checkpoint at (eg.) the start of main, 
+and simply return to that checkpoint instead of restarting the 
+process, you can avoid the effects of address randomization and
+your symbols will all stay in the same place.
+</p>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT4" href="#DOCF4">(4)</a></h5>
+<p>Currently, only
+<small class="sc">GNU</small>/Linux.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Forks.html">Debugging Forks</a>, Up: <a href="Running.html">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

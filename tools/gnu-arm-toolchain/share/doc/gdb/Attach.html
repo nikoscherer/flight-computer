@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Attach (Debugging with GDB)</title>
+
+<meta name="description" content="Attach (Debugging with GDB)">
+<meta name="keywords" content="Attach (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Running.html" rel="up" title="Running">
+<link href="Kill-Process.html" rel="next" title="Kill Process">
+<link href="Input_002fOutput.html" rel="prev" title="Input/Output">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Attach">
+<div class="nav-panel">
+<p>
+Next: <a href="Kill-Process.html" accesskey="n" rel="next">Killing the Child Process</a>, Previous: <a href="Input_002fOutput.html" accesskey="p" rel="prev">Your Program&rsquo;s Input and Output</a>, Up: <a href="Running.html" accesskey="u" rel="up">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Debugging-an-Already_002drunning-Process"><span>4.7 Debugging an Already-running Process<a class="copiable-link" href="#Debugging-an-Already_002drunning-Process"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-attach-1"></a>
+<a class="index-entry-id" id="index-attach"></a>
+
+<dl class="table">
+<dt><code class="code">attach <var class="var">process-id</var></code></dt>
+<dd><p>This command attaches to a running process&mdash;one that was started
+outside <small class="sc">GDB</small>.  (<code class="code">info files</code> shows your active
+targets.)  The command takes as argument a process ID.  The usual way to
+find out the <var class="var">process-id</var> of a Unix process is with the <code class="code">ps</code> utility,
+or with the &lsquo;<samp class="samp">jobs -l</samp>&rsquo; shell command.
+</p>
+<p><code class="code">attach</code> does not repeat if you press <kbd class="key">RET</kbd> a second time after
+executing the command.
+</p></dd>
+</dl>
+
+<p>To use <code class="code">attach</code>, your program must be running in an environment
+which supports processes; for example, <code class="code">attach</code> does not work for
+programs on bare-board targets that lack an operating system.  You must
+also have permission to send the process a signal.
+</p>
+<p>When you use <code class="code">attach</code>, the debugger finds the program running in
+the process first by looking in the current working directory, then (if
+the program is not found) by using the source file search path
+(see <a class="pxref" href="Source-Path.html">Specifying Source Directories</a>).  You can also use
+the <code class="code">file</code> command to load the program.  See <a class="xref" href="Files.html">Commands to
+Specify Files</a>.
+</p>
+<a class="anchor" id="set-exec_002dfile_002dmismatch"></a><p>If the debugger can determine that the executable file running in the
+process it is attaching to does not match the current exec-file loaded
+by <small class="sc">GDB</small>, the option <code class="code">exec-file-mismatch</code> specifies how to
+handle the mismatch.  <small class="sc">GDB</small> tries to compare the files by
+comparing their build IDs (see <a class="pxref" href="Separate-Debug-Files.html#build-ID">build ID</a>), if available.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set-exec_002dfile_002dmismatch"></a>
+<a id="index-exec_002dfile_002dmismatch"></a><span><code class="code">set exec-file-mismatch &lsquo;<samp class="samp">ask|warn|off</samp>&rsquo;</code><a class="copiable-link" href="#index-exec_002dfile_002dmismatch"> &para;</a></span></dt>
+<dd>
+<p>Whether to detect mismatch between the current executable file loaded
+by <small class="sc">GDB</small> and the executable file used to start the process.  If
+&lsquo;<samp class="samp">ask</samp>&rsquo;, the default, display a warning and ask the user whether to
+load the process executable file; if &lsquo;<samp class="samp">warn</samp>&rsquo;, just display a
+warning; if &lsquo;<samp class="samp">off</samp>&rsquo;, don&rsquo;t attempt to detect a mismatch.
+If the user confirms loading the process executable file, then its symbols
+will be loaded as well.
+</p>
+</dd>
+<dt><a id="index-show-exec_002dfile_002dmismatch"></a><span><code class="code">show exec-file-mismatch</code><a class="copiable-link" href="#index-show-exec_002dfile_002dmismatch"> &para;</a></span></dt>
+<dd><p>Show the current value of <code class="code">exec-file-mismatch</code>.
+</p>
+</dd>
+</dl>
+
+<p>The first thing <small class="sc">GDB</small> does after arranging to debug the specified
+process is to stop it.  You can examine and modify an attached process
+with all the <small class="sc">GDB</small> commands that are ordinarily available when
+you start processes with <code class="code">run</code>.  You can insert breakpoints; you
+can step and continue; you can modify storage.  If you would rather the
+process continue running, you may use the <code class="code">continue</code> command after
+attaching <small class="sc">GDB</small> to the process.
+</p>
+<dl class="table">
+<dt><a id="index-detach"></a><span><code class="code">detach</code><a class="copiable-link" href="#index-detach"> &para;</a></span></dt>
+<dd><p>When you have finished debugging the attached process, you can use the
+<code class="code">detach</code> command to release it from <small class="sc">GDB</small> control.  Detaching
+the process continues its execution.  After the <code class="code">detach</code> command,
+that process and <small class="sc">GDB</small> become completely independent once more, and you
+are ready to <code class="code">attach</code> another process or start one with <code class="code">run</code>.
+<code class="code">detach</code> does not repeat if you press <kbd class="key">RET</kbd> again after
+executing the command.
+</p></dd>
+</dl>
+
+<p>If you exit <small class="sc">GDB</small> while you have an attached process, you detach
+that process.  If you use the <code class="code">run</code> command, you kill that process.
+By default, <small class="sc">GDB</small> asks for confirmation if you try to do either of these
+things; you can control whether or not you need to confirm by using the
+<code class="code">set confirm</code> command (see <a class="pxref" href="Messages_002fWarnings.html">Optional Warnings and
+Messages</a>).
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Kill-Process.html">Killing the Child Process</a>, Previous: <a href="Input_002fOutput.html">Your Program&rsquo;s Input and Output</a>, Up: <a href="Running.html">Running Programs Under <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Comparing potentially-unordered poly_ints (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Comparing potentially-unordered poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Comparing potentially-unordered poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparisons-involving-poly_005fint.html" rel="up" title="Comparisons involving poly_int">
+<link href="Comparing-ordered-poly_005fints.html" rel="next" title="Comparing ordered poly_ints">
+<link href="Properties-of-the-poly_005fint-comparisons.html" rel="prev" title="Properties of the poly_int comparisons">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Comparing-potentially_002dunordered-poly_005fints">
+<div class="nav-panel">
+<p>
+Next: <a href="Comparing-ordered-poly_005fints.html" accesskey="n" rel="next">Comparing ordered <code class="code">poly_int</code>s</a>, Previous: <a href="Properties-of-the-poly_005fint-comparisons.html" accesskey="p" rel="prev">Properties of the <code class="code">poly_int</code> comparisons</a>, Up: <a href="Comparisons-involving-poly_005fint.html" accesskey="u" rel="up">Comparisons involving <code class="code">poly_int</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Comparing-potentially_002dunordered-poly_005fints-1"><span>9.3.3 Comparing potentially-unordered <code class="code">poly_int</code>s<a class="copiable-link" href="#Comparing-potentially_002dunordered-poly_005fints-1"> &para;</a></span></h4>
+
+<p>In cases where there is no definite link between two <code class="code">poly_int</code>s,
+we can usually make a conservatively-correct assumption.  For example,
+the conservative assumption for alias analysis is that two references
+<em class="emph">might</em> alias.
+</p>
+<p>One way of checking whether [<var class="var">begin1</var>, <var class="var">end1</var>) might overlap
+[<var class="var">begin2</var>, <var class="var">end2</var>) using the <code class="code">poly_int</code> comparisons is:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">maybe_gt (<var class="var">end1</var>, <var class="var">begin2</var>) &amp;&amp; maybe_gt (<var class="var">end2</var>, <var class="var">begin1</var>)
+</pre></div>
+
+<p>and another (equivalent) way is:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">!(known_le (<var class="var">end1</var>, <var class="var">begin2</var>) || known_le (<var class="var">end2</var>, <var class="var">begin1</var>))
+</pre></div>
+
+<p>However, in this particular example, it is better to use the range helper
+functions instead.  See <a class="xref" href="Range-checks-on-poly_005fints.html">Range checks on <code class="code">poly_int</code>s</a>.
+</p>
+</div>
+
+
+
+</body>
+</html>

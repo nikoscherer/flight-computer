@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Frame Apply (Debugging with GDB)</title>
+
+<meta name="description" content="Frame Apply (Debugging with GDB)">
+<meta name="keywords" content="Frame Apply (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stack.html" rel="up" title="Stack">
+<link href="Frame-Filter-Management.html" rel="next" title="Frame Filter Management">
+<link href="Frame-Info.html" rel="prev" title="Frame Info">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Frame-Apply">
+<div class="nav-panel">
+<p>
+Next: <a href="Frame-Filter-Management.html" accesskey="n" rel="next">Management of Frame Filters.</a>, Previous: <a href="Frame-Info.html" accesskey="p" rel="prev">Information About a Frame</a>, Up: <a href="Stack.html" accesskey="u" rel="up">Examining the Stack</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Applying-a-Command-to-Several-Frames_002e"><span>8.5 Applying a Command to Several Frames.<a class="copiable-link" href="#Applying-a-Command-to-Several-Frames_002e"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-frame-apply"></a>
+<a class="index-entry-id" id="index-apply-command-to-several-frames"></a>
+<dl class="table">
+<dt><code class="code">frame apply [all | <var class="var">count</var> | <var class="var">-count</var> | level <var class="var">level</var>&hellip;] [<var class="var">option</var>]&hellip; <var class="var">command</var></code></dt>
+<dd><p>The <code class="code">frame apply</code> command allows you to apply the named
+<var class="var">command</var> to one or more frames.
+</p>
+<dl class="table">
+<dt><code class="code"><code class="code">all</code></code></dt>
+<dd><p>Specify <code class="code">all</code> to apply <var class="var">command</var> to all frames.
+</p>
+</dd>
+<dt><code class="code"><var class="var">count</var></code></dt>
+<dd><p>Use <var class="var">count</var> to apply <var class="var">command</var> to the innermost <var class="var">count</var>
+frames, where <var class="var">count</var> is a positive number.
+</p>
+</dd>
+<dt><code class="code"><var class="var">-count</var></code></dt>
+<dd><p>Use <var class="var">-count</var> to apply <var class="var">command</var> to the outermost <var class="var">count</var>
+frames, where <var class="var">count</var> is a positive number.
+</p>
+</dd>
+<dt><code class="code"><code class="code">level</code></code></dt>
+<dd><p>Use <code class="code">level</code> to apply <var class="var">command</var> to the set of frames identified
+by the <var class="var">level</var> list.  <var class="var">level</var> is a frame level or a range of frame
+levels as <var class="var">level1</var>-<var class="var">level2</var>.  The frame level is the number shown
+in the first field of the &lsquo;<samp class="samp">backtrace</samp>&rsquo; command output.
+E.g., &lsquo;<samp class="samp">2-4 6-8 3</samp>&rsquo; indicates to apply <var class="var">command</var> for the frames
+at levels 2, 3, 4, 6, 7, 8, and then again on frame at level 3.
+</p>
+</dd>
+</dl>
+
+<p>Note that the frames on which <code class="code">frame apply</code> applies a command are
+also influenced by the <code class="code">set backtrace</code> settings such as <code class="code">set
+backtrace past-main</code> and <code class="code">set backtrace limit N</code>.
+See <a class="xref" href="Backtrace.html">Backtraces</a>.
+</p>
+<p>The <code class="code">frame apply</code> command also supports a number of options that
+allow overriding relevant <code class="code">set backtrace</code> settings:
+</p>
+<dl class="table">
+<dt><code class="code">-past-main [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>Whether backtraces should continue past <code class="code">main</code>.
+Related setting: <a class="ref" href="Backtrace.html#set-backtrace-past_002dmain">set backtrace past-main</a>.
+</p>
+</dd>
+<dt><code class="code">-past-entry [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>Whether backtraces should continue past the entry point of a program.
+Related setting: <a class="ref" href="Backtrace.html#set-backtrace-past_002dentry">set backtrace past-entry</a>.
+</p></dd>
+</dl>
+
+<p>By default, <small class="sc">GDB</small> displays some frame information before the
+output produced by <var class="var">command</var>, and an error raised during the
+execution of a <var class="var">command</var> will abort <code class="code">frame apply</code>.  The
+following options can be used to fine-tune these behaviors:
+</p>
+<dl class="table">
+<dt><code class="code">-c</code></dt>
+<dd><p>The flag <code class="code">-c</code>, which stands for &lsquo;<samp class="samp">continue</samp>&rsquo;, causes any
+errors in <var class="var">command</var> to be displayed, and the execution of
+<code class="code">frame apply</code> then continues.
+</p></dd>
+<dt><code class="code">-s</code></dt>
+<dd><p>The flag <code class="code">-s</code>, which stands for &lsquo;<samp class="samp">silent</samp>&rsquo;, causes any errors
+or empty output produced by a <var class="var">command</var> to be silently ignored.
+That is, the execution continues, but the frame information and errors
+are not printed.
+</p></dd>
+<dt><code class="code">-q</code></dt>
+<dd><p>The flag <code class="code">-q</code> (&lsquo;<samp class="samp">quiet</samp>&rsquo;) disables printing the frame
+information.
+</p></dd>
+</dl>
+
+<p>The following example shows how the flags <code class="code">-c</code> and <code class="code">-s</code> are
+working when applying the command <code class="code">p j</code> to all frames, where
+variable <code class="code">j</code> can only be successfully printed in the outermost
+<code class="code">#1 main</code> frame.
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) frame apply all p j
+#0  some_function (i=5) at fun.c:4
+No symbol &quot;j&quot; in current context.
+(gdb) frame apply all -c p j
+#0  some_function (i=5) at fun.c:4
+No symbol &quot;j&quot; in current context.
+#1  0x565555fb in main (argc=1, argv=0xffffd2c4) at fun.c:11
+$1 = 5
+(gdb) frame apply all -s p j
+#1  0x565555fb in main (argc=1, argv=0xffffd2c4) at fun.c:11
+$2 = 5
+(gdb)
+</pre></div></div>
+
+<p>By default, &lsquo;<samp class="samp">frame apply</samp>&rsquo;, prints the frame location
+information before the command output:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) frame apply all p $sp
+#0  some_function (i=5) at fun.c:4
+$4 = (void *) 0xffffd1e0
+#1  0x565555fb in main (argc=1, argv=0xffffd2c4) at fun.c:11
+$5 = (void *) 0xffffd1f0
+(gdb)
+</pre></div></div>
+
+<p>If the flag <code class="code">-q</code> is given, no frame information is printed:
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) frame apply all -q p $sp
+$12 = (void *) 0xffffd1e0
+$13 = (void *) 0xffffd1f0
+(gdb)
+</pre></div></div>
+
+</dd>
+</dl>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-apply-a-command-to-all-frames-_0028ignoring-errors-and-empty-output_0029"></a>
+<a id="index-faas"></a><span><code class="code">faas <var class="var">command</var></code><a class="copiable-link" href="#index-faas"> &para;</a></span></dt>
+<dd><p>Shortcut for <code class="code">frame apply all -s <var class="var">command</var></code>.
+Applies <var class="var">command</var> on all frames, ignoring errors and empty output.
+</p>
+<p>It can for example be used to print a local variable or a function
+argument without knowing the frame where this variable or argument
+is, using:
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) faas p some_local_var_i_do_not_remember_where_it_is
+</pre></div>
+
+<p>The <code class="code">faas</code> command accepts the same options as the <code class="code">frame
+apply</code> command.  See <a class="xref" href="#Frame-Apply">frame apply</a>.
+</p>
+<p>Note that the command <code class="code">tfaas <var class="var">command</var></code> applies <var class="var">command</var>
+on all frames of all threads.  See See <a class="xref" href="Threads.html">Threads</a>.
+</p></dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Frame-Filter-Management.html">Management of Frame Filters.</a>, Previous: <a href="Frame-Info.html">Information About a Frame</a>, Up: <a href="Stack.html">Examining the Stack</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

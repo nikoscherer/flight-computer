@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Target Description Format (Debugging with GDB)</title>
+
+<meta name="description" content="Target Description Format (Debugging with GDB)">
+<meta name="keywords" content="Target Description Format (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Target-Descriptions.html" rel="up" title="Target Descriptions">
+<link href="Predefined-Target-Types.html" rel="next" title="Predefined Target Types">
+<link href="Retrieving-Descriptions.html" rel="prev" title="Retrieving Descriptions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Target-Description-Format">
+<div class="nav-panel">
+<p>
+Next: <a href="Predefined-Target-Types.html" accesskey="n" rel="next">Predefined Target Types</a>, Previous: <a href="Retrieving-Descriptions.html" accesskey="p" rel="prev">Retrieving Descriptions</a>, Up: <a href="Target-Descriptions.html" accesskey="u" rel="up">Target Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Target-Description-Format-1"><span>G.2 Target Description Format<a class="copiable-link" href="#Target-Description-Format-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-target-descriptions_002c-XML-format"></a>
+
+<p>A target description annex is an <a class="uref" href="http://www.w3.org/XML/">XML</a>
+document which complies with the Document Type Definition provided in
+the <small class="sc">GDB</small> sources in <samp class="file">gdb/features/gdb-target.dtd</samp>.  This
+means you can use generally available tools like <code class="command">xmllint</code> to
+check that your feature descriptions are well-formed and valid.
+However, to help people unfamiliar with XML write descriptions for
+their targets, we also describe the grammar here.
+</p>
+<p>Target descriptions can identify the architecture of the remote target
+and (for some architectures) provide information about custom register
+sets.  They can also identify the OS ABI of the remote target.
+<small class="sc">GDB</small> can use this information to autoconfigure for your
+target, or to warn you if you connect to an unsupported target.
+</p>
+<p>Here is a simple target description:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;target version=&quot;1.0&quot;&gt;
+  &lt;architecture&gt;i386:x86-64&lt;/architecture&gt;
+&lt;/target&gt;
+</pre></div>
+
+<p>This minimal description only says that the target uses
+the x86-64 architecture.
+</p>
+<p>A target description has the following overall form, with [ ] marking
+optional elements and &hellip; marking repeatable elements.  The elements
+are explained further below.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE target SYSTEM &quot;gdb-target.dtd&quot;&gt;
+&lt;target version=&quot;1.0&quot;&gt;
+  <span class="r">[</span><var class="var">architecture</var><span class="r">]</span>
+  <span class="r">[</span><var class="var">osabi</var><span class="r">]</span>
+  <span class="r">[</span><var class="var">compatible</var><span class="r">]</span>
+  <span class="r">[</span><var class="var">feature</var>...<span class="r">]</span>
+&lt;/target&gt;
+</pre></div>
+
+<p>The description is generally insensitive to whitespace and line
+breaks, under the usual common-sense rules.  The XML version
+declaration and document type declaration can generally be omitted
+(<small class="sc">GDB</small> does not require them), but specifying them may be
+useful for XML validation tools.  The &lsquo;<samp class="samp">version</samp>&rsquo; attribute for
+&lsquo;<samp class="samp">&lt;target&gt;</samp>&rsquo; may also be omitted, but we recommend
+including it; if future versions of <small class="sc">GDB</small> use an incompatible
+revision of <samp class="file">gdb-target.dtd</samp>, they will detect and report
+the version mismatch.
+</p>
+<ul class="mini-toc">
+<li><a href="#Inclusion" accesskey="1">Inclusion</a></li>
+<li><a href="#Architecture" accesskey="2">Architecture</a></li>
+<li><a href="#OS-ABI" accesskey="3">OS ABI</a></li>
+<li><a href="#Compatible-Architecture" accesskey="4">Compatible Architecture</a></li>
+<li><a href="#Features" accesskey="5">Features</a></li>
+<li><a href="#Types" accesskey="6">Types</a></li>
+<li><a href="#Registers-2" accesskey="7">Registers</a></li>
+</ul>
+<div class="subsection-level-extent" id="Inclusion">
+<h4 class="subsection"><span>G.2.1 Inclusion<a class="copiable-link" href="#Inclusion"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-inclusion"></a>
+<a class="index-entry-id" id="index-XInclude"></a>
+<a class="index-entry-id" id="index-_003cxi_003ainclude_003e"></a>
+
+<p>It can sometimes be valuable to split a target description up into
+several different annexes, either for organizational purposes, or to
+share files between different possible target descriptions.  You can
+divide a description into multiple files by replacing any element of
+the target description with an inclusion directive of the form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;xi:include href=&quot;<var class="var">document</var>&quot;/&gt;
+</pre></div>
+
+<p>When <small class="sc">GDB</small> encounters an element of this form, it will retrieve
+the named XML <var class="var">document</var>, and replace the inclusion directive with
+the contents of that document.  If the current description was read
+using &lsquo;<samp class="samp">qXfer</samp>&rsquo;, then so will be the included document;
+<var class="var">document</var> will be interpreted as the name of an annex.  If the
+current description was read from a file, <small class="sc">GDB</small> will look for
+<var class="var">document</var> as a file in the same directory where it found the
+original description.
+</p>
+</div>
+<div class="subsection-level-extent" id="Architecture">
+<h4 class="subsection"><span>G.2.2 Architecture<a class="copiable-link" href="#Architecture"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-_003carchitecture_003e"></a>
+
+<p>An &lsquo;<samp class="samp">&lt;architecture&gt;</samp>&rsquo; element has this form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;architecture&gt;<var class="var">arch</var>&lt;/architecture&gt;
+</pre></div>
+
+<p><var class="var">arch</var> is one of the architectures from the set accepted by
+<code class="code">set architecture</code> (see <a class="pxref" href="Targets.html">Specifying a Debugging Target</a>).
+</p>
+</div>
+<div class="subsection-level-extent" id="OS-ABI">
+<h4 class="subsection"><span>G.2.3 OS ABI<a class="copiable-link" href="#OS-ABI"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-_003cosabi_003e"></a>
+
+<p>This optional field was introduced in <small class="sc">GDB</small> version 7.0.
+Previous versions of <small class="sc">GDB</small> ignore it.
+</p>
+<p>An &lsquo;<samp class="samp">&lt;osabi&gt;</samp>&rsquo; element has this form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;osabi&gt;<var class="var">abi-name</var>&lt;/osabi&gt;
+</pre></div>
+
+<p><var class="var">abi-name</var> is an OS ABI name from the same selection accepted by
+<code class="code">set&nbsp;osabi</code><!-- /@w --> (see <a class="pxref" href="ABI.html">Configuring the Current ABI</a>).
+</p>
+</div>
+<div class="subsection-level-extent" id="Compatible-Architecture">
+<h4 class="subsection"><span>G.2.4 Compatible Architecture<a class="copiable-link" href="#Compatible-Architecture"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-_003ccompatible_003e"></a>
+
+<p>This optional field was introduced in <small class="sc">GDB</small> version 7.0.
+Previous versions of <small class="sc">GDB</small> ignore it.
+</p>
+<p>A &lsquo;<samp class="samp">&lt;compatible&gt;</samp>&rsquo; element has this form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;compatible&gt;<var class="var">arch</var>&lt;/compatible&gt;
+</pre></div>
+
+<p><var class="var">arch</var> is one of the architectures from the set accepted by
+<code class="code">set architecture</code> (see <a class="pxref" href="Targets.html">Specifying a Debugging Target</a>).
+</p>
+<p>A &lsquo;<samp class="samp">&lt;compatible&gt;</samp>&rsquo; element is used to specify that the target
+is able to run binaries in some other than the main target architecture
+given by the &lsquo;<samp class="samp">&lt;architecture&gt;</samp>&rsquo; element.  For example, on the
+Cell Broadband Engine, the main architecture is <code class="code">powerpc:common</code>
+or <code class="code">powerpc:common64</code>, but the system is able to run binaries
+in the <code class="code">spu</code> architecture as well.  The way to describe this
+capability with &lsquo;<samp class="samp">&lt;compatible&gt;</samp>&rsquo; is as follows:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;architecture&gt;powerpc:common&lt;/architecture&gt;
+  &lt;compatible&gt;spu&lt;/compatible&gt;
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Features">
+<h4 class="subsection"><span>G.2.5 Features<a class="copiable-link" href="#Features"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-_003cfeature_003e"></a>
+
+<p>Each &lsquo;<samp class="samp">&lt;feature&gt;</samp>&rsquo; describes some logical portion of the target
+system.  Features are currently used to describe available CPU
+registers and the types of their contents.  A &lsquo;<samp class="samp">&lt;feature&gt;</samp>&rsquo; element
+has this form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;feature name=&quot;<var class="var">name</var>&quot;&gt;
+  <span class="r">[</span><var class="var">type</var>...<span class="r">]</span>
+  <var class="var">reg</var>...
+&lt;/feature&gt;
+</pre></div>
+
+<p>Each feature&rsquo;s name should be unique within the description.  The name
+of a feature does not matter unless <small class="sc">GDB</small> has some special
+knowledge of the contents of that feature; if it does, the feature
+should have its standard name.  See <a class="xref" href="Standard-Target-Features.html">Standard Target Features</a>.
+</p>
+</div>
+<div class="subsection-level-extent" id="Types">
+<h4 class="subsection"><span>G.2.6 Types<a class="copiable-link" href="#Types"> &para;</a></span></h4>
+
+<p>Any register&rsquo;s value is a collection of bits which <small class="sc">GDB</small> must
+interpret.  The default interpretation is a two&rsquo;s complement integer,
+but other types can be requested by name in the register description.
+Some predefined types are provided by <small class="sc">GDB</small> (see <a class="pxref" href="Predefined-Target-Types.html">Predefined Target Types</a>), and the description can define additional composite
+and enum types.
+</p>
+<p>Each type element must have an &lsquo;<samp class="samp">id</samp>&rsquo; attribute, which gives
+a unique (within the containing &lsquo;<samp class="samp">&lt;feature&gt;</samp>&rsquo;) name to the type.
+Types must be defined before they are used.
+</p>
+<a class="index-entry-id" id="index-_003cvector_003e"></a>
+<p>Some targets offer vector registers, which can be treated as arrays
+of scalar elements.  These types are written as &lsquo;<samp class="samp">&lt;vector&gt;</samp>&rsquo; elements,
+specifying the array element type, <var class="var">type</var>, and the number of elements,
+<var class="var">count</var>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;vector id=&quot;<var class="var">id</var>&quot; type=&quot;<var class="var">type</var>&quot; count=&quot;<var class="var">count</var>&quot;/&gt;
+</pre></div>
+
+<a class="index-entry-id" id="index-_003cunion_003e"></a>
+<p>If a register&rsquo;s value is usefully viewed in multiple ways, define it
+with a union type containing the useful representations.  The
+&lsquo;<samp class="samp">&lt;union&gt;</samp>&rsquo; element contains one or more &lsquo;<samp class="samp">&lt;field&gt;</samp>&rsquo; elements,
+each of which has a <var class="var">name</var> and a <var class="var">type</var>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;union id=&quot;<var class="var">id</var>&quot;&gt;
+  &lt;field name=&quot;<var class="var">name</var>&quot; type=&quot;<var class="var">type</var>&quot;/&gt;
+  ...
+&lt;/union&gt;
+</pre></div>
+
+<a class="index-entry-id" id="index-_003cstruct_003e"></a>
+<a class="index-entry-id" id="index-_003cflags_003e"></a>
+<p>If a register&rsquo;s value is composed from several separate values, define
+it with either a structure type or a flags type.
+A flags type may only contain bitfields.
+A structure type may either contain only bitfields or contain no bitfields.
+If the value contains only bitfields, its total size in bytes must be
+specified.
+</p>
+<p>Non-bitfield values have a <var class="var">name</var> and <var class="var">type</var>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;struct id=&quot;<var class="var">id</var>&quot;&gt;
+  &lt;field name=&quot;<var class="var">name</var>&quot; type=&quot;<var class="var">type</var>&quot;/&gt;
+  ...
+&lt;/struct&gt;
+</pre></div>
+
+<p>Both <var class="var">name</var> and <var class="var">type</var> values are required.
+No implicit padding is added.
+</p>
+<p>Bitfield values have a <var class="var">name</var>, <var class="var">start</var>, <var class="var">end</var> and <var class="var">type</var>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;struct id=&quot;<var class="var">id</var>&quot; size=&quot;<var class="var">size</var>&quot;&gt;
+  &lt;field name=&quot;<var class="var">name</var>&quot; start=&quot;<var class="var">start</var>&quot; end=&quot;<var class="var">end</var>&quot; type=&quot;<var class="var">type</var>&quot;/&gt;
+  ...
+&lt;/struct&gt;
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;flags id=&quot;<var class="var">id</var>&quot; size=&quot;<var class="var">size</var>&quot;&gt;
+  &lt;field name=&quot;<var class="var">name</var>&quot; start=&quot;<var class="var">start</var>&quot; end=&quot;<var class="var">end</var>&quot; type=&quot;<var class="var">type</var>&quot;/&gt;
+  ...
+&lt;/flags&gt;
+</pre></div>
+
+<p>The <var class="var">name</var> value is required.
+Bitfield values may be named with the empty string, &lsquo;<samp class="samp">&quot;&quot;</samp>&rsquo;,
+in which case the field is &ldquo;filler&rdquo; and its value is not printed.
+Not all bits need to be specified, so &ldquo;filler&rdquo; fields are optional.
+</p>
+<p>The <var class="var">start</var> and <var class="var">end</var> values are required, and <var class="var">type</var>
+is optional.
+The field&rsquo;s <var class="var">start</var> must be less than or equal to its <var class="var">end</var>,
+and zero represents the least significant bit.
+</p>
+<p>The default value of <var class="var">type</var> is <code class="code">bool</code> for single bit fields,
+and an unsigned integer otherwise.
+</p>
+<p>Which to choose?  Structures or flags?
+</p>
+<p>Registers defined with &lsquo;<samp class="samp">flags</samp>&rsquo; have these advantages over
+defining them with &lsquo;<samp class="samp">struct</samp>&rsquo;:
+</p>
+<ul class="itemize mark-bullet">
+<li>Arithmetic may be performed on them as if they were integers.
+</li><li>They are printed in a more readable fashion.
+</li></ul>
+
+<p>Registers defined with &lsquo;<samp class="samp">struct</samp>&rsquo; have one advantage over
+defining them with &lsquo;<samp class="samp">flags</samp>&rsquo;:
+</p>
+<ul class="itemize mark-bullet">
+<li>One can fetch individual fields like in &lsquo;<samp class="samp">C</samp>&rsquo;.
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $my_struct_reg.field3
+$1 = 42
+</pre></div>
+
+</li></ul>
+
+</div>
+<div class="subsection-level-extent" id="Registers-2">
+<h4 class="subsection"><span>G.2.7 Registers<a class="copiable-link" href="#Registers-2"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-_003creg_003e"></a>
+
+<p>Each register is represented as an element with this form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;reg name=&quot;<var class="var">name</var>&quot;
+     bitsize=&quot;<var class="var">size</var>&quot;
+     <span class="r">[</span>regnum=&quot;<var class="var">num</var>&quot;<span class="r">]</span>
+     <span class="r">[</span>save-restore=&quot;<var class="var">save-restore</var>&quot;<span class="r">]</span>
+     <span class="r">[</span>type=&quot;<var class="var">type</var>&quot;<span class="r">]</span>
+     <span class="r">[</span>group=&quot;<var class="var">group</var>&quot;<span class="r">]</span>/&gt;
+</pre></div>
+
+<p>The components are as follows:
+</p>
+<dl class="table">
+<dt><var class="var">name</var></dt>
+<dd><p>The register&rsquo;s name; it must be unique within the target description.
+</p>
+</dd>
+<dt><var class="var">bitsize</var></dt>
+<dd><p>The register&rsquo;s size, in bits.
+</p>
+</dd>
+<dt><var class="var">regnum</var></dt>
+<dd><p>The register&rsquo;s number.  If omitted, a register&rsquo;s number is one greater
+than that of the previous register (either in the current feature or in
+a preceding feature); the first register in the target description
+defaults to zero.  This register number is used to read or write
+the register; e.g. it is used in the remote <code class="code">p</code> and <code class="code">P</code>
+packets, and registers appear in the <code class="code">g</code> and <code class="code">G</code> packets
+in order of increasing register number.
+</p>
+</dd>
+<dt><var class="var">save-restore</var></dt>
+<dd><p>Whether the register should be preserved across inferior function
+calls; this must be either <code class="code">yes</code> or <code class="code">no</code>.  The default is
+<code class="code">yes</code>, which is appropriate for most registers except for
+some system control registers; this is not related to the target&rsquo;s
+ABI.
+</p>
+</dd>
+<dt><var class="var">type</var></dt>
+<dd><p>The type of the register.  It may be a predefined type, a type
+defined in the current feature, or one of the special types <code class="code">int</code>
+and <code class="code">float</code>.  <code class="code">int</code> is an integer type of the correct size
+for <var class="var">bitsize</var>, and <code class="code">float</code> is a floating point type (in the
+architecture&rsquo;s normal floating point format) of the correct size for
+<var class="var">bitsize</var>.  The default is <code class="code">int</code>.
+</p>
+</dd>
+<dt><var class="var">group</var></dt>
+<dd><p>The register group to which this register belongs.  It can be one of the
+standard register groups <code class="code">general</code>, <code class="code">float</code>, <code class="code">vector</code> or an
+arbitrary string.  Group names should be limited to alphanumeric characters.
+If a group name is made up of multiple words the words may be separated by
+hyphens; e.g. <code class="code">special-group</code> or <code class="code">ultra-special-group</code>.  If no
+<var class="var">group</var> is specified, <small class="sc">GDB</small> will not display the register in
+<code class="code">info registers</code>.
+</p>
+</dd>
+</dl>
+
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Predefined-Target-Types.html">Predefined Target Types</a>, Previous: <a href="Retrieving-Descriptions.html">Retrieving Descriptions</a>, Up: <a href="Target-Descriptions.html">Target Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

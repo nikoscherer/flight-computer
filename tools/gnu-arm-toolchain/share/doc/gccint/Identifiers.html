@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Identifiers (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Identifiers (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Identifiers (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Tree-overview.html" rel="up" title="Tree overview">
+<link href="Containers.html" rel="next" title="Containers">
+<link href="Macros-and-Functions.html" rel="prev" title="Macros and Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Identifiers">
+<div class="nav-panel">
+<p>
+Next: <a href="Containers.html" accesskey="n" rel="next">Containers</a>, Previous: <a href="Macros-and-Functions.html" accesskey="p" rel="prev">Trees</a>, Up: <a href="Tree-overview.html" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Identifiers-1"><span>10.2.2 Identifiers<a class="copiable-link" href="#Identifiers-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-identifier"></a>
+<a class="index-entry-id" id="index-name"></a>
+<a class="index-entry-id" id="index-IDENTIFIER_005fNODE"></a>
+
+<p>An <code class="code">IDENTIFIER_NODE</code> represents a slightly more general concept
+than the standard C or C++ concept of identifier.  In particular, an
+<code class="code">IDENTIFIER_NODE</code> may contain a &lsquo;<samp class="samp">$</samp>&rsquo;, or other extraordinary
+characters.
+</p>
+<p>There are never two distinct <code class="code">IDENTIFIER_NODE</code>s representing the
+same identifier.  Therefore, you may use pointer equality to compare
+<code class="code">IDENTIFIER_NODE</code>s, rather than using a routine like
+<code class="code">strcmp</code>.  Use <code class="code">get_identifier</code> to obtain the unique
+<code class="code">IDENTIFIER_NODE</code> for a supplied string.
+</p>
+<p>You can use the following macros to access identifiers:
+</p><dl class="ftable">
+<dt><a id="index-IDENTIFIER_005fPOINTER"></a><span><code class="code">IDENTIFIER_POINTER</code><a class="copiable-link" href="#index-IDENTIFIER_005fPOINTER"> &para;</a></span></dt>
+<dd><p>The string represented by the identifier, represented as a
+<code class="code">char*</code>.  This string is always <code class="code">NUL</code>-terminated, and contains
+no embedded <code class="code">NUL</code> characters.
+</p>
+</dd>
+<dt><a id="index-IDENTIFIER_005fLENGTH"></a><span><code class="code">IDENTIFIER_LENGTH</code><a class="copiable-link" href="#index-IDENTIFIER_005fLENGTH"> &para;</a></span></dt>
+<dd><p>The length of the string returned by <code class="code">IDENTIFIER_POINTER</code>, not
+including the trailing <code class="code">NUL</code>.  This value of
+<code class="code">IDENTIFIER_LENGTH (x)</code> is always the same as <code class="code">strlen
+(IDENTIFIER_POINTER (x))</code>.
+</p>
+</dd>
+<dt><a id="index-IDENTIFIER_005fOPNAME_005fP"></a><span><code class="code">IDENTIFIER_OPNAME_P</code><a class="copiable-link" href="#index-IDENTIFIER_005fOPNAME_005fP"> &para;</a></span></dt>
+<dd><p>This predicate holds if the identifier represents the name of an
+overloaded operator.  In this case, you should not depend on the
+contents of either the <code class="code">IDENTIFIER_POINTER</code> or the
+<code class="code">IDENTIFIER_LENGTH</code>.
+</p>
+</dd>
+<dt><a id="index-IDENTIFIER_005fTYPENAME_005fP"></a><span><code class="code">IDENTIFIER_TYPENAME_P</code><a class="copiable-link" href="#index-IDENTIFIER_005fTYPENAME_005fP"> &para;</a></span></dt>
+<dd><p>This predicate holds if the identifier represents the name of a
+user-defined conversion operator.  In this case, the <code class="code">TREE_TYPE</code> of
+the <code class="code">IDENTIFIER_NODE</code> holds the type to which the conversion
+operator converts.
+</p>
+</dd>
+</dl>
+
+
+</div>
+
+
+
+</body>
+</html>

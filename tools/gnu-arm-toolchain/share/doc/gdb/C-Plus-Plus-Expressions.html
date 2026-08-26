@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>C Plus Plus Expressions (Debugging with GDB)</title>
+
+<meta name="description" content="C Plus Plus Expressions (Debugging with GDB)">
+<meta name="keywords" content="C Plus Plus Expressions (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C.html" rel="up" title="C">
+<link href="C-Defaults.html" rel="next" title="C Defaults">
+<link href="C-Constants.html" rel="prev" title="C Constants">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="C-Plus-Plus-Expressions">
+<div class="nav-panel">
+<p>
+Next: <a href="C-Defaults.html" accesskey="n" rel="next">C and C<code class="t">++</code> Defaults</a>, Previous: <a href="C-Constants.html" accesskey="p" rel="prev">C and C<code class="t">++</code> Constants</a>, Up: <a href="C.html" accesskey="u" rel="up">C and C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="C_002b_002b-Expressions"><span>15.4.1.3 C<code class="t">++</code> Expressions<a class="copiable-link" href="#C_002b_002b-Expressions"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-expressions-in-C_002b_002b"></a>
+<p><small class="sc">GDB</small> expression handling can interpret most C<code class="t">++</code> expressions.
+</p>
+<a class="index-entry-id" id="index-debugging-C_002b_002b-programs"></a>
+<a class="index-entry-id" id="index-C_002b_002b-compilers"></a>
+<a class="index-entry-id" id="index-debug-formats-and-C_002b_002b"></a>
+<a class="index-entry-id" id="index-gcc-and-C_002b_002b"></a>
+<blockquote class="quotation">
+<p><em class="emph">Warning:</em> <small class="sc">GDB</small> can only debug C<code class="t">++</code> code if you use
+the proper compiler and the proper debug format.  Currently,
+<small class="sc">GDB</small> works best when debugging C<code class="t">++</code> code that is compiled
+with the most recent version of <small class="sc">GCC</small> possible.  The DWARF
+debugging format is preferred; <small class="sc">GCC</small> defaults to this on most
+popular platforms.  Other compilers and/or debug formats are likely to
+work badly or not at all when using <small class="sc">GDB</small> to debug C<code class="t">++</code>
+code.  See <a class="xref" href="Compilation.html">Compiling for Debugging</a>.
+</p></blockquote>
+
+<ol class="enumerate">
+<li> <a class="index-entry-id" id="index-member-functions"></a>
+Member function calls are allowed; you can use expressions like
+
+<div class="example smallexample">
+<pre class="example-preformatted">count = aml-&gt;GetOriginal(x, y)
+</pre></div>
+
+</li><li> <a class="index-entry-id" id="index-this_002c-inside-C_002b_002b-member-functions"></a>
+<a class="index-entry-id" id="index-namespace-in-C_002b_002b"></a>
+While a member function is active (in the selected stack frame), your
+expressions have the same namespace available as the member function;
+that is, <small class="sc">GDB</small> allows implicit references to the class instance
+pointer <code class="code">this</code> following the same rules as C<code class="t">++</code>.  <code class="code">using</code>
+declarations in the current scope are also respected by <small class="sc">GDB</small>.
+
+</li><li> <a class="index-entry-id" id="index-call-overloaded-functions"></a>
+<a class="index-entry-id" id="index-overloaded-functions_002c-calling"></a>
+<a class="index-entry-id" id="index-type-conversions-in-C_002b_002b"></a>
+You can call overloaded functions; <small class="sc">GDB</small> resolves the function
+call to the right definition, with some restrictions.  <small class="sc">GDB</small> does not
+perform overload resolution involving user-defined type conversions,
+calls to constructors, or instantiations of templates that do not exist
+in the program.  It also cannot handle ellipsis argument lists or
+default arguments.
+
+<p>It does perform integral conversions and promotions, floating-point
+promotions, arithmetic conversions, pointer conversions, conversions of
+class objects to base classes, and standard conversions such as those of
+functions or arrays to pointers; it requires an exact match on the
+number of function arguments.
+</p>
+<p>Overload resolution is always performed, unless you have specified
+<code class="code">set overload-resolution off</code>.  See <a class="xref" href="Debugging-C-Plus-Plus.html"><small class="sc">GDB</small> Features for C<code class="t">++</code></a>.
+</p>
+<p>You must specify <code class="code">set overload-resolution off</code> in order to use an
+explicit function signature to call an overloaded function, as in
+</p><div class="example smallexample">
+<pre class="example-preformatted">p 'foo(char,int)'('x', 13)
+</pre></div>
+
+<p>The <small class="sc">GDB</small> command-completion facility can simplify this;
+see <a class="ref" href="Completion.html">Command Completion</a>.
+</p>
+</li><li> <a class="index-entry-id" id="index-reference-declarations"></a>
+<small class="sc">GDB</small> understands variables declared as C<code class="t">++</code> lvalue or rvalue
+references; you can use them in expressions just as you do in C<code class="t">++</code>
+source&mdash;they are automatically dereferenced.
+
+<p>In the parameter list shown when <small class="sc">GDB</small> displays a frame, the values of
+reference variables are not displayed (unlike other variables); this
+avoids clutter, since references are often used for large structures.
+The <em class="emph">address</em> of a reference variable is always shown, unless
+you have specified &lsquo;<samp class="samp">set print address off</samp>&rsquo;.
+</p>
+</li><li> <small class="sc">GDB</small> supports the C<code class="t">++</code> name resolution operator <code class="code">::</code>&mdash;your
+expressions can use it just as expressions in your program do.  Since
+one scope may be defined in another, you can use <code class="code">::</code> repeatedly if
+necessary, for example in an expression like
+&lsquo;<samp class="samp"><var class="var">scope1</var>::<var class="var">scope2</var>::<var class="var">name</var></samp>&rsquo;.  <small class="sc">GDB</small> also allows
+resolving name scope by reference to source files, in both C and C<code class="t">++</code>
+debugging (see <a class="pxref" href="Variables.html">Program Variables</a>).
+
+</li><li> <small class="sc">GDB</small> performs argument-dependent lookup, following the C<code class="t">++</code>
+specification.
+</li></ol>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="C-Defaults.html">C and C<code class="t">++</code> Defaults</a>, Previous: <a href="C-Constants.html">C and C<code class="t">++</code> Constants</a>, Up: <a href="C.html">C and C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

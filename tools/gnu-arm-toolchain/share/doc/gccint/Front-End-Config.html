@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Front End Config (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Front End Config (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Front End Config (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Front-End.html" rel="up" title="Front End">
+<link href="Front-End-Makefile.html" rel="next" title="Front End Makefile">
+<link href="Front-End-Directory.html" rel="prev" title="Front End Directory">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Front-End-Config">
+<div class="nav-panel">
+<p>
+Next: <a href="Front-End-Makefile.html" accesskey="n" rel="next">The Front End <samp class="file">Make-lang.in</samp> File</a>, Previous: <a href="Front-End-Directory.html" accesskey="p" rel="prev">The Front End <samp class="file"><var class="var">language</var></samp> Directory</a>, Up: <a href="Front-End.html" accesskey="u" rel="up">Anatomy of a Language Front End</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="The-Front-End-config_002dlang_002ein-File"><span>5.3.8.2 The Front End <samp class="file">config-lang.in</samp> File<a class="copiable-link" href="#The-Front-End-config_002dlang_002ein-File"> &para;</a></span></h4>
+
+<p>Each language subdirectory contains a <samp class="file">config-lang.in</samp> file.
+This file is a shell script that may define some variables describing
+the language:
+</p>
+<dl class="table">
+<dt><code class="code">language</code></dt>
+<dd><p>This definition must be present, and gives the name of the language
+for some purposes such as arguments to <samp class="option">--enable-languages</samp>.
+</p></dd>
+<dt><code class="code">lang_requires</code></dt>
+<dd><p>If defined, this variable lists (space-separated) language front ends
+other than C that this front end requires to be enabled (with the
+names given being their <code class="code">language</code> settings).  For example, the
+Obj-C++ front end depends on the C++ and ObjC front ends, so sets
+&lsquo;<samp class="samp">lang_requires=&quot;objc c++&quot;</samp>&rsquo;.
+</p></dd>
+<dt><code class="code">subdir_requires</code></dt>
+<dd><p>If defined, this variable lists (space-separated) front end directories
+other than C that this front end requires to be present.  For example,
+the Objective-C++ front end uses source files from the C++ and
+Objective-C front ends, so sets &lsquo;<samp class="samp">subdir_requires=&quot;cp objc&quot;</samp>&rsquo;.
+</p></dd>
+<dt><code class="code">target_libs</code></dt>
+<dd><p>If defined, this variable lists (space-separated) targets in the top
+level <samp class="file">Makefile</samp> to build the runtime libraries for this
+language, such as <code class="code">target-libobjc</code>.
+</p></dd>
+<dt><code class="code">lang_dirs</code></dt>
+<dd><p>If defined, this variable lists (space-separated) top level
+directories (parallel to <samp class="file">gcc</samp>), apart from the runtime libraries,
+that should not be configured if this front end is not built.
+</p></dd>
+<dt><code class="code">build_by_default</code></dt>
+<dd><p>If defined to &lsquo;<samp class="samp">no</samp>&rsquo;, this language front end is not built unless
+enabled in a <samp class="option">--enable-languages</samp> argument.  Otherwise, front
+ends are built by default, subject to any special logic in
+<samp class="file">configure.ac</samp> (as is present to disable the Ada front end if the
+Ada compiler is not already installed).
+</p></dd>
+<dt><code class="code">boot_language</code></dt>
+<dd><p>If defined to &lsquo;<samp class="samp">yes</samp>&rsquo;, this front end is built in stage1 of the
+bootstrap.  This is only relevant to front ends written in their own
+languages.
+</p></dd>
+<dt><code class="code">compilers</code></dt>
+<dd><p>If defined, a space-separated list of compiler executables that will
+be run by the driver.  The names here will each end
+with &lsquo;<samp class="samp">\$(exeext)</samp>&rsquo;.
+</p></dd>
+<dt><code class="code">outputs</code></dt>
+<dd><p>If defined, a space-separated list of files that should be generated
+by <samp class="file">configure</samp> substituting values in them.  This mechanism can
+be used to create a file <samp class="file"><var class="var">language</var>/Makefile</samp> from
+<samp class="file"><var class="var">language</var>/Makefile.in</samp>, but this is deprecated, building
+everything from the single <samp class="file">gcc/Makefile</samp> is preferred.
+</p></dd>
+<dt><code class="code">gtfiles</code></dt>
+<dd><p>If defined, a space-separated list of files that should be scanned by
+<samp class="file">gengtype.cc</samp> to generate the garbage collection tables and routines for
+this language.  This excludes the files that are common to all front
+ends.  See <a class="xref" href="Type-Information.html">Memory Management and Type Information</a>.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Front-End-Makefile.html">The Front End <samp class="file">Make-lang.in</samp> File</a>, Previous: <a href="Front-End-Directory.html">The Front End <samp class="file"><var class="var">language</var></samp> Directory</a>, Up: <a href="Front-End.html">Anatomy of a Language Front End</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

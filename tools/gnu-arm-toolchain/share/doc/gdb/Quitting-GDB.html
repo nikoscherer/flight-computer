@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Quitting GDB (Debugging with GDB)</title>
+
+<meta name="description" content="Quitting GDB (Debugging with GDB)">
+<meta name="keywords" content="Quitting GDB (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invocation.html" rel="up" title="Invocation">
+<link href="Shell-Commands.html" rel="next" title="Shell Commands">
+<link href="Invoking-GDB.html" rel="prev" title="Invoking GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Quitting-GDB">
+<div class="nav-panel">
+<p>
+Next: <a href="Shell-Commands.html" accesskey="n" rel="next">Shell Commands</a>, Previous: <a href="Invoking-GDB.html" accesskey="p" rel="prev">Invoking <small class="sc">GDB</small></a>, Up: <a href="Invocation.html" accesskey="u" rel="up">Getting In and Out of <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Quitting-gdb"><span>2.2 Quitting <small class="sc">GDB</small><a class="copiable-link" href="#Quitting-gdb"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-exiting-gdb"></a>
+<a class="index-entry-id" id="index-leaving-gdb"></a>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-exit-_005bexpression_005d"></a>
+<a class="index-entry-id" id="index-q-_0028quit_0029"></a>
+<a id="index-quit-_005bexpression_005d"></a><span><code class="code">quit <span class="r">[</span><var class="var">expression</var><span class="r">]</span></code><a class="copiable-link" href="#index-quit-_005bexpression_005d"> &para;</a></span></dt>
+<dt><code class="code">exit <span class="r">[</span><var class="var">expression</var><span class="r">]</span></code></dt>
+<dt><code class="code">q</code></dt>
+<dd><p>To exit <small class="sc">GDB</small>, use the <code class="code">quit</code> command (abbreviated
+<code class="code">q</code>), the <code class="code">exit</code> command, or type an end-of-file
+character (usually <kbd class="kbd">Ctrl-d</kbd>).  If you do not supply <var class="var">expression</var>,
+<small class="sc">GDB</small> will terminate normally; otherwise it will terminate using
+the result of <var class="var">expression</var> as the error code.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-interrupt"></a>
+<p>An interrupt (often <kbd class="kbd">Ctrl-c</kbd>) does not exit from <small class="sc">GDB</small>, but rather
+terminates the action of any <small class="sc">GDB</small> command that is in progress and
+returns to <small class="sc">GDB</small> command level.  It is safe to type the interrupt
+character at any time because <small class="sc">GDB</small> does not allow it to take effect
+until a time when it is safe.
+</p>
+<p>If you have been using <small class="sc">GDB</small> to control an attached process or
+device, you can release it with the <code class="code">detach</code> command
+(see <a class="pxref" href="Attach.html">Debugging an Already-running Process</a>).
+</p>
+</div>
+
+
+
+</body>
+</html>

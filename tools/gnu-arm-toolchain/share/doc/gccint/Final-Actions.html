@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Final Actions (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Final Actions (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Final Actions (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Test-Directives.html" rel="up" title="Test Directives">
+<link href="Require-Support.html" rel="prev" title="Require Support">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Final-Actions">
+<div class="nav-panel">
+<p>
+Previous: <a href="Require-Support.html" accesskey="p" rel="prev">Variants of <code class="code">dg-require-<var class="var">support</var></code></a>, Up: <a href="Test-Directives.html" accesskey="u" rel="up">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Commands-for-use-in-dg_002dfinal"><span>6.2.7 Commands for use in <code class="code">dg-final</code><a class="copiable-link" href="#Commands-for-use-in-dg_002dfinal"> &para;</a></span></h4>
+
+<p>The GCC testsuite defines the following directives to be used within
+<code class="code">dg-final</code>.
+</p>
+<ul class="mini-toc">
+<li><a href="#Scan-a-particular-file" accesskey="1">Scan a particular file</a></li>
+<li><a href="#Scan-the-assembly-output" accesskey="2">Scan the assembly output</a></li>
+<li><a href="#Scan-optimization-dump-files" accesskey="3">Scan optimization dump files</a></li>
+<li><a href="#Check-for-output-files" accesskey="4">Check for output files</a></li>
+<li><a href="#Checks-for-gcov-tests" accesskey="5">Checks for <code class="command">gcov</code> tests</a></li>
+<li><a href="#Clean-up-generated-test-files" accesskey="6">Clean up generated test files</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Scan-a-particular-file">
+<h4 class="subsubsection"><span>6.2.7.1 Scan a particular file<a class="copiable-link" href="#Scan-a-particular-file"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><code class="code">scan-file <var class="var">filename</var> <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regexp</var> matches text in <var class="var">filename</var>.
+</p></dd>
+<dt><code class="code">scan-file-not <var class="var">filename</var> <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regexp</var> does not match text in <var class="var">filename</var>.
+</p></dd>
+<dt><code class="code">scan-module <var class="var">module</var> <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regexp</var> matches in Fortran module <var class="var">module</var>.
+</p></dd>
+<dt><code class="code">dg-check-dot <var class="var">filename</var></code></dt>
+<dd><p>Passes if <var class="var">filename</var> is a valid <samp class="file">.dot</samp> file (by running
+<code class="code">dot -Tpng</code> on it, and verifying the exit code is 0).
+</p></dd>
+<dt><code class="code">scan-sarif-file <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regexp</var> matches text in the file generated by
+<samp class="option">-fdiagnostics-format=sarif-file</samp>.
+</p></dd>
+<dt><code class="code">scan-sarif-file-not <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regexp</var> does not match text in the file generated by
+<samp class="option">-fdiagnostics-format=sarif-file</samp>.
+</p></dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="Scan-the-assembly-output">
+<h4 class="subsubsection"><span>6.2.7.2 Scan the assembly output<a class="copiable-link" href="#Scan-the-assembly-output"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><code class="code">scan-assembler <var class="var">regex</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> matches text in the test&rsquo;s assembler output,
+excluding LTO sections.
+</p>
+</dd>
+<dt><code class="code">scan-raw-assembler <var class="var">regex</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> matches text in the test&rsquo;s assembler output,
+including LTO sections.
+</p>
+</dd>
+<dt><code class="code">scan-assembler-not <var class="var">regex</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> does not match text in the test&rsquo;s assembler output,
+excluding LTO sections.
+</p>
+</dd>
+<dt><code class="code">scan-assembler-times <var class="var">regex</var> <var class="var">num</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> is matched exactly <var class="var">num</var> times in the test&rsquo;s
+assembler output, excluding LTO sections.
+</p>
+</dd>
+<dt><code class="code">scan-assembler-bound <var class="var">regex</var> <var class="var">cmp</var> <var class="var">num</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> is matched <var class="var">cmp</var> <var class="var">num</var> times in the test&rsquo;s
+assembler output, excluding LTO sections. <var class="var">cmp</var> is a comparitor.
+</p>
+</dd>
+<dt><code class="code">scan-assembler-dem <var class="var">regex</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> matches text in the test&rsquo;s demangled assembler output,
+excluding LTO sections.
+</p>
+</dd>
+<dt><code class="code">scan-assembler-dem-not <var class="var">regex</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> does not match text in the test&rsquo;s demangled assembler
+output, excluding LTO sections.
+</p>
+</dd>
+<dt><code class="code">scan-assembler-symbol-section <var class="var">functions</var> <var class="var">section</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">functions</var> are all in <var class="var">section</var>.  The caller needs to
+allow for <code class="code">USER_LABEL_PREFIX</code> and different section name conventions.
+</p>
+</dd>
+<dt><code class="code">scan-symbol-section <var class="var">filename</var> <var class="var">functions</var> <var class="var">section</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">functions</var> are all in <var class="var">section</var>in <var class="var">filename</var>.
+The same caveats as for <code class="code">scan-assembler-symbol-section</code> apply.
+</p>
+</dd>
+<dt><code class="code">scan-hidden <var class="var">symbol</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">symbol</var> is defined as a hidden symbol in the test&rsquo;s
+assembly output.
+</p>
+</dd>
+<dt><code class="code">scan-not-hidden <var class="var">symbol</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">symbol</var> is not defined as a hidden symbol in the test&rsquo;s
+assembly output.
+</p>
+</dd>
+<dt><code class="code">check-function-bodies <var class="var">prefix</var> <var class="var">terminator</var> [<var class="var">options</var> [{ target/xfail <var class="var">selector</var> } [<var class="var">matched</var>]]]</code></dt>
+<dd><p>Looks through the source file for comments that give the expected assembly
+output for selected functions.  Each line of expected output starts with the
+prefix string <var class="var">prefix</var> and the expected output for a function as a whole
+is followed by a line that starts with the string <var class="var">terminator</var>.
+Specifying an empty terminator is equivalent to specifying &lsquo;<samp class="samp">&quot;*/&quot;</samp>&rsquo;.
+</p>
+<p><var class="var">options</var>, if specified, is a list of regular expressions, each of
+which matches a full command-line option.  A non-empty list prevents
+the test from running unless all of the given options are present on the
+command line.  This can help if a source file is compiled both with
+and without optimization, since it is rarely useful to check the full
+function body for unoptimized code.
+</p>
+<p>The first line of the expected output for a function <var class="var">fn</var> has the form:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><var class="var">prefix</var> <var class="var">fn</var>:  [{ target/xfail <var class="var">selector</var> }]
+</pre></div>
+
+<p>Subsequent lines of the expected output also start with <var class="var">prefix</var>.
+In both cases, whitespace after <var class="var">prefix</var> is not significant.
+</p>
+<p>Depending on the configuration (see
+<code class="code">configure_check-function-bodies</code> in
+<samp class="file">gcc/testsuite/lib/scanasm.exp</samp>), the test may discard from the
+compiler&rsquo;s assembly output directives such as <code class="code">.cfi_startproc</code>,
+local label definitions such as <code class="code">.LFB0</code>, and more.  This behavior
+can be overridden using the optional <var class="var">matched</var> argument, which
+specifies a regexp for lines that should not be discarded in this way.
+</p>
+<p>The test then matches the result against the expected
+output for a function as a single regular expression.  This means that
+later lines can use backslashes to refer back to &lsquo;<samp class="samp">(&hellip;)</samp>&rsquo;
+captures on earlier lines.  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/* { dg-final { check-function-bodies &quot;**&quot; &quot;&quot; &quot;-DCHECK_ASM&quot; } } */
+...
+/*
+** add_w0_s8_m:
+**	mov	(z[0-9]+\.b), w0
+**	add	z0\.b, p0/m, z0\.b, \1
+**	ret
+*/
+svint8_t add_w0_s8_m (...) { ... }
+...
+/*
+** add_b0_s8_m:
+**	mov	(z[0-9]+\.b), b0
+**	add	z1\.b, p0/m, z1\.b, \1
+**	ret
+*/
+svint8_t add_b0_s8_m (...) { ... }
+</pre></div>
+
+<p>checks whether the implementations of <code class="code">add_w0_s8_m</code> and
+<code class="code">add_b0_s8_m</code> match the regular expressions given.  The test only
+runs when &lsquo;<samp class="samp">-DCHECK_ASM</samp>&rsquo; is passed on the command line.
+</p>
+<p>It is possible to create non-capturing multi-line regular expression
+groups of the form &lsquo;<samp class="samp">(<var class="var">a</var>|<var class="var">b</var>|&hellip;)</samp>&rsquo; by putting the
+&lsquo;<samp class="samp">(</samp>&rsquo;, &lsquo;<samp class="samp">|</samp>&rsquo; and &lsquo;<samp class="samp">)</samp>&rsquo; on separate lines (each still using
+<var class="var">prefix</var>).  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/*
+** cmple_f16_tied:
+** (
+**	fcmge	p0\.h, p0/z, z1\.h, z0\.h
+** |
+**	fcmle	p0\.h, p0/z, z0\.h, z1\.h
+** )
+**	ret
+*/
+svbool_t cmple_f16_tied (...) { ... }
+</pre></div>
+
+<p>checks whether <code class="code">cmple_f16_tied</code> is implemented by the
+<code class="code">fcmge</code> instruction followed by <code class="code">ret</code> or by the
+<code class="code">fcmle</code> instruction followed by <code class="code">ret</code>.  The test is
+still a single regular rexpression.
+</p>
+<p>A line containing just:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><var class="var">prefix</var> ...
+</pre></div>
+
+<p>stands for zero or more unmatched lines; the whitespace after
+<var class="var">prefix</var> is again not significant.
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="Scan-optimization-dump-files">
+<h4 class="subsubsection"><span>6.2.7.3 Scan optimization dump files<a class="copiable-link" href="#Scan-optimization-dump-files"> &para;</a></span></h4>
+
+<p>These commands are available for <var class="var">kind</var> of <code class="code">tree</code>, <code class="code">ltrans-tree</code>,
+<code class="code">offload-tree</code>, <code class="code">rtl</code>, <code class="code">ltrans-rtl</code>, <code class="code">offload-rtl</code>,
+<code class="code">ipa</code>, <code class="code">offload-ipa</code>, and <code class="code">wpa-ipa</code>.
+</p>
+<dl class="table">
+<dt><code class="code">scan-<var class="var">kind</var>-dump <var class="var">regex</var> <var class="var">suffix</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> matches text in the dump file with suffix <var class="var">suffix</var>.
+</p>
+</dd>
+<dt><code class="code">scan-<var class="var">kind</var>-dump-not <var class="var">regex</var> <var class="var">suffix</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> does not match text in the dump file with suffix
+<var class="var">suffix</var>.
+</p>
+</dd>
+<dt><code class="code">scan-<var class="var">kind</var>-dump-times <var class="var">regex</var> <var class="var">num</var> <var class="var">suffix</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> is found exactly <var class="var">num</var> times in the dump file
+with suffix <var class="var">suffix</var>.
+</p>
+</dd>
+<dt><code class="code">scan-<var class="var">kind</var>-dump-dem <var class="var">regex</var> <var class="var">suffix</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> matches demangled text in the dump file with
+suffix <var class="var">suffix</var>.
+</p>
+</dd>
+<dt><code class="code">scan-<var class="var">kind</var>-dump-dem-not <var class="var">regex</var> <var class="var">suffix</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if <var class="var">regex</var> does not match demangled text in the dump file with
+suffix <var class="var">suffix</var>.
+</p></dd>
+</dl>
+
+<p>The <var class="var">suffix</var> argument which describes the dump file to be scanned
+may contain a glob pattern that must expand to exactly one file
+name. This is useful if, e.g., different pass instances are executed
+depending on torture testing command-line flags, producing dump files
+whose names differ only in their pass instance number suffix.  For
+example, to scan instances 1, 2, 3 of a tree pass &ldquo;mypass&rdquo; for
+occurrences of the string &ldquo;code has been optimized&rdquo;, use:
+</p><div class="example smallexample">
+<pre class="example-preformatted">/* { dg-options &quot;-fdump-tree-mypass&quot; } */
+/* { dg-final { scan-tree-dump &quot;code has been optimized&quot; &quot;mypass\[1-3\]&quot; } } */
+</pre></div>
+
+<p>The <code class="code">offload-&hellip;</code> ones by default separately scan the dump
+file of each enabled offload target.
+You may use the <code class="code">only_for_offload_target</code> wrapper to restrict the
+scanning to one specific offload target:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/* { dg-do link { target offload_target_amdgcn } } */
+/* { dg-additional-options -foffload-options=-fdump-ipa-simdclone-details } */
+/* { dg-final { only_for_offload_target amdgcn-amdhsa scan-offload-ipa-dump <var class="var">regex_amdgcn</var> simdclone } } */
+</pre></div>
+
+<p>This test case is active if GCN offload compilation is enabled (but
+potentially also additional offload targets).
+The <code class="code">simdclone</code> IPA dump file is (potentially) produced for all
+offload targets, but only the GCN offload one is scanned.
+</p>
+<p>If a test case doesn&rsquo;t have a &lsquo;<samp class="samp">{ target <var class="var">selector</var> }</samp>&rsquo;, and
+you need to scan, for example, for different <var class="var">regex</var>es for each of
+host and potentially several offload targets, use a pattern like this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/* { dg-final { scan-tree-dump <var class="var">regex_host</var> optimized } }
+   { dg-final { only_for_offload_target amdgcn-amdhsa scan-offload-tree-dump <var class="var">regex_amdgcn</var> optimized { target offload_target_amdgcn } } }
+   { dg-final { only_for_offload_target nvptx-none scan-offload-tree-dump <var class="var">regex_nvptx</var> optimized { target offload_target_nvptx } } } */
+</pre></div>
+
+<p>Here, unconditionally <var class="var">regex_host</var> is scanned for in the host dump
+file.
+If GCN offloading compilation is actually enabled, <var class="var">regex_amdgcn</var>
+is scanned for in the GCN offload compilation dump file.
+If nvptx offloading compilation is actually enabled, <var class="var">regex_nvptx</var>
+is scanned for in the nvptx offload compilation dump file.
+</p>
+
+</div>
+<div class="subsubsection-level-extent" id="Check-for-output-files">
+<h4 class="subsubsection"><span>6.2.7.4 Check for output files<a class="copiable-link" href="#Check-for-output-files"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><code class="code">output-exists [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if compiler output file exists.
+</p>
+</dd>
+<dt><code class="code">output-exists-not [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if compiler output file does not exist.
+</p>
+</dd>
+<dt><code class="code">scan-symbol <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if the pattern is present in the final executable.
+</p>
+</dd>
+<dt><code class="code">scan-symbol-not <var class="var">regexp</var> [{ target/xfail <var class="var">selector</var> }]</code></dt>
+<dd><p>Passes if the pattern is absent from the final executable.
+</p></dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="Checks-for-gcov-tests">
+<h4 class="subsubsection"><span>6.2.7.5 Checks for <code class="command">gcov</code> tests<a class="copiable-link" href="#Checks-for-gcov-tests"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><code class="code">run-gcov <var class="var">sourcefile</var></code></dt>
+<dd><p>Check line counts in <code class="command">gcov</code> tests.
+</p>
+</dd>
+<dt><code class="code">run-gcov [branches] [calls] { <var class="var">opts</var> <var class="var">sourcefile</var> }</code></dt>
+<dd><p>Check branch and/or call counts, in addition to line counts, in
+<code class="command">gcov</code> tests.
+</p>
+</dd>
+<dt><code class="code">run-gcov-pytest { <var class="var">sourcefile</var> <var class="var">pytest_file</var> }</code></dt>
+<dd><p>Check output of <code class="command">gcov</code> intermediate format with a pytest
+script.
+</p></dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="Clean-up-generated-test-files">
+<h4 class="subsubsection"><span>6.2.7.6 Clean up generated test files<a class="copiable-link" href="#Clean-up-generated-test-files"> &para;</a></span></h4>
+
+<p>Usually the test-framework removes files that were generated during
+testing. If a testcase, for example, uses any dumping mechanism to
+inspect a passes dump file, the testsuite recognized the dump option
+passed to the tool and schedules a final cleanup to remove these files.
+</p>
+<p>There are, however, following additional cleanup directives that can be
+used to annotate a testcase &quot;manually&quot;.
+</p><dl class="table">
+<dt><code class="code">cleanup-coverage-files</code></dt>
+<dd><p>Removes coverage data files generated for this test.
+</p>
+</dd>
+<dt><code class="code">cleanup-modules &quot;<var class="var">list-of-extra-modules</var>&quot;</code></dt>
+<dd><p>Removes Fortran module files generated for this test, excluding the
+module names listed in keep-modules.
+Cleaning up module files is usually done automatically by the testsuite
+by looking at the source files and removing the modules after the test
+has been executed.
+</p><div class="example smallexample">
+<pre class="example-preformatted">module MoD1
+end module MoD1
+module Mod2
+end module Mod2
+module moD3
+end module moD3
+module mod4
+end module mod4
+! { dg-final { cleanup-modules &quot;mod1 mod2&quot; } } ! redundant
+! { dg-final { keep-modules &quot;mod3 mod4&quot; } }
+</pre></div>
+
+</dd>
+<dt><code class="code">keep-modules &quot;<var class="var">list-of-modules-not-to-delete</var>&quot;</code></dt>
+<dd><p>Whitespace separated list of module names that should not be deleted by
+cleanup-modules.
+If the list of modules is empty, all modules defined in this file are kept.
+</p><div class="example smallexample">
+<pre class="example-preformatted">module maybe_unneeded
+end module maybe_unneeded
+module keep1
+end module keep1
+module keep2
+end module keep2
+! { dg-final { keep-modules &quot;keep1 keep2&quot; } } ! just keep these two
+! { dg-final { keep-modules &quot;&quot; } } ! keep all
+</pre></div>
+
+</dd>
+<dt><code class="code">dg-keep-saved-temps &quot;<var class="var">list-of-suffixes-not-to-delete</var>&quot;</code></dt>
+<dd><p>Whitespace separated list of suffixes that should not be deleted
+automatically in a testcase that uses <samp class="option">-save-temps</samp>.
+</p><div class="example smallexample">
+<pre class="example-preformatted">// { dg-options &quot;-save-temps -fpch-preprocess -I.&quot; }
+int main() { return 0; }
+// { dg-keep-saved-temps &quot;.s&quot; } ! just keep assembler file
+// { dg-keep-saved-temps &quot;.s&quot; &quot;.i&quot; } ! ... and .i
+// { dg-keep-saved-temps &quot;.ii&quot; &quot;.o&quot; } ! or just .ii and .o
+</pre></div>
+
+</dd>
+<dt><code class="code">cleanup-profile-file</code></dt>
+<dd><p>Removes profiling files generated for this test.
+</p>
+</dd>
+</dl>
+
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Require-Support.html">Variants of <code class="code">dg-require-<var class="var">support</var></code></a>, Up: <a href="Test-Directives.html">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

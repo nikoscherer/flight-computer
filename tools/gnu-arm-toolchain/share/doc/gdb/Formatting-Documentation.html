@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Formatting Documentation (Debugging with GDB)</title>
+
+<meta name="description" content="Formatting Documentation (Debugging with GDB)">
+<meta name="keywords" content="Formatting Documentation (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Installing-GDB.html" rel="next" title="Installing GDB">
+<link href="In-Memoriam.html" rel="prev" title="In Memoriam">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Formatting-Documentation">
+<div class="nav-panel">
+<p>
+Next: <a href="Installing-GDB.html" accesskey="n" rel="next">Installing <small class="sc">GDB</small></a>, Previous: <a href="In-Memoriam.html" accesskey="p" rel="prev">In Memoriam</a>, Up: <a href="index.html" accesskey="u" rel="up">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="Formatting-Documentation-1"><span>Appendix B Formatting Documentation<a class="copiable-link" href="#Formatting-Documentation-1"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-gdb-reference-card"></a>
+<a class="index-entry-id" id="index-reference-card"></a>
+<p>The <small class="sc">GDB</small> 4 release includes an already-formatted reference card, ready
+for printing with PostScript or Ghostscript, in the <samp class="file">gdb</samp>
+subdirectory of the main source directory<a class="footnote" id="DOCF20" href="#FOOT20"><sup>20</sup></a>.  If you can use PostScript or Ghostscript with your printer,
+you can print the reference card immediately with <samp class="file">refcard.ps</samp>.
+</p>
+<p>The release also includes the source for the reference card.  You
+can format it, using TeX, by typing:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">make refcard.dvi
+</pre></div>
+
+<p>The <small class="sc">GDB</small> reference card is designed to print in <em class="dfn">landscape</em>
+mode on US &ldquo;letter&rdquo; size paper;
+that is, on a sheet 11 inches wide by 8.5 inches
+high.  You will need to specify this form of printing as an option to
+your <small class="sc">DVI</small> output program.
+</p>
+<a class="index-entry-id" id="index-documentation"></a>
+
+<p>All the documentation for <small class="sc">GDB</small> comes as part of the machine-readable
+distribution.  The documentation is written in Texinfo format, which is
+a documentation system that uses a single source file to produce both
+on-line information and a printed manual.  You can use one of the Info
+formatting commands to create the on-line version of the documentation
+and TeX (or <code class="code">texi2roff</code>) to typeset the printed version.
+</p>
+<p><small class="sc">GDB</small> includes an already formatted copy of the on-line Info
+version of this manual in the <samp class="file">gdb</samp> subdirectory.  The main Info
+file is <samp class="file">gdb-16.3.90.20250906-git/gdb/gdb.info</samp>, and it refers to
+subordinate files matching &lsquo;<samp class="samp">gdb.info*</samp>&rsquo; in the same directory.  If
+necessary, you can print out these files, or read them with any editor;
+but they are easier to read using the <code class="code">info</code> subsystem in <small class="sc">GNU</small>
+Emacs or the standalone <code class="code">info</code> program, available as part of the
+<small class="sc">GNU</small> Texinfo distribution.
+</p>
+<p>If you want to format these Info files yourself, you need one of the
+Info formatting programs, such as <code class="code">texinfo-format-buffer</code> or
+<code class="code">makeinfo</code>.
+</p>
+<p>If you have <code class="code">makeinfo</code> installed, and are in the top level
+<small class="sc">GDB</small> source directory (<samp class="file">gdb-16.3.90.20250906-git</samp>, in the case of
+version 16.3.90.20250906-git), you can make the Info file by typing:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">cd gdb
+make gdb.info
+</pre></div>
+
+<p>If you want to typeset and print copies of this manual, you need TeX,
+a program to print its <small class="sc">DVI</small> output files, and <samp class="file">texinfo.tex</samp>, the
+Texinfo definitions file.
+</p>
+<p>TeX is a typesetting program; it does not print files directly, but
+produces output files called <small class="sc">DVI</small> files.  To print a typeset
+document, you need a program to print <small class="sc">DVI</small> files.  If your system
+has TeX installed, chances are it has such a program.  The precise
+command to use depends on your system; <kbd class="kbd">lpr -d</kbd> is common; another
+(for PostScript devices) is <kbd class="kbd">dvips</kbd>.  The <small class="sc">DVI</small> print command may
+require a file name without any extension or a &lsquo;<samp class="samp">.dvi</samp>&rsquo; extension.
+</p>
+<p>TeX also requires a macro definitions file called
+<samp class="file">texinfo.tex</samp>.  This file tells TeX how to typeset a document
+written in Texinfo format.  On its own, TeX cannot either read or
+typeset a Texinfo file.  <samp class="file">texinfo.tex</samp> is distributed with GDB
+and is located in the <samp class="file">gdb-<var class="var">version-number</var>/texinfo</samp>
+directory.
+</p>
+<p>If you have TeX and a <small class="sc">DVI</small> printer program installed, you can
+typeset and print this manual.  First switch to the <samp class="file">gdb</samp>
+subdirectory of the main source directory (for example, to
+<samp class="file">gdb-16.3.90.20250906-git/gdb</samp>) and type:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">make gdb.dvi
+</pre></div>
+
+<p>Then give <samp class="file">gdb.dvi</samp> to your <small class="sc">DVI</small> printing program.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT20" href="#DOCF20">(20)</a></h5>
+<p>In
+<samp class="file">gdb-16.3.90.20250906-git/gdb/refcard.ps</samp> of the version 16.3.90.20250906-git
+release.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Installing-GDB.html">Installing <small class="sc">GDB</small></a>, Previous: <a href="In-Memoriam.html">In Memoriam</a>, Up: <a href="index.html">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

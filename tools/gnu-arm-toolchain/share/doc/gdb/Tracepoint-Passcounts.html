@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Tracepoint Passcounts (Debugging with GDB)</title>
+
+<meta name="description" content="Tracepoint Passcounts (Debugging with GDB)">
+<meta name="keywords" content="Tracepoint Passcounts (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints">
+<link href="Tracepoint-Conditions.html" rel="next" title="Tracepoint Conditions">
+<link href="Enable-and-Disable-Tracepoints.html" rel="prev" title="Enable and Disable Tracepoints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tracepoint-Passcounts">
+<div class="nav-panel">
+<p>
+Next: <a href="Tracepoint-Conditions.html" accesskey="n" rel="next">Tracepoint Conditions</a>, Previous: <a href="Enable-and-Disable-Tracepoints.html" accesskey="p" rel="prev">Enable and Disable Tracepoints</a>, Up: <a href="Set-Tracepoints.html" accesskey="u" rel="up">Commands to Set Tracepoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Tracepoint-Passcounts-1"><span>13.1.3 Tracepoint Passcounts<a class="copiable-link" href="#Tracepoint-Passcounts-1"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-tracepoint-pass-count"></a>
+<a id="index-passcount"></a><span><code class="code">passcount <span class="r">[</span><var class="var">n</var> <span class="r">[</span><var class="var">num</var><span class="r">]]</span></code><a class="copiable-link" href="#index-passcount"> &para;</a></span></dt>
+<dd><p>Set the <em class="dfn">passcount</em> of a tracepoint.  The passcount is a way to
+automatically stop a trace experiment.  If a tracepoint&rsquo;s passcount is
+<var class="var">n</var>, then the trace experiment will be automatically stopped on
+the <var class="var">n</var>&rsquo;th time that tracepoint is hit.  If the tracepoint number
+<var class="var">num</var> is not specified, the <code class="code">passcount</code> command sets the
+passcount of the most recently defined tracepoint.  If no passcount is
+given, the trace experiment will run until stopped explicitly by the
+user.
+</p>
+<p>Examples:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">passcount 5 2</b> // Stop on the 5th execution of
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// tracepoint 2</code>
+</pre><pre class="example-preformatted">
+
+(gdb) <b class="b">passcount 12</b>  // Stop on the 12th execution of the
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// most recently defined tracepoint.</code>
+</pre><pre class="example-preformatted">(gdb) <b class="b">trace foo</b>
+(gdb) <b class="b">pass 3</b>
+(gdb) <b class="b">trace bar</b>
+(gdb) <b class="b">pass 2</b>
+(gdb) <b class="b">trace baz</b>
+(gdb) <b class="b">pass 1</b>        // Stop tracing when foo has been
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// executed 3 times OR when bar has</code>
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// been executed 2 times</code>
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// OR when baz has been executed 1 time.</code>
+</pre></div>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

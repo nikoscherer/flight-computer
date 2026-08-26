@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Register Parameters (STABS)</title>
+
+<meta name="description" content="Register Parameters (STABS)">
+<meta name="keywords" content="Register Parameters (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Parameters.html" rel="up" title="Parameters">
+<link href="Local-Variable-Parameters.html" rel="next" title="Local Variable Parameters">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Register-Parameters">
+<div class="nav-panel">
+<p>
+Next: <a href="Local-Variable-Parameters.html" accesskey="n" rel="next">Storing Parameters as Local Variables</a>, Up: <a href="Parameters.html" accesskey="u" rel="up">Parameters</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Passing-Parameters-in-Registers"><span>4.7.1 Passing Parameters in Registers<a class="copiable-link" href="#Passing-Parameters-in-Registers"> &para;</a></span></h4>
+
+<p>If the parameter is passed in a register, then traditionally there are
+two symbols for each argument:
+</p>
+<div class="example">
+<pre class="example-preformatted">.stabs &quot;arg:p1&quot; . . .       ; N_PSYM
+.stabs &quot;arg:r1&quot; . . .       ; N_RSYM
+</pre></div>
+
+<p>Debuggers use the second one to find the value, and the first one to
+know that it is an argument.
+</p>
+<a class="index-entry-id" id="index-C_005fRPSYM"></a>
+<a class="index-entry-id" id="index-N_005fRSYM_002c-for-parameters"></a>
+<p>Because that approach is kind of ugly, some compilers use symbol
+descriptor &lsquo;<samp class="samp">P</samp>&rsquo; or &lsquo;<samp class="samp">R</samp>&rsquo; to indicate an argument which is in a
+register.  Symbol type <code class="code">C_RPSYM</code> is used in XCOFF and <code class="code">N_RSYM</code>
+is used otherwise.  The symbol&rsquo;s value is the register number.  &lsquo;<samp class="samp">P</samp>&rsquo;
+and &lsquo;<samp class="samp">R</samp>&rsquo; mean the same thing; the difference is that &lsquo;<samp class="samp">P</samp>&rsquo; is a
+GNU invention and &lsquo;<samp class="samp">R</samp>&rsquo; is an IBM (XCOFF) invention.  As of version
+4.9, GDB should handle either one.
+</p>
+<p>There is at least one case where GCC uses a &lsquo;<samp class="samp">p</samp>&rsquo; and &lsquo;<samp class="samp">r</samp>&rsquo; pair
+rather than &lsquo;<samp class="samp">P</samp>&rsquo;; this is where the argument is passed in the
+argument list and then loaded into a register.
+</p>
+<p>According to the AIX documentation, symbol descriptor &lsquo;<samp class="samp">D</samp>&rsquo; is for a
+parameter passed in a floating point register.  This seems
+unnecessary&mdash;why not just use &lsquo;<samp class="samp">R</samp>&rsquo; with a register number which
+indicates that it&rsquo;s a floating point register?  I haven&rsquo;t verified
+whether the system actually does what the documentation indicates.
+</p>
+<p>On the sparc and hppa, for a &lsquo;<samp class="samp">P</samp>&rsquo; symbol whose type is a structure
+or union, the register contains the address of the structure.  On the
+sparc, this is also true of a &lsquo;<samp class="samp">p</samp>&rsquo; and &lsquo;<samp class="samp">r</samp>&rsquo; pair (using Sun
+<code class="code">cc</code>) or a &lsquo;<samp class="samp">p</samp>&rsquo; symbol.  However, if a (small) structure is
+really in a register, &lsquo;<samp class="samp">r</samp>&rsquo; is used.  And, to top it all off, on the
+hppa it might be a structure which was passed on the stack and loaded
+into a register and for which there is a &lsquo;<samp class="samp">p</samp>&rsquo; and &lsquo;<samp class="samp">r</samp>&rsquo; pair!  I
+believe that symbol descriptor &lsquo;<samp class="samp">i</samp>&rsquo; is supposed to deal with this
+case (it is said to mean &quot;value parameter by reference, indirect
+access&quot;; I don&rsquo;t know the source for this information), but I don&rsquo;t know
+details or what compilers or debuggers use it, if any (not GDB or GCC).
+It is not clear to me whether this case needs to be dealt with
+differently than parameters passed by reference (see <a class="pxref" href="Reference-Parameters.html">Passing Parameters by Reference</a>).
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Local-Variable-Parameters.html">Storing Parameters as Local Variables</a>, Up: <a href="Parameters.html">Parameters</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

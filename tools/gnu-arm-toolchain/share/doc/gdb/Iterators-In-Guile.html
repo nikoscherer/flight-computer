@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Iterators In Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Iterators In Guile (Debugging with GDB)">
+<meta name="keywords" content="Iterators In Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Memory-Ports-in-Guile.html" rel="prev" title="Memory Ports in Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Iterators-In-Guile">
+<div class="nav-panel">
+<p>
+Previous: <a href="Memory-Ports-in-Guile.html" accesskey="p" rel="prev">Memory Ports in Guile</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Iterators-In-Guile-1"><span>23.4.3.25 Iterators In Guile<a class="copiable-link" href="#Iterators-In-Guile-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-iterators"></a>
+<a class="index-entry-id" id="index-_003cgdb_003aiterator_003e"></a>
+
+<p>A simple iterator facility is provided to allow, for example,
+iterating over the set of program symbols without having to first
+construct a list of all of them.  A useful contribution would be
+to add support for SRFI 41 and SRFI 45.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002diterator"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">make-iterator</strong> <var class="def-var-arguments">object progress next!</var><a class="copiable-link" href="#index-make_002diterator"> &para;</a></span></dt>
+<dd><p>A <code class="code">&lt;gdb:iterator&gt;</code> object is constructed with the <code class="code">make-iterator</code>
+procedure.  It takes three arguments: the object to be iterated over,
+an object to record the progress of the iteration, and a procedure to
+return the next element in the iteration, or an implementation chosen value
+to denote the end of iteration.
+</p>
+<p>By convention, end of iteration is marked with <code class="code">(end-of-iteration)</code>,
+and may be tested with the <code class="code">end-of-iteration?</code> predicate.
+The result of <code class="code">(end-of-iteration)</code> is chosen so that it is not
+otherwise used by the <code class="code">(gdb)</code> module.  If you are using
+<code class="code">&lt;gdb:iterator&gt;</code> in your own code it is your responsibility to
+maintain this invariant.
+</p>
+<p>A trivial example for illustration&rsquo;s sake:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb iterator))
+(define my-list (list 1 2 3))
+(define iter
+  (make-iterator my-list my-list
+                 (lambda (iter)
+                   (let ((l (iterator-progress iter)))
+                     (if (eq? l '())
+                         (end-of-iteration)
+                         (begin
+                           (set-iterator-progress! iter (cdr l))
+                           (car l)))))))
+</pre></div>
+
+<p>Here is a slightly more realistic example, which computes a list of all the
+functions in <code class="code">my-global-block</code>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb iterator))
+(define this-sal (find-pc-line (frame-pc (selected-frame))))
+(define this-symtab (sal-symtab this-sal))
+(define this-global-block (symtab-global-block this-symtab))
+(define syms-iter (make-block-symbols-iterator this-global-block))
+(define functions (iterator-filter symbol-function? syms-iter))
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-iterator_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is a <code class="code">&lt;gdb:iterator&gt;</code> object.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dobject"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-object</strong> <var class="def-var-arguments">iterator</var><a class="copiable-link" href="#index-iterator_002dobject"> &para;</a></span></dt>
+<dd><p>Return the first argument that was passed to <code class="code">make-iterator</code>.
+This is the object being iterated over.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dprogress"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-progress</strong> <var class="def-var-arguments">iterator</var><a class="copiable-link" href="#index-iterator_002dprogress"> &para;</a></span></dt>
+<dd><p>Return the object tracking iteration progress.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002diterator_002dprogress_0021"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">set-iterator-progress!</strong> <var class="def-var-arguments">iterator new-value</var><a class="copiable-link" href="#index-set_002diterator_002dprogress_0021"> &para;</a></span></dt>
+<dd><p>Set the object tracking iteration progress.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dnext_0021"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-next!</strong> <var class="def-var-arguments">iterator</var><a class="copiable-link" href="#index-iterator_002dnext_0021"> &para;</a></span></dt>
+<dd><p>Invoke the procedure that was the third argument to <code class="code">make-iterator</code>,
+passing it one argument, the <code class="code">&lt;gdb:iterator&gt;</code> object.
+The result is either the next element in the iteration, or an end
+marker as implemented by the <code class="code">next!</code> procedure.
+By convention the end marker is the result of <code class="code">(end-of-iteration)</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-end_002dof_002diteration"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">end-of-iteration</strong><a class="copiable-link" href="#index-end_002dof_002diteration"> &para;</a></span></dt>
+<dd><p>Return the Scheme object that denotes end of iteration.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-end_002dof_002diteration_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">end-of-iteration?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-end_002dof_002diteration_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is the end of iteration marker.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<p>These functions are provided by the <code class="code">(gdb iterator)</code> module to
+assist in using iterators.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dlist_002diterator"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">make-list-iterator</strong> <var class="def-var-arguments">list</var><a class="copiable-link" href="#index-make_002dlist_002diterator"> &para;</a></span></dt>
+<dd><p>Return a <code class="code">&lt;gdb:iterator&gt;</code> object that will iterate over <var class="var">list</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002d_003elist"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-&gt;list</strong> <var class="def-var-arguments">iterator</var><a class="copiable-link" href="#index-iterator_002d_003elist"> &para;</a></span></dt>
+<dd><p>Return the elements pointed to by <var class="var">iterator</var> as a list.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dmap"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-map</strong> <var class="def-var-arguments">proc iterator</var><a class="copiable-link" href="#index-iterator_002dmap"> &para;</a></span></dt>
+<dd><p>Return the list of objects obtained by applying <var class="var">proc</var> to the object
+pointed to by <var class="var">iterator</var> and to each subsequent object.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dfor_002deach"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-for-each</strong> <var class="def-var-arguments">proc iterator</var><a class="copiable-link" href="#index-iterator_002dfor_002deach"> &para;</a></span></dt>
+<dd><p>Apply <var class="var">proc</var> to each element pointed to by <var class="var">iterator</var>.
+The result is unspecified.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dfilter"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-filter</strong> <var class="def-var-arguments">pred iterator</var><a class="copiable-link" href="#index-iterator_002dfilter"> &para;</a></span></dt>
+<dd><p>Return the list of elements pointed to by <var class="var">iterator</var> that satisfy
+<var class="var">pred</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002duntil"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">iterator-until</strong> <var class="def-var-arguments">pred iterator</var><a class="copiable-link" href="#index-iterator_002duntil"> &para;</a></span></dt>
+<dd><p>Run <var class="var">iterator</var> until the result of <code class="code">(pred element)</code> is true
+and return that as the result.  Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Memory-Ports-in-Guile.html">Memory Ports in Guile</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

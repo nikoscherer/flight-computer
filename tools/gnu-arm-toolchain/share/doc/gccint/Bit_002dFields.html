@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Bit-Fields (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Bit-Fields (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Bit-Fields (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="RTL.html" rel="up" title="RTL">
+<link href="Vector-Operations.html" rel="next" title="Vector Operations">
+<link href="Comparisons.html" rel="prev" title="Comparisons">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Bit_002dFields">
+<div class="nav-panel">
+<p>
+Next: <a href="Vector-Operations.html" accesskey="n" rel="next">Vector Operations</a>, Previous: <a href="Comparisons.html" accesskey="p" rel="prev">Comparison Operations</a>, Up: <a href="RTL.html" accesskey="u" rel="up">RTL Representation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Bit_002dFields-1"><span>13.11 Bit-Fields<a class="copiable-link" href="#Bit_002dFields-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-bit_002dfields"></a>
+
+<p>Special expression codes exist to represent bit-field instructions.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-BITS_005fBIG_005fENDIAN_002c-effect-on-sign_005fextract"></a>
+<a id="index-sign_005fextract"></a><span><code class="code">(sign_extract:<var class="var">m</var> <var class="var">loc</var> <var class="var">size</var> <var class="var">pos</var>)</code><a class="copiable-link" href="#index-sign_005fextract"> &para;</a></span></dt>
+<dd><p>This represents a reference to a sign-extended bit-field contained or
+starting in <var class="var">loc</var> (a memory or register reference).  The bit-field
+is <var class="var">size</var> bits wide and starts at bit <var class="var">pos</var>.  The compilation
+option <code class="code">BITS_BIG_ENDIAN</code> says which end of the memory unit
+<var class="var">pos</var> counts from.
+</p>
+<p>If <var class="var">loc</var> is in memory, its mode must be a single-byte integer mode.
+If <var class="var">loc</var> is in a register, the mode to use is specified by the
+operand of the <code class="code">insv</code> or <code class="code">extv</code> pattern
+(see <a class="pxref" href="Standard-Names.html">Standard Pattern Names For Generation</a>) and is usually a full-word integer mode,
+which is the default if none is specified.
+</p>
+<p>The mode of <var class="var">pos</var> is machine-specific and is also specified
+in the <code class="code">insv</code> or <code class="code">extv</code> pattern.
+</p>
+<p>The mode <var class="var">m</var> is the same as the mode that would be used for
+<var class="var">loc</var> if it were a register.
+</p>
+<p>A <code class="code">sign_extract</code> cannot appear as an lvalue, or part thereof,
+in RTL.
+</p>
+</dd>
+<dt><a id="index-zero_005fextract"></a><span><code class="code">(zero_extract:<var class="var">m</var> <var class="var">loc</var> <var class="var">size</var> <var class="var">pos</var>)</code><a class="copiable-link" href="#index-zero_005fextract"> &para;</a></span></dt>
+<dd><p>Like <code class="code">sign_extract</code> but refers to an unsigned or zero-extended
+bit-field.  The same sequence of bits are extracted, but they
+are filled to an entire word with zeros instead of by sign-extension.
+</p>
+<p>Unlike <code class="code">sign_extract</code>, this type of expressions can be lvalues
+in RTL; they may appear on the left side of an assignment, indicating
+insertion of a value into the specified bit-field.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Vector-Operations.html">Vector Operations</a>, Previous: <a href="Comparisons.html">Comparison Operations</a>, Up: <a href="RTL.html">RTL Representation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

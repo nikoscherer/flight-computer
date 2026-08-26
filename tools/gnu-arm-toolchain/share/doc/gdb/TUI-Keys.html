@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>TUI Keys (Debugging with GDB)</title>
+
+<meta name="description" content="TUI Keys (Debugging with GDB)">
+<meta name="keywords" content="TUI Keys (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Single-Key-Mode.html" rel="next" title="TUI Single Key Mode">
+<link href="TUI-Overview.html" rel="prev" title="TUI Overview">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-Keys">
+<div class="nav-panel">
+<p>
+Next: <a href="TUI-Single-Key-Mode.html" accesskey="n" rel="next">TUI Single Key Mode</a>, Previous: <a href="TUI-Overview.html" accesskey="p" rel="prev">TUI Overview</a>, Up: <a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small> Text User Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="TUI-Key-Bindings"><span>25.2 TUI Key Bindings<a class="copiable-link" href="#TUI-Key-Bindings"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-TUI-key-bindings"></a>
+
+<p>The TUI installs several key bindings in the readline keymaps
+(see <a class="pxref" href="Command-Line-Editing.html">Command Line Editing</a>).
+The following key bindings are installed for both TUI mode and the
+<small class="sc">GDB</small> standard mode.
+</p>
+<dl class="table">
+<dt><a id="index-C_002dx-C_002da"></a><span><kbd class="kbd">C-x C-a</kbd><a class="copiable-link" href="#index-C_002dx-C_002da"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-C_002dx-a"></a>
+</dd>
+<dt><kbd class="kbd">C-x a</kbd></dt>
+<dd><a class="index-entry-id" id="index-C_002dx-A"></a>
+</dd>
+<dt><kbd class="kbd">C-x A</kbd></dt>
+<dd><p>Enter or leave the TUI mode.  When leaving the TUI mode,
+the curses window management stops and <small class="sc">GDB</small> operates using
+its standard mode, writing on the terminal directly.  When reentering
+the TUI mode, control is given back to the curses windows.
+The screen is then refreshed.
+</p>
+<p>This key binding uses the bindable Readline function
+<code class="code">tui-switch-mode</code>.
+</p>
+</dd>
+<dt><a id="index-C_002dx-1"></a><span><kbd class="kbd">C-x 1</kbd><a class="copiable-link" href="#index-C_002dx-1"> &para;</a></span></dt>
+<dd><p>Use a TUI layout with only one window.  The layout will
+either be &lsquo;<samp class="samp">source</samp>&rsquo; or &lsquo;<samp class="samp">assembly</samp>&rsquo;.  When the TUI mode
+is not active, it will switch to the TUI mode.
+</p>
+<p>Think of this key binding as the Emacs <kbd class="kbd">C-x 1</kbd> binding.
+</p>
+<p>This key binding uses the bindable Readline function
+<code class="code">tui-delete-other-windows</code>.
+</p>
+</dd>
+<dt><a id="index-C_002dx-2"></a><span><kbd class="kbd">C-x 2</kbd><a class="copiable-link" href="#index-C_002dx-2"> &para;</a></span></dt>
+<dd><p>Use a TUI layout with at least two windows.  When the current
+layout already has two windows, the next layout with two windows is used.
+When a new layout is chosen, one window will always be common to the
+previous layout and the new one.
+</p>
+<p>Think of it as the Emacs <kbd class="kbd">C-x 2</kbd> binding.
+</p>
+<p>This key binding uses the bindable Readline function
+<code class="code">tui-change-windows</code>.
+</p>
+</dd>
+<dt><a id="index-C_002dx-o"></a><span><kbd class="kbd">C-x o</kbd><a class="copiable-link" href="#index-C_002dx-o"> &para;</a></span></dt>
+<dd><p>Change the active window.  The TUI associates several key bindings
+(like scrolling and arrow keys) with the active window.  This command
+gives the focus to the next TUI window.
+</p>
+<p>Think of it as the Emacs <kbd class="kbd">C-x o</kbd> binding.
+</p>
+<p>This key binding uses the bindable Readline function
+<code class="code">tui-other-window</code>.
+</p>
+</dd>
+<dt><a id="index-C_002dx-s"></a><span><kbd class="kbd">C-x s</kbd><a class="copiable-link" href="#index-C_002dx-s"> &para;</a></span></dt>
+<dd><p>Switch in and out of the TUI SingleKey mode that binds single
+keys to <small class="sc">GDB</small> commands (see <a class="pxref" href="TUI-Single-Key-Mode.html">TUI Single Key Mode</a>).
+</p>
+<p>This key binding uses the bindable Readline function
+<code class="code">next-keymap</code>.
+</p></dd>
+</dl>
+
+<p>The following key bindings only work in the TUI mode:
+</p>
+<dl class="table">
+<dt><a id="index-PgUp"></a><span><kbd class="key">PgUp</kbd><a class="copiable-link" href="#index-PgUp"> &para;</a></span></dt>
+<dd><p>Scroll the active window one page up.
+</p>
+</dd>
+<dt><a id="index-PgDn"></a><span><kbd class="key">PgDn</kbd><a class="copiable-link" href="#index-PgDn"> &para;</a></span></dt>
+<dd><p>Scroll the active window one page down.
+</p>
+</dd>
+<dt><a id="index-Up"></a><span><kbd class="key">Up</kbd><a class="copiable-link" href="#index-Up"> &para;</a></span></dt>
+<dd><p>Scroll the active window one line up.
+</p>
+</dd>
+<dt><a id="index-Down"></a><span><kbd class="key">Down</kbd><a class="copiable-link" href="#index-Down"> &para;</a></span></dt>
+<dd><p>Scroll the active window one line down.
+</p>
+</dd>
+<dt><a id="index-Left"></a><span><kbd class="key">Left</kbd><a class="copiable-link" href="#index-Left"> &para;</a></span></dt>
+<dd><p>Scroll the active window one column left.
+</p>
+</dd>
+<dt><a id="index-Right"></a><span><kbd class="key">Right</kbd><a class="copiable-link" href="#index-Right"> &para;</a></span></dt>
+<dd><p>Scroll the active window one column right.
+</p>
+</dd>
+<dt><a id="index-C_002dL"></a><span><kbd class="kbd">C-L</kbd><a class="copiable-link" href="#index-C_002dL"> &para;</a></span></dt>
+<dd><p>Refresh the screen.
+</p></dd>
+</dl>
+
+<p>Because the arrow keys scroll the active window in the TUI mode, they
+are not available for their normal use by readline unless the command
+window has the focus.  When another window is active, you must use
+other readline key bindings such as <kbd class="kbd">C-p</kbd>, <kbd class="kbd">C-n</kbd>, <kbd class="kbd">C-b</kbd>
+and <kbd class="kbd">C-f</kbd> to control the command window.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="TUI-Single-Key-Mode.html">TUI Single Key Mode</a>, Previous: <a href="TUI-Overview.html">TUI Overview</a>, Up: <a href="TUI.html"><small class="sc">GDB</small> Text User Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

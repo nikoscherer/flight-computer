@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>C++ Expressions (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="C++ Expressions (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="C++ Expressions (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C-and-C_002b_002b-Trees.html" rel="up" title="C and C++ Trees">
+<link href="Statements-for-C-and-C_002b_002b.html" rel="prev" title="Statements for C and C++">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="C_002b_002b-Expressions">
+<div class="nav-panel">
+<p>
+Previous: <a href="Statements-for-C-and-C_002b_002b.html" accesskey="p" rel="prev">Statements for C and C++</a>, Up: <a href="C-and-C_002b_002b-Trees.html" accesskey="u" rel="up">C and C++ Trees</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="C_002b_002b-Expressions-1"><span>10.10.6 C++ Expressions<a class="copiable-link" href="#C_002b_002b-Expressions-1"> &para;</a></span></h4>
+
+<p>This section describes expressions specific to the C and C++ front
+ends.
+</p>
+<dl class="table">
+<dt><code class="code">TYPEID_EXPR</code></dt>
+<dd>
+<p>Used to represent a <code class="code">typeid</code> expression.
+</p>
+</dd>
+<dt><code class="code">NEW_EXPR</code></dt>
+<dt><code class="code">VEC_NEW_EXPR</code></dt>
+<dd>
+<p>Used to represent a call to <code class="code">new</code> and <code class="code">new[]</code> respectively.
+</p>
+</dd>
+<dt><code class="code">DELETE_EXPR</code></dt>
+<dt><code class="code">VEC_DELETE_EXPR</code></dt>
+<dd>
+<p>Used to represent a call to <code class="code">delete</code> and <code class="code">delete[]</code> respectively.
+</p>
+</dd>
+<dt><code class="code">MEMBER_REF</code></dt>
+<dd>
+<p>Represents a reference to a member of a class.
+</p>
+</dd>
+<dt><code class="code">THROW_EXPR</code></dt>
+<dd>
+<p>Represents an instance of <code class="code">throw</code> in the program.  Operand 0,
+which is the expression to throw, may be <code class="code">NULL_TREE</code>.
+</p>
+
+</dd>
+<dt><code class="code">AGGR_INIT_EXPR</code></dt>
+<dd><p>An <code class="code">AGGR_INIT_EXPR</code> represents the initialization as the return
+value of a function call, or as the result of a constructor.  An
+<code class="code">AGGR_INIT_EXPR</code> will only appear as a full-expression, or as the
+second operand of a <code class="code">TARGET_EXPR</code>.  <code class="code">AGGR_INIT_EXPR</code>s have
+a representation similar to that of <code class="code">CALL_EXPR</code>s.  You can use
+the <code class="code">AGGR_INIT_EXPR_FN</code> and <code class="code">AGGR_INIT_EXPR_ARG</code> macros to access
+the function to call and the arguments to pass.
+</p>
+<p>If <code class="code">AGGR_INIT_VIA_CTOR_P</code> holds of the <code class="code">AGGR_INIT_EXPR</code>, then
+the initialization is via a constructor call.  The address of the
+<code class="code">AGGR_INIT_EXPR_SLOT</code> operand, which is always a <code class="code">VAR_DECL</code>,
+is taken, and this value replaces the first argument in the argument
+list.
+</p>
+<p>In either case, the expression is void.
+</p>
+
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

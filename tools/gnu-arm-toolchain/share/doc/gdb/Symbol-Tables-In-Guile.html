@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Symbol Tables In Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Symbol Tables In Guile (Debugging with GDB)">
+<meta name="keywords" content="Symbol Tables In Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Breakpoints-In-Guile.html" rel="next" title="Breakpoints In Guile">
+<link href="Symbols-In-Guile.html" rel="prev" title="Symbols In Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Symbol-Tables-In-Guile">
+<div class="nav-panel">
+<p>
+Next: <a href="Breakpoints-In-Guile.html" accesskey="n" rel="next">Manipulating breakpoints using Guile</a>, Previous: <a href="Symbols-In-Guile.html" accesskey="p" rel="prev">Guile representation of Symbols.</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Symbol-table-representation-in-Guile_002e"><span>23.4.3.18 Symbol table representation in Guile.<a class="copiable-link" href="#Symbol-table-representation-in-Guile_002e"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-symbol-tables-in-guile"></a>
+<a class="index-entry-id" id="index-_003cgdb_003asymtab_003e"></a>
+<a class="index-entry-id" id="index-_003cgdb_003asal_003e"></a>
+
+<p>Access to symbol table data maintained by <small class="sc">GDB</small> on the inferior
+is exposed to Guile via two objects: <code class="code">&lt;gdb:sal&gt;</code> (symtab-and-line) and
+<code class="code">&lt;gdb:symtab&gt;</code>.  Symbol table and line data for a frame is returned
+from the <code class="code">frame-find-sal</code> <code class="code">&lt;gdb:frame&gt;</code> procedure.
+See <a class="xref" href="Frames-In-Guile.html">Accessing inferior stack frames from Guile.</a>.
+</p>
+<p>For more information on <small class="sc">GDB</small>&rsquo;s symbol table management, see
+<a class="ref" href="Symbols.html">Examining the Symbol Table</a>.
+</p>
+<p>The following symtab-related procedures are provided by the
+<code class="code">(gdb)</code> module:
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-symtab_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:symtab&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dvalid_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab-valid?</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dvalid_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if the <code class="code">&lt;gdb:symtab&gt;</code> object is valid,
+<code class="code">#f</code> if not.  A <code class="code">&lt;gdb:symtab&gt;</code> object becomes invalid when
+the symbol table it refers to no longer exists in <small class="sc">GDB</small>.
+All other <code class="code">&lt;gdb:symtab&gt;</code> procedures will throw an exception
+if it is invalid at the time the procedure is called.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dfilename"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab-filename</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dfilename"> &para;</a></span></dt>
+<dd><p>Return the symbol table&rsquo;s source filename.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dfullname"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab-fullname</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dfullname"> &para;</a></span></dt>
+<dd><p>Return the symbol table&rsquo;s source absolute file name.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dobjfile"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab-objfile</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dobjfile"> &para;</a></span></dt>
+<dd><p>Return the symbol table&rsquo;s backing object file.  See <a class="xref" href="Objfiles-In-Guile.html">Objfiles In Guile</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dglobal_002dblock"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab-global-block</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dglobal_002dblock"> &para;</a></span></dt>
+<dd><p>Return the global block of the underlying symbol table.
+See <a class="xref" href="Blocks-In-Guile.html">Accessing blocks from Guile.</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dstatic_002dblock"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">symtab-static-block</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dstatic_002dblock"> &para;</a></span></dt>
+<dd><p>Return the static block of the underlying symbol table.
+See <a class="xref" href="Blocks-In-Guile.html">Accessing blocks from Guile.</a>.
+</p></dd></dl>
+
+<p>The following symtab-and-line-related procedures are provided by the
+<code class="code">(gdb)</code> module:
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">sal?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-sal_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:sal&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dvalid_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">sal-valid?</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dvalid_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">sal</var> is valid, <code class="code">#f</code> if not.
+A <code class="code">&lt;gdb:sal&gt;</code> object becomes invalid when the Symbol table object
+it refers to no longer exists in <small class="sc">GDB</small>.  All other
+<code class="code">&lt;gdb:sal&gt;</code> procedures will throw an exception if it is
+invalid at the time the procedure is called.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dsymtab"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">sal-symtab</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dsymtab"> &para;</a></span></dt>
+<dd><p>Return the symbol table object (<code class="code">&lt;gdb:symtab&gt;</code>) for <var class="var">sal</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dline"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">sal-line</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dline"> &para;</a></span></dt>
+<dd><p>Return the line number for <var class="var">sal</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dpc"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">sal-pc</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dpc"> &para;</a></span></dt>
+<dd><p>Return the start of the address range occupied by code for <var class="var">sal</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dlast"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">sal-last</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dlast"> &para;</a></span></dt>
+<dd><p>Return the end of the address range occupied by code for <var class="var">sal</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-find_002dpc_002dline"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">find-pc-line</strong> <var class="def-var-arguments">pc</var><a class="copiable-link" href="#index-find_002dpc_002dline"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:sal&gt;</code> object corresponding to the <var class="var">pc</var> value.
+If an invalid value of <var class="var">pc</var> is passed as an argument, then the
+<code class="code">symtab</code> and <code class="code">line</code> attributes of the returned <code class="code">&lt;gdb:sal&gt;</code>
+object will be <code class="code">#f</code> and 0 respectively.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Breakpoints-In-Guile.html">Manipulating breakpoints using Guile</a>, Previous: <a href="Symbols-In-Guile.html">Guile representation of Symbols.</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

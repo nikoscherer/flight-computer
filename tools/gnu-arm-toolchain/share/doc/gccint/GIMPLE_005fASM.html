@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>GIMPLE_ASM (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="GIMPLE_ASM (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="GIMPLE_ASM (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Tuple-specific-accessors.html" rel="up" title="Tuple specific accessors">
+<link href="GIMPLE_005fASSIGN.html" rel="next" title="GIMPLE_ASSIGN">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GIMPLE_005fASM">
+<div class="nav-panel">
+<p>
+Next: <a href="GIMPLE_005fASSIGN.html" accesskey="n" rel="next"><code class="code">GIMPLE_ASSIGN</code></a>, Up: <a href="Tuple-specific-accessors.html" accesskey="u" rel="up">Tuple specific accessors</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="GIMPLE_005fASM-1"><span>11.8.1 <code class="code">GIMPLE_ASM</code><a class="copiable-link" href="#GIMPLE_005fASM-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-GIMPLE_005fASM"></a>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_002agimple_005fbuild_005fasm_005fvec"><span class="category-def">GIMPLE function: </span><span><code class="def-type">gasm</code> <strong class="def-name">*gimple_build_asm_vec</strong> <code class="def-code-arguments">( const char *string, vec&lt;tree, va_gc&gt; *inputs, vec&lt;tree, va_gc&gt; *outputs, vec&lt;tree, va_gc&gt; *clobbers, vec&lt;tree, va_gc&gt; *labels)</code><a class="copiable-link" href="#index-_002agimple_005fbuild_005fasm_005fvec"> &para;</a></span></dt>
+<dd><p>Build a <code class="code">GIMPLE_ASM</code> statement.  This statement is used for
+building in-line assembly constructs.  <code class="code">STRING</code> is the assembly
+code.  <code class="code">INPUTS</code>, <code class="code">OUTPUTS</code>, <code class="code">CLOBBERS</code>  and <code class="code">LABELS</code>
+are the inputs, outputs, clobbered registers and labels.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fninputs"><span class="category-def">GIMPLE function: </span><span><code class="def-type">unsigned</code> <strong class="def-name">gimple_asm_ninputs</strong> <code class="def-code-arguments">(const gasm *g)</code><a class="copiable-link" href="#index-gimple_005fasm_005fninputs"> &para;</a></span></dt>
+<dd><p>Return the number of input operands for <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fnoutputs"><span class="category-def">GIMPLE function: </span><span><code class="def-type">unsigned</code> <strong class="def-name">gimple_asm_noutputs</strong> <code class="def-code-arguments">(const gasm *g)</code><a class="copiable-link" href="#index-gimple_005fasm_005fnoutputs"> &para;</a></span></dt>
+<dd><p>Return the number of output operands for <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fnclobbers"><span class="category-def">GIMPLE function: </span><span><code class="def-type">unsigned</code> <strong class="def-name">gimple_asm_nclobbers</strong> <code class="def-code-arguments">(const gasm *g)</code><a class="copiable-link" href="#index-gimple_005fasm_005fnclobbers"> &para;</a></span></dt>
+<dd><p>Return the number of clobber operands for <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005finput_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_asm_input_op</strong> <code class="def-code-arguments">(const gasm *g, unsigned index)</code><a class="copiable-link" href="#index-gimple_005fasm_005finput_005fop"> &para;</a></span></dt>
+<dd><p>Return input operand <code class="code">INDEX</code> of <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fset_005finput_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_asm_set_input_op</strong> <code class="def-code-arguments">(gasm *g, unsigned index, tree in_op)</code><a class="copiable-link" href="#index-gimple_005fasm_005fset_005finput_005fop"> &para;</a></span></dt>
+<dd><p>Set <code class="code">IN_OP</code> to be input operand <code class="code">INDEX</code> in <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005foutput_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_asm_output_op</strong> <code class="def-code-arguments">(const gasm *g, unsigned index)</code><a class="copiable-link" href="#index-gimple_005fasm_005foutput_005fop"> &para;</a></span></dt>
+<dd><p>Return output operand <code class="code">INDEX</code> of <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fset_005foutput_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_asm_set_output_op</strong> <code class="def-code-arguments">(gasm *g, unsigned index, tree out_op)</code><a class="copiable-link" href="#index-gimple_005fasm_005fset_005foutput_005fop"> &para;</a></span></dt>
+<dd><p>Set <code class="code">OUT_OP</code> to be output operand <code class="code">INDEX</code> in <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fclobber_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_asm_clobber_op</strong> <code class="def-code-arguments">(const gasm *g, unsigned index)</code><a class="copiable-link" href="#index-gimple_005fasm_005fclobber_005fop"> &para;</a></span></dt>
+<dd><p>Return clobber operand <code class="code">INDEX</code> of <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fset_005fclobber_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_asm_set_clobber_op</strong> <code class="def-code-arguments">(gasm *g, unsigned index, tree clobber_op)</code><a class="copiable-link" href="#index-gimple_005fasm_005fset_005fclobber_005fop"> &para;</a></span></dt>
+<dd><p>Set <code class="code">CLOBBER_OP</code> to be clobber operand <code class="code">INDEX</code> in <code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fstring"><span class="category-def">GIMPLE function: </span><span><code class="def-type">const char *</code> <strong class="def-name">gimple_asm_string</strong> <code class="def-code-arguments">(const gasm *g)</code><a class="copiable-link" href="#index-gimple_005fasm_005fstring"> &para;</a></span></dt>
+<dd><p>Return the string representing the assembly instruction in
+<code class="code">GIMPLE_ASM</code> <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fbasic_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_asm_basic_p</strong> <code class="def-code-arguments">(const gasm *g)</code><a class="copiable-link" href="#index-gimple_005fasm_005fbasic_005fp"> &para;</a></span></dt>
+<dd><p>Return true if <code class="code">G</code> is a basic asm rather than an extended asm.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fset_005fbasic"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_asm_set_basic</strong> <code class="def-code-arguments">(gasm *g, bool basic_p)</code><a class="copiable-link" href="#index-gimple_005fasm_005fset_005fbasic"> &para;</a></span></dt>
+<dd><p>Mark asm statement <code class="code">G</code> as a basic asm or an extended asm based on
+<code class="code">BASIC_P</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fvolatile_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_asm_volatile_p</strong> <code class="def-code-arguments">(const gasm *g)</code><a class="copiable-link" href="#index-gimple_005fasm_005fvolatile_005fp"> &para;</a></span></dt>
+<dd><p>Return true if <code class="code">G</code> is an asm statement marked volatile.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fasm_005fset_005fvolatile"><span class="category-def">GIMPLE function: </span><span><code class="def-type">void</code> <strong class="def-name">gimple_asm_set_volatile</strong> <code class="def-code-arguments">(gasm *g, bool volatile_p)</code><a class="copiable-link" href="#index-gimple_005fasm_005fset_005fvolatile"> &para;</a></span></dt>
+<dd><p>Mark asm statement <code class="code">G</code> as volatile or non-volatile based on
+<code class="code">VOLATILE_P</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="GIMPLE_005fASSIGN.html"><code class="code">GIMPLE_ASSIGN</code></a>, Up: <a href="Tuple-specific-accessors.html">Tuple specific accessors</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

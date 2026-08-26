@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Address Locations (Debugging with GDB)</title>
+
+<meta name="description" content="Address Locations (Debugging with GDB)">
+<meta name="keywords" content="Address Locations (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Location-Specifications.html" rel="up" title="Location Specifications">
+<link href="Explicit-Locations.html" rel="prev" title="Explicit Locations">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Address-Locations">
+<div class="nav-panel">
+<p>
+Previous: <a href="Explicit-Locations.html" accesskey="p" rel="prev">Explicit Locations</a>, Up: <a href="Location-Specifications.html" accesskey="u" rel="up">Location Specifications</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Address-Locations-1"><span>9.2.3 Address Locations<a class="copiable-link" href="#Address-Locations-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-address-locations"></a>
+
+<p><em class="dfn">Address locations</em> indicate a specific program address.  They have
+the generalized form *<var class="var">address</var>.
+</p>
+<p>For line-oriented commands, such as <code class="code">list</code> and <code class="code">edit</code>, this
+specifies a source line that contains <var class="var">address</var>.  For <code class="code">break</code> and
+other breakpoint-oriented commands, this can be used to set breakpoints in
+parts of your program which do not have debugging information or
+source files.
+</p>
+<p>Here <var class="var">address</var> may be any expression valid in the current working
+language (see <a class="pxref" href="Languages.html">working language</a>) that specifies a code
+address.  In addition, as a convenience, <small class="sc">GDB</small> extends the
+semantics of expressions used in locations to cover several situations
+that frequently occur during debugging.  Here are the various forms
+of <var class="var">address</var>:
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">expression</var></code></dt>
+<dd><p>Any expression valid in the current working language.
+</p>
+</dd>
+<dt><code class="code"><var class="var">funcaddr</var></code></dt>
+<dd><p>An address of a function or procedure derived from its name.  In C,
+C<code class="t">++</code>, Objective-C, Fortran, minimal, and assembly, this is
+simply the function&rsquo;s name <var class="var">function</var> (and actually a special case
+of a valid expression).  In Pascal and Modula-2, this is
+<code class="code">&amp;<var class="var">function</var></code>.  In Ada, this is <code class="code"><var class="var">function</var>'Address</code>
+(although the Pascal form also works).
+</p>
+<p>This form specifies the address of the function&rsquo;s first instruction,
+before the stack frame and arguments have been set up.
+</p>
+</dd>
+<dt><code class="code">'<var class="var">filename</var>':<var class="var">funcaddr</var></code></dt>
+<dd><p>Like <var class="var">funcaddr</var> above, but also specifies the name of the source
+file explicitly.  This is useful if the name of the function does not
+specify the function unambiguously, e.g., if there are several
+functions with identical names in different source files.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Explicit-Locations.html">Explicit Locations</a>, Up: <a href="Location-Specifications.html">Location Specifications</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Architectures In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Architectures In Python (Debugging with GDB)">
+<meta name="keywords" content="Architectures In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Registers-In-Python.html" rel="next" title="Registers In Python">
+<link href="Lazy-Strings-In-Python.html" rel="prev" title="Lazy Strings In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Architectures-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Registers-In-Python.html" accesskey="n" rel="next">Registers In Python</a>, Previous: <a href="Lazy-Strings-In-Python.html" accesskey="p" rel="prev">Python representation of lazy strings</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python-representation-of-architectures"><span>23.3.2.36 Python representation of architectures<a class="copiable-link" href="#Python-representation-of-architectures"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python-architectures"></a>
+
+<p><small class="sc">GDB</small> uses architecture specific parameters and artifacts in a
+number of its various computations.  An architecture is represented
+by an instance of the <code class="code">gdb.Architecture</code> class.
+</p>
+<p>A <code class="code">gdb.Architecture</code> class has the following methods:
+</p>
+<a class="anchor" id="gdbpy_005farchitecture_005fname"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Architecture_002ename"><span class="category-def">Function: </span><span><strong class="def-name">Architecture.name</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Architecture_002ename"> &para;</a></span></dt>
+<dd><p>Return the name (string value) of the architecture.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Architecture_002edisassemble"><span class="category-def">Function: </span><span><strong class="def-name">Architecture.disassemble</strong> <var class="def-var-arguments">(start_pc <span class="r">[</span>, end_pc <span class="r">[</span>, count<span class="r">]]</span>)</var><a class="copiable-link" href="#index-Architecture_002edisassemble"> &para;</a></span></dt>
+<dd><p>Return a list of disassembled instructions starting from the memory
+address <var class="var">start_pc</var>.  The optional arguments <var class="var">end_pc</var> and
+<var class="var">count</var> determine the number of instructions in the returned list.
+If both the optional arguments <var class="var">end_pc</var> and <var class="var">count</var> are
+specified, then a list of at most <var class="var">count</var> disassembled instructions
+whose start address falls in the closed memory address interval from
+<var class="var">start_pc</var> to <var class="var">end_pc</var> are returned.  If <var class="var">end_pc</var> is not
+specified, but <var class="var">count</var> is specified, then <var class="var">count</var> number of
+instructions starting from the address <var class="var">start_pc</var> are returned.  If
+<var class="var">count</var> is not specified but <var class="var">end_pc</var> is specified, then all
+instructions whose start address falls in the closed memory address
+interval from <var class="var">start_pc</var> to <var class="var">end_pc</var> are returned.  If neither
+<var class="var">end_pc</var> nor <var class="var">count</var> are specified, then a single instruction at
+<var class="var">start_pc</var> is returned.  For all of these cases, each element of the
+returned list is a Python <code class="code">dict</code> with the following string keys:
+</p>
+<dl class="table">
+<dt><code class="code">addr</code></dt>
+<dd><p>The value corresponding to this key is a Python long integer capturing
+the memory address of the instruction.
+</p>
+</dd>
+<dt><code class="code">asm</code></dt>
+<dd><p>The value corresponding to this key is a string value which represents
+the instruction with assembly language mnemonics.  The assembly
+language flavor used is the same as that specified by the current CLI
+variable <code class="code">disassembly-flavor</code>.  See <a class="xref" href="Machine-Code.html">Source and Machine Code</a>.
+</p>
+</dd>
+<dt><code class="code">length</code></dt>
+<dd><p>The value corresponding to this key is the length (integer value) of the
+instruction in bytes.
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Architecture_002einteger_005ftype"><span class="category-def">Function: </span><span><strong class="def-name">Architecture.integer_type</strong> <var class="def-var-arguments">(size <span class="r">[</span>, signed<span class="r">]</span>)</var><a class="copiable-link" href="#index-Architecture_002einteger_005ftype"> &para;</a></span></dt>
+<dd><p>This function looks up an integer type by its <var class="var">size</var>, and
+optionally whether or not it is signed.
+</p>
+<p><var class="var">size</var> is the size, in bits, of the desired integer type.  Only
+certain sizes are currently supported: 0, 8, 16, 24, 32, 64, and 128.
+</p>
+<p>If <var class="var">signed</var> is not specified, it defaults to <code class="code">True</code>.  If
+<var class="var">signed</var> is <code class="code">False</code>, the returned type will be unsigned.
+</p>
+<p>If the indicated type cannot be found, this function will throw a
+<code class="code">ValueError</code> exception.
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005farchitecture_005fregisters"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Architecture_002eregisters"><span class="category-def">Function: </span><span><strong class="def-name">Architecture.registers</strong> <var class="def-var-arguments">(<span class="r">[</span> reggroup <span class="r">]</span>)</var><a class="copiable-link" href="#index-Architecture_002eregisters"> &para;</a></span></dt>
+<dd><p>Return a <code class="code">gdb.RegisterDescriptorIterator</code> (see <a class="pxref" href="Registers-In-Python.html">Registers In Python</a>) for all of the registers in <var class="var">reggroup</var>, a string that is
+the name of a register group.  If <var class="var">reggroup</var> is omitted, or is the
+empty string, then the register group &lsquo;<samp class="samp">all</samp>&rsquo; is assumed.
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005farchitecture_005freggroups"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Architecture_002eregister_005fgroups"><span class="category-def">Function: </span><span><strong class="def-name">Architecture.register_groups</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Architecture_002eregister_005fgroups"> &para;</a></span></dt>
+<dd><p>Return a <code class="code">gdb.RegisterGroupsIterator</code> (see <a class="pxref" href="Registers-In-Python.html">Registers In Python</a>) for all of the register groups available for the
+<code class="code">gdb.Architecture</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Registers-In-Python.html">Registers In Python</a>, Previous: <a href="Lazy-Strings-In-Python.html">Python representation of lazy strings</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

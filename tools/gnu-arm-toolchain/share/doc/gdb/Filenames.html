@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Filenames (Debugging with GDB)</title>
+
+<meta name="description" content="Filenames (Debugging with GDB)">
+<meta name="keywords" content="Filenames (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Setting.html" rel="up" title="Setting">
+<link href="Manually.html" rel="next" title="Manually">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Filenames">
+<div class="nav-panel">
+<p>
+Next: <a href="Manually.html" accesskey="n" rel="next">Setting the Working Language</a>, Up: <a href="Setting.html" accesskey="u" rel="up">Switching Between Source Languages</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="List-of-Filename-Extensions-and-Languages"><span>15.1.1 List of Filename Extensions and Languages<a class="copiable-link" href="#List-of-Filename-Extensions-and-Languages"> &para;</a></span></h4>
+
+<p>If a source file name ends in one of the following extensions, then
+<small class="sc">GDB</small> infers that its language is the one indicated.
+</p>
+<dl class="table">
+<dt><samp class="file">.ada</samp></dt>
+<dt><samp class="file">.ads</samp></dt>
+<dt><samp class="file">.adb</samp></dt>
+<dt><samp class="file">.a</samp></dt>
+<dd><p>Ada source file.
+</p>
+</dd>
+<dt><samp class="file">.c</samp></dt>
+<dd><p>C source file
+</p>
+</dd>
+<dt><samp class="file">.C</samp></dt>
+<dt><samp class="file">.cc</samp></dt>
+<dt><samp class="file">.cp</samp></dt>
+<dt><samp class="file">.cpp</samp></dt>
+<dt><samp class="file">.cxx</samp></dt>
+<dt><samp class="file">.c++</samp></dt>
+<dd><p>C<code class="t">++</code> source file
+</p>
+</dd>
+<dt><samp class="file">.d</samp></dt>
+<dd><p>D source file
+</p>
+</dd>
+<dt><samp class="file">.m</samp></dt>
+<dd><p>Objective-C source file
+</p>
+</dd>
+<dt><samp class="file">.f</samp></dt>
+<dt><samp class="file">.F</samp></dt>
+<dd><p>Fortran source file
+</p>
+</dd>
+<dt><samp class="file">.mod</samp></dt>
+<dd><p>Modula-2 source file
+</p>
+</dd>
+<dt><samp class="file">.s</samp></dt>
+<dt><samp class="file">.S</samp></dt>
+<dd><p>Assembler source file.  This actually behaves almost like C, but
+<small class="sc">GDB</small> does not skip over function prologues when stepping.
+</p></dd>
+</dl>
+
+<p>In addition, you may set the language associated with a filename
+extension.  See <a class="xref" href="Show.html">Displaying the Language</a>.
+</p>
+</div>
+
+
+
+</body>
+</html>

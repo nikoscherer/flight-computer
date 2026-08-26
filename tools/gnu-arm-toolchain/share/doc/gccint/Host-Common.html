@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Host Common (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Host Common (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Host Common (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Host-Config.html" rel="up" title="Host Config">
+<link href="Filesystem.html" rel="next" title="Filesystem">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Host-Common">
+<div class="nav-panel">
+<p>
+Next: <a href="Filesystem.html" accesskey="n" rel="next">Host Filesystem</a>, Up: <a href="Host-Config.html" accesskey="u" rel="up">Host Configuration</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Host-Common-1"><span>18.1 Host Common<a class="copiable-link" href="#Host-Common-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-host-hooks"></a>
+<a class="index-entry-id" id="index-host-functions"></a>
+
+<p>Some things are just not portable, even between similar operating systems,
+and are too difficult for autoconf to detect.  They get implemented using
+hook functions in the file specified by the <var class="var">host_hook_obj</var>
+variable in <samp class="file">config.gcc</samp>.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-HOST_005fHOOKS_005fEXTRA_005fSIGNALS"><span class="category-def">Host Hook: </span><span><code class="def-type">void</code> <strong class="def-name">HOST_HOOKS_EXTRA_SIGNALS</strong> <code class="def-code-arguments">(void)</code><a class="copiable-link" href="#index-HOST_005fHOOKS_005fEXTRA_005fSIGNALS"> &para;</a></span></dt>
+<dd><p>This host hook is used to set up handling for extra signals.  The most
+common thing to do in this hook is to detect stack overflow.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-HOST_005fHOOKS_005fGT_005fPCH_005fGET_005fADDRESS"><span class="category-def">Host Hook: </span><span><code class="def-type">void *</code> <strong class="def-name">HOST_HOOKS_GT_PCH_GET_ADDRESS</strong> <code class="def-code-arguments">(size_t   <var class="var">size</var>, int <var class="var">fd</var>)</code><a class="copiable-link" href="#index-HOST_005fHOOKS_005fGT_005fPCH_005fGET_005fADDRESS"> &para;</a></span></dt>
+<dd><p>This host hook returns the address of some space that is likely to be
+free in some subsequent invocation of the compiler.  We intend to load
+the PCH data at this address such that the data need not be relocated.
+The area should be able to hold <var class="var">size</var> bytes.  If the host uses
+<code class="code">mmap</code>, <var class="var">fd</var> is an open file descriptor that can be used for
+probing.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-HOST_005fHOOKS_005fGT_005fPCH_005fUSE_005fADDRESS"><span class="category-def">Host Hook: </span><span><code class="def-type">int</code> <strong class="def-name">HOST_HOOKS_GT_PCH_USE_ADDRESS</strong> <code class="def-code-arguments">(void * <var class="var">address</var>,   size_t <var class="var">size</var>, int <var class="var">fd</var>, size_t <var class="var">offset</var>)</code><a class="copiable-link" href="#index-HOST_005fHOOKS_005fGT_005fPCH_005fUSE_005fADDRESS"> &para;</a></span></dt>
+<dd><p>This host hook is called when a PCH file is about to be loaded.
+We want to load <var class="var">size</var> bytes from <var class="var">fd</var> at <var class="var">offset</var>
+into memory at <var class="var">address</var>.  The given address will be the result of
+a previous invocation of <code class="code">HOST_HOOKS_GT_PCH_GET_ADDRESS</code>.
+Return &minus;1 if we couldn&rsquo;t allocate <var class="var">size</var> bytes at <var class="var">address</var>.
+Return 0 if the memory is allocated but the data is not loaded.  Return 1
+if the hook has performed everything.
+</p>
+<p>If the implementation uses reserved address space, free any reserved
+space beyond <var class="var">size</var>, regardless of the return value.  If no PCH will
+be loaded, this hook may be called with <var class="var">size</var> zero, in which case
+all reserved address space should be freed.
+</p>
+<p>Do not try to handle values of <var class="var">address</var> that could not have been
+returned by this executable; just return &minus;1.  Such values usually
+indicate an out-of-date PCH file (built by some other GCC executable),
+and such a PCH file won&rsquo;t work.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-HOST_005fHOOKS_005fGT_005fPCH_005fALLOC_005fGRANULARITY"><span class="category-def">Host Hook: </span><span><code class="def-type">size_t</code> <strong class="def-name">HOST_HOOKS_GT_PCH_ALLOC_GRANULARITY</strong> <code class="def-code-arguments">(void);</code><a class="copiable-link" href="#index-HOST_005fHOOKS_005fGT_005fPCH_005fALLOC_005fGRANULARITY"> &para;</a></span></dt>
+<dd><p>This host hook returns the alignment required for allocating virtual
+memory.  Usually this is the same as getpagesize, but on some hosts the
+alignment for reserving memory differs from the pagesize for committing
+memory.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Filesystem.html">Host Filesystem</a>, Up: <a href="Host-Config.html">Host Configuration</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

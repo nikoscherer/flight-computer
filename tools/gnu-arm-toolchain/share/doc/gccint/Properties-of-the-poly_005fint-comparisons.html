@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Properties of the poly_int comparisons (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Properties of the poly_int comparisons (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Properties of the poly_int comparisons (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparisons-involving-poly_005fint.html" rel="up" title="Comparisons involving poly_int">
+<link href="Comparing-potentially_002dunordered-poly_005fints.html" rel="next" title="Comparing potentially-unordered poly_ints">
+<link href="Comparison-functions-for-poly_005fint.html" rel="prev" title="Comparison functions for poly_int">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Properties-of-the-poly_005fint-comparisons">
+<div class="nav-panel">
+<p>
+Next: <a href="Comparing-potentially_002dunordered-poly_005fints.html" accesskey="n" rel="next">Comparing potentially-unordered <code class="code">poly_int</code>s</a>, Previous: <a href="Comparison-functions-for-poly_005fint.html" accesskey="p" rel="prev">Comparison functions for <code class="code">poly_int</code></a>, Up: <a href="Comparisons-involving-poly_005fint.html" accesskey="u" rel="up">Comparisons involving <code class="code">poly_int</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Properties-of-the-poly_005fint-comparisons-1"><span>9.3.2 Properties of the <code class="code">poly_int</code> comparisons<a class="copiable-link" href="#Properties-of-the-poly_005fint-comparisons-1"> &para;</a></span></h4>
+
+<p>All &ldquo;maybe&rdquo; relations except <code class="code">maybe_ne</code> are transitive, so for example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">maybe_lt (<var class="var">a</var>, <var class="var">b</var>) &amp;&amp; maybe_lt (<var class="var">b</var>, <var class="var">c</var>) implies maybe_lt (<var class="var">a</var>, <var class="var">c</var>)
+</pre></div>
+
+<p>for all <var class="var">a</var>, <var class="var">b</var> and <var class="var">c</var>.  <code class="code">maybe_lt</code>, <code class="code">maybe_gt</code>
+and <code class="code">maybe_ne</code> are irreflexive, so for example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">!maybe_lt (<var class="var">a</var>, <var class="var">a</var>)
+</pre></div>
+
+<p>is true for all <var class="var">a</var>.  <code class="code">maybe_le</code>, <code class="code">maybe_eq</code> and <code class="code">maybe_ge</code>
+are reflexive, so for example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">maybe_le (<var class="var">a</var>, <var class="var">a</var>)
+</pre></div>
+
+<p>is true for all <var class="var">a</var>.  <code class="code">maybe_eq</code> and <code class="code">maybe_ne</code> are symmetric, so:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">maybe_eq (<var class="var">a</var>, <var class="var">b</var>) == maybe_eq (<var class="var">b</var>, <var class="var">a</var>)
+maybe_ne (<var class="var">a</var>, <var class="var">b</var>) == maybe_ne (<var class="var">b</var>, <var class="var">a</var>)
+</pre></div>
+
+<p>for all <var class="var">a</var> and <var class="var">b</var>.  In addition:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">maybe_le (<var class="var">a</var>, <var class="var">b</var>) == maybe_lt (<var class="var">a</var>, <var class="var">b</var>) || maybe_eq (<var class="var">a</var>, <var class="var">b</var>)
+maybe_ge (<var class="var">a</var>, <var class="var">b</var>) == maybe_gt (<var class="var">a</var>, <var class="var">b</var>) || maybe_eq (<var class="var">a</var>, <var class="var">b</var>)
+maybe_lt (<var class="var">a</var>, <var class="var">b</var>) == maybe_gt (<var class="var">b</var>, <var class="var">a</var>)
+maybe_le (<var class="var">a</var>, <var class="var">b</var>) == maybe_ge (<var class="var">b</var>, <var class="var">a</var>)
+</pre></div>
+
+<p>However:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">maybe_le (<var class="var">a</var>, <var class="var">b</var>) &amp;&amp; maybe_le (<var class="var">b</var>, <var class="var">a</var>) does not imply !maybe_ne (<var class="var">a</var>, <var class="var">b</var>) [== known_eq (<var class="var">a</var>, <var class="var">b</var>)]
+maybe_ge (<var class="var">a</var>, <var class="var">b</var>) &amp;&amp; maybe_ge (<var class="var">b</var>, <var class="var">a</var>) does not imply !maybe_ne (<var class="var">a</var>, <var class="var">b</var>) [== known_eq (<var class="var">a</var>, <var class="var">b</var>)]
+</pre></div>
+
+<p>One example is again &lsquo;<samp class="samp"><var class="var">a</var> == 3 + 4<var class="var">x</var></samp>&rsquo;
+and &lsquo;<samp class="samp"><var class="var">b</var> == 1 + 5<var class="var">x</var></samp>&rsquo;, where &lsquo;<samp class="samp">maybe_le (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo;,
+&lsquo;<samp class="samp">maybe_ge (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo; and &lsquo;<samp class="samp">maybe_ne (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo;
+all hold.  <code class="code">maybe_le</code> and <code class="code">maybe_ge</code> are therefore not antisymetric
+and do not form a partial order.
+</p>
+<p>From the above, it follows that:
+</p>
+<ul class="itemize mark-bullet">
+<li>All &ldquo;known&rdquo; relations except <code class="code">known_ne</code> are transitive.
+
+</li><li><code class="code">known_lt</code>, <code class="code">known_ne</code> and <code class="code">known_gt</code> are irreflexive.
+
+</li><li><code class="code">known_le</code>, <code class="code">known_eq</code> and <code class="code">known_ge</code> are reflexive.
+</li></ul>
+
+<p>Also:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">known_lt (<var class="var">a</var>, <var class="var">b</var>) == known_gt (<var class="var">b</var>, <var class="var">a</var>)
+known_le (<var class="var">a</var>, <var class="var">b</var>) == known_ge (<var class="var">b</var>, <var class="var">a</var>)
+known_lt (<var class="var">a</var>, <var class="var">b</var>) implies !known_lt (<var class="var">b</var>, <var class="var">a</var>)  [asymmetry]
+known_gt (<var class="var">a</var>, <var class="var">b</var>) implies !known_gt (<var class="var">b</var>, <var class="var">a</var>)
+known_le (<var class="var">a</var>, <var class="var">b</var>) &amp;&amp; known_le (<var class="var">b</var>, <var class="var">a</var>) == known_eq (<var class="var">a</var>, <var class="var">b</var>) [== !maybe_ne (<var class="var">a</var>, <var class="var">b</var>)]
+known_ge (<var class="var">a</var>, <var class="var">b</var>) &amp;&amp; known_ge (<var class="var">b</var>, <var class="var">a</var>) == known_eq (<var class="var">a</var>, <var class="var">b</var>) [== !maybe_ne (<var class="var">a</var>, <var class="var">b</var>)]
+</pre></div>
+
+<p><code class="code">known_le</code> and <code class="code">known_ge</code> are therefore antisymmetric and are
+partial orders.  However:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">known_le (<var class="var">a</var>, <var class="var">b</var>) does not imply known_lt (<var class="var">a</var>, <var class="var">b</var>) || known_eq (<var class="var">a</var>, <var class="var">b</var>)
+known_ge (<var class="var">a</var>, <var class="var">b</var>) does not imply known_gt (<var class="var">a</var>, <var class="var">b</var>) || known_eq (<var class="var">a</var>, <var class="var">b</var>)
+</pre></div>
+
+<p>For example, &lsquo;<samp class="samp">known_le (4, 4 + 4<var class="var">x</var>)</samp>&rsquo; holds because the runtime
+indeterminate <var class="var">x</var> is a nonnegative integer, but neither
+<code class="code">known_lt (4, 4 + 4<var class="var">x</var>)</code> nor <code class="code">known_eq (4, 4 + 4<var class="var">x</var>)</code> hold.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Comparing-potentially_002dunordered-poly_005fints.html">Comparing potentially-unordered <code class="code">poly_int</code>s</a>, Previous: <a href="Comparison-functions-for-poly_005fint.html">Comparison functions for <code class="code">poly_int</code></a>, Up: <a href="Comparisons-involving-poly_005fint.html">Comparisons involving <code class="code">poly_int</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

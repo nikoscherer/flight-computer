@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Jumps (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Jumps (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Jumps (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Statements.html" rel="up" title="Statements">
+<link href="Cleanups.html" rel="next" title="Cleanups">
+<link href="Empty-Statements.html" rel="prev" title="Empty Statements">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Jumps">
+<div class="nav-panel">
+<p>
+Next: <a href="Cleanups.html" accesskey="n" rel="next">Cleanups</a>, Previous: <a href="Empty-Statements.html" accesskey="p" rel="prev">Empty Statements</a>, Up: <a href="Statements.html" accesskey="u" rel="up">Statements</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Jumps-1"><span>10.7.5 Jumps<a class="copiable-link" href="#Jumps-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Jumps"></a>
+
+<p>Other jumps are expressed by either <code class="code">GOTO_EXPR</code> or
+<code class="code">RETURN_EXPR</code>.
+</p>
+<p>The operand of a <code class="code">GOTO_EXPR</code> must be either a label or a
+variable containing the address to jump to.
+</p>
+<p>The operand of a <code class="code">RETURN_EXPR</code> is either <code class="code">NULL_TREE</code>,
+<code class="code">RESULT_DECL</code>, or a <code class="code">MODIFY_EXPR</code> which sets the return
+value.  It would be nice to move the <code class="code">MODIFY_EXPR</code> into a
+separate statement, but the special return semantics in
+<code class="code">expand_return</code> make that difficult.  It may still happen in
+the future, perhaps by moving most of that logic into
+<code class="code">expand_assignment</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>poly_int (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="poly_int (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="poly_int (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="GENERIC.html" rel="next" title="GENERIC">
+<link href="Passes.html" rel="prev" title="Passes">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="poly_005fint">
+<div class="nav-panel">
+<p>
+Next: <a href="GENERIC.html" accesskey="n" rel="next">GENERIC</a>, Previous: <a href="Passes.html" accesskey="p" rel="prev">Passes and Files of the Compiler</a>, Up: <a href="index.html" accesskey="u" rel="up">Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Sizes-and-offsets-as-runtime-invariants"><span>9 Sizes and offsets as runtime invariants<a class="copiable-link" href="#Sizes-and-offsets-as-runtime-invariants"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-polynomial-integers"></a>
+<a class="index-entry-id" id="index-poly_005fint"></a>
+
+<p>GCC allows the size of a hardware register to be a runtime invariant
+rather than a compile-time constant.  This in turn means that various
+sizes and offsets must also be runtime invariants rather than
+compile-time constants, such as:
+</p>
+<ul class="itemize mark-bullet">
+<li>the size of a general <code class="code">machine_mode</code> (see <a class="pxref" href="Machine-Modes.html">Machine Modes</a>);
+
+</li><li>the size of a spill slot;
+
+</li><li>the offset of something within a stack frame;
+
+</li><li>the number of elements in a vector;
+
+</li><li>the size and offset of a <code class="code">mem</code> rtx (see <a class="pxref" href="Regs-and-Memory.html">Registers and Memory</a>); and
+
+</li><li>the byte offset in a <code class="code">subreg</code> rtx (see <a class="pxref" href="Regs-and-Memory.html">Registers and Memory</a>).
+</li></ul>
+
+<p>The motivating example is the Arm SVE ISA, whose vector registers can be
+any multiple of 128 bits between 128 and 2048 inclusive.  The compiler
+normally produces code that works for all SVE register sizes, with the
+actual size only being known at runtime.
+</p>
+<p>GCC&rsquo;s main representation of such runtime invariants is the
+<code class="code">poly_int</code> class.  This chapter describes what <code class="code">poly_int</code>
+does, lists the available operations, and gives some general
+usage guidelines.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Overview-of-poly_005fint.html" accesskey="1">Overview of <code class="code">poly_int</code></a></li>
+<li><a href="Consequences-of-using-poly_005fint.html" accesskey="2">Consequences of using <code class="code">poly_int</code></a></li>
+<li><a href="Comparisons-involving-poly_005fint.html" accesskey="3">Comparisons involving <code class="code">poly_int</code></a></li>
+<li><a href="Arithmetic-on-poly_005fints.html" accesskey="4">Arithmetic on <code class="code">poly_int</code>s</a></li>
+<li><a href="Alignment-of-poly_005fints.html" accesskey="5">Alignment of <code class="code">poly_int</code>s</a></li>
+<li><a href="Computing-bounds-on-poly_005fints.html" accesskey="6">Computing bounds on <code class="code">poly_int</code>s</a></li>
+<li><a href="Converting-poly_005fints.html" accesskey="7">Converting <code class="code">poly_int</code>s</a></li>
+<li><a href="Miscellaneous-poly_005fint-routines.html" accesskey="8">Miscellaneous <code class="code">poly_int</code> routines</a></li>
+<li><a href="Guidelines-for-using-poly_005fint.html" accesskey="9">Guidelines for using <code class="code">poly_int</code></a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

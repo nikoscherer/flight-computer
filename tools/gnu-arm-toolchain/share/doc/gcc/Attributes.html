@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the use of the GNU compilers.
+
+Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Attributes (Using the GNU Compiler Collection (GCC))</title>
+
+<meta name="description" content="Attributes (Using the GNU Compiler Collection (GCC))">
+<meta name="keywords" content="Attributes (Using the GNU Compiler Collection (GCC))">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Indices.html" rel="index" title="Indices">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C-Extensions.html" rel="up" title="C Extensions">
+<link href="Pragmas.html" rel="next" title="Pragmas">
+<link href="Named-Address-Spaces.html" rel="prev" title="Named Address Spaces">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en_US">
+<div class="section-level-extent" id="Attributes">
+<div class="nav-panel">
+<p>
+Next: <a href="Pragmas.html" accesskey="n" rel="next">Pragmas Accepted by GCC</a>, Previous: <a href="Named-Address-Spaces.html" accesskey="p" rel="prev">Named Address Spaces</a>, Up: <a href="C-Extensions.html" accesskey="u" rel="up">Extensions to the C Language Family</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Attributes-Specific-to-GCC"><span>6.4 Attributes Specific to GCC<a class="copiable-link" href="#Attributes-Specific-to-GCC"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-attributes"></a>
+<a class="index-entry-id" id="index-declaring-attributes"></a>
+<a class="index-entry-id" id="index-GNU-attributes"></a>
+
+<p>Attributes provide a mechanism to declare additional properties of
+functions, variables, types, and statements.  For example, attributes
+can be used to control placement of objects in particular memory
+sections, or to specify properties that can allow the compiler to
+generate better code or diagnostics, such as declaring that a function
+never returns.  GCC supports a large number of such attributes, which
+are documented in this section.
+</p>
+<p>GCC provides two different ways to specify attributes: the traditional
+GNU syntax using &lsquo;<samp class="samp">__attribute__ ((...))</samp>&rsquo; annotations, and the
+newer standard C and C++ syntax using &lsquo;<samp class="samp">[[...]]</samp>&rsquo; with the
+&lsquo;<samp class="samp">gnu::</samp>&rsquo; namespace prefix on attribute names.
+The traditional syntax, described in detail in <a class="ref" href="Attribute-Syntax.html">Attribute Syntax</a>,
+is supported in all non-strict C and C++ language dialects.
+The standard syntax is supported in C with <samp class="option">-std=c23</samp> or later,
+in C++ with <samp class="option">-std=c++11</samp> or later, and as an extension in older
+GNU C and C++ dialects.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Function-Attributes.html" accesskey="1">Declaring Attributes of Functions</a></li>
+<li><a href="Variable-Attributes.html" accesskey="2">Specifying Attributes of Variables</a></li>
+<li><a href="Type-Attributes.html" accesskey="3">Specifying Attributes of Types</a></li>
+<li><a href="Label-Attributes.html" accesskey="4">Label Attributes</a></li>
+<li><a href="Enumerator-Attributes.html" accesskey="5">Enumerator Attributes</a></li>
+<li><a href="Statement-Attributes.html" accesskey="6">Statement Attributes</a></li>
+<li><a href="Attribute-Syntax.html" accesskey="7">Attribute Syntax</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

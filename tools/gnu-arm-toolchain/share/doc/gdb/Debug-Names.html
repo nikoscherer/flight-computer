@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Debug Names (Debugging with GDB)</title>
+
+<meta name="description" content="Debug Names (Debugging with GDB)">
+<meta name="keywords" content="Debug Names (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB-Files.html" rel="up" title="GDB Files">
+<link href="Symbol-Errors.html" rel="next" title="Symbol Errors">
+<link href="Index-Files.html" rel="prev" title="Index Files">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Debug-Names">
+<div class="nav-panel">
+<p>
+Next: <a href="Symbol-Errors.html" accesskey="n" rel="next">Errors Reading Symbol Files</a>, Previous: <a href="Index-Files.html" accesskey="p" rel="prev">Index Files Speed Up <small class="sc">GDB</small></a>, Up: <a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small> Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Extensions-to-_002edebug_005fnames"><span>18.6 Extensions to &lsquo;<samp class="samp">.debug_names</samp>&rsquo;<a class="copiable-link" href="#Extensions-to-_002edebug_005fnames"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-index-files-1"></a>
+<a class="index-entry-id" id="index-_002edebug_005fnames-section"></a>
+
+<p>The DWARF specification documents an optional index section called
+&lsquo;<samp class="samp">.debug_names</samp>&rsquo;.  <small class="sc">GDB</small> can both read and create this
+section.  However, in order to work with <small class="sc">GDB</small>, some extensions
+were necessary.
+</p>
+<p><small class="sc">GDB</small> uses the augmentation string &lsquo;<samp class="samp">GDB2</samp>&rsquo;.  Earlier
+versions used the string &lsquo;<samp class="samp">GDB</samp>&rsquo;, but these versions of the index
+are no longer supported.
+</p>
+<p><small class="sc">GDB</small> does not use the specified hash table.  Therefore,
+because this hash table is optional, <small class="sc">GDB</small> also does not write
+it.
+</p>
+<p><small class="sc">GDB</small> also generates and uses some extra index attributes:
+</p><dl class="table">
+<dt><code class="code">DW_IDX_GNU_internal</code></dt>
+<dd><p>This has the value &lsquo;<samp class="samp">0x2000</samp>&rsquo;.  It is a flag that, when set,
+indicates that the associated entry has <code class="code">static</code> linkage.
+</p>
+</dd>
+<dt><code class="code">DW_IDX_GNU_main</code></dt>
+<dd><p>This has the value &lsquo;<samp class="samp">0x2002</samp>&rsquo;.  It is a flag that, when set,
+indicates that the associated entry is the program&rsquo;s <code class="code">main</code>.
+</p>
+</dd>
+<dt><code class="code">DW_IDX_GNU_language</code></dt>
+<dd><p>This has the value &lsquo;<samp class="samp">0x2003</samp>&rsquo;.  It is &lsquo;<samp class="samp">DW_LANG_</samp>&rsquo; constant,
+indicating the language of the associated entry.
+</p>
+</dd>
+<dt><code class="code">DW_IDX_GNU_linkage_name</code></dt>
+<dd><p>This has the value &lsquo;<samp class="samp">0x2004</samp>&rsquo;.  It is a flag that, when set,
+indicates that the associated entry is a linkage name, and not a
+source name.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

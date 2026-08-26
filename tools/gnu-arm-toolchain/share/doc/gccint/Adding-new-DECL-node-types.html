@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Adding new DECL node types (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Adding new DECL node types (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Adding new DECL node types (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Internal-structure.html" rel="up" title="Internal structure">
+<link href="Current-structure-hierarchy.html" rel="prev" title="Current structure hierarchy">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Adding-new-DECL-node-types">
+<div class="nav-panel">
+<p>
+Previous: <a href="Current-structure-hierarchy.html" accesskey="p" rel="prev">Current structure hierarchy</a>, Up: <a href="Internal-structure.html" accesskey="u" rel="up">Internal structure</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Adding-new-DECL-node-types-1"><span>10.4.2.2 Adding new DECL node types<a class="copiable-link" href="#Adding-new-DECL-node-types-1"> &para;</a></span></h4>
+
+<p>Adding a new <code class="code">DECL</code> tree consists of the following steps
+</p>
+<dl class="table">
+<dt>Add a new tree code for the <code class="code">DECL</code> node</dt>
+<dd><p>For language specific <code class="code">DECL</code> nodes, there is a <samp class="file">.def</samp> file
+in each frontend directory where the tree code should be added.
+For <code class="code">DECL</code> nodes that are part of the middle-end, the code should
+be added to <samp class="file">tree.def</samp>.
+</p>
+</dd>
+<dt>Create a new structure type for the <code class="code">DECL</code> node</dt>
+<dd><p>These structures should inherit from one of the existing structures in
+the language hierarchy by using that structure as the first member.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct tree_foo_decl
+{
+   struct tree_decl_with_vis common;
+}
+</pre></div>
+
+<p>Would create a structure name <code class="code">tree_foo_decl</code> that inherits from
+<code class="code">struct tree_decl_with_vis</code>.
+</p>
+<p>For language specific <code class="code">DECL</code> nodes, this new structure type
+should go in the appropriate <samp class="file">.h</samp> file.
+For <code class="code">DECL</code> nodes that are part of the middle-end, the structure
+type should go in <samp class="file">tree.h</samp>.
+</p>
+</dd>
+<dt>Add a member to the tree structure enumerator for the node</dt>
+<dd><p>For garbage collection and dynamic checking purposes, each <code class="code">DECL</code>
+node structure type is required to have a unique enumerator value
+specified with it.
+For language specific <code class="code">DECL</code> nodes, this new enumerator value
+should go in the appropriate <samp class="file">.def</samp> file.
+For <code class="code">DECL</code> nodes that are part of the middle-end, the enumerator
+values are specified in <samp class="file">treestruct.def</samp>.
+</p>
+</dd>
+<dt>Update <code class="code">union tree_node</code></dt>
+<dd><p>In order to make your new structure type usable, it must be added to
+<code class="code">union tree_node</code>.
+For language specific <code class="code">DECL</code> nodes, a new entry should be added
+to the appropriate <samp class="file">.h</samp> file of the form
+</p><div class="example smallexample">
+<pre class="example-preformatted">  struct tree_foo_decl GTY ((tag (&quot;TS_VAR_DECL&quot;))) foo_decl;
+</pre></div>
+<p>For <code class="code">DECL</code> nodes that are part of the middle-end, the additional
+member goes directly into <code class="code">union tree_node</code> in <samp class="file">tree.h</samp>.
+</p>
+</dd>
+<dt>Update dynamic checking info</dt>
+<dd><p>In order to be able to check whether accessing a named portion of
+<code class="code">union tree_node</code> is legal, and whether a certain <code class="code">DECL</code> node
+contains one of the enumerated <code class="code">DECL</code> node structures in the
+hierarchy, a simple lookup table is used.
+This lookup table needs to be kept up to date with the tree structure
+hierarchy, or else checking and containment macros will fail
+inappropriately.
+</p>
+<p>For language specific <code class="code">DECL</code> nodes, there is an <code class="code">init_ts</code>
+function in an appropriate <samp class="file">.c</samp> file, which initializes the lookup
+table.
+Code setting up the table for new <code class="code">DECL</code> nodes should be added
+there.
+For each <code class="code">DECL</code> tree code and enumerator value representing a
+member of the inheritance  hierarchy, the table should contain 1 if
+that tree code inherits (directly or indirectly) from that member.
+Thus, a <code class="code">FOO_DECL</code> node derived from <code class="code">struct decl_with_rtl</code>,
+and enumerator value <code class="code">TS_FOO_DECL</code>, would be set up as follows
+</p><div class="example smallexample">
+<pre class="example-preformatted">tree_contains_struct[FOO_DECL][TS_FOO_DECL] = 1;
+tree_contains_struct[FOO_DECL][TS_DECL_WRTL] = 1;
+tree_contains_struct[FOO_DECL][TS_DECL_COMMON] = 1;
+tree_contains_struct[FOO_DECL][TS_DECL_MINIMAL] = 1;
+</pre></div>
+
+<p>For <code class="code">DECL</code> nodes that are part of the middle-end, the setup code
+goes into <samp class="file">tree.cc</samp>.
+</p>
+</dd>
+<dt>Add macros to access any new fields and flags</dt>
+<dd>
+<p>Each added field or flag should have a macro that is used to access
+it, that performs appropriate checking to ensure only the right type of
+<code class="code">DECL</code> nodes access the field.
+</p>
+<p>These macros generally take the following form
+</p><div class="example smallexample">
+<pre class="example-preformatted">#define FOO_DECL_FIELDNAME(NODE) FOO_DECL_CHECK(NODE)-&gt;foo_decl.fieldname
+</pre></div>
+<p>However, if the structure is simply a base class for further
+structures, something like the following should be used
+</p><div class="example smallexample">
+<pre class="example-preformatted">#define BASE_STRUCT_CHECK(T) CONTAINS_STRUCT_CHECK(T, TS_BASE_STRUCT)
+#define BASE_STRUCT_FIELDNAME(NODE) \
+   (BASE_STRUCT_CHECK(NODE)-&gt;base_struct.fieldname
+</pre></div>
+
+<p>Reading them from the generated <samp class="file">all-tree.def</samp> file (which in
+turn includes all the <samp class="file">tree.def</samp> files), <samp class="file">gencheck.cc</samp> is
+used during GCC&rsquo;s build to generate the <code class="code">*_CHECK</code> macros for all
+tree codes.
+</p>
+</dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Current-structure-hierarchy.html">Current structure hierarchy</a>, Up: <a href="Internal-structure.html">Internal structure</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

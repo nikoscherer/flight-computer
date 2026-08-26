@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Pretty-Printer Commands (Debugging with GDB)</title>
+
+<meta name="description" content="Pretty-Printer Commands (Debugging with GDB)">
+<meta name="keywords" content="Pretty-Printer Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Pretty-Printing.html" rel="up" title="Pretty Printing">
+<link href="Pretty_002dPrinter-Example.html" rel="prev" title="Pretty-Printer Example">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Pretty_002dPrinter-Commands">
+<div class="nav-panel">
+<p>
+Previous: <a href="Pretty_002dPrinter-Example.html" accesskey="p" rel="prev">Pretty-Printer Example</a>, Up: <a href="Pretty-Printing.html" accesskey="u" rel="up">Pretty Printing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Pretty_002dPrinter-Commands-1"><span>10.10.3 Pretty-Printer Commands<a class="copiable-link" href="#Pretty_002dPrinter-Commands-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-pretty_002dprinter-commands"></a>
+
+<dl class="table">
+<dt><a id="index-info-pretty_002dprinter"></a><span><code class="code">info pretty-printer [<var class="var">object-regexp</var> [<var class="var">name-regexp</var>]]</code><a class="copiable-link" href="#index-info-pretty_002dprinter"> &para;</a></span></dt>
+<dd><p>Print the list of installed pretty-printers.
+This includes disabled pretty-printers, which are marked as such.
+</p>
+<p><var class="var">object-regexp</var> is a regular expression matching the objects
+whose pretty-printers to list.
+Objects can be <code class="code">global</code>, the program space&rsquo;s file
+(see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>),
+and the object files within that program space (see <a class="pxref" href="Objfiles-In-Python.html">Objfiles In Python</a>).
+See <a class="xref" href="Selecting-Pretty_002dPrinters.html">Selecting Pretty-Printers</a>, for details on how <small class="sc">GDB</small>
+looks up a printer from these three objects.
+</p>
+<p><var class="var">name-regexp</var> is a regular expression matching the name of the printers
+to list.
+</p>
+</dd>
+<dt><a id="index-disable-pretty_002dprinter"></a><span><code class="code">disable pretty-printer [<var class="var">object-regexp</var> [<var class="var">name-regexp</var>]]</code><a class="copiable-link" href="#index-disable-pretty_002dprinter"> &para;</a></span></dt>
+<dd><p>Disable pretty-printers matching <var class="var">object-regexp</var> and <var class="var">name-regexp</var>.
+A disabled pretty-printer is not forgotten, it may be enabled again later.
+</p>
+</dd>
+<dt><a id="index-enable-pretty_002dprinter"></a><span><code class="code">enable pretty-printer [<var class="var">object-regexp</var> [<var class="var">name-regexp</var>]]</code><a class="copiable-link" href="#index-enable-pretty_002dprinter"> &para;</a></span></dt>
+<dd><p>Enable pretty-printers matching <var class="var">object-regexp</var> and <var class="var">name-regexp</var>.
+</p></dd>
+</dl>
+
+<p>Example:
+</p>
+<p>Suppose we have three pretty-printers installed: one from library1.so
+named <code class="code">foo</code> that prints objects of type <code class="code">foo</code>, and
+another from library2.so named <code class="code">bar</code> that prints two types of objects,
+<code class="code">bar1</code> and <code class="code">bar2</code>.
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) info pretty-printer
+library1.so:
+  foo
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) info pretty-printer library2
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty-printer library1
+1 printer disabled
+2 of 3 printers enabled
+(gdb) info pretty-printer
+library1.so:
+  foo [disabled]
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty-printer library2 bar;bar1
+1 printer disabled
+1 of 3 printers enabled
+(gdb) info pretty-printer library2
+library2.so:
+  bar
+    bar1 [disabled]
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty-printer library2 bar
+1 printer disabled
+0 of 3 printers enabled
+(gdb) info pretty-printer
+library1.so:
+  foo [disabled]
+library2.so:
+  bar [disabled]
+    bar1 [disabled]
+    bar2
+</pre></div></div>
+
+<p>Note that for <code class="code">bar</code> the entire printer can be disabled,
+as can each individual subprinter.
+</p>
+<p>Printing values and frame arguments is done by default using
+the enabled pretty printers.
+</p>
+<p>The print option <code class="code">-raw-values</code> and <small class="sc">GDB</small> setting
+<code class="code">set print raw-values</code> (see <a class="pxref" href="Print-Settings.html#set-print-raw_002dvalues">set print raw-values</a>) can be
+used to print values without applying the enabled pretty printers.
+</p>
+<p>Similarly, the backtrace option <code class="code">-raw-frame-arguments</code> and
+<small class="sc">GDB</small> setting <code class="code">set print raw-frame-arguments</code>
+(see <a class="pxref" href="Print-Settings.html#set-print-raw_002dframe_002darguments">set print raw-frame-arguments</a>) can be used to ignore the
+enabled pretty printers when printing frame argument values.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Pretty_002dPrinter-Example.html">Pretty-Printer Example</a>, Up: <a href="Pretty-Printing.html">Pretty Printing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

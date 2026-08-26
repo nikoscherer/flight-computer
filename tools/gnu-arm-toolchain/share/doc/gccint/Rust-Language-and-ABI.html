@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Rust Language and ABI (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Rust Language and ABI (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Rust Language and ABI (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Target-Macros.html" rel="up" title="Target Macros">
+<link href="Named-Address-Spaces.html" rel="next" title="Named Address Spaces">
+<link href="D-Language-and-ABI.html" rel="prev" title="D Language and ABI">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Rust-Language-and-ABI">
+<div class="nav-panel">
+<p>
+Next: <a href="Named-Address-Spaces.html" accesskey="n" rel="next">Adding support for named address spaces</a>, Previous: <a href="D-Language-and-ABI.html" accesskey="p" rel="prev">D ABI parameters</a>, Up: <a href="Target-Macros.html" accesskey="u" rel="up">Target Description Macros and Functions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Rust-ABI-parameters"><span>17.30 Rust ABI parameters<a class="copiable-link" href="#Rust-ABI-parameters"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-parameters_002c-rust-abi"></a>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fRUST_005fCPU_005fINFO"><span class="category-def">Rust Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_RUST_CPU_INFO</strong> <code class="def-code-arguments">(void)</code><a class="copiable-link" href="#index-TARGET_005fRUST_005fCPU_005fINFO"> &para;</a></span></dt>
+<dd><p>Declare all environmental CPU info and features relating to the target CPU
+using the function <code class="code">rust_add_target_info</code>, which takes a string
+representing the feature key and a string representing the feature value.
+Configuration pairs predefined by this hook apply to all files that are being
+compiled.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fRUST_005fOS_005fINFO"><span class="category-def">Rust Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_RUST_OS_INFO</strong> <code class="def-code-arguments">(void)</code><a class="copiable-link" href="#index-TARGET_005fRUST_005fOS_005fINFO"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">TARGET_RUST_CPU_INFO</code>, but is used for configuration info
+relating to the target operating system.
+</p></dd></dl>
+
+</div>
+
+
+
+</body>
+</html>

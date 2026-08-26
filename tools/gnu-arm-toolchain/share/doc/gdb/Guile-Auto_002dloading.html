@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile Auto-loading (Debugging with GDB)</title>
+
+<meta name="description" content="Guile Auto-loading (Debugging with GDB)">
+<meta name="keywords" content="Guile Auto-loading (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile.html" rel="up" title="Guile">
+<link href="Guile-Modules.html" rel="next" title="Guile Modules">
+<link href="Guile-API.html" rel="prev" title="Guile API">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Guile-Auto_002dloading">
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Modules.html" accesskey="n" rel="next">Guile Modules</a>, Previous: <a href="Guile-API.html" accesskey="p" rel="prev">Guile API</a>, Up: <a href="Guile.html" accesskey="u" rel="up">Extending <small class="sc">GDB</small> using Guile</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Guile-Auto_002dloading-1"><span>23.4.4 Guile Auto-loading<a class="copiable-link" href="#Guile-Auto_002dloading-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-guile-auto_002dloading"></a>
+
+<p>When a new object file is read (for example, due to the <code class="code">file</code>
+command, or because the inferior has loaded a shared library),
+<small class="sc">GDB</small> will look for Guile support scripts in two ways:
+<samp class="file"><var class="var">objfile</var>-gdb.scm</samp> and the <code class="code">.debug_gdb_scripts</code> section.
+See <a class="xref" href="Auto_002dloading-extensions.html">Auto-loading extensions</a>.
+</p>
+<p>The auto-loading feature is useful for supplying application-specific
+debugging commands and scripts.
+</p>
+<p>Auto-loading can be enabled or disabled,
+and the list of auto-loaded scripts can be printed.
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-auto_002dload-guile_002dscripts"></a></dd>
+<dt><a id="index-set-auto_002dload-guile_002dscripts"></a><span><code class="code">set auto-load guile-scripts [on|off]</code><a class="copiable-link" href="#index-set-auto_002dload-guile_002dscripts"> &para;</a></span></dt>
+<dd><p>Enable or disable the auto-loading of Guile scripts.
+</p>
+<a class="anchor" id="show-auto_002dload-guile_002dscripts"></a></dd>
+<dt><a id="index-show-auto_002dload-guile_002dscripts"></a><span><code class="code">show auto-load guile-scripts</code><a class="copiable-link" href="#index-show-auto_002dload-guile_002dscripts"> &para;</a></span></dt>
+<dd><p>Show whether auto-loading of Guile scripts is enabled or disabled.
+</p>
+<a class="anchor" id="info-auto_002dload-guile_002dscripts"></a></dd>
+<dt><a class="index-entry-id" id="index-print-list-of-auto_002dloaded-Guile-scripts"></a>
+<a id="index-info-auto_002dload-guile_002dscripts"></a><span><code class="code">info auto-load guile-scripts [<var class="var">regexp</var>]</code><a class="copiable-link" href="#index-info-auto_002dload-guile_002dscripts"> &para;</a></span></dt>
+<dd><p>Print the list of all Guile scripts that <small class="sc">GDB</small> auto-loaded.
+</p>
+<p>Also printed is the list of Guile scripts that were mentioned in
+the <code class="code">.debug_gdb_scripts</code> section and were not found.
+This is useful because their names are not printed when <small class="sc">GDB</small>
+tries to load them and fails.  There may be many of them, and printing
+an error message for each one is problematic.
+</p>
+<p>If <var class="var">regexp</var> is supplied only Guile scripts with matching names are printed.
+</p>
+<p>Example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info auto-load guile-scripts
+Loaded Script
+Yes    scm-section-script.scm
+       full name: /tmp/scm-section-script.scm
+No     my-foo-pretty-printers.scm
+</pre></div>
+</dd>
+</dl>
+
+<p>When reading an auto-loaded file, <small class="sc">GDB</small> sets the
+<em class="dfn">current objfile</em>.  This is available via the <code class="code">current-objfile</code>
+procedure (see <a class="pxref" href="Objfiles-In-Guile.html">Objfiles In Guile</a>).  This can be useful for
+registering objfile-specific pretty-printers.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Modules.html">Guile Modules</a>, Previous: <a href="Guile-API.html">Guile API</a>, Up: <a href="Guile.html">Extending <small class="sc">GDB</small> using Guile</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

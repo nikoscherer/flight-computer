@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Which flavor to choose? (Debugging with GDB)</title>
+
+<meta name="description" content="Which flavor to choose? (Debugging with GDB)">
+<meta name="keywords" content="Which flavor to choose? (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Auto_002dloading-extensions.html" rel="up" title="Auto-loading extensions">
+<link href="dotdebug_005fgdb_005fscripts-section.html" rel="prev" title="dotdebug_gdb_scripts section">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Which-flavor-to-choose_003f">
+<div class="nav-panel">
+<p>
+Previous: <a href="dotdebug_005fgdb_005fscripts-section.html" accesskey="p" rel="prev">The <code class="code">.debug_gdb_scripts</code> section</a>, Up: <a href="Auto_002dloading-extensions.html" accesskey="u" rel="up">Auto-loading extensions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Which-flavor-to-choose_003f-1"><span>23.5.3 Which flavor to choose?<a class="copiable-link" href="#Which-flavor-to-choose_003f-1"> &para;</a></span></h4>
+
+<p>Given the multiple ways of auto-loading extensions, it might not always
+be clear which one to choose.  This section provides some guidance.
+</p>
+<p>Benefits of the <samp class="file">-gdb.<var class="var">ext</var></samp> way:
+</p>
+<ul class="itemize mark-bullet">
+<li>Can be used with file formats that don&rsquo;t support multiple sections.
+
+</li><li>Ease of finding scripts for public libraries.
+
+<p>Scripts specified in the <code class="code">.debug_gdb_scripts</code> section are searched for
+in the source search path.
+For publicly installed libraries, e.g., <samp class="file">libstdc++</samp>, there typically
+isn&rsquo;t a source directory in which to find the script.
+</p>
+</li><li>Doesn&rsquo;t require source code additions.
+</li></ul>
+
+<p>Benefits of the <code class="code">.debug_gdb_scripts</code> way:
+</p>
+<ul class="itemize mark-bullet">
+<li>Works with static linking.
+
+<p>Scripts for libraries done the <samp class="file">-gdb.<var class="var">ext</var></samp> way require an objfile to
+trigger their loading.  When an application is statically linked the only
+objfile available is the executable, and it is cumbersome to attach all the
+scripts from all the input libraries to the executable&rsquo;s
+<samp class="file">-gdb.<var class="var">ext</var></samp> script.
+</p>
+</li><li>Works with classes that are entirely inlined.
+
+<p>Some classes can be entirely inlined, and thus there may not be an associated
+shared library to attach a <samp class="file">-gdb.<var class="var">ext</var></samp> script to.
+</p>
+</li><li>Scripts needn&rsquo;t be copied out of the source tree.
+
+<p>In some circumstances, apps can be built out of large collections of internal
+libraries, and the build infrastructure necessary to install the
+<samp class="file">-gdb.<var class="var">ext</var></samp> scripts in a place where <small class="sc">GDB</small> can find them is
+cumbersome.  It may be easier to specify the scripts in the
+<code class="code">.debug_gdb_scripts</code> section as relative paths, and add a path to the
+top of the source tree to the source search path.
+</p></li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="dotdebug_005fgdb_005fscripts-section.html">The <code class="code">.debug_gdb_scripts</code> section</a>, Up: <a href="Auto_002dloading-extensions.html">Auto-loading extensions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

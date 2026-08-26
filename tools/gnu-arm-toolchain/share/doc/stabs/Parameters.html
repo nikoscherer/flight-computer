@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Parameters (STABS)</title>
+
+<meta name="description" content="Parameters (STABS)">
+<meta name="keywords" content="Parameters (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Variables.html" rel="up" title="Variables">
+<link href="Based-Variables.html" rel="prev" title="Based Variables">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Parameters">
+<div class="nav-panel">
+<p>
+Previous: <a href="Based-Variables.html" accesskey="p" rel="prev">Fortran Based Variables</a>, Up: <a href="Variables.html" accesskey="u" rel="up">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Parameters-1"><span>4.7 Parameters<a class="copiable-link" href="#Parameters-1"> &para;</a></span></h3>
+
+<p>Formal parameters to a function are represented by a stab (or sometimes
+two; see below) for each parameter.  The stabs are in the order in which
+the debugger should print the parameters (i.e., the order in which the
+parameters are declared in the source file).  The exact form of the stab
+depends on how the parameter is being passed.
+</p>
+<a class="index-entry-id" id="index-N_005fPSYM"></a>
+<a class="index-entry-id" id="index-C_005fPSYM"></a>
+<p>Parameters passed on the stack use the symbol descriptor &lsquo;<samp class="samp">p</samp>&rsquo; and
+the <code class="code">N_PSYM</code> symbol type (or <code class="code">C_PSYM</code> for XCOFF).  The value
+of the symbol is an offset used to locate the parameter on the stack;
+its exact meaning is machine-dependent, but on most machines it is an
+offset from the frame pointer.
+</p>
+<p>As a simple example, the code:
+</p>
+<div class="example">
+<pre class="example-preformatted">main (argc, argv)
+     int argc;
+     char **argv;
+</pre></div>
+
+<p>produces the stabs:
+</p>
+<div class="example">
+<pre class="example-preformatted">.stabs &quot;main:F1&quot;,36,0,0,_main                 # <span class="r">36 is N_FUN</span>
+.stabs &quot;argc:p1&quot;,160,0,0,68                   # <span class="r">160 is N_PSYM</span>
+.stabs &quot;argv:p20=*21=*2&quot;,160,0,0,72
+</pre></div>
+
+<p>The type definition of <code class="code">argv</code> is interesting because it contains
+several type definitions.  Type 21 is pointer to type 2 (char) and
+<code class="code">argv</code> (type 20) is pointer to type 21.
+</p>
+<p>The following symbol descriptors are also said to go with <code class="code">N_PSYM</code>.
+The value of the symbol is said to be an offset from the argument
+pointer (I&rsquo;m not sure whether this is true or not).
+</p>
+<div class="example">
+<pre class="example-preformatted">pP (&lt;&lt;??&gt;&gt;)
+pF Fortran function parameter
+X  (function result variable)
+</pre></div>
+
+
+<ul class="mini-toc">
+<li><a href="Register-Parameters.html" accesskey="1">Passing Parameters in Registers</a></li>
+<li><a href="Local-Variable-Parameters.html" accesskey="2">Storing Parameters as Local Variables</a></li>
+<li><a href="Reference-Parameters.html" accesskey="3">Passing Parameters by Reference</a></li>
+<li><a href="Conformant-Arrays.html" accesskey="4">Passing Conformant Array Parameters</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Based-Variables.html">Fortran Based Variables</a>, Up: <a href="Variables.html">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

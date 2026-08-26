@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python API (Debugging with GDB)</title>
+
+<meta name="description" content="Python API (Debugging with GDB)">
+<meta name="keywords" content="Python API (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python.html" rel="up" title="Python">
+<link href="Python-Auto_002dloading.html" rel="next" title="Python Auto-loading">
+<link href="Python-Commands.html" rel="prev" title="Python Commands">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Python-API">
+<div class="nav-panel">
+<p>
+Next: <a href="Python-Auto_002dloading.html" accesskey="n" rel="next">Python Auto-loading</a>, Previous: <a href="Python-Commands.html" accesskey="p" rel="prev">Python Commands</a>, Up: <a href="Python.html" accesskey="u" rel="up">Extending <small class="sc">GDB</small> using Python</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Python-API-1"><span>23.3.2 Python API<a class="copiable-link" href="#Python-API-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-python-api"></a>
+<a class="index-entry-id" id="index-programming-in-python"></a>
+
+<p>You can get quick online help for <small class="sc">GDB</small>&rsquo;s Python API by issuing
+the command <kbd class="kbd">python&nbsp;help&nbsp;(gdb)</kbd><!-- /@w -->.
+</p>
+<p>Functions and methods which have two or more optional arguments allow
+them to be specified using keyword syntax.  This allows passing some
+optional arguments while skipping others.  Example:
+<code class="code">gdb.some_function&nbsp;('foo',&nbsp;bar&nbsp;=&nbsp;1,&nbsp;baz&nbsp;=&nbsp;2)</code><!-- /@w -->.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Basic-Python.html" accesskey="1">Basic Python</a></li>
+<li><a href="Threading-in-GDB.html" accesskey="2">Threading in GDB</a></li>
+<li><a href="Exception-Handling.html" accesskey="3">Exception Handling</a></li>
+<li><a href="Values-From-Inferior.html" accesskey="4">Values From Inferior</a></li>
+<li><a href="Types-In-Python.html" accesskey="5">Types In Python</a></li>
+<li><a href="Pretty-Printing-API.html" accesskey="6">Pretty Printing API</a></li>
+<li><a href="Selecting-Pretty_002dPrinters.html" accesskey="7">Selecting Pretty-Printers</a></li>
+<li><a href="Writing-a-Pretty_002dPrinter.html" accesskey="8">Writing a Pretty-Printer</a></li>
+<li><a href="Type-Printing-API.html" accesskey="9">Type Printing API</a></li>
+<li><a href="Frame-Filter-API.html">Filtering Frames</a></li>
+<li><a href="Frame-Decorator-API.html">Decorating Frames</a></li>
+<li><a href="Writing-a-Frame-Filter.html">Writing a Frame Filter</a></li>
+<li><a href="Unwinding-Frames-in-Python.html">Unwinding Frames in Python</a></li>
+<li><a href="Xmethods-In-Python.html">Xmethods In Python</a></li>
+<li><a href="Xmethod-API.html">Xmethod API</a></li>
+<li><a href="Writing-an-Xmethod.html">Writing an Xmethod</a></li>
+<li><a href="Inferiors-In-Python.html">Inferiors In Python</a></li>
+<li><a href="Events-In-Python.html">Events In Python</a></li>
+<li><a href="Threads-In-Python.html">Threads In Python</a></li>
+<li><a href="Recordings-In-Python.html">Recordings In Python</a></li>
+<li><a href="CLI-Commands-In-Python.html">CLI Commands In Python</a></li>
+<li><a href="GDB_002fMI-Commands-In-Python.html"><small class="sc">GDB/MI</small> Commands In Python</a></li>
+<li><a href="GDB_002fMI-Notifications-In-Python.html"><small class="sc">GDB/MI</small> Notifications In Python</a></li>
+<li><a href="Parameters-In-Python.html">Parameters In Python</a></li>
+<li><a href="Functions-In-Python.html">Writing new convenience functions</a></li>
+<li><a href="Progspaces-In-Python.html">Program Spaces In Python</a></li>
+<li><a href="Objfiles-In-Python.html">Objfiles In Python</a></li>
+<li><a href="Frames-In-Python.html">Accessing inferior stack frames from Python</a></li>
+<li><a href="Blocks-In-Python.html">Accessing blocks from Python</a></li>
+<li><a href="Symbols-In-Python.html">Python representation of Symbols</a></li>
+<li><a href="Symbol-Tables-In-Python.html">Symbol table representation in Python</a></li>
+<li><a href="Line-Tables-In-Python.html">Manipulating line tables using Python</a></li>
+<li><a href="Breakpoints-In-Python.html">Manipulating breakpoints using Python</a></li>
+<li><a href="Finish-Breakpoints-in-Python.html">Finish Breakpoints</a></li>
+<li><a href="Lazy-Strings-In-Python.html">Python representation of lazy strings</a></li>
+<li><a href="Architectures-In-Python.html">Python representation of architectures</a></li>
+<li><a href="Registers-In-Python.html">Registers In Python</a></li>
+<li><a href="Connections-In-Python.html">Connections In Python</a></li>
+<li><a href="TUI-Windows-In-Python.html">Implementing new TUI windows</a></li>
+<li><a href="Disassembly-In-Python.html">Instruction Disassembly In Python</a></li>
+<li><a href="Missing-Debug-Info-In-Python.html">Missing Debug Info In Python</a></li>
+<li><a href="Missing-Objfiles-In-Python.html">Missing Objfiles In Python</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Python-Auto_002dloading.html">Python Auto-loading</a>, Previous: <a href="Python-Commands.html">Python Commands</a>, Up: <a href="Python.html">Extending <small class="sc">GDB</small> using Python</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

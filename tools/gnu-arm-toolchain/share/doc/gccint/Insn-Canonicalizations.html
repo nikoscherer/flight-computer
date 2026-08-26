@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Insn Canonicalizations (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Insn Canonicalizations (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Insn Canonicalizations (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Machine-Desc.html" rel="up" title="Machine Desc">
+<link href="Expander-Definitions.html" rel="next" title="Expander Definitions">
+<link href="Looping-Patterns.html" rel="prev" title="Looping Patterns">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Insn-Canonicalizations">
+<div class="nav-panel">
+<p>
+Next: <a href="Expander-Definitions.html" accesskey="n" rel="next">Defining RTL Sequences for Code Generation</a>, Previous: <a href="Looping-Patterns.html" accesskey="p" rel="prev">Defining Looping Instruction Patterns</a>, Up: <a href="Machine-Desc.html" accesskey="u" rel="up">Machine Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Canonicalization-of-Instructions"><span>16.15 Canonicalization of Instructions<a class="copiable-link" href="#Canonicalization-of-Instructions"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-canonicalization-of-instructions"></a>
+<a class="index-entry-id" id="index-insn-canonicalization"></a>
+
+<p>There are often cases where multiple RTL expressions could represent an
+operation performed by a single machine instruction.  This situation is
+most commonly encountered with logical, branch, and multiply-accumulate
+instructions.  In such cases, the compiler attempts to convert these
+multiple RTL expressions into a single canonical form to reduce the
+number of insn patterns required.
+</p>
+<p>In addition to algebraic simplifications, following canonicalizations
+are performed:
+</p>
+<ul class="itemize mark-bullet">
+<li>For commutative and comparison operators, a constant is always made the
+second operand.  If a machine only supports a constant as the second
+operand, only patterns that match a constant in the second operand need
+be supplied.
+
+</li><li><a class="index-entry-id" id="index-vec_005fmerge_002c-canonicalization-of"></a>
+For the <code class="code">vec_merge</code> with constant mask(the third operand), the first
+and the second operand can be exchanged by inverting the mask. In such cases,
+a constant is always made the second operand, otherwise the least significant
+bit of the mask is always set(select the first operand first).
+
+</li><li>For associative operators, a sequence of operators will always chain
+to the left; for instance, only the left operand of an integer <code class="code">plus</code>
+can itself be a <code class="code">plus</code>.  <code class="code">and</code>, <code class="code">ior</code>, <code class="code">xor</code>,
+<code class="code">plus</code>, <code class="code">mult</code>, <code class="code">smin</code>, <code class="code">smax</code>, <code class="code">umin</code>, and
+<code class="code">umax</code> are associative when applied to integers, and sometimes to
+floating-point.
+
+</li><li><a class="index-entry-id" id="index-neg_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-not_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-mult_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-plus_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-minus_002c-canonicalization-of"></a>
+For these operators, if only one operand is a <code class="code">neg</code>, <code class="code">not</code>,
+<code class="code">mult</code>, <code class="code">plus</code>, or <code class="code">minus</code> expression, it will be the
+first operand.
+
+</li><li>In combinations of <code class="code">neg</code>, <code class="code">mult</code>, <code class="code">plus</code>, and
+<code class="code">minus</code>, the <code class="code">neg</code> operations (if any) will be moved inside
+the operations as far as possible.  For instance,
+<code class="code">(neg (mult A B))</code> is canonicalized as <code class="code">(mult (neg A) B)</code>, but
+<code class="code">(plus (mult (neg B) C) A)</code> is canonicalized as
+<code class="code">(minus A (mult B C))</code>.
+
+</li><li><a class="index-entry-id" id="index-compare_002c-canonicalization-of"></a>
+For the <code class="code">compare</code> operator, a constant is always the second operand
+if the first argument is a condition code register.
+
+</li><li>For instructions that inherently set a condition code register, the
+<code class="code">compare</code> operator is always written as the first RTL expression of
+the <code class="code">parallel</code> instruction pattern.  For example,
+
+<div class="example smallexample">
+<pre class="example-preformatted">(define_insn &quot;&quot;
+  [(set (reg:CCZ FLAGS_REG)
+	(compare:CCZ
+	  (plus:SI
+	    (match_operand:SI 1 &quot;register_operand&quot; &quot;%r&quot;)
+	    (match_operand:SI 2 &quot;register_operand&quot; &quot;r&quot;))
+	  (const_int 0)))
+   (set (match_operand:SI 0 &quot;register_operand&quot; &quot;=r&quot;)
+	(plus:SI (match_dup 1) (match_dup 2)))]
+  &quot;&quot;
+  &quot;addl %0, %1, %2&quot;)
+</pre></div>
+
+</li><li>An operand of <code class="code">neg</code>, <code class="code">not</code>, <code class="code">mult</code>, <code class="code">plus</code>, or
+<code class="code">minus</code> is made the first operand under the same conditions as
+above.
+
+</li><li><code class="code">(ltu (plus <var class="var">a</var> <var class="var">b</var>) <var class="var">b</var>)</code> is converted to
+<code class="code">(ltu (plus <var class="var">a</var> <var class="var">b</var>) <var class="var">a</var>)</code>. Likewise with <code class="code">geu</code> instead
+of <code class="code">ltu</code>.
+
+</li><li><code class="code">(minus <var class="var">x</var> (const_int <var class="var">n</var>))</code> is converted to
+<code class="code">(plus <var class="var">x</var> (const_int <var class="var">-n</var>))</code>.
+
+</li><li>Within address computations (i.e., inside <code class="code">mem</code>), a left shift is
+converted into the appropriate multiplication by a power of two.
+
+</li><li><a class="index-entry-id" id="index-ior_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-and_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-De-Morgan_0027s-law"></a>
+De Morgan&rsquo;s Law is used to move bitwise negation inside a bitwise
+logical-and or logical-or operation.  If this results in only one
+operand being a <code class="code">not</code> expression, it will be the first one.
+
+<p>A machine that has an instruction that performs a bitwise logical-and of one
+operand with the bitwise negation of the other should specify the pattern
+for that instruction as
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_insn &quot;&quot;
+  [(set (match_operand:<var class="var">m</var> 0 ...)
+        (and:<var class="var">m</var> (not:<var class="var">m</var> (match_operand:<var class="var">m</var> 1 ...))
+                     (match_operand:<var class="var">m</var> 2 ...)))]
+  &quot;...&quot;
+  &quot;...&quot;)
+</pre></div>
+
+<p>Similarly, a pattern for a &ldquo;NAND&rdquo; instruction should be written
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_insn &quot;&quot;
+  [(set (match_operand:<var class="var">m</var> 0 ...)
+        (ior:<var class="var">m</var> (not:<var class="var">m</var> (match_operand:<var class="var">m</var> 1 ...))
+                     (not:<var class="var">m</var> (match_operand:<var class="var">m</var> 2 ...))))]
+  &quot;...&quot;
+  &quot;...&quot;)
+</pre></div>
+
+<p>In both cases, it is not necessary to include patterns for the many
+logically equivalent RTL expressions.
+</p>
+</li><li><a class="index-entry-id" id="index-xor_002c-canonicalization-of"></a>
+The only possible RTL expressions involving both bitwise exclusive-or
+and bitwise negation are <code class="code">(xor:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code>
+and <code class="code">(not:<var class="var">m</var> (xor:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>))</code>.
+
+</li><li>The sum of three items, one of which is a constant, will only appear in
+the form
+
+<div class="example smallexample">
+<pre class="example-preformatted">(plus:<var class="var">m</var> (plus:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>) <var class="var">constant</var>)
+</pre></div>
+
+</li><li><a class="index-entry-id" id="index-zero_005fextract_002c-canonicalization-of"></a>
+<a class="index-entry-id" id="index-sign_005fextract_002c-canonicalization-of"></a>
+Equality comparisons of a group of bits (usually a single bit) with zero
+will be written using <code class="code">zero_extract</code> rather than the equivalent
+<code class="code">and</code> or <code class="code">sign_extract</code> operations.
+
+</li><li><a class="index-entry-id" id="index-mult_002c-canonicalization-of-1"></a>
+<code class="code">(sign_extend:<var class="var">m1</var> (mult:<var class="var">m2</var> (sign_extend:<var class="var">m2</var> <var class="var">x</var>)
+(sign_extend:<var class="var">m2</var> <var class="var">y</var>)))</code> is converted to <code class="code">(mult:<var class="var">m1</var>
+(sign_extend:<var class="var">m1</var> <var class="var">x</var>) (sign_extend:<var class="var">m1</var> <var class="var">y</var>))</code>, and likewise
+for <code class="code">zero_extend</code>.
+
+</li><li><code class="code">(sign_extend:<var class="var">m1</var> (mult:<var class="var">m2</var> (ashiftrt:<var class="var">m2</var>
+<var class="var">x</var> <var class="var">s</var>) (sign_extend:<var class="var">m2</var> <var class="var">y</var>)))</code> is converted
+to <code class="code">(mult:<var class="var">m1</var> (sign_extend:<var class="var">m1</var> (ashiftrt:<var class="var">m2</var>
+<var class="var">x</var> <var class="var">s</var>)) (sign_extend:<var class="var">m1</var> <var class="var">y</var>))</code>, and likewise for
+patterns using <code class="code">zero_extend</code> and <code class="code">lshiftrt</code>.  If the second
+operand of <code class="code">mult</code> is also a shift, then that is extended also.
+This transformation is only applied when it can be proven that the
+original operation had sufficient precision to prevent overflow.
+
+</li></ul>
+
+<p>Further canonicalization rules are defined in the function
+<code class="code">commutative_operand_precedence</code> in <samp class="file">gcc/rtlanal.cc</samp>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Expander-Definitions.html">Defining RTL Sequences for Code Generation</a>, Previous: <a href="Looping-Patterns.html">Defining Looping Instruction Patterns</a>, Up: <a href="Machine-Desc.html">Machine Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

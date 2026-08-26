@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Command History (Debugging with GDB)</title>
+
+<meta name="description" content="Command History (Debugging with GDB)">
+<meta name="keywords" content="Command History (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB">
+<link href="Screen-Size.html" rel="next" title="Screen Size">
+<link href="Editing.html" rel="prev" title="Editing">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Command-History">
+<div class="nav-panel">
+<p>
+Next: <a href="Screen-Size.html" accesskey="n" rel="next">Screen Size</a>, Previous: <a href="Editing.html" accesskey="p" rel="prev">Command Editing</a>, Up: <a href="Controlling-GDB.html" accesskey="u" rel="up">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Command-History-1"><span>22.3 Command History<a class="copiable-link" href="#Command-History-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-command-history"></a>
+
+<p><small class="sc">GDB</small> can keep track of the commands you type during your
+debugging sessions, so that you can be certain of precisely what
+happened.  Use these commands to manage the <small class="sc">GDB</small> command
+history facility.
+</p>
+<p><small class="sc">GDB</small> uses the <small class="sc">GNU</small> History library, a part of the Readline
+package, to provide the history facility.
+See <a class="xref" href="Using-History-Interactively.html">Using History Interactively</a>,
+for the detailed description of the History library.
+</p>
+<p>To issue a command to <small class="sc">GDB</small> without affecting certain aspects of
+the state which is seen by users, prefix it with &lsquo;<samp class="samp">server </samp>&rsquo;
+(see <a class="pxref" href="Server-Prefix.html">The Server Prefix</a>).  This
+means that this command will not affect the command history, nor will it
+affect <small class="sc">GDB</small>&rsquo;s notion of which command to repeat if <kbd class="key">RET</kbd> is
+pressed on a line by itself.
+</p>
+<a class="index-entry-id" id="index-server_002c-command-prefix"></a>
+<p>The server prefix does not affect the recording of values into the value
+history; to print a value without recording it into the value history,
+use the <code class="code">output</code> command instead of the <code class="code">print</code> command.
+</p>
+<p>Here is the description of <small class="sc">GDB</small> commands related to command
+history.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-history-file"></a>
+<a class="index-entry-id" id="index-set-history-filename"></a>
+<a class="index-entry-id" id="index-GDBHISTFILE_002c-environment-variable"></a>
+<a id="index-history-substitution"></a><span><code class="code">set history filename <span class="r">[</span><var class="var">fname</var><span class="r">]</span></code><a class="copiable-link" href="#index-history-substitution"> &para;</a></span></dt>
+<dd><p>Set the name of the <small class="sc">GDB</small> command history file to <var class="var">fname</var>.
+This is the file where <small class="sc">GDB</small> reads an initial command history
+list, and where it writes the command history from this session when it
+exits.  You can access this list through history expansion or through
+the history command editing characters listed below.  This file defaults
+to the value of the environment variable <code class="env">GDBHISTFILE</code>, or to
+<samp class="file">./.gdb_history</samp> (<samp class="file">./_gdb_history</samp> on MS-DOS) if this variable
+is not set.
+</p>
+<p>The <code class="env">GDBHISTFILE</code> environment variable is read after processing
+any <small class="sc">GDB</small> initialization files (see <a class="pxref" href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>) and after
+processing any commands passed using command line options (for
+example, <code class="code">-ex</code>).
+</p>
+<p>If the <var class="var">fname</var> argument is not given, or if the <code class="env">GDBHISTFILE</code>
+is the empty string then <small class="sc">GDB</small> will neither try to load an
+existing history file, nor will it try to save the history on exit.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-history-save"></a>
+<a id="index-save-command-history"></a><span><code class="code">set history save</code><a class="copiable-link" href="#index-save-command-history"> &para;</a></span></dt>
+<dt><code class="code">set history save on</code></dt>
+<dd><p>Record command history in a file, whose name may be specified with the
+<code class="code">set history filename</code> command.  By default, this option is
+disabled.  The command history will be recorded when <small class="sc">GDB</small>
+exits.  If <code class="code">set history filename</code> is set to the empty string then
+history saving is disabled, even when <code class="code">set history save</code> is
+<code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">set history save off</code></dt>
+<dd><p>Don&rsquo;t record the command history into the file specified by <code class="code">set
+history filename</code> when <small class="sc">GDB</small> exits.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-history-size"></a>
+<a class="index-entry-id" id="index-GDBHISTSIZE_002c-environment-variable"></a>
+<a id="index-history-size"></a><span><code class="code">set history size <var class="var">size</var></code><a class="copiable-link" href="#index-history-size"> &para;</a></span></dt>
+<dt><code class="code">set history size unlimited</code></dt>
+<dd><p>Set the number of commands which <small class="sc">GDB</small> keeps in its history list.
+This defaults to the value of the environment variable <code class="env">GDBHISTSIZE</code>, or
+to 256 if this variable is not set.  Non-numeric values of <code class="env">GDBHISTSIZE</code>
+are ignored.  If <var class="var">size</var> is <code class="code">unlimited</code> or if <code class="env">GDBHISTSIZE</code> is
+either a negative number or the empty string, then the number of commands
+<small class="sc">GDB</small> keeps in the history list is unlimited.
+</p>
+<p>The <code class="env">GDBHISTSIZE</code> environment variable is read after processing
+any <small class="sc">GDB</small> initialization files (see <a class="pxref" href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>) and after
+processing any commands passed using command line options (for
+example, <code class="code">-ex</code>).
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-history-remove_002dduplicates"></a>
+<a id="index-remove-duplicate-history"></a><span><code class="code">set history remove-duplicates <var class="var">count</var></code><a class="copiable-link" href="#index-remove-duplicate-history"> &para;</a></span></dt>
+<dt><code class="code">set history remove-duplicates unlimited</code></dt>
+<dd><p>Control the removal of duplicate history entries in the command history list.
+If <var class="var">count</var> is non-zero, <small class="sc">GDB</small> will look back at the last <var class="var">count</var>
+history entries and remove the first entry that is a duplicate of the current
+entry being added to the command history list.  If <var class="var">count</var> is
+<code class="code">unlimited</code> then this lookbehind is unbounded.  If <var class="var">count</var> is 0, then
+removal of duplicate history entries is disabled.
+</p>
+<p>Only history entries added during the current session are considered for
+removal.  This option is set to 0 by default.
+</p>
+</dd>
+</dl>
+
+<p>History expansion assigns special meaning to the character <kbd class="kbd">!</kbd>.
+See <a class="xref" href="Event-Designators.html">Event Designators</a>,
+for more details.
+</p>
+<a class="index-entry-id" id="index-history-expansion_002c-turn-on_002foff"></a>
+<p>Since <kbd class="kbd">!</kbd> is also the logical not operator in C, history expansion
+is off by default. If you decide to enable history expansion with the
+<code class="code">set history expansion on</code> command, you may sometimes need to
+follow <kbd class="kbd">!</kbd> (when it is used as logical not, in an expression) with
+a space or a tab to prevent it from being expanded.  The readline
+history facilities do not attempt substitution on the strings
+<kbd class="kbd">!=</kbd> and <kbd class="kbd">!(</kbd>, even when history expansion is enabled.
+</p>
+<p>The commands to control history expansion are:
+</p>
+<dl class="table">
+<dt><a id="index-set-history-expansion"></a><span><code class="code">set history expansion on</code><a class="copiable-link" href="#index-set-history-expansion"> &para;</a></span></dt>
+<dt><code class="code">set history expansion</code></dt>
+<dd><p>Enable history expansion.  History expansion is off by default.
+</p>
+</dd>
+<dt><code class="code">set history expansion off</code></dt>
+<dd><p>Disable history expansion.
+</p>
+</dd>
+<dt><a id="index-show-history"></a><span><code class="code">show history</code><a class="copiable-link" href="#index-show-history"> &para;</a></span></dt>
+<dt><code class="code">show history filename</code></dt>
+<dt><code class="code">show history save</code></dt>
+<dt><code class="code">show history size</code></dt>
+<dt><code class="code">show history expansion</code></dt>
+<dd><p>These commands display the state of the <small class="sc">GDB</small> history parameters.
+<code class="code">show history</code> by itself displays all four states.
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-last-commands"></a>
+<a class="index-entry-id" id="index-display-command-history"></a>
+<a id="index-show-commands"></a><span><code class="code">show commands</code><a class="copiable-link" href="#index-show-commands"> &para;</a></span></dt>
+<dd><p>Display the last ten commands in the command history.
+</p>
+</dd>
+<dt><code class="code">show commands <var class="var">n</var></code></dt>
+<dd><p>Print ten commands centered on command number <var class="var">n</var>.
+</p>
+</dd>
+<dt><code class="code">show commands +</code></dt>
+<dd><p>Print ten commands just after the commands last printed.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Screen-Size.html">Screen Size</a>, Previous: <a href="Editing.html">Command Editing</a>, Up: <a href="Controlling-GDB.html">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
