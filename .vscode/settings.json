@@ -2,5 +2,12 @@
     "cmake.configureSettings": {
         "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/cmake/gcc-arm-none-eabi.cmake"
     },
-    "cmake.generator": "Ninja"
+    "cmake.generator": "Ninja",
+    "cmake.cmakePath": "cube-cmake",
+    "cmake.configureArgs": [
+        "-DCMAKE_COMMAND=cube-cmake"
+    ],
+    "cmake.preferredGenerators": [
+        "Ninja"
+    ]
 }
