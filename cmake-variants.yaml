@@ -1,0 +1,24 @@
+buildType:
+  default: Debug
+  choices:
+    Debug:
+      buildType: Debug
+      description: Emit debug information
+    Release:
+      buildType: Release
+      description: Optimize for speed
+
+targetPlatform:
+  default: firmware
+  choices:
+    firmware:
+      short: Firmware
+      long: Build STM32 Firmware (ARM)
+      configureSettings:
+        CMAKE_TOOLCHAIN_FILE: ${workspaceFolder}/cmake/gcc-arm-none-eabi.cmake
+        BUILD_TESTS: OFF
+    tests:
+      short: Unit Tests
+      long: Build Host Unit Tests (x86)
+      configureSettings:
+        BUILD_TESTS: ON

@@ -35,11 +35,18 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 # Enable CMake support for ASM and C languages
 enable_language(CXX C ASM)
 
-# Create an executable object type
+# option(BUILD_TESTS "Build unit tests for host PC" OFF)
+
+# if(BUILD_TESTS)
+#     enable_testing()
+#     add_subdirectory(test)
+# else()
+    # Create an executable object type only for firmware builds
 add_executable(${CMAKE_PROJECT_NAME})
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
+add_subdirectory(flightsoftware)
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -48,16 +55,11 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
-    flightsoftware/flight_computer.cpp
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
     flightsoftware/
-    flightsoftware/sensors
-    flightsoftware/bus
 )
 
 # Add project symbols (macros)
@@ -71,6 +73,8 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
+    flight_core
 
     # Add user defined libraries
 )
+# endif()
