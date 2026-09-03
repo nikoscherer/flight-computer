@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>M68K Features (Debugging with GDB)</title>
+
+<meta name="description" content="M68K Features (Debugging with GDB)">
+<meta name="keywords" content="M68K Features (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features">
+<link href="NDS32-Features.html" rel="next" title="NDS32 Features">
+<link href="MIPS-Features.html" rel="prev" title="MIPS Features">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="M68K-Features">
+<div class="nav-panel">
+<p>
+Next: <a href="NDS32-Features.html" accesskey="n" rel="next">NDS32 Features</a>, Previous: <a href="MIPS-Features.html" accesskey="p" rel="prev"><abbr class="acronym">MIPS</abbr> Features</a>, Up: <a href="Standard-Target-Features.html" accesskey="u" rel="up">Standard Target Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="M68K-Features-1"><span>G.5.8 M68K Features<a class="copiable-link" href="#M68K-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-M68K-features"></a>
+
+<dl class="table">
+<dt><code class="code">&lsquo;<samp class="samp">org.gnu.gdb.m68k.core</samp>&rsquo;</code></dt>
+<dt><code class="code">&lsquo;<samp class="samp">org.gnu.gdb.coldfire.core</samp>&rsquo;</code></dt>
+<dt><code class="code">&lsquo;<samp class="samp">org.gnu.gdb.fido.core</samp>&rsquo;</code></dt>
+<dd><p>One of those features must be always present. 
+The feature that is present determines which flavor of m68k is
+used.  The feature that is present should contain registers
+&lsquo;<samp class="samp">d0</samp>&rsquo; through &lsquo;<samp class="samp">d7</samp>&rsquo;, &lsquo;<samp class="samp">a0</samp>&rsquo; through &lsquo;<samp class="samp">a5</samp>&rsquo;, &lsquo;<samp class="samp">fp</samp>&rsquo;,
+&lsquo;<samp class="samp">sp</samp>&rsquo;, &lsquo;<samp class="samp">ps</samp>&rsquo; and &lsquo;<samp class="samp">pc</samp>&rsquo;.
+</p>
+</dd>
+<dt><code class="code">&lsquo;<samp class="samp">org.gnu.gdb.coldfire.fp</samp>&rsquo;</code></dt>
+<dd><p>This feature is optional.  If present, it should contain registers
+&lsquo;<samp class="samp">fp0</samp>&rsquo; through &lsquo;<samp class="samp">fp7</samp>&rsquo;, &lsquo;<samp class="samp">fpcontrol</samp>&rsquo;, &lsquo;<samp class="samp">fpstatus</samp>&rsquo; and
+&lsquo;<samp class="samp">fpiaddr</samp>&rsquo;.
+</p>
+<p>Note that, despite the fact that this feature&rsquo;s name says
+&lsquo;<samp class="samp">coldfire</samp>&rsquo;, it is used to describe any floating point registers.
+The size of the registers must match the main m68k flavor; so, for
+example, if the primary feature is reported as &lsquo;<samp class="samp">coldfire</samp>&rsquo;, then
+64-bit floating point registers are required.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

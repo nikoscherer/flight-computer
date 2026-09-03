@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Loop manipulation (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Loop manipulation (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Loop manipulation (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Loop-Analysis-and-Representation.html" rel="up" title="Loop Analysis and Representation">
+<link href="LCSSA.html" rel="next" title="LCSSA">
+<link href="Loop-querying.html" rel="prev" title="Loop querying">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Loop-manipulation">
+<div class="nav-panel">
+<p>
+Next: <a href="LCSSA.html" accesskey="n" rel="next">Loop-closed SSA form</a>, Previous: <a href="Loop-querying.html" accesskey="p" rel="prev">Loop querying</a>, Up: <a href="Loop-Analysis-and-Representation.html" accesskey="u" rel="up">Analysis and Representation of Loops</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Loop-manipulation-1"><span>15.3 Loop manipulation<a class="copiable-link" href="#Loop-manipulation-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-Loop-manipulation"></a>
+
+<p>The loops tree can be manipulated using the following functions:
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">flow_loop_tree_node_add</code>: Adds a node to the tree.
+</li><li><code class="code">flow_loop_tree_node_remove</code>: Removes a node from the tree.
+</li><li><code class="code">add_bb_to_loop</code>: Adds a basic block to a loop.
+</li><li><code class="code">remove_bb_from_loops</code>: Removes a basic block from loops.
+</li></ul>
+
+<p>Most low-level CFG functions update loops automatically.  The following
+functions handle some more complicated cases of CFG manipulations:
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">remove_path</code>: Removes an edge and all blocks it dominates.
+</li><li><code class="code">split_loop_exit_edge</code>: Splits exit edge of the loop,
+ensuring that PHI node arguments remain in the loop (this ensures that
+loop-closed SSA form is preserved).  Only useful on GIMPLE.
+</li></ul>
+
+<p>Finally, there are some higher-level loop transformations implemented.
+While some of them are written so that they should work on non-innermost
+loops, they are mostly untested in that case, and at the moment, they
+are only reliable for the innermost loops:
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">create_iv</code>: Creates a new induction variable.  Only works on
+GIMPLE.  <code class="code">standard_iv_increment_position</code> can be used to find a
+suitable place for the iv increment.
+</li><li><code class="code">duplicate_loop_body_to_header_edge</code>,
+<code class="code">tree_duplicate_loop_body_to_header_edge</code>: These functions (on RTL and
+on GIMPLE) duplicate the body of the loop prescribed number of times on
+one of the edges entering loop header, thus performing either loop
+unrolling or loop peeling.  <code class="code">can_duplicate_loop_p</code>
+(<code class="code">can_unroll_loop_p</code> on GIMPLE) must be true for the duplicated
+loop.
+</li><li><code class="code">loop_version</code>: This function creates a copy of a loop, and
+a branch before them that selects one of them depending on the
+prescribed condition.  This is useful for optimizations that need to
+verify some assumptions in runtime (one of the copies of the loop is
+usually left unchanged, while the other one is transformed in some way).
+</li><li><code class="code">tree_unroll_loop</code>: Unrolls the loop, including peeling the
+extra iterations to make the number of iterations divisible by unroll
+factor, updating the exit condition, and removing the exits that now
+cannot be taken.  Works only on GIMPLE.
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="LCSSA.html">Loop-closed SSA form</a>, Previous: <a href="Loop-querying.html">Loop querying</a>, Up: <a href="Loop-Analysis-and-Representation.html">Analysis and Representation of Loops</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

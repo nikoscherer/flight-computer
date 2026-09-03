@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Overloading support for Ada (Debugging with GDB)</title>
+
+<meta name="description" content="Overloading support for Ada (Debugging with GDB)">
+<meta name="keywords" content="Overloading support for Ada (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Stopping-Before-Main-Program.html" rel="next" title="Stopping Before Main Program">
+<link href="Additions-to-Ada.html" rel="prev" title="Additions to Ada">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Overloading-support-for-Ada">
+<div class="nav-panel">
+<p>
+Next: <a href="Stopping-Before-Main-Program.html" accesskey="n" rel="next">Stopping at the Very Beginning</a>, Previous: <a href="Additions-to-Ada.html" accesskey="p" rel="prev">Additions to Ada</a>, Up: <a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Overloading-support-for-Ada-1"><span>15.4.10.4 Overloading support for Ada<a class="copiable-link" href="#Overloading-support-for-Ada-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-overloading_002c-Ada"></a>
+
+<p>The debugger supports limited overloading.  Given a subprogram call in which
+the function symbol has multiple definitions, it will use the number of
+actual parameters and some information about their types to attempt to narrow
+the set of definitions.  It also makes very limited use of context, preferring
+procedures to functions in the context of the <code class="code">call</code> command, and
+functions to procedures elsewhere.
+</p>
+<p>If, after narrowing, the set of matching definitions still contains more than
+one definition, <small class="sc">GDB</small> will display a menu to query which one it should
+use, for instance:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print f(1)
+Multiple matches for f
+[0] cancel
+[1] foo.f (integer) return boolean at foo.adb:23
+[2] foo.f (foo.new_integer) return boolean at foo.adb:28
+&gt; 
+</pre></div>
+
+<p>In this case, just select one menu entry either to cancel expression evaluation
+(type <kbd class="kbd">0</kbd> and press <kbd class="key">RET</kbd>) or to continue evaluation with a specific
+instance (type the corresponding number and press <kbd class="key">RET</kbd>).
+</p>
+<p>Here are a couple of commands to customize <small class="sc">GDB</small>&rsquo;s behavior in this
+case:
+</p>
+<dl class="table">
+<dt><a id="index-set-ada-print_002dsignatures"></a><span><code class="code">set ada print-signatures</code><a class="copiable-link" href="#index-set-ada-print_002dsignatures"> &para;</a></span></dt>
+<dd><p>Control whether parameter types and return types are displayed in overloads
+selection menus.  It is <code class="code">on</code> by default.
+See <a class="xref" href="#Overloading-support-for-Ada">Overloading support for Ada</a>.
+</p>
+</dd>
+<dt><a id="index-show-ada-print_002dsignatures"></a><span><code class="code">show ada print-signatures</code><a class="copiable-link" href="#index-show-ada-print_002dsignatures"> &para;</a></span></dt>
+<dd><p>Show the current setting for displaying parameter types and return types in
+overloads selection menu.
+See <a class="xref" href="#Overloading-support-for-Ada">Overloading support for Ada</a>.
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1994-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Limitations (GDB&rsquo;s Obsolete Annotations)</title>
+
+<meta name="description" content="Limitations (GDB&rsquo;s Obsolete Annotations)">
+<meta name="keywords" content="Limitations (GDB&rsquo;s Obsolete Annotations)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Migrating-to-GDB_002fMI.html" rel="next" title="Migrating to GDB/MI">
+<link href="Annotations-Overview.html" rel="prev" title="Annotations Overview">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Limitations">
+<div class="nav-panel">
+<p>
+Next: <a href="Migrating-to-GDB_002fMI.html" accesskey="n" rel="next">Migrating to <small class="sc">GDB/MI</small></a>, Previous: <a href="Annotations-Overview.html" accesskey="p" rel="prev">What is an Annotation?</a>, Up: <a href="index.html" accesskey="u" rel="up">GDB Annotations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Limitations-of-the-Annotation-Interface"><span>2 Limitations of the Annotation Interface<a class="copiable-link" href="#Limitations-of-the-Annotation-Interface"> &para;</a></span></h2>
+
+<p>The level two annotations mechanism is known to have a number of
+technical and architectural limitations.  As a consequence, in 2001,
+with the release of <small class="sc">GDB</small> 5.1 and the addition of <small class="sc">GDB/MI</small>,
+the annotation interface was marked as deprecated.
+</p>
+<p>This chapter discusses the known problems.
+</p>
+<ul class="mini-toc">
+<li><a href="#Dependant-on-cli-output" accesskey="1">Dependant on <small class="sc">CLI</small> output</a></li>
+<li><a href="#Scalability" accesskey="2">Scalability</a></li>
+<li><a href="#Correctness" accesskey="3">Correctness</a></li>
+<li><a href="#Reliability" accesskey="4">Reliability</a></li>
+<li><a href="#Maintainability" accesskey="5">Maintainability</a></li>
+</ul>
+<div class="section-level-extent" id="Dependant-on-cli-output">
+<h3 class="section"><span>2.1 Dependant on <small class="sc">CLI</small> output<a class="copiable-link" href="#Dependant-on-cli-output"> &para;</a></span></h3>
+
+<p>The annotation interface works by interspersing markups with
+<small class="sc">GDB</small> normal command-line interpreter output.  Unfortunately, this
+makes the annotation client dependant on not just the annotations, but
+also the <small class="sc">CLI</small> output.  This is because the client is forced to
+assume that specific <small class="sc">GDB</small> commands provide specific information.
+Any change to <small class="sc">GDB</small>&rsquo;s <small class="sc">CLI</small> output modifies or removes that
+information and, consequently, likely breaks the client.
+</p>
+<p>Since the <small class="sc">GDB/MI</small> output is independent of the <small class="sc">CLI</small>, it does not
+have this problem.
+</p>
+</div>
+<div class="section-level-extent" id="Scalability">
+<h3 class="section"><span>2.2 Scalability<a class="copiable-link" href="#Scalability"> &para;</a></span></h3>
+
+<p>The annotation interface relies on value annotations (see <a class="pxref" href="Value-Annotations.html">Values</a>) and the display mechanism as a way of obtaining up-to-date
+value information.  These mechanisms are not scalable.
+</p>
+<p>In a graphical environment, where many values can be displayed
+simultaneously, a serious performance problem occurs when the client
+tries to first extract from <small class="sc">GDB</small>, and then re-display, all those
+values.  The client should instead only request and update the values
+that changed.
+</p>
+<p>The <small class="sc">GDB/MI</small> Variable Objects provide just that mechanism.
+</p>
+</div>
+<div class="section-level-extent" id="Correctness">
+<h3 class="section"><span>2.3 Correctness<a class="copiable-link" href="#Correctness"> &para;</a></span></h3>
+
+<p>The annotation interface assumes that a variable&rsquo;s value can only be
+changed when the target is running.  This assumption is not correct.  A
+single assignment to a single variable can result in the entire target,
+and all displayed values, needing an update.
+</p>
+<p>The <small class="sc">GDB/MI</small> Variable Objects include a mechanism for efficiently
+reporting such changes.
+</p>
+</div>
+<div class="section-level-extent" id="Reliability">
+<h3 class="section"><span>2.4 Reliability<a class="copiable-link" href="#Reliability"> &para;</a></span></h3>
+
+<p>The <small class="sc">GDB/MI</small> interface includes a dedicated test directory
+(<samp class="file">gdb/gdb.mi</samp>), and any addition or fix to <small class="sc">GDB/MI</small> must include
+testsuite changes.
+</p>
+</div>
+<div class="section-level-extent" id="Maintainability">
+<h3 class="section"><span>2.5 Maintainability<a class="copiable-link" href="#Maintainability"> &para;</a></span></h3>
+
+<p>The annotation mechanism was implemented by interspersing <small class="sc">CLI</small> print
+statements with various annotations.  As a consequence, any <small class="sc">CLI</small>
+output change can alter the annotation output.
+</p>
+<p>Since the <small class="sc">GDB/MI</small> output is independent of the <small class="sc">CLI</small>, and the
+<small class="sc">GDB/MI</small> is increasingly implemented independent of the <small class="sc">CLI</small>
+code, its long term maintenance is much easier.
+</p>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Migrating-to-GDB_002fMI.html">Migrating to <small class="sc">GDB/MI</small></a>, Previous: <a href="Annotations-Overview.html">What is an Annotation?</a>, Up: <a href="index.html">GDB Annotations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+
+
+
+</body>
+</html>

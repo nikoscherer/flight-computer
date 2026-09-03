@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>RTL SSA Instructions (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="RTL SSA Instructions (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="RTL SSA Instructions (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="RTL-SSA.html" rel="up" title="RTL SSA">
+<link href="RTL-SSA-Basic-Blocks.html" rel="next" title="RTL SSA Basic Blocks">
+<link href="Using-RTL-SSA.html" rel="prev" title="Using RTL SSA">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="RTL-SSA-Instructions">
+<div class="nav-panel">
+<p>
+Next: <a href="RTL-SSA-Basic-Blocks.html" accesskey="n" rel="next">RTL SSA Basic Blocks</a>, Previous: <a href="Using-RTL-SSA.html" accesskey="p" rel="prev">Using RTL SSA in a pass</a>, Up: <a href="RTL-SSA.html" accesskey="u" rel="up">On-the-Side SSA Form for RTL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="RTL-SSA-Instructions-1"><span>13.21.2 RTL SSA Instructions<a class="copiable-link" href="#RTL-SSA-Instructions-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-RPO"></a>
+<a class="index-entry-id" id="index-reverse-postorder"></a>
+<a class="index-entry-id" id="index-instructions_002c-RTL-SSA"></a>
+<a class="index-entry-id" id="index-rtl_005fssa_003a_003ainsn_005finfo"></a>
+<p>RTL SSA instructions are represented by an <code class="code">rtl_ssa::insn_info</code>.
+These instructions are chained together in a single list that follows
+a reverse postorder (RPO) traversal of the function.  This means that
+if any path through the function can execute an instruction <var class="var">I1</var>
+and then later execute an instruction <var class="var">I2</var> for the first time,
+<var class="var">I1</var> appears before <var class="var">I2</var> in the list<a class="footnote" id="DOCF4" href="#FOOT4"><sup>4</sup></a>.
+</p>
+<p>Two RTL SSA instructions can be compared to find which instruction
+occurs earlier than the other in the RPO.  One way to do this is
+to use the C++ comparison operators, such as:
+</p>
+<div class="example">
+<pre class="example-preformatted">*<var class="var">insn1</var> &lt; *<var class="var">insn2</var>
+</pre></div>
+
+<p>Another way is to use the <code class="code">compare_with</code> function:
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">insn1</var>-&gt;compare_with (<var class="var">insn2</var>)
+</pre></div>
+
+<p>This expression is greater than zero if <var class="var">insn1</var> comes after <var class="var">insn2</var>
+in the RPO, less than zero if <var class="var">insn1</var> comes before <var class="var">insn2</var> in the
+RPO, or zero if <var class="var">insn1</var> and <var class="var">insn2</var> are the same.  This order is
+maintained even if instructions are added to the function or moved around.
+</p>
+<p>The main purpose of <code class="code">rtl_ssa::insn_info</code> is to hold
+SSA information about an instruction.  However, it also caches
+certain properties of the instruction, such as whether it is an
+inline assembly instruction, whether it has volatile accesses, and so on.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT4" href="#DOCF4">(4)</a></h5>
+<p>Note that this
+order is different from the order of the underlying RTL instructions,
+which follow machine code order instead.</p>
+</div>
+
+
+
+</body>
+</html>

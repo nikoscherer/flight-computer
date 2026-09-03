@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1987-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation.  A copy of
+the license is included in the
+section entitled "GNU Free Documentation License".
+
+This manual contains no Invariant Sections.  The Front-Cover Texts are
+(a) (see below), and the Back-Cover Texts are (b) (see below).
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Binary Resource Inclusion (The C Preprocessor)</title>
+
+<meta name="description" content="Binary Resource Inclusion (The C Preprocessor)">
+<meta name="keywords" content="Binary Resource Inclusion (The C Preprocessor)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Index-of-Directives.html" rel="index" title="Index of Directives">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Other-Directives.html" rel="next" title="Other Directives">
+<link href="Pragmas.html" rel="prev" title="Pragmas">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Binary-Resource-Inclusion">
+<div class="nav-panel">
+<p>
+Next: <a href="Other-Directives.html" accesskey="n" rel="next">Other Directives</a>, Previous: <a href="Pragmas.html" accesskey="p" rel="prev">Pragmas</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Directives.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Binary-Resource-Inclusion-1"><span>8 Binary Resource Inclusion<a class="copiable-link" href="#Binary-Resource-Inclusion-1"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-embed-directive"></a>
+
+<p>The &lsquo;<samp class="samp">#embed</samp>&rsquo; directive as specified in the C23 standard allows
+efficient inclusion of binary data, usually in initializers of arrays.
+GCC supports this directive in C23 mode and as an extension in older C
+versions and in C++.
+</p>
+<p>Similarly to the &lsquo;<samp class="samp">#include</samp>&rsquo; directive (see <a class="pxref" href="Include-Syntax.html">Include Syntax</a>)
+the first argument of the directive is a filename in the same forms
+as &lsquo;<samp class="samp">#include</samp>&rsquo;.
+</p>
+<dl class="table">
+<dt><code class="code">#embed &lt;<var class="var">file</var>&gt;</code></dt>
+<dd><p>If <var class="var">file</var> is an absolute filename, this includes the mentioned
+file, otherwise searches it in directories specified by the
+<samp class="option">--embed-dir=</samp> command line option for the <var class="var">file</var>.
+</p>
+</dd>
+<dt><code class="code">#embed &quot;<var class="var">file</var>&quot;</code></dt>
+<dd><p>This variant searches <var class="var">file</var> in the same directory as the source
+file which uses the <code class="code">#embed</code> directive and only if not found there
+continues searching directories specified by the <samp class="option">--embed-dir=</samp>
+command line option.
+</p></dd>
+</dl>
+
+<p>The <code class="code">#embed</code> directive is expanded as if it was a sequence of
+integer literals from 0 to <code class="code">UCHAR_MAX</code> separated by commas, e.g.
+<code class="code">#embed __FILE__ limit(4)</code>
+could act as if it expanded to
+<code class="code">35,101,109,98</code>.  No character set conversion is performed.
+</p>
+<p>Optional embed parameters can be specified after the required filename
+argument.  There are either standard attributes, specified by an
+identifier or identifier prefixed and suffixed by 2 underscores (both
+treated the same), followed by parameter argument in parentheses, like
+<code class="code">#embed &quot;foo.dat&quot; limit(1) __prefix__(32, ) suffix(, 0)</code>
+with currently supported standard parameters <code class="code">limit</code>, <code class="code">prefix</code>,
+<code class="code">suffix</code> and <code class="code">if_empty</code>, or implementation defined parameters
+specified by a unique vendor prefix followed by <code class="code">::</code> followed by
+name of the parameter.  GCC uses the <code class="code">gnu</code> prefix for vendor
+parameters and currently supports the <code class="code">gnu::offset</code> and
+<code class="code">gnu::base64</code> parameters.
+</p>
+<p>The <code class="code">limit</code> parameter argument is a constant expression which
+specifies the maximum number of bytes included by the directive,
+<code class="code">prefix</code> and <code class="code">suffix</code> arguments are balanced token sequences
+which are prepended and appended to the integer literal sequence if
+that sequence is not empty and <code class="code">if_empty</code> argument is balanced token
+sequence which is used as expansion for <code class="code">#embed</code> directive if the
+resource is empty.
+</p>
+<p>The <code class="code">gnu::offset</code> parameter argument is a constant expression
+which specifies how many bytes to skip from the start of the resource.
+<code class="code">limit</code> is then counted from that position.
+</p>
+<p>The <code class="code">gnu::base64</code> parameter argument is a possibly concatenated
+character string literal with base64 encoded data.  See
+<a class="uref" href="https://datatracker.ietf.org/doc/html/rfc4648#section-4">https://datatracker.ietf.org/doc/html/rfc4648#section-4</a>.  There
+should be no newlines in the string literal and because this parameter
+is meant namely for use by the preprocessor itself, there is no support
+for any escape sequences in the string literal argument.  If <code class="code">gnu::base64</code>
+parameter is specified, the <code class="code">limit</code> and <code class="code">gnu::offset</code> parameters
+should not be specified and the filename should be always <code class="code">&quot;.&quot;</code>.
+Instead of reading a file the directive will decode the base64 encoded
+data and use that as the data to include.
+</p>
+<p>The <code class="code">#embed</code> directive is not supported in the Traditional Mode
+(see <a class="pxref" href="Traditional-Mode.html">Traditional Mode</a>).
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Other-Directives.html">Other Directives</a>, Previous: <a href="Pragmas.html">Pragmas</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index-of-Directives.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

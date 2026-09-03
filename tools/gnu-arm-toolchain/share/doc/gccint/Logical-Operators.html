@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Logical Operators (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Logical Operators (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Logical Operators (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Operands.html" rel="up" title="Operands">
+<link href="Conditional-Expressions.html" rel="prev" title="Conditional Expressions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Logical-Operators">
+<div class="nav-panel">
+<p>
+Previous: <a href="Conditional-Expressions.html" accesskey="p" rel="prev">Conditional Expressions</a>, Up: <a href="Operands.html" accesskey="u" rel="up">Operands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Logical-Operators-1"><span>11.6.4 Logical Operators<a class="copiable-link" href="#Logical-Operators-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Logical-Operators"></a>
+
+<p>Except when they appear in the condition operand of a
+<code class="code">GIMPLE_COND</code>, logical &lsquo;and&rsquo; and &lsquo;or&rsquo; operators are simplified
+as follows: <code class="code">a = b &amp;&amp; c</code> becomes
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">T1 = (bool)b;
+if (T1 == true)
+  T1 = (bool)c;
+a = T1;
+</pre></div>
+
+<p>Note that <code class="code">T1</code> in this example cannot be an expression temporary,
+because it has two different assignments.
+</p>
+</div>
+<div class="subsection-level-extent" id="Manipulating-operands">
+<h4 class="subsection"><span>11.6.5 Manipulating operands<a class="copiable-link" href="#Manipulating-operands"> &para;</a></span></h4>
+
+<p>All gimple operands are of type <code class="code">tree</code>.  But only certain
+types of trees are allowed to be used as operand tuples.  Basic
+validation is controlled by the function
+<code class="code">get_gimple_rhs_class</code>, which given a tree code, returns an
+<code class="code">enum</code> with the following values of type <code class="code">enum
+gimple_rhs_class</code>
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">GIMPLE_INVALID_RHS</code>
+The tree cannot be used as a GIMPLE operand.
+
+</li><li><code class="code">GIMPLE_TERNARY_RHS</code>
+The tree is a valid GIMPLE ternary operation.
+
+</li><li><code class="code">GIMPLE_BINARY_RHS</code>
+The tree is a valid GIMPLE binary operation.
+
+</li><li><code class="code">GIMPLE_UNARY_RHS</code>
+The tree is a valid GIMPLE unary operation.
+
+</li><li><code class="code">GIMPLE_SINGLE_RHS</code>
+The tree is a single object, that cannot be split into simpler
+operands (for instance, <code class="code">SSA_NAME</code>, <code class="code">VAR_DECL</code>, <code class="code">COMPONENT_REF</code>, etc).
+
+<p>This operand class also acts as an escape hatch for tree nodes
+that may be flattened out into the operand vector, but would need
+more than two slots on the RHS.  For instance, a <code class="code">COND_EXPR</code>
+expression of the form <code class="code">(a op b) ? x : y</code> could be flattened
+out on the operand vector using 4 slots, but it would also
+require additional processing to distinguish <code class="code">c = a op b</code>
+from <code class="code">c = a op b ? x : y</code>.  In time, these special case tree
+expressions should be flattened into the operand vector.
+</p></li></ul>
+
+<p>For tree nodes in the categories <code class="code">GIMPLE_TERNARY_RHS</code>,
+<code class="code">GIMPLE_BINARY_RHS</code> and <code class="code">GIMPLE_UNARY_RHS</code>, they cannot be
+stored inside tuples directly.  They first need to be flattened and
+separated into individual components.  For instance, given the GENERIC
+expression
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">a = b + c
+</pre></div>
+
+<p>its tree representation is:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">MODIFY_EXPR &lt;VAR_DECL  &lt;a&gt;, PLUS_EXPR &lt;VAR_DECL &lt;b&gt;, VAR_DECL &lt;c&gt;&gt;&gt;
+</pre></div>
+
+<p>In this case, the GIMPLE form for this statement is logically
+identical to its GENERIC form but in GIMPLE, the <code class="code">PLUS_EXPR</code>
+on the RHS of the assignment is not represented as a tree,
+instead the two operands are taken out of the <code class="code">PLUS_EXPR</code> sub-tree
+and flattened into the GIMPLE tuple as follows:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">GIMPLE_ASSIGN &lt;PLUS_EXPR, VAR_DECL &lt;a&gt;, VAR_DECL &lt;b&gt;, VAR_DECL &lt;c&gt;&gt;
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="Operand-vector-allocation">
+<h4 class="subsection"><span>11.6.6 Operand vector allocation<a class="copiable-link" href="#Operand-vector-allocation"> &para;</a></span></h4>
+
+<p>The operand vector is stored at the bottom of the three tuple
+structures that accept operands. This means, that depending on
+the code of a given statement, its operand vector will be at
+different offsets from the base of the structure.  To access
+tuple operands use the following accessors
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fnum_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">unsigned</code> <strong class="def-name">gimple_num_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fnum_005fops"> &para;</a></span></dt>
+<dd><p>Returns the number of operands in statement G.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fop"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree</code> <strong class="def-name">gimple_op</strong> <code class="def-code-arguments">(gimple g, unsigned i)</code><a class="copiable-link" href="#index-gimple_005fop"> &para;</a></span></dt>
+<dd><p>Returns operand <code class="code">I</code> from statement <code class="code">G</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fops"><span class="category-def">GIMPLE function: </span><span><code class="def-type">tree *</code> <strong class="def-name">gimple_ops</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fops"> &para;</a></span></dt>
+<dd><p>Returns a pointer into the operand vector for statement <code class="code">G</code>.  This
+is computed using an internal table called <code class="code">gimple_ops_offset_</code>[].
+This table is indexed by the gimple code of <code class="code">G</code>.
+</p>
+<p>When the compiler is built, this table is filled-in using the
+sizes of the structures used by each statement code defined in
+gimple.def.  Since the operand vector is at the bottom of the
+structure, for a gimple code <code class="code">C</code> the offset is computed as sizeof
+(struct-of <code class="code">C</code>) - sizeof (tree).
+</p>
+<p>This mechanism adds one memory indirection to every access when
+using <code class="code">gimple_op</code>(), if this becomes a bottleneck, a pass can
+choose to memoize the result from <code class="code">gimple_ops</code>() and use that to
+access the operands.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Operand-validation">
+<h4 class="subsection"><span>11.6.7 Operand validation<a class="copiable-link" href="#Operand-validation"> &para;</a></span></h4>
+
+<p>When adding a new operand to a gimple statement, the operand will
+be validated according to what each tuple accepts in its operand
+vector.  These predicates are called by the
+<code class="code">gimple_<var class="var">name</var>_set_...()</code>.  Each tuple will use one of the
+following predicates (Note, this list is not exhaustive):
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fval"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_val</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fval"> &para;</a></span></dt>
+<dd><p>Returns true if t is a &quot;GIMPLE value&quot;, which are all the
+non-addressable stack variables (variables for which
+<code class="code">is_gimple_reg</code> returns true) and constants (expressions for which
+<code class="code">is_gimple_min_invariant</code> returns true).
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005faddressable"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_addressable</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005faddressable"> &para;</a></span></dt>
+<dd><p>Returns true if t is a symbol or memory reference whose address
+can be taken.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fasm_005fval"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_asm_val</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fasm_005fval"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">is_gimple_val</code> but it also accepts hard registers.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fcall_005faddr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_call_addr</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fcall_005faddr"> &para;</a></span></dt>
+<dd><p>Return true if t is a valid expression to use as the function
+called by a <code class="code">GIMPLE_CALL</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fmem_005fref_005faddr"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_mem_ref_addr</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fmem_005fref_005faddr"> &para;</a></span></dt>
+<dd><p>Return true if t is a valid expression to use as first operand
+of a <code class="code">MEM_REF</code> expression.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fconstant"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_constant</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fconstant"> &para;</a></span></dt>
+<dd><p>Return true if t is a valid gimple constant.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fmin_005finvariant"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_min_invariant</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fmin_005finvariant"> &para;</a></span></dt>
+<dd><p>Return true if t is a valid minimal invariant.  This is different
+from constants, in that the specific value of t may not be known
+at compile time, but it is known that it doesn&rsquo;t change (e.g.,
+the address of a function local variable).
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fip_005finvariant"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_ip_invariant</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fip_005finvariant"> &para;</a></span></dt>
+<dd><p>Return true if t is an interprocedural invariant.  This means that t
+is a valid invariant in all functions (e.g. it can be an address of a
+global variable but not of a local one).
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fip_005finvariant_005faddress"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_ip_invariant_address</strong> <code class="def-code-arguments">(tree t)</code><a class="copiable-link" href="#index-is_005fgimple_005fip_005finvariant_005faddress"> &para;</a></span></dt>
+<dd><p>Return true if t is an <code class="code">ADDR_EXPR</code> that does not change once the
+program is running (and which is valid in all functions).
+</p></dd></dl>
+
+
+</div>
+<div class="subsection-level-extent" id="Statement-validation">
+<h4 class="subsection"><span>11.6.8 Statement validation<a class="copiable-link" href="#Statement-validation"> &para;</a></span></h4>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fassign"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_assign</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-is_005fgimple_005fassign"> &para;</a></span></dt>
+<dd><p>Return true if the code of g is <code class="code">GIMPLE_ASSIGN</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fcall"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_call</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-is_005fgimple_005fcall"> &para;</a></span></dt>
+<dd><p>Return true if the code of g is <code class="code">GIMPLE_CALL</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fdebug"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_debug</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-is_005fgimple_005fdebug"> &para;</a></span></dt>
+<dd><p>Return true if the code of g is <code class="code">GIMPLE_DEBUG</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fassign_005fcast_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_assign_cast_p</strong> <code class="def-code-arguments">(const_gimple g)</code><a class="copiable-link" href="#index-gimple_005fassign_005fcast_005fp"> &para;</a></span></dt>
+<dd><p>Return true if g is a <code class="code">GIMPLE_ASSIGN</code> that performs a type cast
+operation.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fdebug_005fbind_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_debug_bind_p</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fdebug_005fbind_005fp"> &para;</a></span></dt>
+<dd><p>Return true if g is a <code class="code">GIMPLE_DEBUG</code> that binds the value of an
+expression to a variable.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-is_005fgimple_005fomp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">is_gimple_omp</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-is_005fgimple_005fomp"> &para;</a></span></dt>
+<dd><p>Return true if g is any of the OpenMP codes.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fdebug_005fbegin_005fstmt_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_debug_begin_stmt_p</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fdebug_005fbegin_005fstmt_005fp"> &para;</a></span></dt>
+<dd><p>Return true if g is a <code class="code">GIMPLE_DEBUG</code> that marks the beginning of
+a source statement.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fdebug_005finline_005fentry_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_debug_inline_entry_p</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fdebug_005finline_005fentry_005fp"> &para;</a></span></dt>
+<dd><p>Return true if g is a <code class="code">GIMPLE_DEBUG</code> that marks the entry
+point of an inlined function.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-gimple_005fdebug_005fnonbind_005fmarker_005fp"><span class="category-def">GIMPLE function: </span><span><code class="def-type">bool</code> <strong class="def-name">gimple_debug_nonbind_marker_p</strong> <code class="def-code-arguments">(gimple g)</code><a class="copiable-link" href="#index-gimple_005fdebug_005fnonbind_005fmarker_005fp"> &para;</a></span></dt>
+<dd><p>Return true if g is a <code class="code">GIMPLE_DEBUG</code> that marks a program location,
+without any variable binding.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Conditional-Expressions.html">Conditional Expressions</a>, Up: <a href="Operands.html">Operands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

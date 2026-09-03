@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Global Variables (STABS)</title>
+
+<meta name="description" content="Global Variables (STABS)">
+<meta name="keywords" content="Global Variables (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Variables.html" rel="up" title="Variables">
+<link href="Register-Variables.html" rel="next" title="Register Variables">
+<link href="Stack-Variables.html" rel="prev" title="Stack Variables">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Global-Variables">
+<div class="nav-panel">
+<p>
+Next: <a href="Register-Variables.html" accesskey="n" rel="next">Register Variables</a>, Previous: <a href="Stack-Variables.html" accesskey="p" rel="prev">Automatic Variables Allocated on the Stack</a>, Up: <a href="Variables.html" accesskey="u" rel="up">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Global-Variables-1"><span>4.2 Global Variables<a class="copiable-link" href="#Global-Variables-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-N_005fGSYM"></a>
+<a class="index-entry-id" id="index-C_005fGSYM"></a>
+<p>A variable whose scope is not specific to just one source file is
+represented by the &lsquo;<samp class="samp">G</samp>&rsquo; symbol descriptor.  These stabs use the
+<code class="code">N_GSYM</code> stab type (C_GSYM for XCOFF).  The type information for
+the stab (see <a class="pxref" href="String-Field.html">The String Field</a>) gives the type of the variable.
+</p>
+<p>For example, the following source code:
+</p>
+<div class="example">
+<pre class="example-preformatted">char g_foo = 'c';
+</pre></div>
+
+<p>yields the following assembly code:
+</p>
+<div class="example">
+<pre class="example-preformatted">.stabs &quot;g_foo:G2&quot;,32,0,0,0     # <span class="r">32 is N_GSYM</span>
+     .global _g_foo
+     .data
+_g_foo:
+     .byte 99
+</pre></div>
+
+<p>The address of the variable represented by the <code class="code">N_GSYM</code> is not
+contained in the <code class="code">N_GSYM</code> stab.  The debugger gets this information
+from the external symbol for the global variable.  In the example above,
+the <code class="code">.global _g_foo</code> and <code class="code">_g_foo:</code> lines tell the assembler to
+produce an external symbol.
+</p>
+<p>Some compilers, like GCC, output <code class="code">N_GSYM</code> stabs only once, where
+the variable is defined.  Other compilers, like SunOS4 /bin/cc, output a
+<code class="code">N_GSYM</code> stab for each compilation unit which references the
+variable.
+</p>
+</div>
+
+
+
+</body>
+</html>

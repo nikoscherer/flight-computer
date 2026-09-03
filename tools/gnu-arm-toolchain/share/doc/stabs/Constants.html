@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Constants (STABS)</title>
+
+<meta name="description" content="Constants (STABS)">
+<meta name="keywords" content="Constants (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Variables.html" rel="next" title="Variables">
+<link href="Program-Structure.html" rel="prev" title="Program Structure">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Constants">
+<div class="nav-panel">
+<p>
+Next: <a href="Variables.html" accesskey="n" rel="next">Variables</a>, Previous: <a href="Program-Structure.html" accesskey="p" rel="prev">Encoding the Structure of the Program</a>, Up: <a href="index.html" accesskey="u" rel="up">The &quot;stabs&quot; representation of debugging information</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Constants-1"><span>3 Constants<a class="copiable-link" href="#Constants-1"> &para;</a></span></h2>
+
+<p>The &lsquo;<samp class="samp">c</samp>&rsquo; symbol descriptor indicates that this stab represents a
+constant.  This symbol descriptor is an exception to the general rule
+that symbol descriptors are followed by type information.  Instead, it
+is followed by &lsquo;<samp class="samp">=</samp>&rsquo; and one of the following:
+</p>
+<dl class="table">
+<dt><code class="code">b <var class="var">value</var></code></dt>
+<dd><p>Boolean constant.  <var class="var">value</var> is a numeric value; I assume it is 0 for
+false or 1 for true.
+</p>
+</dd>
+<dt><code class="code">c <var class="var">value</var></code></dt>
+<dd><p>Character constant.  <var class="var">value</var> is the numeric value of the constant.
+</p>
+</dd>
+<dt><code class="code">e <var class="var">type-information</var> , <var class="var">value</var></code></dt>
+<dd><p>Constant whose value can be represented as integral.
+<var class="var">type-information</var> is the type of the constant, as it would appear
+after a symbol descriptor (see <a class="pxref" href="String-Field.html">The String Field</a>).  <var class="var">value</var> is the
+numeric value of the constant.  GDB 4.9 does not actually get the right
+value if <var class="var">value</var> does not fit in a host <code class="code">int</code>, but it does not
+do anything violent, and future debuggers could be extended to accept
+integers of any size (whether unsigned or not).  This constant type is
+usually documented as being only for enumeration constants, but GDB has
+never imposed that restriction; I don&rsquo;t know about other debuggers.
+</p>
+</dd>
+<dt><code class="code">i <var class="var">value</var></code></dt>
+<dd><p>Integer constant.  <var class="var">value</var> is the numeric value.  The type is some
+sort of generic integer type (for GDB, a host <code class="code">int</code>); to specify
+the type explicitly, use &lsquo;<samp class="samp">e</samp>&rsquo; instead.
+</p>
+</dd>
+<dt><code class="code">r <var class="var">value</var></code></dt>
+<dd><p>Real constant.  <var class="var">value</var> is the real value, which can be &lsquo;<samp class="samp">INF</samp>&rsquo;
+(optionally preceded by a sign) for infinity, &lsquo;<samp class="samp">QNAN</samp>&rsquo; for a quiet
+NaN (not-a-number), or &lsquo;<samp class="samp">SNAN</samp>&rsquo; for a signalling NaN.  If it is a
+normal number the format is that accepted by the C library function
+<code class="code">atof</code>.
+</p>
+</dd>
+<dt><code class="code">s <var class="var">string</var></code></dt>
+<dd><p>String constant.  <var class="var">string</var> is a string enclosed in either &lsquo;<samp class="samp">'</samp>&rsquo;
+(in which case &lsquo;<samp class="samp">'</samp>&rsquo; characters within the string are represented as
+&lsquo;<samp class="samp">\'</samp>&rsquo; or &lsquo;<samp class="samp">&quot;</samp>&rsquo; (in which case &lsquo;<samp class="samp">&quot;</samp>&rsquo; characters within the
+string are represented as &lsquo;<samp class="samp">\&quot;</samp>&rsquo;).
+</p>
+</dd>
+<dt><code class="code">S <var class="var">type-information</var> , <var class="var">elements</var> , <var class="var">bits</var> , <var class="var">pattern</var></code></dt>
+<dd><p>Set constant.  <var class="var">type-information</var> is the type of the constant, as it
+would appear after a symbol descriptor (see <a class="pxref" href="String-Field.html">The String Field</a>).
+<var class="var">elements</var> is the number of elements in the set (does this means
+how many bits of <var class="var">pattern</var> are actually used, which would be
+redundant with the type, or perhaps the number of bits set in
+<var class="var">pattern</var>?  I don&rsquo;t get it), <var class="var">bits</var> is the number of bits in the
+constant (meaning it specifies the length of <var class="var">pattern</var>, I think),
+and <var class="var">pattern</var> is a hexadecimal representation of the set.  AIX
+documentation refers to a limit of 32 bytes, but I see no reason why
+this limit should exist.  This form could probably be used for arbitrary
+constants, not just sets; the only catch is that <var class="var">pattern</var> should be
+understood to be target, not host, byte order and format.
+</p></dd>
+</dl>
+
+<p>The boolean, character, string, and set constants are not supported by
+GDB 4.9, but it ignores them.  GDB 4.8 and earlier gave an error
+message and refused to read symbols from the file containing the
+constants.
+</p>
+<p>The above information is followed by &lsquo;<samp class="samp">;</samp>&rsquo;.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Variables.html">Variables</a>, Previous: <a href="Program-Structure.html">Encoding the Structure of the Program</a>, Up: <a href="index.html">The &quot;stabs&quot; representation of debugging information</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

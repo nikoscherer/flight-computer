@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Cygwin Native (Debugging with GDB)</title>
+
+<meta name="description" content="Cygwin Native (Debugging with GDB)">
+<meta name="keywords" content="Cygwin Native (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Native.html" rel="up" title="Native">
+<link href="Hurd-Native.html" rel="next" title="Hurd Native">
+<link href="DJGPP-Native.html" rel="prev" title="DJGPP Native">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Cygwin-Native">
+<div class="nav-panel">
+<p>
+Next: <a href="Hurd-Native.html" accesskey="n" rel="next">Commands Specific to <small class="sc">GNU</small> Hurd Systems</a>, Previous: <a href="DJGPP-Native.html" accesskey="p" rel="prev">Features for Debugging <small class="sc">DJGPP</small> Programs</a>, Up: <a href="Native.html" accesskey="u" rel="up">Native</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Features-for-Debugging-MS-Windows-PE-Executables"><span>21.1.4 Features for Debugging MS Windows PE Executables<a class="copiable-link" href="#Features-for-Debugging-MS-Windows-PE-Executables"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-MS-Windows-debugging"></a>
+<a class="index-entry-id" id="index-native-Cygwin-debugging"></a>
+<a class="index-entry-id" id="index-Cygwin_002dspecific-commands"></a>
+
+<p><small class="sc">GDB</small> supports native debugging of MS Windows programs, including
+DLLs with and without symbolic debugging information.
+</p>
+<a class="index-entry-id" id="index-Ctrl_002dBREAK_002c-MS_002dWindows"></a>
+<a class="index-entry-id" id="index-interrupt-debuggee-on-MS_002dWindows"></a>
+<p>MS-Windows programs that call <code class="code">SetConsoleMode</code> to switch off the
+special meaning of the &lsquo;<samp class="samp">Ctrl-C</samp>&rsquo; keystroke cannot be interrupted
+by typing <kbd class="kbd">C-c</kbd>.  For this reason, <small class="sc">GDB</small> on MS-Windows
+supports <kbd class="kbd">C-<kbd class="key">BREAK</kbd></kbd> as an alternative interrupt key
+sequence, which can be used to interrupt the debuggee even if it
+ignores <kbd class="kbd">C-c</kbd>.
+</p>
+<p>There are various additional Cygwin-specific commands, described in
+this section.  Working with DLLs that have no debugging symbols is
+described in <a class="ref" href="Non_002ddebug-DLL-Symbols.html">Support for DLLs without Debugging Symbols</a>.
+</p>
+<dl class="table">
+<dt><a id="index-info-w32"></a><span><code class="code">info w32</code><a class="copiable-link" href="#index-info-w32"> &para;</a></span></dt>
+<dd><p>This is a prefix of MS Windows-specific commands which print
+information about the target system and important OS structures.
+</p>
+</dd>
+<dt><code class="code">info w32 selector</code></dt>
+<dd><p>This command displays information returned by
+the Win32 API <code class="code">GetThreadSelectorEntry</code> function.
+It takes an optional argument that is evaluated to
+a long value to give the information about this given selector.
+Without argument, this command displays information
+about the six segment registers.
+</p>
+</dd>
+<dt><code class="code">info w32 thread-information-block</code></dt>
+<dd><p>This command displays thread specific information stored in the
+Thread Information Block (readable on the X86 CPU family using <code class="code">$fs</code>
+selector for 32-bit programs and <code class="code">$gs</code> for 64-bit programs).
+</p>
+</dd>
+<dt><a id="index-signal_002devent"></a><span><code class="code">signal-event <var class="var">id</var></code><a class="copiable-link" href="#index-signal_002devent"> &para;</a></span></dt>
+<dd><p>This command signals an event with user-provided <var class="var">id</var>.  Used to resume
+crashing process when attached to it using MS-Windows JIT debugging (AeDebug).
+</p>
+<p>To use it, create or edit the following keys in
+<code class="code">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug</code> and/or
+<code class="code">HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug</code>
+(for x86_64 versions):
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">Debugger</code> (REG_SZ) &mdash; a command to launch the debugger.
+Suggested command is: <code class="code"><var class="var">fully-qualified-path-to-gdb.exe</var> -ex
+&quot;attach %ld&quot; -ex &quot;signal-event %ld&quot; -ex &quot;continue&quot;</code>.
+
+<p>The first <code class="code">%ld</code> will be replaced by the process ID of the
+crashing process, the second <code class="code">%ld</code> will be replaced by the ID of
+the event that blocks the crashing process, waiting for <small class="sc">GDB</small>
+to attach.
+</p>
+</li><li><code class="code">Auto</code> (REG_SZ) &mdash; either <code class="code">1</code> or <code class="code">0</code>.  <code class="code">1</code> will
+make the system run debugger specified by the Debugger key
+automatically, <code class="code">0</code> will cause a dialog box with &ldquo;OK&rdquo; and
+&ldquo;Cancel&rdquo; buttons to appear, which allows the user to either
+terminate the crashing process (OK) or debug it (Cancel).
+</li></ul>
+
+</dd>
+<dt><a class="index-entry-id" id="index-debugging-the-Cygwin-DLL"></a>
+<a class="index-entry-id" id="index-Cygwin-DLL_002c-debugging"></a>
+<a id="index-set-cygwin_002dexceptions"></a><span><code class="code">set cygwin-exceptions <var class="var">mode</var></code><a class="copiable-link" href="#index-set-cygwin_002dexceptions"> &para;</a></span></dt>
+<dd><p>If <var class="var">mode</var> is <code class="code">on</code>, <small class="sc">GDB</small> will break on exceptions that
+happen inside the Cygwin DLL.  If <var class="var">mode</var> is <code class="code">off</code>,
+<small class="sc">GDB</small> will delay recognition of exceptions, and may ignore some
+exceptions which seem to be caused by internal Cygwin DLL
+&ldquo;bookkeeping&rdquo;.  This option is meant primarily for debugging the
+Cygwin DLL itself; the default value is <code class="code">off</code> to avoid annoying
+<small class="sc">GDB</small> users with false <code class="code">SIGSEGV</code> signals.
+</p>
+</dd>
+<dt><a id="index-show-cygwin_002dexceptions"></a><span><code class="code">show cygwin-exceptions</code><a class="copiable-link" href="#index-show-cygwin_002dexceptions"> &para;</a></span></dt>
+<dd><p>Displays whether <small class="sc">GDB</small> will break on exceptions that happen
+inside the Cygwin DLL itself.
+</p>
+</dd>
+<dt><a id="index-set-new_002dconsole"></a><span><code class="code">set new-console <var class="var">mode</var></code><a class="copiable-link" href="#index-set-new_002dconsole"> &para;</a></span></dt>
+<dd><p>If <var class="var">mode</var> is <code class="code">on</code> the debuggee will
+be started in a new console on next start.
+If <var class="var">mode</var> is <code class="code">off</code>, the debuggee will
+be started in the same console as the debugger.
+</p>
+</dd>
+<dt><a id="index-show-new_002dconsole"></a><span><code class="code">show new-console</code><a class="copiable-link" href="#index-show-new_002dconsole"> &para;</a></span></dt>
+<dd><p>Displays whether a new console is used
+when the debuggee is started.
+</p>
+</dd>
+<dt><a id="index-set-new_002dgroup"></a><span><code class="code">set new-group <var class="var">mode</var></code><a class="copiable-link" href="#index-set-new_002dgroup"> &para;</a></span></dt>
+<dd><p>This boolean value controls whether the debuggee should
+start a new group or stay in the same group as the debugger.
+This affects the way the Windows OS handles
+&lsquo;<samp class="samp">Ctrl-C</samp>&rsquo;.
+</p>
+</dd>
+<dt><a id="index-show-new_002dgroup"></a><span><code class="code">show new-group</code><a class="copiable-link" href="#index-show-new_002dgroup"> &para;</a></span></dt>
+<dd><p>Displays current value of new-group boolean.
+</p>
+</dd>
+<dt><a id="index-set-debugevents"></a><span><code class="code">set debugevents</code><a class="copiable-link" href="#index-set-debugevents"> &para;</a></span></dt>
+<dd><p>This boolean value adds debug output concerning kernel events related
+to the debuggee seen by the debugger.  This includes events that
+signal thread and process creation and exit, DLL loading and
+unloading, console interrupts, and debugging messages produced by the
+Windows <code class="code">OutputDebugString</code> API call.
+</p>
+</dd>
+<dt><a id="index-set-debugexec"></a><span><code class="code">set debugexec</code><a class="copiable-link" href="#index-set-debugexec"> &para;</a></span></dt>
+<dd><p>This boolean value adds debug output concerning execute events
+(such as resume thread) seen by the debugger.
+</p>
+</dd>
+<dt><a id="index-set-debugexceptions"></a><span><code class="code">set debugexceptions</code><a class="copiable-link" href="#index-set-debugexceptions"> &para;</a></span></dt>
+<dd><p>This boolean value adds debug output concerning exceptions in the
+debuggee seen by the debugger.
+</p>
+</dd>
+<dt><a id="index-set-debugmemory"></a><span><code class="code">set debugmemory</code><a class="copiable-link" href="#index-set-debugmemory"> &para;</a></span></dt>
+<dd><p>This boolean value adds debug output concerning debuggee memory reads
+and writes by the debugger.
+</p>
+</dd>
+<dt><a id="index-set-shell"></a><span><code class="code">set shell</code><a class="copiable-link" href="#index-set-shell"> &para;</a></span></dt>
+<dd><p>This boolean values specifies whether the debuggee is called
+via a shell or directly (default value is on).
+</p>
+</dd>
+<dt><a id="index-show-shell"></a><span><code class="code">show shell</code><a class="copiable-link" href="#index-show-shell"> &para;</a></span></dt>
+<dd><p>Displays if the debuggee will be started with a shell.
+</p>
+</dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="Non_002ddebug-DLL-Symbols.html" accesskey="1">Support for DLLs without Debugging Symbols</a></li>
+<li><a href="Non_002ddebug-DLL-Symbols.html#DLL-Name-Prefixes" accesskey="2">DLL Name Prefixes</a></li>
+<li><a href="Non_002ddebug-DLL-Symbols.html#Working-with-Minimal-Symbols" accesskey="3">Working with Minimal Symbols</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Hurd-Native.html">Commands Specific to <small class="sc">GNU</small> Hurd Systems</a>, Previous: <a href="DJGPP-Native.html">Features for Debugging <small class="sc">DJGPP</small> Programs</a>, Up: <a href="Native.html">Native</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

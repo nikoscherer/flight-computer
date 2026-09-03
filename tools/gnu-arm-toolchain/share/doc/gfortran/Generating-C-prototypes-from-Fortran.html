@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1999-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Generating C prototypes from Fortran (The GNU Fortran Compiler)</title>
+
+<meta name="description" content="Generating C prototypes from Fortran (The GNU Fortran Compiler)">
+<meta name="keywords" content="Generating C prototypes from Fortran (The GNU Fortran Compiler)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Interoperability-with-C.html" rel="up" title="Interoperability with C">
+<link href="Further-Interoperability-of-Fortran-with-C.html" rel="prev" title="Further Interoperability of Fortran with C">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Generating-C-prototypes-from-Fortran">
+<div class="nav-panel">
+<p>
+Previous: <a href="Further-Interoperability-of-Fortran-with-C.html" accesskey="p" rel="prev">Further Interoperability of Fortran with C</a>, Up: <a href="Interoperability-with-C.html" accesskey="u" rel="up">Interoperability with C</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Generating-C-prototypes-from-Fortran-1"><span>6.1.7 Generating C prototypes from Fortran<a class="copiable-link" href="#Generating-C-prototypes-from-Fortran-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-prototypes"></a>
+<a class="index-entry-id" id="index-C-prototypes"></a>
+<p>The options <samp class="option">-fc-prototypes</samp> can be used to write out C
+declatations and function prototypes for <code class="code">BIND(C)</code> entities.
+The same can be done for writing out prototypes for external
+procedures using <samp class="option">-fc-prototypes-external</samp>,
+see <a class="pxref" href="Interoperability-Options.html">Options for interoperability with other languages</a>.
+</p>
+<p>Standard Fortran does not specify an interoperable type for C&rsquo;s
+<code class="code">unsigned</code> integer types.  For interoperability with unsigned
+types, GNU Fortran provides unsigned integers, see <a class="pxref" href="Unsigned-integers.html">Unsigned integers</a>.
+</p>
+</div>
+
+
+
+</body>
+</html>

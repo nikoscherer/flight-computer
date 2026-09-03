@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI General Design (Debugging with GDB)</title>
+
+<meta name="description" content="GDB/MI General Design (Debugging with GDB)">
+<meta name="keywords" content="GDB/MI General Design (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Command-Syntax.html" rel="next" title="GDB/MI Command Syntax">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-General-Design">
+<div class="nav-panel">
+<p>
+Next: <a href="GDB_002fMI-Command-Syntax.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small> Command Syntax</a>, Up: <a href="GDB_002fMI.html" accesskey="u" rel="up">The <small class="sc">GDB/MI</small> Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-General-Design"><span>27.1 <small class="sc">GDB/MI</small> General Design<a class="copiable-link" href="#gdb_002fmi-General-Design"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-GDB_002fMI-General-Design"></a>
+
+<p>Interaction of a <small class="sc">GDB/MI</small> frontend with <small class="sc">GDB</small> involves three
+parts&mdash;commands sent to <small class="sc">GDB</small>, responses to those commands
+and notifications.  Each command results in exactly one response,
+indicating either successful completion of the command, or an error.
+For the commands that do not resume the target, the response contains the
+requested information.  For the commands that resume the target, the
+response only indicates whether the target was successfully resumed.
+Notifications is the mechanism for reporting changes in the state of the
+target, or in <small class="sc">GDB</small> state, that cannot conveniently be associated with
+a command and reported as part of that command response.
+</p>
+<p>The important examples of notifications are:
+</p><ul class="itemize mark-bullet">
+<li>Exec notifications.  These are used to report changes in
+target state&mdash;when a target is resumed, or stopped.  It would not
+be feasible to include this information in response of resuming
+commands, because one resume commands can result in multiple events in
+different threads.  Also, quite some time may pass before any event
+happens in the target, while a frontend needs to know whether the resuming
+command itself was successfully executed.
+
+</li><li>Console output, and status notifications.  Console output
+notifications are used to report output of CLI commands, as well as
+diagnostics for other commands.  Status notifications are used to
+report the progress of a long-running operation.  Naturally, including
+this information in command response would mean no output is produced
+until the command is finished, which is undesirable.
+
+</li><li>General notifications.  Commands may have various side effects on
+the <small class="sc">GDB</small> or target state beyond their official purpose.  For example,
+a command may change the selected thread.  Although such changes can
+be included in command response, using notification allows for more
+orthogonal frontend design.
+
+</li></ul>
+
+<p>There&rsquo;s no guarantee that whenever an MI command reports an error,
+<small class="sc">GDB</small> or the target are in any specific state, and especially,
+the state is not reverted to the state before the MI command was
+processed.  Therefore, whenever an MI command results in an error, 
+we recommend that the frontend refreshes all the information shown in 
+the user interface.
+</p>
+
+
+<ul class="mini-toc">
+<li><a href="Context-management.html" accesskey="1">Context management</a></li>
+<li><a href="Asynchronous-and-non_002dstop-modes.html" accesskey="2">Asynchronous command execution and non-stop mode</a></li>
+<li><a href="Thread-groups.html" accesskey="3">Thread groups</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small> Command Syntax</a>, Up: <a href="GDB_002fMI.html">The <small class="sc">GDB/MI</small> Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

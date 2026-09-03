@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB Scheme Data Types (Debugging with GDB)</title>
+
+<meta name="description" content="GDB Scheme Data Types (Debugging with GDB)">
+<meta name="keywords" content="GDB Scheme Data Types (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Guile-Exception-Handling.html" rel="next" title="Guile Exception Handling">
+<link href="Guile-Configuration.html" rel="prev" title="Guile Configuration">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="GDB-Scheme-Data-Types">
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Exception-Handling.html" accesskey="n" rel="next">Guile Exception Handling</a>, Previous: <a href="Guile-Configuration.html" accesskey="p" rel="prev">Guile Configuration</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="GDB-Scheme-Data-Types-1"><span>23.4.3.3 GDB Scheme Data Types<a class="copiable-link" href="#GDB-Scheme-Data-Types-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdb-objects"></a>
+
+<p>The values exposed by <small class="sc">GDB</small> to Guile are known as
+<em class="dfn"><small class="sc">GDB</small> objects</em>.  There are several kinds of <small class="sc">GDB</small>
+object, and each is disjoint from all other types known to Guile.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-gdb_002dobject_002dkind"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">gdb-object-kind</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-gdb_002dobject_002dkind"> &para;</a></span></dt>
+<dd><p>Return the kind of the <small class="sc">GDB</small> object, e.g., <code class="code">&lt;gdb:breakpoint&gt;</code>,
+as a symbol.
+</p></dd></dl>
+
+<p><small class="sc">GDB</small> defines the following object types:
+</p>
+<dl class="table">
+<dt><code class="code">&lt;gdb:arch&gt;</code></dt>
+<dd><p>See <a class="xref" href="Architectures-In-Guile.html">Guile representation of architectures</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:block&gt;</code></dt>
+<dd><p>See <a class="xref" href="Blocks-In-Guile.html">Accessing blocks from Guile.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:block-symbols-iterator&gt;</code></dt>
+<dd><p>See <a class="xref" href="Blocks-In-Guile.html">Accessing blocks from Guile.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:breakpoint&gt;</code></dt>
+<dd><p>See <a class="xref" href="Breakpoints-In-Guile.html">Manipulating breakpoints using Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:command&gt;</code></dt>
+<dd><p>See <a class="xref" href="Commands-In-Guile.html">Commands In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:exception&gt;</code></dt>
+<dd><p>See <a class="xref" href="Guile-Exception-Handling.html">Guile Exception Handling</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:frame&gt;</code></dt>
+<dd><p>See <a class="xref" href="Frames-In-Guile.html">Accessing inferior stack frames from Guile.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:iterator&gt;</code></dt>
+<dd><p>See <a class="xref" href="Iterators-In-Guile.html">Iterators In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:lazy-string&gt;</code></dt>
+<dd><p>See <a class="xref" href="Lazy-Strings-In-Guile.html">Guile representation of lazy strings.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:objfile&gt;</code></dt>
+<dd><p>See <a class="xref" href="Objfiles-In-Guile.html">Objfiles In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:parameter&gt;</code></dt>
+<dd><p>See <a class="xref" href="Parameters-In-Guile.html">Parameters In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:pretty-printer&gt;</code></dt>
+<dd><p>See <a class="xref" href="Guile-Pretty-Printing-API.html">Guile Pretty Printing API</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:pretty-printer-worker&gt;</code></dt>
+<dd><p>See <a class="xref" href="Guile-Pretty-Printing-API.html">Guile Pretty Printing API</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:progspace&gt;</code></dt>
+<dd><p>See <a class="xref" href="Progspaces-In-Guile.html">Program Spaces In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:symbol&gt;</code></dt>
+<dd><p>See <a class="xref" href="Symbols-In-Guile.html">Guile representation of Symbols.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:symtab&gt;</code></dt>
+<dd><p>See <a class="xref" href="Symbol-Tables-In-Guile.html">Symbol table representation in Guile.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:sal&gt;</code></dt>
+<dd><p>See <a class="xref" href="Symbol-Tables-In-Guile.html">Symbol table representation in Guile.</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:type&gt;</code></dt>
+<dd><p>See <a class="xref" href="Types-In-Guile.html">Types In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:field&gt;</code></dt>
+<dd><p>See <a class="xref" href="Types-In-Guile.html">Types In Guile</a>.
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:value&gt;</code></dt>
+<dd><p>See <a class="xref" href="Values-From-Inferior-In-Guile.html">Values From Inferior In Guile</a>.
+</p></dd>
+</dl>
+
+<p>The following <small class="sc">GDB</small> objects are managed internally so that the
+Scheme function <code class="code">eq?</code> may be applied to them.
+</p>
+<dl class="table">
+<dt><code class="code">&lt;gdb:arch&gt;</code></dt>
+<dt><code class="code">&lt;gdb:block&gt;</code></dt>
+<dt><code class="code">&lt;gdb:breakpoint&gt;</code></dt>
+<dt><code class="code">&lt;gdb:frame&gt;</code></dt>
+<dt><code class="code">&lt;gdb:objfile&gt;</code></dt>
+<dt><code class="code">&lt;gdb:progspace&gt;</code></dt>
+<dt><code class="code">&lt;gdb:symbol&gt;</code></dt>
+<dt><code class="code">&lt;gdb:symtab&gt;</code></dt>
+<dt><code class="code">&lt;gdb:type&gt;</code></dt>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Guile-Exception-Handling.html">Guile Exception Handling</a>, Previous: <a href="Guile-Configuration.html">Guile Configuration</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

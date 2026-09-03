@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Show (Debugging with GDB)</title>
+
+<meta name="description" content="Show (Debugging with GDB)">
+<meta name="keywords" content="Show (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Languages.html" rel="up" title="Languages">
+<link href="Checks.html" rel="next" title="Checks">
+<link href="Setting.html" rel="prev" title="Setting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Show">
+<div class="nav-panel">
+<p>
+Next: <a href="Checks.html" accesskey="n" rel="next">Type and Range Checking</a>, Previous: <a href="Setting.html" accesskey="p" rel="prev">Switching Between Source Languages</a>, Up: <a href="Languages.html" accesskey="u" rel="up">Using <small class="sc">GDB</small> with Different Languages</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Displaying-the-Language"><span>15.2 Displaying the Language<a class="copiable-link" href="#Displaying-the-Language"> &para;</a></span></h3>
+
+<p>The following commands help you find out which language is the
+working language, and also what language source files were written in.
+</p>
+<dl class="table">
+<dt><code class="code">show language</code></dt>
+<dd><a class="anchor" id="show-language"></a><a class="index-entry-id" id="index-show-language"></a>
+<p>Display the current working language.  This is the
+language you can use with commands such as <code class="code">print</code> to
+build and compute expressions that may involve variables in your program.
+</p>
+</dd>
+<dt><a id="index-info-frame_002c-show-the-source-language"></a><span><code class="code">info frame</code><a class="copiable-link" href="#index-info-frame_002c-show-the-source-language"> &para;</a></span></dt>
+<dd><p>Display the source language for this frame.  This language becomes the
+working language if you use an identifier from this frame.
+See <a class="xref" href="Frame-Info.html">Information about a Frame</a>, to identify the other
+information listed here.
+</p>
+</dd>
+<dt><a id="index-info-source_002c-show-the-source-language"></a><span><code class="code">info source</code><a class="copiable-link" href="#index-info-source_002c-show-the-source-language"> &para;</a></span></dt>
+<dd><p>Display the source language of this source file.
+See <a class="xref" href="Symbols.html">Examining the Symbol Table</a>, to identify the other
+information listed here.
+</p></dd>
+</dl>
+
+<p>In unusual circumstances, you may have source files with extensions
+not in the standard list.  You can then set the extension associated
+with a language explicitly:
+</p>
+<dl class="table">
+<dt><a id="index-set-extension_002dlanguage"></a><span><code class="code">set extension-language <var class="var">ext</var> <var class="var">language</var></code><a class="copiable-link" href="#index-set-extension_002dlanguage"> &para;</a></span></dt>
+<dd><p>Tell <small class="sc">GDB</small> that source files with extension <var class="var">ext</var> are to be
+assumed as written in the source language <var class="var">language</var>.
+</p>
+</dd>
+<dt><a id="index-info-extensions"></a><span><code class="code">info extensions</code><a class="copiable-link" href="#index-info-extensions"> &para;</a></span></dt>
+<dd><p>List all the filename extensions and the associated languages.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

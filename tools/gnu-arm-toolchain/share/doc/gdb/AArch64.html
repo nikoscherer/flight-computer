@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>AArch64 (Debugging with GDB)</title>
+
+<meta name="description" content="AArch64 (Debugging with GDB)">
+<meta name="keywords" content="AArch64 (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Architectures.html" rel="up" title="Architectures">
+<link href="x86.html" rel="next" title="x86">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AArch64">
+<div class="nav-panel">
+<p>
+Next: <a href="x86.html" accesskey="n" rel="next">x86</a>, Up: <a href="Architectures.html" accesskey="u" rel="up">Architectures</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="AArch64-1"><span>21.4.1 AArch64<a class="copiable-link" href="#AArch64-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AArch64-support"></a>
+
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, it provides the
+following special commands:
+</p>
+<dl class="table">
+<dt><a id="index-set-debug-aarch64"></a><span><code class="code">set debug aarch64</code><a class="copiable-link" href="#index-set-debug-aarch64"> &para;</a></span></dt>
+<dd><p>This command determines whether AArch64 architecture-specific debugging
+messages are to be displayed.
+</p>
+</dd>
+<dt><code class="code">show debug aarch64</code></dt>
+<dd><p>Show whether AArch64 debugging messages are displayed.
+</p>
+</dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a href="#AArch64-SVE_002e" accesskey="1">AArch64 SVE.</a></li>
+<li><a href="#AArch64-SME_002e" accesskey="2">AArch64 SME.</a></li>
+<li><a href="#AArch64-SME2_002e" accesskey="3">AArch64 SME2.</a></li>
+<li><a href="#AArch64-Pointer-Authentication_002e" accesskey="4">AArch64 Pointer Authentication.</a></li>
+<li><a href="#AArch64-Memory-Tagging-Extension_002e" accesskey="5">AArch64 Memory Tagging Extension.</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AArch64-SVE_002e">
+<h4 class="subsubsection"><span>21.4.1.1 AArch64 SVE.<a class="copiable-link" href="#AArch64-SVE_002e"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AArch64-SVE_002e"></a>
+
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, if the Scalable Vector
+Extension (SVE) is present, then <small class="sc">GDB</small> will provide the vector registers
+<code class="code">$z0</code> through <code class="code">$z31</code>, vector predicate registers <code class="code">$p0</code> through
+<code class="code">$p15</code>, and the <code class="code">$ffr</code> register.  In addition, the pseudo register
+<code class="code">$vg</code> will be provided.  This is the vector granule for the current thread
+and represents the number of 64-bit chunks in an SVE <code class="code">z</code> register.
+</p>
+<p>If the vector length changes, then the <code class="code">$vg</code> register will be updated,
+but the lengths of the <code class="code">z</code> and <code class="code">p</code> registers will not change.  This
+is a known limitation of <small class="sc">GDB</small> and does not affect the execution of the
+target process.
+</p>
+<p>For SVE, the following definitions are used throughout <small class="sc">GDB</small>&rsquo;s source
+code and in this document:
+</p>
+<ul class="itemize mark-bullet">
+<li><var class="var">vl</var>: The vector length, in bytes.  It defines the size of each <code class="code">Z</code>
+register.
+<a class="anchor" id="vl"></a><a class="index-entry-id" id="index-vl"></a>
+
+</li><li><var class="var">vq</var>: The number of 128 bit units in <var class="var">vl</var>.  This is mostly used
+internally by <small class="sc">GDB</small> and the Linux Kernel.
+<a class="anchor" id="vq"></a><a class="index-entry-id" id="index-vq"></a>
+
+</li><li><var class="var">vg</var>: The number of 64 bit units in <var class="var">vl</var>.  This is mostly used
+internally by <small class="sc">GDB</small> and the Linux Kernel.
+<a class="anchor" id="vg"></a><a class="index-entry-id" id="index-vg"></a>
+
+</li></ul>
+
+</div>
+<div class="subsubsection-level-extent" id="AArch64-SME_002e">
+<h4 class="subsubsection"><span>21.4.1.2 AArch64 SME.<a class="copiable-link" href="#AArch64-SME_002e"> &para;</a></span></h4>
+<a class="anchor" id="AArch64-SME"></a><a class="index-entry-id" id="index-SME"></a>
+<a class="index-entry-id" id="index-AArch64-SME"></a>
+<a class="index-entry-id" id="index-Scalable-Matrix-Extension"></a>
+
+<p>The Scalable Matrix Extension (<a class="url" href="https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/scalable-matrix-extension-armv9-a-architecture"><abbr class="acronym">SME</abbr></a>)
+is an AArch64 architecture extension that expands on the concept of the
+Scalable Vector Extension (<a class="url" href="https://developer.arm.com/documentation/101726/4-0/Learn-about-the-Scalable-Vector-Extension--SVE-/What-is-the-Scalable-Vector-Extension-"><abbr class="acronym">SVE</abbr></a>)
+by providing a 2-dimensional register <code class="code">ZA</code>, which is a square
+matrix of variable size, just like SVE provides a group of vector registers of
+variable size.
+</p>
+<p>Similarly to SVE, where the size of each <code class="code">Z</code> register is directly related
+to the vector length (<var class="var">vl</var> for short), the <abbr class="acronym">SME</abbr> <code class="code">ZA</code> matrix
+register&rsquo;s size is directly related to the streaming vector length
+(<var class="var">svl</var> for short).  See <a class="xref" href="#vl">vl</a>.  See <a class="xref" href="#svl">svl</a>.
+</p>
+<p>The <code class="code">ZA</code> register state can be either active or inactive, if it is not in
+use.
+</p>
+<p><abbr class="acronym">SME</abbr> also introduces a new execution mode called streaming
+<abbr class="acronym">SVE</abbr> mode (streaming mode for short).  When streaming mode is
+enabled, the program supports execution of <abbr class="acronym">SVE2</abbr> instructions and the
+<abbr class="acronym">SVE</abbr> registers will have vector length <var class="var">svl</var>.  When streaming
+mode is disabled, the SVE registers have vector length <var class="var">vl</var>.
+</p>
+<p>For more information about <abbr class="acronym">SME</abbr> and <abbr class="acronym">SVE</abbr>, please refer to
+official <a class="url" href="https://developer.arm.com/documentation/ddi0487/latest">architecture documentation</a>.
+</p>
+<p>The following definitions are used throughout <small class="sc">GDB</small>&rsquo;s source code and
+in this document:
+</p>
+<ul class="itemize mark-bullet">
+<li><var class="var">svl</var>: The streaming vector length, in bytes.  It defines the size of each
+dimension of the 2-dimensional square <code class="code">ZA</code> matrix.  The total size of
+<code class="code">ZA</code> is therefore <var class="var">svl</var> by <var class="var">svl</var>.
+
+<p>When streaming mode is enabled, it defines the size of the <abbr class="acronym">SVE</abbr>
+registers as well.
+<a class="anchor" id="svl"></a><a class="index-entry-id" id="index-svl"></a>
+</p>
+</li><li><var class="var">svq</var>: The number of 128 bit units in <var class="var">svl</var>, also known as streaming
+vector granule.  This is mostly used internally by <small class="sc">GDB</small> and the Linux
+Kernel.
+<a class="anchor" id="svq"></a><a class="index-entry-id" id="index-svq"></a>
+
+</li><li><var class="var">svg</var>: The number of 64 bit units in <var class="var">svl</var>.  This is mostly used
+internally by <small class="sc">GDB</small> and the Linux Kernel.
+<a class="anchor" id="svg"></a><a class="index-entry-id" id="index-svg"></a>
+
+</li></ul>
+
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, if the Scalable Matrix
+Extension (<abbr class="acronym">SME</abbr>) is present, then <small class="sc">GDB</small> will make the <code class="code">ZA</code>
+register available.  <small class="sc">GDB</small> will also make the <code class="code">SVG</code> register and
+<code class="code">SVCR</code> pseudo-register available.
+</p>
+<p>The <code class="code">ZA</code> register is a 2-dimensional square <var class="var">svl</var> by <var class="var">svl</var>
+matrix of bytes.  To simplify the representation and access to the <code class="code">ZA</code>
+register in <small class="sc">GDB</small>, it is defined as a vector of
+<var class="var">svl</var>x<var class="var">svl</var> bytes.
+</p>
+<p>If the user wants to index the <code class="code">ZA</code> register as a matrix, it is possible
+to reference <code class="code">ZA</code> as <code class="code">ZA[<var class="var">i</var>][<var class="var">j</var>]</code>, where <var class="var">i</var> is the
+row number and <var class="var">j</var> is the column number.
+</p>
+<p>The <code class="code">SVG</code> register always contains the streaming vector granule
+(<var class="var">svg</var>) for the current thread.  From the value of register <code class="code">SVG</code> we
+can easily derive the <var class="var">svl</var> value.
+</p>
+<a class="anchor" id="aarch64-sme-svcr"></a><p>The <code class="code">SVCR</code> pseudo-register (streaming vector control register) is a status
+register that holds two state bits: <small class="sc">SM</small> in bit 0 and <small class="sc">ZA</small> in bit 1.
+</p>
+<p>If the <small class="sc">SM</small> bit is 1, it means the current thread is in streaming
+mode, and the <abbr class="acronym">SVE</abbr> registers will use <var class="var">svl</var> for their sizes.  If
+the <small class="sc">SM</small> bit is 0, the current thread is not in streaming mode, and the
+<abbr class="acronym">SVE</abbr> registers will use <var class="var">vl</var> for their sizes.  See <a class="xref" href="#vl">vl</a>.
+</p>
+<p>If the <small class="sc">ZA</small> bit is 1, it means the <code class="code">ZA</code> register is being used and
+has meaningful contents.  If the <small class="sc">ZA</small> bit is 0, the <code class="code">ZA</code> register is
+unavailable and its contents are undefined.
+</p>
+<p>For convenience and simplicity, if the <small class="sc">ZA</small> bit is 0, the <code class="code">ZA</code>
+register and all of its pseudo-registers will read as zero.
+</p>
+<p>If <var class="var">svl</var> changes during the execution of a program, then the <code class="code">ZA</code>
+register size and the bits in the <code class="code">SVCR</code> pseudo-register will be updated
+to reflect it.
+</p>
+<p>It is possible for users to change <var class="var">svl</var> during the execution of a
+program by modifying the <code class="code">SVG</code> register value.
+</p>
+<p>Whenever the <code class="code">SVG</code> register is modified with a new value, the
+following will be observed:
+</p>
+<ul class="itemize mark-bullet">
+<li>The <small class="sc">ZA</small> and <small class="sc">SM</small> bits will be cleared in the <code class="code">SVCR</code>
+pseudo-register.
+
+</li><li>The <code class="code">ZA</code> register will have a new size and its state will be
+cleared, forcing its contents and the contents of all of its pseudo-registers
+back to zero.
+
+</li><li>If the <small class="sc">SM</small> bit was 1, the <abbr class="acronym">SVE</abbr> registers will be reset to
+having their sizes based on <var class="var">vl</var> as opposed to <var class="var">svl</var>.  If the
+<small class="sc">SM</small> bit was 0 prior to modifying the <code class="code">SVG</code> register, there will be no
+observable effect on the <abbr class="acronym">SVE</abbr> registers.
+
+</li></ul>
+
+<p>The possible values for the <code class="code">SVG</code> register are 2, 4, 8, 16, 32.  These
+numbers correspond to streaming vector length (<var class="var">svl</var>) values of 16
+bytes, 32 bytes, 64 bytes, 128 bytes and 256 bytes respectively.
+</p>
+<p>The minimum size of the <code class="code">ZA</code> register is 16 x 16 (256) bytes, and the
+maximum size is 256 x 256 (65536) bytes.  In streaming mode, with bit <small class="sc">SM</small>
+set, the size of the <code class="code">ZA</code> register is the size of all the SVE <code class="code">Z</code>
+registers combined.
+</p>
+<p>The <code class="code">ZA</code> register can also be accessed using tiles and tile slices.
+</p>
+<p>Tile pseudo-registers are square, 2-dimensional sub-arrays of elements within
+the <code class="code">ZA</code> register.
+</p>
+<p>The tile pseudo-registers have the following naming pattern:
+<code class="code">ZA&lt;<var class="var">tile number</var>&gt;&lt;<var class="var">qualifier</var>&gt;</code>.
+</p>
+<p>There is a total of 31 <code class="code">ZA</code> tile pseudo-registers.  They are
+<code class="code">ZA0B</code>, <code class="code">ZA0H</code> through <code class="code">ZA1H</code>, <code class="code">ZA0S</code> through <code class="code">ZA3S</code>,
+<code class="code">ZA0D</code> through <code class="code">ZA7D</code> and <code class="code">ZA0Q</code> through <code class="code">ZA15Q</code>.
+</p>
+<p>Tile slice pseudo-registers are vectors of horizontally or vertically
+contiguous elements within the <code class="code">ZA</code> register.
+</p>
+<p>The tile slice pseudo-registers have the following naming pattern:
+<code class="code">ZA&lt;<var class="var">tile number</var>&gt;&lt;<var class="var">direction</var>&gt;&lt;<var class="var">qualifier</var>&gt;
+&lt;<var class="var">slice number</var>&gt;</code>.
+</p>
+<p>There are up to 16 tiles (0 ~ 15), the direction can be either <code class="code">v</code>
+(vertical) or <code class="code">h</code> (horizontal), the qualifiers can be <code class="code">b</code> (byte),
+<code class="code">h</code> (halfword), <code class="code">s</code> (word), <code class="code">d</code> (doubleword) and <code class="code">q</code>
+(quadword) and there are up to 256 slices (0 ~ 255) depending on the value
+of <var class="var">svl</var>.  The number of slices is the same as the value of <var class="var">svl</var>.
+</p>
+<p>The number of available tile slice pseudo-registers can be large.  For a
+minimum <var class="var">svl</var> of 16 bytes, there are 5 (number of qualifiers) x
+2 (number of directions) x 16 (<var class="var">svl</var>) pseudo-registers.  For the
+maximum <var class="var">svl</var> of 256 bytes, there are 5 x 2 x 256 pseudo-registers.
+</p>
+<p>When listing all the available registers, users will see the
+currently-available <code class="code">ZA</code> pseudo-registers.  Pseudo-registers that don&rsquo;t
+exist for a given <var class="var">svl</var> value will not be displayed.
+</p>
+<p>For more information on <abbr class="acronym">SME</abbr> and its terminology, please refer to the
+<a class="url" href="https://developer.arm.com/documentation/ddi0616/aa/">Arm Architecture Reference Manual Supplement</a>, The Scalable Matrix Extension
+(<abbr class="acronym">SME</abbr>), for Armv9-A.
+</p>
+<p>Some features are still under development and rely on
+<a class="url" href="https://github.com/ARM-software/acle/releases/latest">ACLE</a> and
+<a class="url" href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst">ABI</a>
+definitions, so there are known limitations to the current <abbr class="acronym">SME</abbr>
+support in <small class="sc">GDB</small>.
+</p>
+<p>One such example is calling functions in the program being debugged by
+<small class="sc">GDB</small>.  Such calls are not <abbr class="acronym">SME</abbr>-aware and thus don&rsquo;t take into
+account the <code class="code">SVCR</code> pseudo-register bits nor the <code class="code">ZA</code> register
+contents.  See <a class="xref" href="Calling.html">Calling Program Functions</a>.
+</p>
+<p>The <a class="url" href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst#the-za-lazy-saving-scheme">lazy saving scheme</a> involving the <code class="code">TPIDR2</code> register is not yet supported
+by <small class="sc">GDB</small>, though the <code class="code">TPIDR2</code> register is known and supported
+by <small class="sc">GDB</small>.
+</p>
+<p>Lastly, an important limitation for <code class="command">gdbserver</code> is its inability to
+communicate <var class="var">svl</var> changes to <small class="sc">GDB</small>.  This means <code class="command">gdbserver</code>,
+even though it is capable of adjusting its internal caches to reflect a change
+in the value of <var class="var">svl</var> mid-execution, will operate with a potentially
+different <var class="var">svl</var> value compared to <small class="sc">GDB</small>.  This can lead to
+<small class="sc">GDB</small> showing incorrect values for the <code class="code">ZA</code> register and
+incorrect values for SVE registers (when in streaming mode).
+</p>
+<p>This is the same limitation we have for the <abbr class="acronym">SVE</abbr> registers, and there
+are plans to address this limitation going forward.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-SME2_002e">
+<h4 class="subsubsection"><span>21.4.1.3 AArch64 SME2.<a class="copiable-link" href="#AArch64-SME2_002e"> &para;</a></span></h4>
+<a class="anchor" id="AArch64-SME2"></a><a class="index-entry-id" id="index-SME2"></a>
+<a class="index-entry-id" id="index-AArch64-SME2"></a>
+<a class="index-entry-id" id="index-Scalable-Matrix-Extension-2"></a>
+
+<p>The Scalable Matrix Extension 2 is an AArch64 architecture extension that
+further expands the <abbr class="acronym">SME</abbr> extension with the following:
+</p>
+<ul class="itemize mark-bullet">
+<li>The ability to address the <code class="code">ZA</code> array through groups of
+one-dimensional <code class="code">ZA</code> array vectors, as opposed to <code class="code">ZA</code> tiles
+with 2 dimensions.
+
+</li><li>Instructions to operate on groups of <abbr class="acronym">SVE</abbr> <code class="code">Z</code> registers and
+<code class="code">ZA</code> array vectors.
+
+</li><li>A new 512 bit <code class="code">ZT0</code> lookup table register, for data decompression.
+
+</li></ul>
+
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, if the Scalable Matrix
+Extension 2 (<abbr class="acronym">SME2</abbr>) is present, then <small class="sc">GDB</small> will make the
+<code class="code">ZT0</code> register available.
+</p>
+<p>The <code class="code">ZT0</code> register is only considered active when the <code class="code">ZA</code> register
+state is active, therefore when the <small class="sc">ZA</small> bit of the <code class="code">SVCR</code> is 1.
+</p>
+<p>When the <small class="sc">ZA</small> bit of <code class="code">SVCR</code> is 0, that means the <code class="code">ZA</code> register
+state is not active, which means the <code class="code">ZT0</code> register state is also not
+active.
+</p>
+<p>When <code class="code">ZT0</code> is not active, it is comprised of zeroes, just like <code class="code">ZA</code>.
+</p>
+<p>Similarly to the <code class="code">ZA</code> register, if the <code class="code">ZT0</code> state is not active and
+the user attempts to modify its value such that any of its bytes is non-zero,
+then <small class="sc">GDB</small> will initialize the <code class="code">ZA</code> register state as well, which
+means the <code class="code">SVCR</code> <small class="sc">ZA</small> bit gets set to 1.
+</p>
+<p>For more information about <abbr class="acronym">SME2</abbr>, please refer to the
+official <a class="url" href="https://developer.arm.com/documentation/ddi0487/latest">architecture documentation</a>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Pointer-Authentication_002e">
+<h4 class="subsubsection"><span>21.4.1.4 AArch64 Pointer Authentication.<a class="copiable-link" href="#AArch64-Pointer-Authentication_002e"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AArch64-Pointer-Authentication_002e"></a>
+<a class="anchor" id="AArch64-PAC"></a>
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, and the program is
+using the v8.3-A feature Pointer Authentication (PAC), then whenever the link
+register <code class="code">$lr</code> is pointing to an PAC function its value will be masked.
+When GDB prints a backtrace, any addresses that required unmasking will be
+postfixed with the marker [PAC].  When using the MI, this is printed as part
+of the <code class="code">addr_flags</code> field.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Memory-Tagging-Extension_002e">
+<h4 class="subsubsection"><span>21.4.1.5 AArch64 Memory Tagging Extension.<a class="copiable-link" href="#AArch64-Memory-Tagging-Extension_002e"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AArch64-Memory-Tagging-Extension_002e"></a>
+
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, the program is
+using the v8.5-A feature Memory Tagging Extension (MTE) and there is support
+in the kernel for MTE, <small class="sc">GDB</small> will make memory tagging functionality
+available for inspection and editing of logical and allocation tags.
+See <a class="xref" href="Memory-Tagging.html">Memory Tagging</a>.
+</p>
+<p>To aid debugging, <small class="sc">GDB</small> will output additional information when SIGSEGV
+signals are generated as a result of memory tag failures.
+</p>
+<p>If the tag violation is synchronous, the following will be shown:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Program received signal SIGSEGV, Segmentation fault
+Memory tag violation while accessing address 0x0500fffff7ff8000
+Allocation tag 0x1
+Logical tag 0x5.
+</pre></div>
+
+<p>If the tag violation is asynchronous, the fault address is not available.
+In this case <small class="sc">GDB</small> will show the following:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Program received signal SIGSEGV, Segmentation fault
+Memory tag violation
+Fault address unavailable.
+</pre></div>
+
+<p>A special register, <code class="code">tag_ctl</code>, is made available through the
+<code class="code">org.gnu.gdb.aarch64.mte</code> feature.  This register exposes some
+options that can be controlled at runtime and emulates the <code class="code">prctl</code>
+option <code class="code">PR_SET_TAGGED_ADDR_CTRL</code>.  For further information, see the
+documentation in the Linux kernel.
+</p>
+<p><small class="sc">GDB</small> supports dumping memory tag data to core files through the
+<code class="command">gcore</code> command and reading memory tag data from core files generated
+by the <code class="command">gcore</code> command or the Linux kernel.
+</p>
+<p>When a process uses memory-mapped pages protected by memory tags (for
+example, AArch64 MTE), this additional information will be recorded in
+the core file in the event of a crash or if <small class="sc">GDB</small> generates a core file
+from the current process state.
+</p>
+<p>The memory tag data will be used so developers can display the memory
+tags from a particular memory region (using the &lsquo;<samp class="samp">m</samp>&rsquo; modifier to the
+<code class="command">x</code> command, using the <code class="command">print</code> command or using the various
+<code class="command">memory-tag</code> subcommands.
+</p>
+<p>In the case of a crash, <small class="sc">GDB</small> will attempt to retrieve the memory tag
+information automatically from the core file, and will show one of the above
+messages depending on whether the synchronous or asynchronous mode is selected.
+See <a class="xref" href="Memory-Tagging.html">Memory Tagging</a>. See <a class="xref" href="Memory.html">Examining Memory</a>.
+</p>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="x86.html">x86</a>, Up: <a href="Architectures.html">Architectures</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

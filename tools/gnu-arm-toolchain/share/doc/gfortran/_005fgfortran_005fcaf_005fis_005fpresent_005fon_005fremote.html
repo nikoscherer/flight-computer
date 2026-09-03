@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1999-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>_gfortran_caf_is_present_on_remote (The GNU Fortran Compiler)</title>
+
+<meta name="description" content="_gfortran_caf_is_present_on_remote (The GNU Fortran Compiler)">
+<meta name="keywords" content="_gfortran_caf_is_present_on_remote (The GNU Fortran Compiler)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Function-ABI-Documentation.html" rel="up" title="Function ABI Documentation">
+<link href="_005fgfortran_005fcaf_005fsend_005fto_005fremote.html" rel="next" title="_gfortran_caf_send_to_remote">
+<link href="_005fgfortran_005fcaf_005fget_005ffrom_005fremote.html" rel="prev" title="_gfortran_caf_get_from_remote">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="g_t_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote">
+<div class="nav-panel">
+<p>
+Next: <a href="_005fgfortran_005fcaf_005fsend_005fto_005fremote.html" accesskey="n" rel="next"><code class="code">_gfortran_caf_send_to_remote</code> &mdash; Send data to a remote image using a remote side accessor to store it</a>, Previous: <a href="_005fgfortran_005fcaf_005fget_005ffrom_005fremote.html" accesskey="p" rel="prev"><code class="code">_gfortran_caf_get_from_remote</code> &mdash; Getting data from a remote image using a remote side accessor</a>, Up: <a href="Function-ABI-Documentation.html" accesskey="u" rel="up">Function ABI Documentation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="g_t_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote-_002d_002d_002d-Check-that-a-coarray-or-a-part-of-it-is-allocated-on-the-remote-image"><span>7.2.14 <code class="code">_gfortran_caf_is_present_on_remote</code> &mdash; Check that a coarray or a part of it is allocated on the remote image<a class="copiable-link" href="#g_t_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote-_002d_002d_002d-Check-that-a-coarray-or-a-part-of-it-is-allocated-on-the-remote-image"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Coarray_002c-_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote"></a>
+
+<dl class="table">
+<dt><em class="emph">Synopsis</em>:</dt>
+<dd><p><code class="code">int32_t _gfortran_caf_is_present_on_remote (caf_token_t token,
+const int image_index, const int is_present_index, void *add_data,
+const size_t add_data_size)</code>
+</p>
+</dd>
+<dt><em class="emph">Description</em>:</dt>
+<dd><p>Check if an allocatable coarray or a component of a derived type coarray is
+allocated on the remote image identified by the <var class="var">image_index</var>.  The check
+is done by calling routine on the remote side.
+</p>
+</dd>
+<dt><em class="emph">Arguments</em>:</dt>
+<dd><table class="multitable">
+<tbody><tr><td width="15%"><var class="var">token</var></td><td width="70%">intent(in)  An opaque pointer identifying the coarray.</td></tr>
+<tr><td width="15%"><var class="var">image_index</var></td><td width="70%">intent(in)  The ID of the remote image; must be a
+positive number.  <code class="code">this_image ()</code> is valid.</td></tr>
+<tr><td width="15%"><var class="var">is_present_index</var></td><td width="70%">intent(in)  The index of the accessor to
+execute as returned by <code class="code">_gfortran_caf_get_remote_function_index ()</code>.</td></tr>
+<tr><td width="15%"><var class="var">add_data</var></td><td width="70%">intent(inout)  Additional data needed in the accessor.
+I.e., when an array reference uses a local variable <var class="var">v</var>, it is transported
+in this structure and all references in the accessor are rewritten to access the
+member.  The data in the structure of <var class="var">add_data</var> may be changed by the
+accessor, but these changes are lost to the calling Fortran program.</td></tr>
+<tr><td width="15%"><var class="var">add_data_size</var></td><td width="70%">intent(in)  The size of the <var class="var">add_data</var>
+structure.</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+
+
+</div>
+
+
+
+</body>
+</html>

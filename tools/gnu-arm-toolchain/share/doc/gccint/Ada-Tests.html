@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Ada Tests (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Ada Tests (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Ada Tests (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Testsuites.html" rel="up" title="Testsuites">
+<link href="C-Tests.html" rel="next" title="C Tests">
+<link href="Test-Directives.html" rel="prev" title="Test Directives">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Ada-Tests">
+<div class="nav-panel">
+<p>
+Next: <a href="C-Tests.html" accesskey="n" rel="next">C Language Testsuites</a>, Previous: <a href="Test-Directives.html" accesskey="p" rel="prev">Directives used within DejaGnu tests</a>, Up: <a href="Testsuites.html" accesskey="u" rel="up">Testsuites</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Ada-Language-Testsuites"><span>6.3 Ada Language Testsuites<a class="copiable-link" href="#Ada-Language-Testsuites"> &para;</a></span></h3>
+
+<p>The Ada testsuite includes executable tests from the ACATS
+testsuite, publicly available at
+<a class="uref" href="http://www.ada-auth.org/acats.html">http://www.ada-auth.org/acats.html</a>.
+</p>
+<p>These tests are integrated in the GCC testsuite in the
+<samp class="file">ada/acats</samp> directory, and
+enabled automatically when running <code class="code">make check</code>, assuming
+the Ada language has been enabled when configuring GCC.
+</p>
+<p>You can also run the Ada testsuite independently, using
+<code class="code">make check-ada</code>, or run a subset of the tests by specifying which
+chapter to run, e.g.:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ make check-ada CHAPTERS=&quot;c3 c9&quot;
+</pre></div>
+
+<p>The tests are organized by directory, each directory corresponding to
+a chapter of the Ada Reference Manual.  So for example, <samp class="file">c9</samp> corresponds
+to chapter 9, which deals with tasking features of the language.
+</p>
+<p>The tests are run using two <code class="command">sh</code> scripts: <samp class="file">run_acats</samp> and
+<samp class="file">run_all.sh</samp>.  To run the tests using a simulator or a cross
+target, see the small
+customization section at the top of <samp class="file">run_all.sh</samp>.
+</p>
+<p>These tests are run using the build tree: they can be run without doing
+a <code class="code">make install</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

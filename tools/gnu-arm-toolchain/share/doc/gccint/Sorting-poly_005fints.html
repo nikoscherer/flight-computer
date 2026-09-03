@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Sorting poly_ints (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Sorting poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Sorting poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparisons-involving-poly_005fint.html" rel="up" title="Comparisons involving poly_int">
+<link href="Range-checks-on-poly_005fints.html" rel="prev" title="Range checks on poly_ints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Sorting-poly_005fints">
+<div class="nav-panel">
+<p>
+Previous: <a href="Range-checks-on-poly_005fints.html" accesskey="p" rel="prev">Range checks on <code class="code">poly_int</code>s</a>, Up: <a href="Comparisons-involving-poly_005fint.html" accesskey="u" rel="up">Comparisons involving <code class="code">poly_int</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Sorting-poly_005fints-1"><span>9.3.7 Sorting <code class="code">poly_int</code>s<a class="copiable-link" href="#Sorting-poly_005fints-1"> &para;</a></span></h4>
+
+<p><code class="code">poly_int</code> provides the following routine for sorting:
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">compare_sizes_for_sort (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo;</dt>
+<dd><p>Compare <var class="var">a</var> and <var class="var">b</var> in reverse lexicographical order (that is,
+compare the highest-indexed coefficients first).  This can be useful when
+sorting data structures, since it has the effect of separating constant
+and non-constant values.  If all values are nonnegative, the constant
+values come first.
+</p>
+<p>Note that the values do not necessarily end up in numerical order.
+For example, &lsquo;<samp class="samp">1 + 1<var class="var">x</var></samp>&rsquo; would come after &lsquo;<samp class="samp">100</samp>&rsquo; in the sort order,
+but may well be less than &lsquo;<samp class="samp">100</samp>&rsquo; at run time.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

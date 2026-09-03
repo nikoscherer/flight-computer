@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Lazy Strings In Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Lazy Strings In Guile (Debugging with GDB)">
+<meta name="keywords" content="Lazy Strings In Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Architectures-In-Guile.html" rel="next" title="Architectures In Guile">
+<link href="Breakpoints-In-Guile.html" rel="prev" title="Breakpoints In Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Lazy-Strings-In-Guile">
+<div class="nav-panel">
+<p>
+Next: <a href="Architectures-In-Guile.html" accesskey="n" rel="next">Guile representation of architectures</a>, Previous: <a href="Breakpoints-In-Guile.html" accesskey="p" rel="prev">Manipulating breakpoints using Guile</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile-representation-of-lazy-strings_002e"><span>23.4.3.20 Guile representation of lazy strings.<a class="copiable-link" href="#Guile-representation-of-lazy-strings_002e"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-lazy-strings-in-guile"></a>
+<a class="index-entry-id" id="index-_003cgdb_003alazy_002dstring_003e"></a>
+
+<p>A <em class="dfn">lazy string</em> is a string whose contents is not retrieved or
+encoded until it is needed.
+</p>
+<p>A <code class="code">&lt;gdb:lazy-string&gt;</code> is represented in <small class="sc">GDB</small> as an
+<code class="code">address</code> that points to a region of memory, an <code class="code">encoding</code>
+that will be used to encode that region of memory, and a <code class="code">length</code>
+to delimit the region of memory that represents the string.  The
+difference between a <code class="code">&lt;gdb:lazy-string&gt;</code> and a string wrapped within
+a <code class="code">&lt;gdb:value&gt;</code> is that a <code class="code">&lt;gdb:lazy-string&gt;</code> will be treated
+differently by <small class="sc">GDB</small> when printing.  A <code class="code">&lt;gdb:lazy-string&gt;</code> is
+retrieved and encoded during printing, while a <code class="code">&lt;gdb:value&gt;</code>
+wrapping a string is immediately retrieved and encoded on creation.
+</p>
+<p>The following lazy-string-related procedures are provided by the
+<code class="code">(gdb)</code> module:
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lazy-string?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-lazy_002dstring_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:lazy-string&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002daddress"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lazy-string-address</strong> <var class="def-var-arguments">lazy-sring</var><a class="copiable-link" href="#index-lazy_002dstring_002daddress"> &para;</a></span></dt>
+<dd><p>Return the address of <var class="var">lazy-string</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002dlength"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lazy-string-length</strong> <var class="def-var-arguments">lazy-string</var><a class="copiable-link" href="#index-lazy_002dstring_002dlength"> &para;</a></span></dt>
+<dd><p>Return the length of <var class="var">lazy-string</var> in characters.  If the
+length is -1, then the string will be fetched and encoded up to the
+first null of appropriate width.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002dencoding"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lazy-string-encoding</strong> <var class="def-var-arguments">lazy-string</var><a class="copiable-link" href="#index-lazy_002dstring_002dencoding"> &para;</a></span></dt>
+<dd><p>Return the encoding that will be applied to <var class="var">lazy-string</var>
+when the string is printed by <small class="sc">GDB</small>.  If the encoding is not
+set, or contains an empty string,  then <small class="sc">GDB</small> will select the
+most appropriate encoding when the string is printed.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lazy-string-type</strong> <var class="def-var-arguments">lazy-string</var><a class="copiable-link" href="#index-lazy_002dstring_002dtype"> &para;</a></span></dt>
+<dd><p>Return the type that is represented by <var class="var">lazy-string</var>&rsquo;s type.
+For a lazy string this is a pointer or array type.  To
+resolve this to the lazy string&rsquo;s character type, use <code class="code">type-target-type</code>.
+See <a class="xref" href="Types-In-Guile.html">Types In Guile</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002d_003evalue"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">lazy-string-&gt;value</strong> <var class="def-var-arguments">lazy-string</var><a class="copiable-link" href="#index-lazy_002dstring_002d_003evalue"> &para;</a></span></dt>
+<dd><p>Convert the <code class="code">&lt;gdb:lazy-string&gt;</code> to a <code class="code">&lt;gdb:value&gt;</code>.  This value
+will point to the string in memory, but will lose all the delayed
+retrieval, encoding and handling that <small class="sc">GDB</small> applies to a
+<code class="code">&lt;gdb:lazy-string&gt;</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Architectures-In-Guile.html">Guile representation of architectures</a>, Previous: <a href="Breakpoints-In-Guile.html">Manipulating breakpoints using Guile</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

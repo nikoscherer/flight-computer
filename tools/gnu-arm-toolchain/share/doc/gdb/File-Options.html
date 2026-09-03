@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>File Options (Debugging with GDB)</title>
+
+<meta name="description" content="File Options (Debugging with GDB)">
+<meta name="keywords" content="File Options (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invoking-GDB.html" rel="up" title="Invoking GDB">
+<link href="Mode-Options.html" rel="next" title="Mode Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="File-Options">
+<div class="nav-panel">
+<p>
+Next: <a href="Mode-Options.html" accesskey="n" rel="next">Choosing Modes</a>, Up: <a href="Invoking-GDB.html" accesskey="u" rel="up">Invoking <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Choosing-Files"><span>2.1.1 Choosing Files<a class="copiable-link" href="#Choosing-Files"> &para;</a></span></h4>
+
+<p>When <small class="sc">GDB</small> starts, it reads any arguments other than options as
+specifying an executable file and core file (or process ID).  This is
+the same as if the arguments were specified by the &lsquo;<samp class="samp">-se</samp>&rsquo; and
+&lsquo;<samp class="samp">-c</samp>&rsquo; (or &lsquo;<samp class="samp">-p</samp>&rsquo;) options respectively.  (<small class="sc">GDB</small> reads the
+first argument that does not have an associated option flag as
+equivalent to the &lsquo;<samp class="samp">-se</samp>&rsquo; option followed by that argument; and the
+second argument that does not have an associated option flag, if any, as
+equivalent to the &lsquo;<samp class="samp">-c</samp>&rsquo;/&lsquo;<samp class="samp">-p</samp>&rsquo; option followed by that argument.)
+If the second argument begins with a decimal digit, <small class="sc">GDB</small> will
+first attempt to attach to it as a process, and if that fails, attempt
+to open it as a corefile.  If you have a corefile whose name begins with
+a digit, you can prevent <small class="sc">GDB</small> from treating it as a pid by
+prefixing it with <samp class="file">./</samp>, e.g. <samp class="file">./12345</samp>.
+</p>
+<p>If <small class="sc">GDB</small> has not been configured to included core file support,
+such as for most embedded targets, then it will complain about a second
+argument and ignore it.
+</p>
+<p>For the &lsquo;<samp class="samp">-s</samp>&rsquo;, &lsquo;<samp class="samp">-e</samp>&rsquo;, and &lsquo;<samp class="samp">-se</samp>&rsquo; options, and their long
+form equivalents, the method used to search the file system for the
+symbol and/or executable file is the same as that used by the
+<code class="code">file</code> command.  See <a class="xref" href="Files.html">file</a>.
+</p>
+<p>Many options have both long and short forms; both are shown in the
+following list.  <small class="sc">GDB</small> also recognizes the long forms if you truncate
+them, so long as enough of the option is present to be unambiguous.
+(If you prefer, you can flag option arguments with &lsquo;<samp class="samp">--</samp>&rsquo; rather
+than &lsquo;<samp class="samp">-</samp>&rsquo;, though we illustrate the more usual convention.)
+</p>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-_002ds"></a>
+<a id="index-_002d_002dsymbols"></a><span><code class="code">-symbols <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dsymbols"> &para;</a></span></dt>
+<dt><code class="code">-s <var class="var">file</var></code></dt>
+<dd><p>Read symbol table from file <var class="var">file</var>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002de"></a>
+<a id="index-_002d_002dexec"></a><span><code class="code">-exec <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dexec"> &para;</a></span></dt>
+<dt><code class="code">-e <var class="var">file</var></code></dt>
+<dd><p>Use file <var class="var">file</var> as the executable file to execute when appropriate,
+and for examining pure data in conjunction with a core dump.
+</p>
+</dd>
+<dt><a id="index-_002d_002dse"></a><span><code class="code">-se <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dse"> &para;</a></span></dt>
+<dd><p>Read symbol table from file <var class="var">file</var> and use it as the executable
+file.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dc"></a>
+<a id="index-_002d_002dcore"></a><span><code class="code">-core <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dcore"> &para;</a></span></dt>
+<dt><code class="code">-c <var class="var">file</var></code></dt>
+<dd><p>Use file <var class="var">file</var> as a core dump to examine.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dp"></a>
+<a id="index-_002d_002dpid"></a><span><code class="code">-pid <var class="var">number</var></code><a class="copiable-link" href="#index-_002d_002dpid"> &para;</a></span></dt>
+<dt><code class="code">-p <var class="var">number</var></code></dt>
+<dd><p>Connect to process ID <var class="var">number</var>, as with the <code class="code">attach</code> command.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dx"></a>
+<a id="index-_002d_002dcommand"></a><span><code class="code">-command <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-x <var class="var">file</var></code></dt>
+<dd><p>Execute commands from file <var class="var">file</var>.  The contents of this file is
+evaluated exactly as the <code class="code">source</code> command would.
+See <a class="xref" href="Command-Files.html">Command files</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dex"></a>
+<a id="index-_002d_002deval_002dcommand"></a><span><code class="code">-eval-command <var class="var">command</var></code><a class="copiable-link" href="#index-_002d_002deval_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-ex <var class="var">command</var></code></dt>
+<dd><p>Execute a single <small class="sc">GDB</small> command.
+</p>
+<p>This option may be used multiple times to call multiple commands.  It may
+also be interleaved with &lsquo;<samp class="samp">-command</samp>&rsquo; as required.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb -ex 'target sim' -ex 'load' \
+   -x setbreakpoints -ex 'run' a.out
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-_002dix"></a>
+<a id="index-_002d_002dinit_002dcommand"></a><span><code class="code">-init-command <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dinit_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-ix <var class="var">file</var></code></dt>
+<dd><p>Execute commands from file <var class="var">file</var> before loading the inferior (but
+after loading gdbinit files).
+See <a class="xref" href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002diex"></a>
+<a id="index-_002d_002dinit_002deval_002dcommand"></a><span><code class="code">-init-eval-command <var class="var">command</var></code><a class="copiable-link" href="#index-_002d_002dinit_002deval_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-iex <var class="var">command</var></code></dt>
+<dd><p>Execute a single <small class="sc">GDB</small> command before loading the inferior (but
+after loading gdbinit files).
+See <a class="xref" href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002deix"></a>
+<a id="index-_002d_002dearly_002dinit_002dcommand"></a><span><code class="code">-early-init-command <var class="var">file</var></code><a class="copiable-link" href="#index-_002d_002dearly_002dinit_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-eix <var class="var">file</var></code></dt>
+<dd><p>Execute commands from <var class="var">file</var> very early in the initialization
+process, before any output is produced.  See <a class="xref" href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002deiex"></a>
+<a id="index-_002d_002dearly_002dinit_002deval_002dcommand"></a><span><code class="code">-early-init-eval-command <var class="var">command</var></code><a class="copiable-link" href="#index-_002d_002dearly_002dinit_002deval_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-eiex <var class="var">command</var></code></dt>
+<dd><p>Execute a single <small class="sc">GDB</small> command very early in the initialization
+process, before any output is produced.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dd"></a>
+<a id="index-_002d_002ddirectory"></a><span><code class="code">-directory <var class="var">directory</var></code><a class="copiable-link" href="#index-_002d_002ddirectory"> &para;</a></span></dt>
+<dt><code class="code">-d <var class="var">directory</var></code></dt>
+<dd><p>Add <var class="var">directory</var> to the path to search for source and script files.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dr"></a>
+<a id="index-_002d_002dreadnow"></a><span><code class="code">-r</code><a class="copiable-link" href="#index-_002d_002dreadnow"> &para;</a></span></dt>
+<dt><code class="code">-readnow</code></dt>
+<dd><p>Read each symbol file&rsquo;s entire symbol table immediately, rather than
+the default, which is to read it incrementally as it is needed.
+This makes startup slower, but makes future operations faster.
+</p>
+</dd>
+<dt><code class="code">--readnever</code></dt>
+<dd><a class="anchor" id="g_t_002d_002dreadnever"></a><a class="index-entry-id" id="index-_002d_002dreadnever_002c-command_002dline-option"></a>
+<p>Do not read each symbol file&rsquo;s symbolic debug information.  This makes
+startup faster but at the expense of not being able to perform
+symbolic debugging.  DWARF unwind information is also not read,
+meaning backtraces may become incomplete or inaccurate.  One use of
+this is when a user simply wants to do the following sequence: attach,
+dump core, detach.  Loading the debugging information in this case is
+an unnecessary cause of delay.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Mode-Options.html">Choosing Modes</a>, Up: <a href="Invoking-GDB.html">Invoking <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

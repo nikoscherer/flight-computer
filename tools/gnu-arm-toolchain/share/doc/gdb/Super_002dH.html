@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Super-H (Debugging with GDB)</title>
+
+<meta name="description" content="Super-H (Debugging with GDB)">
+<meta name="keywords" content="Super-H (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Embedded-Processors.html" rel="up" title="Embedded Processors">
+<link href="CRIS.html" rel="prev" title="CRIS">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Super_002dH">
+<div class="nav-panel">
+<p>
+Previous: <a href="CRIS.html" accesskey="p" rel="prev">CRIS</a>, Up: <a href="Embedded-Processors.html" accesskey="u" rel="up">Embedded Processors</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Renesas-Super_002dH"><span>21.3.11 Renesas Super-H<a class="copiable-link" href="#Renesas-Super_002dH"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Super_002dH"></a>
+
+<p>For the Renesas Super-H processor, <small class="sc">GDB</small> provides these
+commands:
+</p>
+<dl class="table">
+<dt><a id="index-set-sh-calling_002dconvention"></a><span><code class="code">set sh calling-convention <var class="var">convention</var></code><a class="copiable-link" href="#index-set-sh-calling_002dconvention"> &para;</a></span></dt>
+<dd><p>Set the calling-convention used when calling functions from <small class="sc">GDB</small>.
+Allowed values are &lsquo;<samp class="samp">gcc</samp>&rsquo;, which is the default setting, and &lsquo;<samp class="samp">renesas</samp>&rsquo;.
+With the &lsquo;<samp class="samp">gcc</samp>&rsquo; setting, functions are called using the <small class="sc">GCC</small> calling
+convention.  If the DWARF-2 information of the called function specifies
+that the function follows the Renesas calling convention, the function
+is called using the Renesas calling convention.  If the calling convention
+is set to &lsquo;<samp class="samp">renesas</samp>&rsquo;, the Renesas calling convention is always used,
+regardless of the DWARF-2 information.  This can be used to override the
+default of &lsquo;<samp class="samp">gcc</samp>&rsquo; if debug information is missing, or the compiler
+does not emit the DWARF-2 calling convention entry for a function.
+</p>
+</dd>
+<dt><a id="index-show-sh-calling_002dconvention"></a><span><code class="code">show sh calling-convention</code><a class="copiable-link" href="#index-show-sh-calling_002dconvention"> &para;</a></span></dt>
+<dd><p>Show the current calling convention setting.
+</p>
+</dd>
+</dl>
+
+
+</div>
+
+
+
+</body>
+</html>

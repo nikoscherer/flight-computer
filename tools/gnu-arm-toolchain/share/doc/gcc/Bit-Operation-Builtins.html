@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the use of the GNU compilers.
+
+Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Bit Operation Builtins (Using the GNU Compiler Collection (GCC))</title>
+
+<meta name="description" content="Bit Operation Builtins (Using the GNU Compiler Collection (GCC))">
+<meta name="keywords" content="Bit Operation Builtins (Using the GNU Compiler Collection (GCC))">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Indices.html" rel="index" title="Indices">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Numeric-Builtins.html" rel="up" title="Numeric Builtins">
+<link href="Byte_002dSwapping-Builtins.html" rel="next" title="Byte-Swapping Builtins">
+<link href="Floating_002dPoint-Format-Builtins.html" rel="prev" title="Floating-Point Format Builtins">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en_US">
+<div class="subsection-level-extent" id="Bit-Operation-Builtins">
+<div class="nav-panel">
+<p>
+Next: <a href="Byte_002dSwapping-Builtins.html" accesskey="n" rel="next">Byte-Swapping Builtins</a>, Previous: <a href="Floating_002dPoint-Format-Builtins.html" accesskey="p" rel="prev">Floating-Point Format Builtins</a>, Up: <a href="Numeric-Builtins.html" accesskey="u" rel="up">Additional Builtins for Numeric Operations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Bit-Operation-Builtins-1"><span>7.2.2 Bit Operation Builtins<a class="copiable-link" href="#Bit-Operation-Builtins-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-bit-operation-builtins"></a>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fffs"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ffs</strong> <code class="def-code-arguments">(int <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fffs"> &para;</a></span></dt>
+<dd><p>Returns one plus the index of the least significant 1-bit of <var class="var">x</var>, or
+if <var class="var">x</var> is zero, returns zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclz"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clz</strong> <code class="def-code-arguments">(unsigned int <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclz"> &para;</a></span></dt>
+<dd><p>Returns the number of leading 0-bits in <var class="var">x</var>, starting at the most
+significant bit position.  If <var class="var">x</var> is 0, the result is undefined.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fctz"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ctz</strong> <code class="def-code-arguments">(unsigned int <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fctz"> &para;</a></span></dt>
+<dd><p>Returns the number of trailing 0-bits in <var class="var">x</var>, starting at the least
+significant bit position.  If <var class="var">x</var> is 0, the result is undefined.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclrsb"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clrsb</strong> <code class="def-code-arguments">(int <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclrsb"> &para;</a></span></dt>
+<dd><p>Returns the number of leading redundant sign bits in <var class="var">x</var>, i.e. the
+number of bits following the most significant bit that are identical
+to it.  There are no special cases for 0 or other values.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fpopcount"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_popcount</strong> <code class="def-code-arguments">(unsigned int <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fpopcount"> &para;</a></span></dt>
+<dd><p>Returns the number of 1-bits in <var class="var">x</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fparity"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_parity</strong> <code class="def-code-arguments">(unsigned int <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fparity"> &para;</a></span></dt>
+<dd><p>Returns the parity of <var class="var">x</var>, i.e. the number of 1-bits in <var class="var">x</var>
+modulo 2.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fffsl"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ffsl</strong> <code class="def-code-arguments">(long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fffsl"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_ffs</code>, except the argument type is
+<code class="code">long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclzl"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clzl</strong> <code class="def-code-arguments">(unsigned long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclzl"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_clz</code>, except the argument type is
+<code class="code">unsigned long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fctzl"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ctzl</strong> <code class="def-code-arguments">(unsigned long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fctzl"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_ctz</code>, except the argument type is
+<code class="code">unsigned long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclrsbl"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clrsbl</strong> <code class="def-code-arguments">(long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclrsbl"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_clrsb</code>, except the argument type is
+<code class="code">long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fpopcountl"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_popcountl</strong> <code class="def-code-arguments">(unsigned long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fpopcountl"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_popcount</code>, except the argument type is
+<code class="code">unsigned long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fparityl"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_parityl</strong> <code class="def-code-arguments">(unsigned long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fparityl"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_parity</code>, except the argument type is
+<code class="code">unsigned long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fffsll"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ffsll</strong> <code class="def-code-arguments">(long long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fffsll"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_ffs</code>, except the argument type is
+<code class="code">long long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclzll"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clzll</strong> <code class="def-code-arguments">(unsigned long long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclzll"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_clz</code>, except the argument type is
+<code class="code">unsigned long long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fctzll"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ctzll</strong> <code class="def-code-arguments">(unsigned long long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fctzll"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_ctz</code>, except the argument type is
+<code class="code">unsigned long long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclrsbll"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clrsbll</strong> <code class="def-code-arguments">(long long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclrsbll"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_clrsb</code>, except the argument type is
+<code class="code">long long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fpopcountll"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_popcountll</strong> <code class="def-code-arguments">(unsigned long long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fpopcountll"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_popcount</code>, except the argument type is
+<code class="code">unsigned long long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fparityll"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_parityll</strong> <code class="def-code-arguments">(unsigned long long)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fparityll"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_parity</code>, except the argument type is
+<code class="code">unsigned long long</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fffsg"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ffsg</strong> <code class="def-code-arguments">(...)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fffsg"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_ffs</code>, except the argument is type-generic
+signed integer (standard, extended or bit-precise).  No integral argument
+promotions are performed on the argument.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclzg"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clzg</strong> <code class="def-code-arguments">(...)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclzg"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_clz</code>, except the argument is type-generic
+unsigned integer (standard, extended or bit-precise) and there is
+optional second argument with int type.  No integral argument promotions
+are performed on the first argument.  If two arguments are specified,
+and first argument is 0, the result is the second argument.  If only
+one argument is specified and it is 0, the result is undefined.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fctzg"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_ctzg</strong> <code class="def-code-arguments">(...)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fctzg"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_ctz</code>, except the argument is type-generic
+unsigned integer (standard, extended or bit-precise) and there is
+optional second argument with int type.  No integral argument promotions
+are performed on the first argument.  If two arguments are specified,
+and first argument is 0, the result is the second argument.  If only
+one argument is specified and it is 0, the result is undefined.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fclrsbg"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_clrsbg</strong> <code class="def-code-arguments">(...)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fclrsbg"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_clrsb</code>, except the argument is type-generic
+signed integer (standard, extended or bit-precise).  No integral argument
+promotions are performed on the argument.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fpopcountg"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_popcountg</strong> <code class="def-code-arguments">(...)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fpopcountg"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_popcount</code>, except the argument is type-generic
+unsigned integer (standard, extended or bit-precise).  No integral argument
+promotions are performed on the argument.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fparityg"><span class="category-def">Built-in Function: </span><span><code class="def-type">int</code> <strong class="def-name">__builtin_parityg</strong> <code class="def-code-arguments">(...)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fparityg"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_parity</code>, except the argument is type-generic
+unsigned integer (standard, extended or bit-precise).  No integral argument
+promotions are performed on the argument.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fbit_005fceil"><span class="category-def">Built-in Function: </span><span><code class="def-type"><var class="var">type</var></code> <strong class="def-name">__builtin_stdc_bit_ceil</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fbit_005fceil"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_bit_ceil</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code"><var class="var">arg</var> &lt;= 1 ? (<var class="var">type</var>) 1
+: (<var class="var">type</var>) 2 &lt;&lt; (<var class="var">prec</var> - 1 - __builtin_clzg ((<var class="var">type</var>) (<var class="var">arg</var> - 1)))</code>
+where <var class="var">prec</var> is bit width of <var class="var">type</var>, except that side-effects
+in <var class="var">arg</var> are evaluated just once.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fbit_005ffloor"><span class="category-def">Built-in Function: </span><span><code class="def-type"><var class="var">type</var></code> <strong class="def-name">__builtin_stdc_bit_floor</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fbit_005ffloor"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_bit_floor</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code"><var class="var">arg</var> == 0 ? (<var class="var">type</var>) 0
+: (<var class="var">type</var>) 1 &lt;&lt; (<var class="var">prec</var> - 1 - __builtin_clzg (<var class="var">arg</var>))</code>
+where <var class="var">prec</var> is bit width of <var class="var">type</var>, except that side-effects
+in <var class="var">arg</var> are evaluated just once.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fbit_005fwidth"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_bit_width</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fbit_005fwidth"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_bit_width</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) (<var class="var">prec</var> - __builtin_clzg (<var class="var">arg</var>, <var class="var">prec</var>))</code>
+where <var class="var">prec</var> is bit width of <var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fcount_005fones"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_count_ones</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fcount_005fones"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_count_ones</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) __builtin_popcountg (<var class="var">arg</var>)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fcount_005fzeros"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_count_zeros</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fcount_005fzeros"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_count_zeros</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) __builtin_popcountg ((<var class="var">type</var>) ~<var class="var">arg</var>)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005ffirst_005fleading_005fone"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_first_leading_one</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005ffirst_005fleading_005fone"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_first_leading_one</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">__builtin_clzg (<var class="var">arg</var>, -1) + 1U</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005ffirst_005fleading_005fzero"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_first_leading_zero</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005ffirst_005fleading_005fzero"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_first_leading_zero</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">__builtin_clzg ((<var class="var">type</var>) ~<var class="var">arg</var>, -1) + 1U</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005ffirst_005ftrailing_005fone"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_first_trailing_one</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005ffirst_005ftrailing_005fone"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_first_trailing_one</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">__builtin_ctzg (<var class="var">arg</var>, -1) + 1U</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005ffirst_005ftrailing_005fzero"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_first_trailing_zero</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005ffirst_005ftrailing_005fzero"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_first_trailing_zero</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">__builtin_ctzg ((<var class="var">type</var>) ~<var class="var">arg</var>, -1) + 1U</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fhas_005fsingle_005fbit"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_has_single_bit</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fhas_005fsingle_005fbit"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_has_single_bit</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(_Bool) (__builtin_popcountg (<var class="var">arg</var>) == 1)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fleading_005fones"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_leading_ones</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fleading_005fones"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_leading_ones</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) __builtin_clzg ((<var class="var">type</var>) ~<var class="var">arg</var>, <var class="var">prec</var>)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005fleading_005fzeros"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_leading_zeros</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005fleading_005fzeros"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_leading_zeros</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) __builtin_clzg (<var class="var">arg</var>, <var class="var">prec</var>)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005ftrailing_005fones"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_trailing_ones</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005ftrailing_005fones"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_trailing_ones</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) __builtin_ctzg ((<var class="var">type</var>) ~<var class="var">arg</var>, <var class="var">prec</var>)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005ftrailing_005fzeros"><span class="category-def">Built-in Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__builtin_stdc_trailing_zeros</strong> <code class="def-code-arguments">(<var class="var">type</var> <var class="var">arg</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005ftrailing_005fzeros"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_trailing_zeros</code> function is available only
+in C.  It is type-generic, the argument can be any unsigned integer
+(standard, extended or bit-precise).  No integral argument promotions are
+performed on the argument.  It is equivalent to
+<code class="code">(unsigned int) __builtin_ctzg (<var class="var">arg</var>, <var class="var">prec</var>)</code>
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005frotate_005fleft"><span class="category-def">Built-in Function: </span><span><code class="def-type"><var class="var">type1</var></code> <strong class="def-name">__builtin_stdc_rotate_left</strong> <code class="def-code-arguments">(<var class="var">type1</var> <var class="var">arg1</var>, <var class="var">type2</var> <var class="var">arg2</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005frotate_005fleft"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_rotate_left</code> function is available only
+in C.  It is type-generic, the first argument can be any unsigned integer
+(standard, extended or bit-precise) and second argument any signed or
+unsigned integer or <code class="code">char</code>.  No integral argument promotions are
+performed on the arguments.  It is equivalent to
+<code class="code">(<var class="var">type1</var>) ((<var class="var">arg1</var> &lt;&lt; (<var class="var">arg2</var> % <var class="var">prec</var>))
+| (<var class="var">arg1</var> &gt;&gt; ((-(unsigned <var class="var">type2</var>) <var class="var">arg2</var>) % <var class="var">prec</var>)))</code>
+where <var class="var">prec</var> is bit width of <var class="var">type1</var>, except that side-effects
+in <var class="var">arg1</var> and <var class="var">arg2</var> are evaluated just once.  The behavior is
+undefined if <var class="var">arg2</var> is negative.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fstdc_005frotate_005fright"><span class="category-def">Built-in Function: </span><span><code class="def-type"><var class="var">type1</var></code> <strong class="def-name">__builtin_stdc_rotate_right</strong> <code class="def-code-arguments">(<var class="var">type1</var> <var class="var">arg1</var>, <var class="var">type2</var> <var class="var">arg2</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fstdc_005frotate_005fright"> &para;</a></span></dt>
+<dd><p>The <code class="code">__builtin_stdc_rotate_right</code> function is available only
+in C.  It is type-generic, the first argument can be any unsigned integer
+(standard, extended or bit-precise) and second argument any signed or
+unsigned integer or <code class="code">char</code>.  No integral argument promotions are
+performed on the arguments.  It is equivalent to
+<code class="code">(<var class="var">type1</var>) ((<var class="var">arg1</var> &gt;&gt; (<var class="var">arg2</var> % <var class="var">prec</var>))
+| (<var class="var">arg1</var> &lt;&lt; ((-(unsigned <var class="var">type2</var>) <var class="var">arg2</var>) % <var class="var">prec</var>)))</code>
+where <var class="var">prec</var> is bit width of <var class="var">type1</var>, except that side-effects
+in <var class="var">arg1</var> and <var class="var">arg2</var> are evaluated just once.  The behavior is
+undefined if <var class="var">arg2</var> is negative.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Byte_002dSwapping-Builtins.html">Byte-Swapping Builtins</a>, Previous: <a href="Floating_002dPoint-Format-Builtins.html">Floating-Point Format Builtins</a>, Up: <a href="Numeric-Builtins.html">Additional Builtins for Numeric Operations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

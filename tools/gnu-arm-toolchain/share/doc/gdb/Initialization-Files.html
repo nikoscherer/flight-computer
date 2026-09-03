@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Initialization Files (Debugging with GDB)</title>
+
+<meta name="description" content="Initialization Files (Debugging with GDB)">
+<meta name="keywords" content="Initialization Files (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invoking-GDB.html" rel="up" title="Invoking GDB">
+<link href="Startup.html" rel="prev" title="Startup">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Initialization-Files">
+<div class="nav-panel">
+<p>
+Previous: <a href="Startup.html" accesskey="p" rel="prev">What <small class="sc">GDB</small> Does During Startup</a>, Up: <a href="Invoking-GDB.html" accesskey="u" rel="up">Invoking <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Initialization-Files-1"><span>2.1.4 Initialization Files<a class="copiable-link" href="#Initialization-Files-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-init-file-name"></a>
+
+<p>During startup (see <a class="pxref" href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>) <small class="sc">GDB</small> will execute commands
+from several initialization files.  These initialization files use the
+same syntax as <em class="dfn">command files</em> (see <a class="pxref" href="Command-Files.html">Command Files</a>) and are
+processed by <small class="sc">GDB</small> in the same way.
+</p>
+<p>To display the list of initialization files loaded by <small class="sc">GDB</small> at
+startup, in the order they will be loaded, you can use <kbd class="kbd">gdb
+--help</kbd>.
+</p>
+<a class="index-entry-id" id="index-early-initialization"></a>
+<p>The <em class="dfn">early initialization</em> file is loaded very early in
+<small class="sc">GDB</small>&rsquo;s initialization process, before the interpreter
+(see <a class="pxref" href="Interpreters.html">Command Interpreters</a>) has been initialized, and before the default
+target (see <a class="pxref" href="Targets.html">Specifying a Debugging Target</a>) is initialized.  Only <code class="code">set</code> or
+<code class="code">source</code> commands should be placed into an early initialization
+file, and the only <code class="code">set</code> commands that can be used are those that
+control how <small class="sc">GDB</small> starts up.
+</p>
+<p>Commands that can be placed into an early initialization file will be
+documented as such throughout this manual.  Any command that is not
+documented as being suitable for an early initialization file should
+instead be placed into a general initialization file.  Command files
+passed to <code class="code">--early-init-command</code> or <code class="code">-eix</code> are also early
+initialization files, with the same command restrictions.  Only
+commands that can appear in an early initialization file should be
+passed to <code class="code">--early-init-eval-command</code> or <code class="code">-eiex</code>.
+</p>
+<a class="index-entry-id" id="index-general-initialization"></a>
+<p>In contrast, the <em class="dfn">general initialization</em> files are processed
+later, after <small class="sc">GDB</small> has finished its own internal initialization
+process, any valid command can be used in these files.
+</p>
+<a class="index-entry-id" id="index-initialization-file"></a>
+<p>Throughout the rest of this document the term <em class="dfn">initialization
+file</em> refers to one of the general initialization files, not the early
+initialization file.  Any discussion of the early initialization file
+will specifically mention that it is the early initialization file
+being discussed.
+</p>
+<p>As the system wide and home directory initialization files are
+processed before most command line options, changes to settings
+(e.g. &lsquo;<samp class="samp">set complaints</samp>&rsquo;) can affect subsequent processing of
+command line options and operands.
+</p>
+<p>The following sections describe where <small class="sc">GDB</small> looks for the early
+initialization and initialization files, and the order that the files
+are searched for.
+</p>
+<ul class="mini-toc">
+<li><a href="#Home-directory-early-initialization-files" accesskey="1">Home directory early initialization files</a></li>
+<li><a href="#System-wide-initialization-files" accesskey="2">System wide initialization files</a></li>
+<li><a href="#Home-directory-initialization-file" accesskey="3">Home directory initialization file</a></li>
+<li><a href="#Local-directory-initialization-file" accesskey="4">Local directory initialization file</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Home-directory-early-initialization-files">
+<h4 class="subsubsection"><span>2.1.4.1 Home directory early initialization files<a class="copiable-link" href="#Home-directory-early-initialization-files"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> initially looks for an early initialization file in the
+users home directory<a class="footnote" id="DOCF1" href="#FOOT1"><sup>1</sup></a>.  There are a number of locations that <small class="sc">GDB</small> will
+search in the home directory, these locations are searched in order
+and <small class="sc">GDB</small> will load the first file that it finds, and
+subsequent locations will not be checked.
+</p>
+<p>On non-macOS hosts the locations searched are:
+</p><ul class="itemize mark-bullet">
+<li>The file <samp class="file">gdb/gdbearlyinit</samp> within the directory pointed to by the
+environment variable <code class="env">XDG_CONFIG_HOME</code>, if it is defined.
+</li><li>The file <samp class="file">.config/gdb/gdbearlyinit</samp> within the directory pointed to
+by the environment variable <code class="env">HOME</code>, if it is defined.
+</li><li>The file <samp class="file">.gdbearlyinit</samp> within the directory pointed to by the
+environment variable <code class="env">HOME</code>, if it is defined.
+</li></ul>
+
+<p>By contrast, on macOS hosts the locations searched are:
+</p><ul class="itemize mark-bullet">
+<li>The file <samp class="file">Library/Preferences/gdb/gdbearlyinit</samp> within the
+directory pointed to by the environment variable <code class="env">HOME</code>, if it is
+defined.
+</li><li>The file <samp class="file">.gdbearlyinit</samp> within the directory pointed to by the
+environment variable <code class="env">HOME</code>, if it is defined.
+</li></ul>
+
+<p>It is possible to prevent the home directory early initialization file
+from being loaded using the &lsquo;<samp class="samp">-nx</samp>&rsquo; or &lsquo;<samp class="samp">-nh</samp>&rsquo; command line
+options, see <a class="pxref" href="Mode-Options.html">Choosing Modes</a>.
+</p>
+<a class="anchor" id="System-Wide-Init-Files"></a></div>
+<div class="subsubsection-level-extent" id="System-wide-initialization-files">
+<h4 class="subsubsection"><span>2.1.4.2 System wide initialization files<a class="copiable-link" href="#System-wide-initialization-files"> &para;</a></span></h4>
+
+<p>There are two locations that are searched for system wide
+initialization files.  Both of these locations are always checked:
+</p>
+<dl class="table">
+<dt><code class="code"><samp class="file">system.gdbinit</samp></code></dt>
+<dd><p>This is a single system-wide initialization file.  Its location is
+specified with the <code class="code">--with-system-gdbinit</code> configure option
+(see <a class="pxref" href="System_002dwide-configuration.html">System-wide configuration and settings</a>).  It is loaded first when
+<small class="sc">GDB</small> starts, before command line options have been processed.
+</p>
+</dd>
+<dt><code class="code"><samp class="file">system.gdbinit.d</samp></code></dt>
+<dd><p>This is the system-wide initialization directory.  Its location is
+specified with the <code class="code">--with-system-gdbinit-dir</code> configure option
+(see <a class="pxref" href="System_002dwide-configuration.html">System-wide configuration and settings</a>).  Files in this directory are
+loaded in alphabetical order immediately after <samp class="file">system.gdbinit</samp>
+(if enabled) when <small class="sc">GDB</small> starts, before command line options
+have been processed.  Files need to have a recognized scripting
+language extension (<samp class="file">.py</samp>/<samp class="file">.scm</samp>) or be named with a
+<samp class="file">.gdb</samp> extension to be interpreted as regular <small class="sc">GDB</small>
+commands.  <small class="sc">GDB</small> will not recurse into any subdirectories of
+this directory.
+</p>
+</dd>
+</dl>
+
+<p>It is possible to prevent the system wide initialization files from
+being loaded using the &lsquo;<samp class="samp">-nx</samp>&rsquo; command line option, see <a class="pxref" href="Mode-Options.html">Choosing Modes</a>.
+</p>
+<a class="anchor" id="Home-Directory-Init-File"></a></div>
+<div class="subsubsection-level-extent" id="Home-directory-initialization-file">
+<h4 class="subsubsection"><span>2.1.4.3 Home directory initialization file<a class="copiable-link" href="#Home-directory-initialization-file"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdbinit"></a>
+<a class="index-entry-id" id="index-_002egdbinit"></a>
+<a class="index-entry-id" id="index-gdb_002eini"></a>
+
+<p>After loading the system wide initialization files <small class="sc">GDB</small> will
+look for an initialization file in the users home
+directory<a class="footnote" id="DOCF2" href="#FOOT2"><sup>2</sup></a>.  There are a
+number of locations that <small class="sc">GDB</small> will search in the home
+directory, these locations are searched in order and <small class="sc">GDB</small> will
+load the first file that it finds, and subsequent locations will not
+be checked.
+</p>
+<p>On non-Apple hosts the locations searched are:
+</p><dl class="table">
+<dt><samp class="file">$XDG_CONFIG_HOME/gdb/gdbinit</samp></dt>
+<dt><samp class="file">$HOME/.config/gdb/gdbinit</samp></dt>
+<dt><samp class="file">$HOME/.gdbinit</samp></dt>
+</dl>
+
+<p>While on Apple hosts the locations searched are:
+</p><dl class="table">
+<dt><samp class="file">$HOME/Library/Preferences/gdb/gdbinit</samp></dt>
+<dt><samp class="file">$HOME/.gdbinit</samp></dt>
+</dl>
+
+<p>It is possible to prevent the home directory initialization file from
+being loaded using the &lsquo;<samp class="samp">-nx</samp>&rsquo; or &lsquo;<samp class="samp">-nh</samp>&rsquo; command line options,
+see <a class="pxref" href="Mode-Options.html">Choosing Modes</a>.
+</p>
+<p>The DJGPP port of <small class="sc">GDB</small> uses the name <samp class="file">gdb.ini</samp> instead of
+<samp class="file">.gdbinit</samp> or <samp class="file">gdbinit</samp>, due to the limitations of file
+names imposed by DOS filesystems.  The Windows port of <small class="sc">GDB</small>
+uses the standard name, but if it finds a <samp class="file">gdb.ini</samp> file in your
+home directory, it warns you about that and suggests to rename the
+file to the standard name.
+</p>
+<a class="anchor" id="Init-File-in-the-Current-Directory-during-Startup"></a></div>
+<div class="subsubsection-level-extent" id="Local-directory-initialization-file">
+<h4 class="subsubsection"><span>2.1.4.4 Local directory initialization file<a class="copiable-link" href="#Local-directory-initialization-file"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> will check the current directory for a file called
+<samp class="file">.gdbinit</samp>.  It is loaded last, after command line options
+other than &lsquo;<samp class="samp">-x</samp>&rsquo; and &lsquo;<samp class="samp">-ex</samp>&rsquo; have been processed.  The command
+line options &lsquo;<samp class="samp">-x</samp>&rsquo; and &lsquo;<samp class="samp">-ex</samp>&rsquo; are processed last, after
+<samp class="file">.gdbinit</samp> has been loaded, see <a class="pxref" href="File-Options.html">Choosing
+Files</a>.
+</p>
+<p>If the file in the current directory was already loaded as the home
+directory initialization file then it will not be loaded a second
+time.
+</p>
+<p>It is possible to prevent the local directory initialization file from
+being loaded using the &lsquo;<samp class="samp">-nx</samp>&rsquo; command line option, see <a class="pxref" href="Mode-Options.html">Choosing Modes</a>.
+</p>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT1" href="#DOCF1">(1)</a></h5>
+<p>On DOS/Windows systems, the home
+directory is the one pointed to by the <code class="env">HOME</code> environment
+variable.</p>
+<h5 class="footnote-body-heading"><a id="FOOT2" href="#DOCF2">(2)</a></h5>
+<p>On DOS/Windows systems, the home directory is the
+one pointed to by the <code class="env">HOME</code> environment variable.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Startup.html">What <small class="sc">GDB</small> Does During Startup</a>, Up: <a href="Invoking-GDB.html">Invoking <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

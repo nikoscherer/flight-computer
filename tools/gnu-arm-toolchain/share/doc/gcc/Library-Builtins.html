@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the use of the GNU compilers.
+
+Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Library Builtins (Using the GNU Compiler Collection (GCC))</title>
+
+<meta name="description" content="Library Builtins (Using the GNU Compiler Collection (GCC))">
+<meta name="keywords" content="Library Builtins (Using the GNU Compiler Collection (GCC))">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Indices.html" rel="index" title="Indices">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Built_002din-Functions.html" rel="up" title="Built-in Functions">
+<link href="Numeric-Builtins.html" rel="next" title="Numeric Builtins">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en_US">
+<div class="section-level-extent" id="Library-Builtins">
+<div class="nav-panel">
+<p>
+Next: <a href="Numeric-Builtins.html" accesskey="n" rel="next">Additional Builtins for Numeric Operations</a>, Up: <a href="Built_002din-Functions.html" accesskey="u" rel="up">Built-in Functions Provided by GCC</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Builtins-for-C-Library-Functions"><span>7.1 Builtins for C Library Functions<a class="copiable-link" href="#Builtins-for-C-Library-Functions"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-built_002din-library-functions"></a>
+<a class="index-entry-id" id="index-library-function-builtins"></a>
+<a class="index-entry-id" id="index-C-library-function-builtins"></a>
+
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fiseqsig"></a>
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fisfinite"></a>
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fisnormal"></a>
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fisgreater"></a>
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fisgreaterequal"></a>
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fisunordered"></a>
+<a class="index-entry-id" id="index-_005f_005fbuiltin_005fspeculation_005fsafe_005fvalue"></a>
+<a class="index-entry-id" id="index-_005fExit"></a>
+<a class="index-entry-id" id="index-_005fexit"></a>
+<a class="index-entry-id" id="index-abort"></a>
+<a class="index-entry-id" id="index-abs"></a>
+<a class="index-entry-id" id="index-acos"></a>
+<a class="index-entry-id" id="index-acosf"></a>
+<a class="index-entry-id" id="index-acosh"></a>
+<a class="index-entry-id" id="index-acoshf"></a>
+<a class="index-entry-id" id="index-acoshl"></a>
+<a class="index-entry-id" id="index-acosl"></a>
+<a class="index-entry-id" id="index-alloca"></a>
+<a class="index-entry-id" id="index-asin"></a>
+<a class="index-entry-id" id="index-asinf"></a>
+<a class="index-entry-id" id="index-asinh"></a>
+<a class="index-entry-id" id="index-asinhf"></a>
+<a class="index-entry-id" id="index-asinhl"></a>
+<a class="index-entry-id" id="index-asinl"></a>
+<a class="index-entry-id" id="index-atan"></a>
+<a class="index-entry-id" id="index-atan2"></a>
+<a class="index-entry-id" id="index-atan2f"></a>
+<a class="index-entry-id" id="index-atan2l"></a>
+<a class="index-entry-id" id="index-atanf"></a>
+<a class="index-entry-id" id="index-atanh"></a>
+<a class="index-entry-id" id="index-atanhf"></a>
+<a class="index-entry-id" id="index-atanhl"></a>
+<a class="index-entry-id" id="index-atanl"></a>
+<a class="index-entry-id" id="index-bcmp"></a>
+<a class="index-entry-id" id="index-bzero"></a>
+<a class="index-entry-id" id="index-cabs"></a>
+<a class="index-entry-id" id="index-cabsf"></a>
+<a class="index-entry-id" id="index-cabsl"></a>
+<a class="index-entry-id" id="index-cacos"></a>
+<a class="index-entry-id" id="index-cacosf"></a>
+<a class="index-entry-id" id="index-cacosh"></a>
+<a class="index-entry-id" id="index-cacoshf"></a>
+<a class="index-entry-id" id="index-cacoshl"></a>
+<a class="index-entry-id" id="index-cacosl"></a>
+<a class="index-entry-id" id="index-calloc"></a>
+<a class="index-entry-id" id="index-carg"></a>
+<a class="index-entry-id" id="index-cargf"></a>
+<a class="index-entry-id" id="index-cargl"></a>
+<a class="index-entry-id" id="index-casin"></a>
+<a class="index-entry-id" id="index-casinf"></a>
+<a class="index-entry-id" id="index-casinh"></a>
+<a class="index-entry-id" id="index-casinhf"></a>
+<a class="index-entry-id" id="index-casinhl"></a>
+<a class="index-entry-id" id="index-casinl"></a>
+<a class="index-entry-id" id="index-catan"></a>
+<a class="index-entry-id" id="index-catanf"></a>
+<a class="index-entry-id" id="index-catanh"></a>
+<a class="index-entry-id" id="index-catanhf"></a>
+<a class="index-entry-id" id="index-catanhl"></a>
+<a class="index-entry-id" id="index-catanl"></a>
+<a class="index-entry-id" id="index-cbrt"></a>
+<a class="index-entry-id" id="index-cbrtf"></a>
+<a class="index-entry-id" id="index-cbrtl"></a>
+<a class="index-entry-id" id="index-ccos"></a>
+<a class="index-entry-id" id="index-ccosf"></a>
+<a class="index-entry-id" id="index-ccosh"></a>
+<a class="index-entry-id" id="index-ccoshf"></a>
+<a class="index-entry-id" id="index-ccoshl"></a>
+<a class="index-entry-id" id="index-ccosl"></a>
+<a class="index-entry-id" id="index-ceil"></a>
+<a class="index-entry-id" id="index-ceilf"></a>
+<a class="index-entry-id" id="index-ceill"></a>
+<a class="index-entry-id" id="index-cexp"></a>
+<a class="index-entry-id" id="index-cexpf"></a>
+<a class="index-entry-id" id="index-cexpl"></a>
+<a class="index-entry-id" id="index-cimag"></a>
+<a class="index-entry-id" id="index-cimagf"></a>
+<a class="index-entry-id" id="index-cimagl"></a>
+<a class="index-entry-id" id="index-clog"></a>
+<a class="index-entry-id" id="index-clogf"></a>
+<a class="index-entry-id" id="index-clogl"></a>
+<a class="index-entry-id" id="index-clog10"></a>
+<a class="index-entry-id" id="index-clog10f"></a>
+<a class="index-entry-id" id="index-clog10l"></a>
+<a class="index-entry-id" id="index-conj"></a>
+<a class="index-entry-id" id="index-conjf"></a>
+<a class="index-entry-id" id="index-conjl"></a>
+<a class="index-entry-id" id="index-copysign"></a>
+<a class="index-entry-id" id="index-copysignf"></a>
+<a class="index-entry-id" id="index-copysignl"></a>
+<a class="index-entry-id" id="index-cos"></a>
+<a class="index-entry-id" id="index-cosf"></a>
+<a class="index-entry-id" id="index-cosh"></a>
+<a class="index-entry-id" id="index-coshf"></a>
+<a class="index-entry-id" id="index-coshl"></a>
+<a class="index-entry-id" id="index-cosl"></a>
+<a class="index-entry-id" id="index-cpow"></a>
+<a class="index-entry-id" id="index-cpowf"></a>
+<a class="index-entry-id" id="index-cpowl"></a>
+<a class="index-entry-id" id="index-cproj"></a>
+<a class="index-entry-id" id="index-cprojf"></a>
+<a class="index-entry-id" id="index-cprojl"></a>
+<a class="index-entry-id" id="index-creal"></a>
+<a class="index-entry-id" id="index-crealf"></a>
+<a class="index-entry-id" id="index-creall"></a>
+<a class="index-entry-id" id="index-csin"></a>
+<a class="index-entry-id" id="index-csinf"></a>
+<a class="index-entry-id" id="index-csinh"></a>
+<a class="index-entry-id" id="index-csinhf"></a>
+<a class="index-entry-id" id="index-csinhl"></a>
+<a class="index-entry-id" id="index-csinl"></a>
+<a class="index-entry-id" id="index-csqrt"></a>
+<a class="index-entry-id" id="index-csqrtf"></a>
+<a class="index-entry-id" id="index-csqrtl"></a>
+<a class="index-entry-id" id="index-ctan"></a>
+<a class="index-entry-id" id="index-ctanf"></a>
+<a class="index-entry-id" id="index-ctanh"></a>
+<a class="index-entry-id" id="index-ctanhf"></a>
+<a class="index-entry-id" id="index-ctanhl"></a>
+<a class="index-entry-id" id="index-ctanl"></a>
+<a class="index-entry-id" id="index-dcgettext"></a>
+<a class="index-entry-id" id="index-dgettext"></a>
+<a class="index-entry-id" id="index-drem"></a>
+<a class="index-entry-id" id="index-dremf"></a>
+<a class="index-entry-id" id="index-dreml"></a>
+<a class="index-entry-id" id="index-erf"></a>
+<a class="index-entry-id" id="index-erfc"></a>
+<a class="index-entry-id" id="index-erfcf"></a>
+<a class="index-entry-id" id="index-erfcl"></a>
+<a class="index-entry-id" id="index-erff"></a>
+<a class="index-entry-id" id="index-erfl"></a>
+<a class="index-entry-id" id="index-exit"></a>
+<a class="index-entry-id" id="index-exp"></a>
+<a class="index-entry-id" id="index-exp10"></a>
+<a class="index-entry-id" id="index-exp10f"></a>
+<a class="index-entry-id" id="index-exp10l"></a>
+<a class="index-entry-id" id="index-exp2"></a>
+<a class="index-entry-id" id="index-exp2f"></a>
+<a class="index-entry-id" id="index-exp2l"></a>
+<a class="index-entry-id" id="index-expf"></a>
+<a class="index-entry-id" id="index-expl"></a>
+<a class="index-entry-id" id="index-expm1"></a>
+<a class="index-entry-id" id="index-expm1f"></a>
+<a class="index-entry-id" id="index-expm1l"></a>
+<a class="index-entry-id" id="index-fabs"></a>
+<a class="index-entry-id" id="index-fabsf"></a>
+<a class="index-entry-id" id="index-fabsl"></a>
+<a class="index-entry-id" id="index-fdim"></a>
+<a class="index-entry-id" id="index-fdimf"></a>
+<a class="index-entry-id" id="index-fdiml"></a>
+<a class="index-entry-id" id="index-ffs"></a>
+<a class="index-entry-id" id="index-floor"></a>
+<a class="index-entry-id" id="index-floorf"></a>
+<a class="index-entry-id" id="index-floorl"></a>
+<a class="index-entry-id" id="index-fma"></a>
+<a class="index-entry-id" id="index-fmaf"></a>
+<a class="index-entry-id" id="index-fmal"></a>
+<a class="index-entry-id" id="index-fmax"></a>
+<a class="index-entry-id" id="index-fmaxf"></a>
+<a class="index-entry-id" id="index-fmaxl"></a>
+<a class="index-entry-id" id="index-fmin"></a>
+<a class="index-entry-id" id="index-fminf"></a>
+<a class="index-entry-id" id="index-fminl"></a>
+<a class="index-entry-id" id="index-fmod"></a>
+<a class="index-entry-id" id="index-fmodf"></a>
+<a class="index-entry-id" id="index-fmodl"></a>
+<a class="index-entry-id" id="index-fprintf"></a>
+<a class="index-entry-id" id="index-fprintf_005funlocked"></a>
+<a class="index-entry-id" id="index-fputs"></a>
+<a class="index-entry-id" id="index-fputs_005funlocked"></a>
+<a class="index-entry-id" id="index-free"></a>
+<a class="index-entry-id" id="index-frexp"></a>
+<a class="index-entry-id" id="index-frexpf"></a>
+<a class="index-entry-id" id="index-frexpl"></a>
+<a class="index-entry-id" id="index-fscanf"></a>
+<a class="index-entry-id" id="index-gamma"></a>
+<a class="index-entry-id" id="index-gammaf"></a>
+<a class="index-entry-id" id="index-gammal"></a>
+<a class="index-entry-id" id="index-gamma_005fr"></a>
+<a class="index-entry-id" id="index-gammaf_005fr"></a>
+<a class="index-entry-id" id="index-gammal_005fr"></a>
+<a class="index-entry-id" id="index-gettext"></a>
+<a class="index-entry-id" id="index-hypot"></a>
+<a class="index-entry-id" id="index-hypotf"></a>
+<a class="index-entry-id" id="index-hypotl"></a>
+<a class="index-entry-id" id="index-ilogb"></a>
+<a class="index-entry-id" id="index-ilogbf"></a>
+<a class="index-entry-id" id="index-ilogbl"></a>
+<a class="index-entry-id" id="index-imaxabs"></a>
+<a class="index-entry-id" id="index-index"></a>
+<a class="index-entry-id" id="index-isalnum"></a>
+<a class="index-entry-id" id="index-isalpha"></a>
+<a class="index-entry-id" id="index-isascii"></a>
+<a class="index-entry-id" id="index-isblank"></a>
+<a class="index-entry-id" id="index-iscntrl"></a>
+<a class="index-entry-id" id="index-isdigit"></a>
+<a class="index-entry-id" id="index-isgraph"></a>
+<a class="index-entry-id" id="index-islower"></a>
+<a class="index-entry-id" id="index-isprint"></a>
+<a class="index-entry-id" id="index-ispunct"></a>
+<a class="index-entry-id" id="index-isspace"></a>
+<a class="index-entry-id" id="index-isupper"></a>
+<a class="index-entry-id" id="index-iswalnum"></a>
+<a class="index-entry-id" id="index-iswalpha"></a>
+<a class="index-entry-id" id="index-iswblank"></a>
+<a class="index-entry-id" id="index-iswcntrl"></a>
+<a class="index-entry-id" id="index-iswdigit"></a>
+<a class="index-entry-id" id="index-iswgraph"></a>
+<a class="index-entry-id" id="index-iswlower"></a>
+<a class="index-entry-id" id="index-iswprint"></a>
+<a class="index-entry-id" id="index-iswpunct"></a>
+<a class="index-entry-id" id="index-iswspace"></a>
+<a class="index-entry-id" id="index-iswupper"></a>
+<a class="index-entry-id" id="index-iswxdigit"></a>
+<a class="index-entry-id" id="index-isxdigit"></a>
+<a class="index-entry-id" id="index-j0"></a>
+<a class="index-entry-id" id="index-j0f"></a>
+<a class="index-entry-id" id="index-j0l"></a>
+<a class="index-entry-id" id="index-j1"></a>
+<a class="index-entry-id" id="index-j1f"></a>
+<a class="index-entry-id" id="index-j1l"></a>
+<a class="index-entry-id" id="index-jn"></a>
+<a class="index-entry-id" id="index-jnf"></a>
+<a class="index-entry-id" id="index-jnl"></a>
+<a class="index-entry-id" id="index-labs"></a>
+<a class="index-entry-id" id="index-ldexp"></a>
+<a class="index-entry-id" id="index-ldexpf"></a>
+<a class="index-entry-id" id="index-ldexpl"></a>
+<a class="index-entry-id" id="index-lgamma"></a>
+<a class="index-entry-id" id="index-lgammaf"></a>
+<a class="index-entry-id" id="index-lgammal"></a>
+<a class="index-entry-id" id="index-lgamma_005fr"></a>
+<a class="index-entry-id" id="index-lgammaf_005fr"></a>
+<a class="index-entry-id" id="index-lgammal_005fr"></a>
+<a class="index-entry-id" id="index-llabs"></a>
+<a class="index-entry-id" id="index-llrint"></a>
+<a class="index-entry-id" id="index-llrintf"></a>
+<a class="index-entry-id" id="index-llrintl"></a>
+<a class="index-entry-id" id="index-llround"></a>
+<a class="index-entry-id" id="index-llroundf"></a>
+<a class="index-entry-id" id="index-llroundl"></a>
+<a class="index-entry-id" id="index-log"></a>
+<a class="index-entry-id" id="index-log10"></a>
+<a class="index-entry-id" id="index-log10f"></a>
+<a class="index-entry-id" id="index-log10l"></a>
+<a class="index-entry-id" id="index-log1p"></a>
+<a class="index-entry-id" id="index-log1pf"></a>
+<a class="index-entry-id" id="index-log1pl"></a>
+<a class="index-entry-id" id="index-log2"></a>
+<a class="index-entry-id" id="index-log2f"></a>
+<a class="index-entry-id" id="index-log2l"></a>
+<a class="index-entry-id" id="index-logb"></a>
+<a class="index-entry-id" id="index-logbf"></a>
+<a class="index-entry-id" id="index-logbl"></a>
+<a class="index-entry-id" id="index-logf"></a>
+<a class="index-entry-id" id="index-logl"></a>
+<a class="index-entry-id" id="index-lrint"></a>
+<a class="index-entry-id" id="index-lrintf"></a>
+<a class="index-entry-id" id="index-lrintl"></a>
+<a class="index-entry-id" id="index-lround"></a>
+<a class="index-entry-id" id="index-lroundf"></a>
+<a class="index-entry-id" id="index-lroundl"></a>
+<a class="index-entry-id" id="index-malloc"></a>
+<a class="index-entry-id" id="index-memchr"></a>
+<a class="index-entry-id" id="index-memcmp"></a>
+<a class="index-entry-id" id="index-memcpy"></a>
+<a class="index-entry-id" id="index-mempcpy"></a>
+<a class="index-entry-id" id="index-memset"></a>
+<a class="index-entry-id" id="index-modf"></a>
+<a class="index-entry-id" id="index-modff"></a>
+<a class="index-entry-id" id="index-modfl"></a>
+<a class="index-entry-id" id="index-nearbyint"></a>
+<a class="index-entry-id" id="index-nearbyintf"></a>
+<a class="index-entry-id" id="index-nearbyintl"></a>
+<a class="index-entry-id" id="index-nextafter"></a>
+<a class="index-entry-id" id="index-nextafterf"></a>
+<a class="index-entry-id" id="index-nextafterl"></a>
+<a class="index-entry-id" id="index-nexttoward"></a>
+<a class="index-entry-id" id="index-nexttowardf"></a>
+<a class="index-entry-id" id="index-nexttowardl"></a>
+<a class="index-entry-id" id="index-pow"></a>
+<a class="index-entry-id" id="index-pow10"></a>
+<a class="index-entry-id" id="index-pow10f"></a>
+<a class="index-entry-id" id="index-pow10l"></a>
+<a class="index-entry-id" id="index-powf"></a>
+<a class="index-entry-id" id="index-powl"></a>
+<a class="index-entry-id" id="index-printf"></a>
+<a class="index-entry-id" id="index-printf_005funlocked"></a>
+<a class="index-entry-id" id="index-putchar"></a>
+<a class="index-entry-id" id="index-puts"></a>
+<a class="index-entry-id" id="index-realloc"></a>
+<a class="index-entry-id" id="index-remainder"></a>
+<a class="index-entry-id" id="index-remainderf"></a>
+<a class="index-entry-id" id="index-remainderl"></a>
+<a class="index-entry-id" id="index-remquo"></a>
+<a class="index-entry-id" id="index-remquof"></a>
+<a class="index-entry-id" id="index-remquol"></a>
+<a class="index-entry-id" id="index-rindex"></a>
+<a class="index-entry-id" id="index-rint"></a>
+<a class="index-entry-id" id="index-rintf"></a>
+<a class="index-entry-id" id="index-rintl"></a>
+<a class="index-entry-id" id="index-round"></a>
+<a class="index-entry-id" id="index-roundf"></a>
+<a class="index-entry-id" id="index-roundl"></a>
+<a class="index-entry-id" id="index-scalb"></a>
+<a class="index-entry-id" id="index-scalbf"></a>
+<a class="index-entry-id" id="index-scalbl"></a>
+<a class="index-entry-id" id="index-scalbln"></a>
+<a class="index-entry-id" id="index-scalblnf"></a>
+<a class="index-entry-id" id="index-scalblnf-1"></a>
+<a class="index-entry-id" id="index-scalbn"></a>
+<a class="index-entry-id" id="index-scalbnf"></a>
+<a class="index-entry-id" id="index-scanfnl"></a>
+<a class="index-entry-id" id="index-signbit"></a>
+<a class="index-entry-id" id="index-signbitf"></a>
+<a class="index-entry-id" id="index-signbitl"></a>
+<a class="index-entry-id" id="index-signbitd32"></a>
+<a class="index-entry-id" id="index-signbitd64"></a>
+<a class="index-entry-id" id="index-signbitd128"></a>
+<a class="index-entry-id" id="index-significand"></a>
+<a class="index-entry-id" id="index-significandf"></a>
+<a class="index-entry-id" id="index-significandl"></a>
+<a class="index-entry-id" id="index-sin"></a>
+<a class="index-entry-id" id="index-sincos"></a>
+<a class="index-entry-id" id="index-sincosf"></a>
+<a class="index-entry-id" id="index-sincosl"></a>
+<a class="index-entry-id" id="index-sinf"></a>
+<a class="index-entry-id" id="index-sinh"></a>
+<a class="index-entry-id" id="index-sinhf"></a>
+<a class="index-entry-id" id="index-sinhl"></a>
+<a class="index-entry-id" id="index-sinl"></a>
+<a class="index-entry-id" id="index-snprintf"></a>
+<a class="index-entry-id" id="index-sprintf"></a>
+<a class="index-entry-id" id="index-sqrt"></a>
+<a class="index-entry-id" id="index-sqrtf"></a>
+<a class="index-entry-id" id="index-sqrtl"></a>
+<a class="index-entry-id" id="index-sscanf"></a>
+<a class="index-entry-id" id="index-stpcpy"></a>
+<a class="index-entry-id" id="index-stpncpy"></a>
+<a class="index-entry-id" id="index-strcasecmp"></a>
+<a class="index-entry-id" id="index-strcat"></a>
+<a class="index-entry-id" id="index-strchr"></a>
+<a class="index-entry-id" id="index-strcmp"></a>
+<a class="index-entry-id" id="index-strcpy"></a>
+<a class="index-entry-id" id="index-strcspn"></a>
+<a class="index-entry-id" id="index-strdup"></a>
+<a class="index-entry-id" id="index-strfmon"></a>
+<a class="index-entry-id" id="index-strftime"></a>
+<a class="index-entry-id" id="index-strlen"></a>
+<a class="index-entry-id" id="index-strncasecmp"></a>
+<a class="index-entry-id" id="index-strncat"></a>
+<a class="index-entry-id" id="index-strncmp"></a>
+<a class="index-entry-id" id="index-strncpy"></a>
+<a class="index-entry-id" id="index-strndup"></a>
+<a class="index-entry-id" id="index-strnlen"></a>
+<a class="index-entry-id" id="index-strpbrk"></a>
+<a class="index-entry-id" id="index-strrchr"></a>
+<a class="index-entry-id" id="index-strspn"></a>
+<a class="index-entry-id" id="index-strstr"></a>
+<a class="index-entry-id" id="index-tan"></a>
+<a class="index-entry-id" id="index-tanf"></a>
+<a class="index-entry-id" id="index-tanh"></a>
+<a class="index-entry-id" id="index-tanhf"></a>
+<a class="index-entry-id" id="index-tanhl"></a>
+<a class="index-entry-id" id="index-tanl"></a>
+<a class="index-entry-id" id="index-tgamma"></a>
+<a class="index-entry-id" id="index-tgammaf"></a>
+<a class="index-entry-id" id="index-tgammal"></a>
+<a class="index-entry-id" id="index-toascii"></a>
+<a class="index-entry-id" id="index-tolower"></a>
+<a class="index-entry-id" id="index-toupper"></a>
+<a class="index-entry-id" id="index-towlower"></a>
+<a class="index-entry-id" id="index-towupper"></a>
+<a class="index-entry-id" id="index-trunc"></a>
+<a class="index-entry-id" id="index-truncf"></a>
+<a class="index-entry-id" id="index-truncl"></a>
+<a class="index-entry-id" id="index-vfprintf"></a>
+<a class="index-entry-id" id="index-vfscanf"></a>
+<a class="index-entry-id" id="index-vprintf"></a>
+<a class="index-entry-id" id="index-vscanf"></a>
+<a class="index-entry-id" id="index-vsnprintf"></a>
+<a class="index-entry-id" id="index-vsprintf"></a>
+<a class="index-entry-id" id="index-vsscanf"></a>
+<a class="index-entry-id" id="index-y0"></a>
+<a class="index-entry-id" id="index-y0f"></a>
+<a class="index-entry-id" id="index-y0l"></a>
+<a class="index-entry-id" id="index-y1"></a>
+<a class="index-entry-id" id="index-y1f"></a>
+<a class="index-entry-id" id="index-y1l"></a>
+<a class="index-entry-id" id="index-yn"></a>
+<a class="index-entry-id" id="index-ynf"></a>
+<a class="index-entry-id" id="index-ynl"></a>
+
+<a class="index-entry-id" id="index-fno_002dbuiltin-3"></a>
+<p>GCC includes built-in versions of many of the functions in the standard
+C library.  These functions come in two forms: one whose names start with
+the <code class="code">__builtin_</code> prefix, and the other without.  Both forms have the
+same type (including prototype), the same address (when their address is
+taken), and the same meaning as the C library functions even if you specify
+the <samp class="option">-fno-builtin</samp> option see <a class="pxref" href="C-Dialect-Options.html">Options Controlling C Dialect</a>).  Many of these
+functions are only optimized in certain cases; if they are not optimized in
+a particular case, a call to the library function is emitted.
+</p>
+<a class="index-entry-id" id="index-ansi-2"></a>
+<a class="index-entry-id" id="index-std-2"></a>
+<p>Outside strict ISO C mode (<samp class="option">-ansi</samp>, <samp class="option">-std=c90</samp>,
+<samp class="option">-std=c99</samp> or <samp class="option">-std=c11</samp>), the functions
+<code class="code">_exit</code>, <code class="code">alloca</code>, <code class="code">bcmp</code>, <code class="code">bzero</code>,
+<code class="code">dcgettext</code>, <code class="code">dgettext</code>, <code class="code">dremf</code>, <code class="code">dreml</code>,
+<code class="code">drem</code>, <code class="code">exp10f</code>, <code class="code">exp10l</code>, <code class="code">exp10</code>, <code class="code">ffsll</code>,
+<code class="code">ffsl</code>, <code class="code">ffs</code>, <code class="code">fprintf_unlocked</code>,
+<code class="code">fputs_unlocked</code>, <code class="code">gammaf</code>, <code class="code">gammal</code>, <code class="code">gamma</code>,
+<code class="code">gammaf_r</code>, <code class="code">gammal_r</code>, <code class="code">gamma_r</code>, <code class="code">gettext</code>,
+<code class="code">index</code>, <code class="code">isascii</code>, <code class="code">j0f</code>, <code class="code">j0l</code>, <code class="code">j0</code>,
+<code class="code">j1f</code>, <code class="code">j1l</code>, <code class="code">j1</code>, <code class="code">jnf</code>, <code class="code">jnl</code>, <code class="code">jn</code>,
+<code class="code">lgammaf_r</code>, <code class="code">lgammal_r</code>, <code class="code">lgamma_r</code>, <code class="code">mempcpy</code>,
+<code class="code">pow10f</code>, <code class="code">pow10l</code>, <code class="code">pow10</code>, <code class="code">printf_unlocked</code>,
+<code class="code">rindex</code>, <code class="code">roundeven</code>, <code class="code">roundevenf</code>, <code class="code">roundevenl</code>,
+<code class="code">scalbf</code>, <code class="code">scalbl</code>, <code class="code">scalb</code>,
+<code class="code">signbit</code>, <code class="code">signbitf</code>, <code class="code">signbitl</code>, <code class="code">signbitd32</code>,
+<code class="code">signbitd64</code>, <code class="code">signbitd128</code>, <code class="code">significandf</code>,
+<code class="code">significandl</code>, <code class="code">significand</code>, <code class="code">sincosf</code>,
+<code class="code">sincosl</code>, <code class="code">sincos</code>, <code class="code">stpcpy</code>, <code class="code">stpncpy</code>,
+<code class="code">strcasecmp</code>, <code class="code">strdup</code>, <code class="code">strfmon</code>, <code class="code">strncasecmp</code>,
+<code class="code">strndup</code>, <code class="code">strnlen</code>, <code class="code">toascii</code>, <code class="code">y0f</code>, <code class="code">y0l</code>,
+<code class="code">y0</code>, <code class="code">y1f</code>, <code class="code">y1l</code>, <code class="code">y1</code>, <code class="code">ynf</code>, <code class="code">ynl</code> and
+<code class="code">yn</code>
+may be handled as built-in functions.
+All these functions have corresponding versions
+prefixed with <code class="code">__builtin_</code>, which may be used even in strict C90
+mode.
+</p>
+<p>The ISO C99 functions
+<code class="code">_Exit</code>, <code class="code">acoshf</code>, <code class="code">acoshl</code>, <code class="code">acosh</code>, <code class="code">asinhf</code>,
+<code class="code">asinhl</code>, <code class="code">asinh</code>, <code class="code">atanhf</code>, <code class="code">atanhl</code>, <code class="code">atanh</code>,
+<code class="code">cabsf</code>, <code class="code">cabsl</code>, <code class="code">cabs</code>, <code class="code">cacosf</code>, <code class="code">cacoshf</code>,
+<code class="code">cacoshl</code>, <code class="code">cacosh</code>, <code class="code">cacosl</code>, <code class="code">cacos</code>,
+<code class="code">cargf</code>, <code class="code">cargl</code>, <code class="code">carg</code>, <code class="code">casinf</code>, <code class="code">casinhf</code>,
+<code class="code">casinhl</code>, <code class="code">casinh</code>, <code class="code">casinl</code>, <code class="code">casin</code>,
+<code class="code">catanf</code>, <code class="code">catanhf</code>, <code class="code">catanhl</code>, <code class="code">catanh</code>,
+<code class="code">catanl</code>, <code class="code">catan</code>, <code class="code">cbrtf</code>, <code class="code">cbrtl</code>, <code class="code">cbrt</code>,
+<code class="code">ccosf</code>, <code class="code">ccoshf</code>, <code class="code">ccoshl</code>, <code class="code">ccosh</code>, <code class="code">ccosl</code>,
+<code class="code">ccos</code>, <code class="code">cexpf</code>, <code class="code">cexpl</code>, <code class="code">cexp</code>, <code class="code">cimagf</code>,
+<code class="code">cimagl</code>, <code class="code">cimag</code>, <code class="code">clogf</code>, <code class="code">clogl</code>, <code class="code">clog</code>,
+<code class="code">conjf</code>, <code class="code">conjl</code>, <code class="code">conj</code>, <code class="code">copysignf</code>, <code class="code">copysignl</code>,
+<code class="code">copysign</code>, <code class="code">cpowf</code>, <code class="code">cpowl</code>, <code class="code">cpow</code>, <code class="code">cprojf</code>,
+<code class="code">cprojl</code>, <code class="code">cproj</code>, <code class="code">crealf</code>, <code class="code">creall</code>, <code class="code">creal</code>,
+<code class="code">csinf</code>, <code class="code">csinhf</code>, <code class="code">csinhl</code>, <code class="code">csinh</code>, <code class="code">csinl</code>,
+<code class="code">csin</code>, <code class="code">csqrtf</code>, <code class="code">csqrtl</code>, <code class="code">csqrt</code>, <code class="code">ctanf</code>,
+<code class="code">ctanhf</code>, <code class="code">ctanhl</code>, <code class="code">ctanh</code>, <code class="code">ctanl</code>, <code class="code">ctan</code>,
+<code class="code">erfcf</code>, <code class="code">erfcl</code>, <code class="code">erfc</code>, <code class="code">erff</code>, <code class="code">erfl</code>,
+<code class="code">erf</code>, <code class="code">exp2f</code>, <code class="code">exp2l</code>, <code class="code">exp2</code>, <code class="code">expm1f</code>,
+<code class="code">expm1l</code>, <code class="code">expm1</code>, <code class="code">fdimf</code>, <code class="code">fdiml</code>, <code class="code">fdim</code>,
+<code class="code">fmaf</code>, <code class="code">fmal</code>, <code class="code">fmaxf</code>, <code class="code">fmaxl</code>, <code class="code">fmax</code>,
+<code class="code">fma</code>, <code class="code">fminf</code>, <code class="code">fminl</code>, <code class="code">fmin</code>, <code class="code">hypotf</code>,
+<code class="code">hypotl</code>, <code class="code">hypot</code>, <code class="code">ilogbf</code>, <code class="code">ilogbl</code>, <code class="code">ilogb</code>,
+<code class="code">imaxabs</code>, <code class="code">isblank</code>, <code class="code">iswblank</code>, <code class="code">lgammaf</code>,
+<code class="code">lgammal</code>, <code class="code">lgamma</code>, <code class="code">llabs</code>, <code class="code">llrintf</code>, <code class="code">llrintl</code>,
+<code class="code">llrint</code>, <code class="code">llroundf</code>, <code class="code">llroundl</code>, <code class="code">llround</code>,
+<code class="code">log1pf</code>, <code class="code">log1pl</code>, <code class="code">log1p</code>, <code class="code">log2f</code>, <code class="code">log2l</code>,
+<code class="code">log2</code>, <code class="code">logbf</code>, <code class="code">logbl</code>, <code class="code">logb</code>, <code class="code">lrintf</code>,
+<code class="code">lrintl</code>, <code class="code">lrint</code>, <code class="code">lroundf</code>, <code class="code">lroundl</code>,
+<code class="code">lround</code>, <code class="code">nearbyintf</code>, <code class="code">nearbyintl</code>, <code class="code">nearbyint</code>,
+<code class="code">nextafterf</code>, <code class="code">nextafterl</code>, <code class="code">nextafter</code>,
+<code class="code">nexttowardf</code>, <code class="code">nexttowardl</code>, <code class="code">nexttoward</code>,
+<code class="code">remainderf</code>, <code class="code">remainderl</code>, <code class="code">remainder</code>, <code class="code">remquof</code>,
+<code class="code">remquol</code>, <code class="code">remquo</code>, <code class="code">rintf</code>, <code class="code">rintl</code>, <code class="code">rint</code>,
+<code class="code">roundf</code>, <code class="code">roundl</code>, <code class="code">round</code>, <code class="code">scalblnf</code>,
+<code class="code">scalblnl</code>, <code class="code">scalbln</code>, <code class="code">scalbnf</code>, <code class="code">scalbnl</code>,
+<code class="code">scalbn</code>, <code class="code">snprintf</code>, <code class="code">tgammaf</code>, <code class="code">tgammal</code>,
+<code class="code">tgamma</code>, <code class="code">truncf</code>, <code class="code">truncl</code>, <code class="code">trunc</code>,
+<code class="code">vfscanf</code>, <code class="code">vscanf</code>, <code class="code">vsnprintf</code> and <code class="code">vsscanf</code>
+are handled as built-in functions
+except in strict ISO C90 mode (<samp class="option">-ansi</samp> or <samp class="option">-std=c90</samp>).
+</p>
+<p>There are also built-in versions of the ISO C99 functions
+<code class="code">acosf</code>, <code class="code">acosl</code>, <code class="code">asinf</code>, <code class="code">asinl</code>, <code class="code">atan2f</code>,
+<code class="code">atan2l</code>, <code class="code">atanf</code>, <code class="code">atanl</code>, <code class="code">ceilf</code>, <code class="code">ceill</code>,
+<code class="code">cosf</code>, <code class="code">coshf</code>, <code class="code">coshl</code>, <code class="code">cosl</code>, <code class="code">expf</code>,
+<code class="code">expl</code>, <code class="code">fabsf</code>, <code class="code">fabsl</code>, <code class="code">floorf</code>, <code class="code">floorl</code>,
+<code class="code">fmodf</code>, <code class="code">fmodl</code>, <code class="code">frexpf</code>, <code class="code">frexpl</code>, <code class="code">ldexpf</code>,
+<code class="code">ldexpl</code>, <code class="code">log10f</code>, <code class="code">log10l</code>, <code class="code">logf</code>, <code class="code">logl</code>,
+<code class="code">modfl</code>, <code class="code">modff</code>, <code class="code">powf</code>, <code class="code">powl</code>, <code class="code">sinf</code>,
+<code class="code">sinhf</code>, <code class="code">sinhl</code>, <code class="code">sinl</code>, <code class="code">sqrtf</code>, <code class="code">sqrtl</code>,
+<code class="code">tanf</code>, <code class="code">tanhf</code>, <code class="code">tanhl</code> and <code class="code">tanl</code>
+that are recognized in any mode since ISO C90 reserves these names for
+the purpose to which ISO C99 puts them.  All these functions have
+corresponding versions prefixed with <code class="code">__builtin_</code>.
+</p>
+<p>There are also built-in functions <code class="code">__builtin_fabsf<var class="var">n</var></code>,
+<code class="code">__builtin_fabsf<var class="var">n</var>x</code>, <code class="code">__builtin_copysignf<var class="var">n</var></code> and
+<code class="code">__builtin_copysignf<var class="var">n</var>x</code>, corresponding to the TS 18661-3
+functions <code class="code">fabsf<var class="var">n</var></code>, <code class="code">fabsf<var class="var">n</var>x</code>,
+<code class="code">copysignf<var class="var">n</var></code> and <code class="code">copysignf<var class="var">n</var>x</code>, for supported
+types <code class="code">_Float<var class="var">n</var></code> and <code class="code">_Float<var class="var">n</var>x</code>.
+</p>
+<p>There are also GNU extension functions <code class="code">clog10</code>, <code class="code">clog10f</code> and
+<code class="code">clog10l</code> which names are reserved by ISO C99 for future use.
+All these functions have versions prefixed with <code class="code">__builtin_</code>.
+</p>
+<p>The ISO C94 functions
+<code class="code">iswalnum</code>, <code class="code">iswalpha</code>, <code class="code">iswcntrl</code>, <code class="code">iswdigit</code>,
+<code class="code">iswgraph</code>, <code class="code">iswlower</code>, <code class="code">iswprint</code>, <code class="code">iswpunct</code>,
+<code class="code">iswspace</code>, <code class="code">iswupper</code>, <code class="code">iswxdigit</code>, <code class="code">towlower</code> and
+<code class="code">towupper</code>
+are handled as built-in functions
+except in strict ISO C90 mode (<samp class="option">-ansi</samp> or <samp class="option">-std=c90</samp>).
+</p>
+<p>The ISO C90 functions
+<code class="code">abort</code>, <code class="code">abs</code>, <code class="code">acos</code>, <code class="code">asin</code>, <code class="code">atan2</code>,
+<code class="code">atan</code>, <code class="code">calloc</code>, <code class="code">ceil</code>, <code class="code">cosh</code>, <code class="code">cos</code>,
+<code class="code">exit</code>, <code class="code">exp</code>, <code class="code">fabs</code>, <code class="code">floor</code>, <code class="code">fmod</code>,
+<code class="code">fprintf</code>, <code class="code">fputs</code>, <code class="code">free</code>, <code class="code">frexp</code>, <code class="code">fscanf</code>,
+<code class="code">isalnum</code>, <code class="code">isalpha</code>, <code class="code">iscntrl</code>, <code class="code">isdigit</code>,
+<code class="code">isgraph</code>, <code class="code">islower</code>, <code class="code">isprint</code>, <code class="code">ispunct</code>,
+<code class="code">isspace</code>, <code class="code">isupper</code>, <code class="code">isxdigit</code>, <code class="code">tolower</code>,
+<code class="code">toupper</code>, <code class="code">labs</code>, <code class="code">ldexp</code>, <code class="code">log10</code>, <code class="code">log</code>,
+<code class="code">malloc</code>, <code class="code">memchr</code>, <code class="code">memcmp</code>, <code class="code">memcpy</code>,
+<code class="code">memset</code>, <code class="code">modf</code>, <code class="code">pow</code>, <code class="code">printf</code>, <code class="code">putchar</code>,
+<code class="code">puts</code>, <code class="code">realloc</code>, <code class="code">scanf</code>, <code class="code">sinh</code>, <code class="code">sin</code>,
+<code class="code">snprintf</code>, <code class="code">sprintf</code>, <code class="code">sqrt</code>, <code class="code">sscanf</code>, <code class="code">strcat</code>,
+<code class="code">strchr</code>, <code class="code">strcmp</code>, <code class="code">strcpy</code>, <code class="code">strcspn</code>,
+<code class="code">strlen</code>, <code class="code">strncat</code>, <code class="code">strncmp</code>, <code class="code">strncpy</code>,
+<code class="code">strpbrk</code>, <code class="code">strrchr</code>, <code class="code">strspn</code>, <code class="code">strstr</code>,
+<code class="code">tanh</code>, <code class="code">tan</code>, <code class="code">vfprintf</code>, <code class="code">vprintf</code> and <code class="code">vsprintf</code>
+are all recognized as built-in functions unless
+<samp class="option">-fno-builtin</samp> is specified (or <samp class="option">-fno-builtin-<var class="var">function</var></samp>
+is specified for an individual function).  All of these functions have
+corresponding versions prefixed with <code class="code">__builtin_</code>.
+</p>
+<p>GCC provides built-in versions of the ISO C99 floating-point comparison
+macros that avoid raising exceptions for unordered operands.  They have
+the same names as the standard macros ( <code class="code">isgreater</code>,
+<code class="code">isgreaterequal</code>, <code class="code">isless</code>, <code class="code">islessequal</code>,
+<code class="code">islessgreater</code>, and <code class="code">isunordered</code>) , with <code class="code">__builtin_</code>
+prefixed.  We intend for a library implementor to be able to simply
+<code class="code">#define</code> each standard macro to its built-in equivalent.
+In the same fashion, GCC provides <code class="code">fpclassify</code>, <code class="code">iseqsig</code>,
+<code class="code">isfinite</code>, <code class="code">isinf_sign</code>, <code class="code">isnormal</code> and <code class="code">signbit</code> built-ins
+used with <code class="code">__builtin_</code> prefixed.  The <code class="code">isinf</code> and <code class="code">isnan</code>
+built-in functions appear both with and without the <code class="code">__builtin_</code> prefix.
+With <code class="code">-ffinite-math-only</code> option the <code class="code">isinf</code> and <code class="code">isnan</code>
+built-in functions will always return 0.
+</p>
+<p>GCC provides built-in versions of the ISO C99 floating-point rounding and
+exceptions handling functions <code class="code">fegetround</code>, <code class="code">feclearexcept</code> and
+<code class="code">feraiseexcept</code>.  They may not be available for all targets, and because
+they need close interaction with libc internal values, they may not be available
+for all target libcs, but in all cases they will gracefully fallback to libc
+calls.  These built-in functions appear both with and without the
+<code class="code">__builtin_</code> prefix.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Numeric-Builtins.html">Additional Builtins for Numeric Operations</a>, Up: <a href="Built_002din-Functions.html">Built-in Functions Provided by GCC</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

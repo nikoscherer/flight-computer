@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Macro define and undefine (STABS)</title>
+
+<meta name="description" content="Macro define and undefine (STABS)">
+<meta name="keywords" content="Macro define and undefine (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Symbol-Tables.html" rel="next" title="Symbol Tables">
+<link href="Types.html" rel="prev" title="Types">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Macro-define-and-undefine">
+<div class="nav-panel">
+<p>
+Next: <a href="Symbol-Tables.html" accesskey="n" rel="next">Symbol Information in Symbol Tables</a>, Previous: <a href="Types.html" accesskey="p" rel="prev">Defining Types</a>, Up: <a href="index.html" accesskey="u" rel="up">The &quot;stabs&quot; representation of debugging information</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Representation-of-_0023define-and-_0023undef"><span>6 Representation of #define and #undef<a class="copiable-link" href="#Representation-of-_0023define-and-_0023undef"> &para;</a></span></h2>
+
+<p>This section describes the stabs support for macro define and undefine
+information, supported on some systems.  (e.g., with <samp class="option">-g3</samp>
+<samp class="option">-gstabs</samp> when using GCC).
+</p>
+<p>A <code class="code">#define <var class="var">macro-name</var> <var class="var">macro-body</var></code> is represented with
+an <code class="code">N_MAC_DEFINE</code> stab with a string field of
+<code class="code"><var class="var">macro-name</var> <var class="var">macro-body</var></code>.
+<a class="index-entry-id" id="index-N_005fMAC_005fDEFINE"></a>
+</p>
+<p>An <code class="code">#undef <var class="var">macro-name</var></code> is represented with an
+<code class="code">N_MAC_UNDEF</code> stabs with a string field of simply
+<code class="code"><var class="var">macro-name</var></code>.
+<a class="index-entry-id" id="index-N_005fMAC_005fUNDEF"></a>
+</p>
+<p>For both <code class="code">N_MAC_DEFINE</code> and <code class="code">N_MAC_UNDEF</code>, the desc field is
+the line number within the file where the corresponding <code class="code">#define</code>
+or <code class="code">#undef</code> occurred.
+</p>
+<p>For example, the following C code:
+</p>
+<div class="example">
+<pre class="example-preformatted">    #define NONE	42
+    #define TWO(a, b)	(a + (a) + 2 * b)
+    #define ONE(c)	(c + 19)
+
+    main(int argc, char *argv[])
+    {
+      func(NONE, TWO(10, 11));
+      func(NONE, ONE(23));
+
+    #undef ONE
+    #define ONE(c)	(c + 23)
+
+      func(NONE, ONE(-23));
+
+      return (0);
+    }
+
+    int global;
+
+    func(int arg1, int arg2)
+    {
+      global = arg1 + arg2;
+    }
+</pre></div>
+
+<p>produces the following stabs (as well as many others):
+</p>
+<div class="example">
+<pre class="example-preformatted">    .stabs	&quot;NONE 42&quot;,54,0,1,0
+    .stabs	&quot;TWO(a,b) (a + (a) + 2 * b)&quot;,54,0,2,0
+    .stabs	&quot;ONE(c) (c + 19)&quot;,54,0,3,0
+    .stabs	&quot;ONE&quot;,58,0,10,0
+    .stabs	&quot;ONE(c) (c + 23)&quot;,54,0,11,0
+</pre></div>
+
+<p>NOTE: In the above example, <code class="code">54</code> is <code class="code">N_MAC_DEFINE</code> and
+<code class="code">58</code> is <code class="code">N_MAC_UNDEF</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

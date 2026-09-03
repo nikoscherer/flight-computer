@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1994-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Frame Annotations (GDB&rsquo;s Obsolete Annotations)</title>
+
+<meta name="description" content="Frame Annotations (GDB&rsquo;s Obsolete Annotations)">
+<meta name="keywords" content="Frame Annotations (GDB&rsquo;s Obsolete Annotations)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Displays.html" rel="next" title="Displays">
+<link href="Value-Annotations.html" rel="prev" title="Value Annotations">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Frame-Annotations">
+<div class="nav-panel">
+<p>
+Next: <a href="Displays.html" accesskey="n" rel="next">Displays</a>, Previous: <a href="Value-Annotations.html" accesskey="p" rel="prev">Values</a>, Up: <a href="index.html" accesskey="u" rel="up">GDB Annotations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Frames"><span>6 Frames<a class="copiable-link" href="#Frames"> &para;</a></span></h2>
+
+<p><em class="emph">Value Annotations have been removed.  <small class="sc">GDB/MI</small> instead provides
+a number of frame commands.</em>
+</p>
+<p><em class="emph">Frame annotations are no longer available.  The <small class="sc">GDB/MI</small>
+provides &lsquo;<samp class="samp">-stack-list-arguments</samp>&rsquo;, &lsquo;<samp class="samp">-stack-list-locals</samp>&rsquo;, and
+&lsquo;<samp class="samp">-stack-list-frames</samp>&rsquo; commands.</em>
+</p>
+<a class="index-entry-id" id="index-annotations-for-frames"></a>
+<p>Whenever <small class="sc">GDB</small> prints a frame, it annotates it.  For example, this applies
+to frames printed when <small class="sc">GDB</small> stops, output from commands such as
+<code class="code">backtrace</code> or <code class="code">up</code>, etc.
+</p>
+<a class="index-entry-id" id="index-frame_002dbegin"></a>
+<p>The frame annotation begins with
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zframe-begin <var class="var">level</var> <var class="var">address</var>
+<var class="var">level-string</var>
+</pre></div>
+
+<p>where <var class="var">level</var> is the number of the frame (0 is the innermost frame,
+and other frames have positive numbers), <var class="var">address</var> is the address of
+the code executing in that frame, and <var class="var">level-string</var> is a string
+designed to convey the level to the user.  <var class="var">address</var> is in the form
+&lsquo;<samp class="samp">0x</samp>&rsquo; followed by one or more lowercase hex digits (note that this
+does not depend on the language).  The frame ends with
+</p>
+<a class="index-entry-id" id="index-frame_002dend"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zframe-end
+</pre></div>
+
+<p>Between these annotations is the main body of the frame, which can
+consist of
+</p>
+<ul class="itemize mark-bullet">
+<li><a class="index-entry-id" id="index-function_002dcall"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zfunction-call
+<var class="var">function-call-string</var>
+</pre></div>
+
+where <var class="var">function-call-string</var> is text designed to convey to the user
+that this frame is associated with a function call made by <small class="sc">GDB</small> to a
+function in the program being debugged.
+
+</li><li><a class="index-entry-id" id="index-signal_002dhandler_002dcaller"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zsignal-handler-caller
+<var class="var">signal-handler-caller-string</var>
+</pre></div>
+
+where <var class="var">signal-handler-caller-string</var> is text designed to convey to
+the user that this frame is associated with whatever mechanism is used
+by this operating system to call a signal handler (it is the frame which
+calls the signal handler, not the frame for the signal handler itself).
+
+</li><li>A normal frame.
+
+<a class="index-entry-id" id="index-frame_002daddress"></a>
+<a class="index-entry-id" id="index-frame_002daddress_002dend"></a>
+<p>This can optionally (depending on whether this is thought of as
+interesting information for the user to see) begin with
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zframe-address
+<var class="var">address</var>
+^Z^Zframe-address-end
+<var class="var">separator-string</var>
+</pre></div>
+
+<p>where <var class="var">address</var> is the address executing in the frame (the same
+address as in the <code class="code">frame-begin</code> annotation, but printed in a form
+which is intended for user consumption&mdash;in particular, the syntax varies
+depending on the language), and <var class="var">separator-string</var> is a string
+intended to separate this address from what follows for the user&rsquo;s
+benefit.
+</p>
+<a class="index-entry-id" id="index-frame_002dfunction_002dname"></a>
+<a class="index-entry-id" id="index-frame_002dargs"></a>
+<p>Then comes
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zframe-function-name
+<var class="var">function-name</var>
+^Z^Zframe-args
+<var class="var">arguments</var>
+</pre></div>
+
+<p>where <var class="var">function-name</var> is the name of the function executing in the
+frame, or &lsquo;<samp class="samp">??</samp>&rsquo; if not known, and <var class="var">arguments</var> are the arguments
+to the frame, with parentheses around them (each argument is annotated
+individually as well, see <a class="pxref" href="Value-Annotations.html">Values</a>).
+</p>
+<a class="index-entry-id" id="index-frame_002dsource_002dbegin"></a>
+<a class="index-entry-id" id="index-frame_002dsource_002dfile"></a>
+<a class="index-entry-id" id="index-frame_002dsource_002dfile_002dend"></a>
+<a class="index-entry-id" id="index-frame_002dsource_002dline"></a>
+<a class="index-entry-id" id="index-frame_002dsource_002dend"></a>
+<p>If source information is available, a reference to it is then printed:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zframe-source-begin
+<var class="var">source-intro-string</var>
+^Z^Zframe-source-file
+<var class="var">filename</var>
+^Z^Zframe-source-file-end
+:
+^Z^Zframe-source-line
+<var class="var">line-number</var>
+^Z^Zframe-source-end
+</pre></div>
+
+<p>where <var class="var">source-intro-string</var> separates for the user&rsquo;s benefit the
+reference from the text which precedes it, <var class="var">filename</var> is the name of
+the source file, and <var class="var">line-number</var> is the line number within that
+file (the first line is line 1).
+</p>
+<a class="index-entry-id" id="index-frame_002dwhere"></a>
+<p>If <small class="sc">GDB</small> prints some information about where the frame is from (which
+library, which load segment, etc.; currently only done on the RS/6000),
+it is annotated with
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zframe-where
+<var class="var">information</var>
+</pre></div>
+
+<p>Then, if source is to actually be displayed for this frame (for example,
+this is not true for output from the <code class="code">backtrace</code> command), then a
+<code class="code">source</code> annotation (see <a class="pxref" href="Source-Annotations.html">Displaying Source</a>) is displayed.  Unlike
+most annotations, this is output instead of the normal text which would be
+output, not in addition.
+</p></li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Displays.html">Displays</a>, Previous: <a href="Value-Annotations.html">Values</a>, Up: <a href="index.html">GDB Annotations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+
+
+
+</body>
+</html>

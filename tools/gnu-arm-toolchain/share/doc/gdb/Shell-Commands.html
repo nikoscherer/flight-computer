@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Shell Commands (Debugging with GDB)</title>
+
+<meta name="description" content="Shell Commands (Debugging with GDB)">
+<meta name="keywords" content="Shell Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Invocation.html" rel="up" title="Invocation">
+<link href="Logging-Output.html" rel="next" title="Logging Output">
+<link href="Quitting-GDB.html" rel="prev" title="Quitting GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Shell-Commands">
+<div class="nav-panel">
+<p>
+Next: <a href="Logging-Output.html" accesskey="n" rel="next">Logging Output</a>, Previous: <a href="Quitting-GDB.html" accesskey="p" rel="prev">Quitting <small class="sc">GDB</small></a>, Up: <a href="Invocation.html" accesskey="u" rel="up">Getting In and Out of <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Shell-Commands-1"><span>2.3 Shell Commands<a class="copiable-link" href="#Shell-Commands-1"> &para;</a></span></h3>
+
+<p>If you need to execute occasional shell commands during your
+debugging session, there is no need to leave or suspend <small class="sc">GDB</small>; you can
+just use the <code class="code">shell</code> command.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-_0021"></a>
+<a class="index-entry-id" id="index-shell-escape"></a>
+<a id="index-shell"></a><span><code class="code">shell <var class="var">command-string</var></code><a class="copiable-link" href="#index-shell"> &para;</a></span></dt>
+<dt><code class="code">!<var class="var">command-string</var></code></dt>
+<dd><p>Invoke a shell to execute <var class="var">command-string</var>.
+Note that no space is needed between <code class="code">!</code> and <var class="var">command-string</var>.
+On GNU and Unix systems, the environment variable <code class="env">SHELL</code>, if it
+exists, determines which shell to run.  Otherwise <small class="sc">GDB</small> uses
+the default shell (<samp class="file">/bin/sh</samp> on GNU and Unix systems,
+<samp class="file">cmd.exe</samp> on MS-Windows, <samp class="file">COMMAND.COM</samp> on MS-DOS, etc.).
+</p></dd>
+</dl>
+
+<p>You may also invoke shell commands from expressions, using the
+<code class="code">$_shell</code> convenience function.  See <a class="xref" href="Convenience-Funs.html#g_t_0024_005fshell-convenience-function">$_shell convenience function</a>.
+</p>
+<p>The utility <code class="code">make</code> is often needed in development environments.
+You do not have to use the <code class="code">shell</code> command for this purpose in
+<small class="sc">GDB</small>:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-calling-make"></a>
+<a id="index-make"></a><span><code class="code">make <var class="var">make-args</var></code><a class="copiable-link" href="#index-make"> &para;</a></span></dt>
+<dd><p>Execute the <code class="code">make</code> program with the specified
+arguments.  This is equivalent to &lsquo;<samp class="samp">shell make <var class="var">make-args</var></samp>&rsquo;.
+</p></dd>
+</dl>
+
+<dl class="table">
+<dd><a class="index-entry-id" id="index-pipe"></a>
+<a class="index-entry-id" id="index-_007c"></a>
+<a class="index-entry-id" id="index-send-the-output-of-a-gdb-command-to-a-shell-command"></a>
+<a class="anchor" id="pipe"></a></dd>
+<dt><code class="code">pipe [<var class="var">command</var>] | <var class="var">shell_command</var></code></dt>
+<dt><code class="code">| [<var class="var">command</var>] | <var class="var">shell_command</var></code></dt>
+<dt><code class="code">pipe -d <var class="var">delim</var> <var class="var">command</var> <var class="var">delim</var> <var class="var">shell_command</var></code></dt>
+<dt><code class="code">| -d <var class="var">delim</var> <var class="var">command</var> <var class="var">delim</var> <var class="var">shell_command</var></code></dt>
+<dd><p>Executes <var class="var">command</var> and sends its output to <var class="var">shell_command</var>.
+Note that no space is needed around <code class="code">|</code>.
+If no <var class="var">command</var> is provided, the last command executed is repeated.
+</p>
+<p>In case the <var class="var">command</var> contains a <code class="code">|</code>, the option <code class="code">-d <var class="var">delim</var></code>
+can be used to specify an alternate delimiter string <var class="var">delim</var> that separates
+the <var class="var">command</var> from the <var class="var">shell_command</var>.
+</p>
+<p>Example:
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) p var
+$1 = {
+  black = 144,
+  red = 233,
+  green = 377,
+  blue = 610,
+  white = 987
+}
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) pipe p var|wc
+      7      19      80
+(gdb) |p var|wc -l
+7
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) p /x var
+$4 = {
+  black = 0x90,
+  red = 0xe9,
+  green = 0x179,
+  blue = 0x262,
+  white = 0x3db
+}
+(gdb) ||grep red
+  red =&gt; 0xe9,
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) | -d ! echo this contains a | char\n ! sed -e 's/|/PIPE/'
+this contains a PIPE char
+(gdb) | -d xxx echo this contains a | char!\n xxx sed -e 's/|/PIPE/'
+this contains a PIPE char!
+(gdb)
+</pre></div></div>
+</dd>
+</dl>
+
+<p>The convenience variables <code class="code">$_shell_exitcode</code> and <code class="code">$_shell_exitsignal</code>
+can be used to examine the exit status of the last shell command launched
+by <code class="code">shell</code>, <code class="code">make</code>, <code class="code">pipe</code> and <code class="code">|</code>.
+See <a class="xref" href="Convenience-Vars.html">Convenience Variables</a>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Logging-Output.html">Logging Output</a>, Previous: <a href="Quitting-GDB.html">Quitting <small class="sc">GDB</small></a>, Up: <a href="Invocation.html">Getting In and Out of <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

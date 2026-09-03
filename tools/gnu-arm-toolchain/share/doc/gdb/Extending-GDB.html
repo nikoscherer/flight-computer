@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Extending GDB (Debugging with GDB)</title>
+
+<meta name="description" content="Extending GDB (Debugging with GDB)">
+<meta name="keywords" content="Extending GDB (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Interpreters.html" rel="next" title="Interpreters">
+<link href="Controlling-GDB.html" rel="prev" title="Controlling GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Extending-GDB">
+<div class="nav-panel">
+<p>
+Next: <a href="Interpreters.html" accesskey="n" rel="next">Command Interpreters</a>, Previous: <a href="Controlling-GDB.html" accesskey="p" rel="prev">Controlling <small class="sc">GDB</small></a>, Up: <a href="index.html" accesskey="u" rel="up">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Extending-gdb"><span>23 Extending <small class="sc">GDB</small><a class="copiable-link" href="#Extending-gdb"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-extending-GDB"></a>
+
+<p><small class="sc">GDB</small> provides several mechanisms for extension.
+<small class="sc">GDB</small> also provides the ability to automatically load
+extensions when it reads a file for debugging.  This allows the
+user to automatically customize <small class="sc">GDB</small> for the program
+being debugged.
+</p>
+<p>To facilitate the use of extension languages, <small class="sc">GDB</small> is capable
+of evaluating the contents of a file.  When doing so, <small class="sc">GDB</small>
+can recognize which extension language is being used by looking at
+the filename extension.  Files with an unrecognized filename extension
+are always treated as a <small class="sc">GDB</small> Command Files.
+See <a class="xref" href="Command-Files.html">Command files</a>.
+</p>
+<p>You can control how <small class="sc">GDB</small> evaluates these files with the following
+setting:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-script_002dextension"></a>
+<a id="index-set-script_002dextension"></a><span><code class="code">set script-extension off</code><a class="copiable-link" href="#index-set-script_002dextension"> &para;</a></span></dt>
+<dd><p>All scripts are always evaluated as <small class="sc">GDB</small> Command Files.
+</p>
+</dd>
+<dt><code class="code">set script-extension soft</code></dt>
+<dd><p>The debugger determines the scripting language based on filename
+extension.  If this scripting language is supported, <small class="sc">GDB</small>
+evaluates the script using that language.  Otherwise, it evaluates
+the file as a <small class="sc">GDB</small> Command File.
+</p>
+</dd>
+<dt><code class="code">set script-extension strict</code></dt>
+<dd><p>The debugger determines the scripting language based on filename
+extension, and evaluates the script using that language.  If the
+language is not supported, then the evaluation fails.
+</p>
+</dd>
+<dt><code class="code">show script-extension</code></dt>
+<dd><p>Display the current value of the <code class="code">script-extension</code> option.
+</p>
+</dd>
+</dl>
+
+
+
+<ul class="mini-toc">
+<li><a href="Sequences.html" accesskey="1">Canned Sequences of Commands</a></li>
+<li><a href="Aliases.html" accesskey="2">Command Aliases</a></li>
+<li><a href="Python.html" accesskey="3">Extending <small class="sc">GDB</small> using Python</a></li>
+<li><a href="Guile.html" accesskey="4">Extending <small class="sc">GDB</small> using Guile</a></li>
+<li><a href="Auto_002dloading-extensions.html" accesskey="5">Auto-loading extensions</a></li>
+<li><a href="Multiple-Extension-Languages.html" accesskey="6">Multiple Extension Languages</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Interpreters.html">Command Interpreters</a>, Previous: <a href="Controlling-GDB.html">Controlling <small class="sc">GDB</small></a>, Up: <a href="index.html">Debugging with <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

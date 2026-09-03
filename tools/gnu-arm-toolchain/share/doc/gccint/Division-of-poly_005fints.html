@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Division of poly_ints (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Division of poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Division of poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arithmetic-on-poly_005fints.html" rel="up" title="Arithmetic on poly_ints">
+<link href="Other-poly_005fint-arithmetic.html" rel="next" title="Other poly_int arithmetic">
+<link href="wi-arithmetic-on-poly_005fints.html" rel="prev" title="wi arithmetic on poly_ints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Division-of-poly_005fints">
+<div class="nav-panel">
+<p>
+Next: <a href="Other-poly_005fint-arithmetic.html" accesskey="n" rel="next">Other <code class="code">poly_int</code> arithmetic</a>, Previous: <a href="wi-arithmetic-on-poly_005fints.html" accesskey="p" rel="prev"><code class="code">wi</code> arithmetic on <code class="code">poly_int</code>s</a>, Up: <a href="Arithmetic-on-poly_005fints.html" accesskey="u" rel="up">Arithmetic on <code class="code">poly_int</code>s</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Division-of-poly_005fints-1"><span>9.4.3 Division of <code class="code">poly_int</code>s<a class="copiable-link" href="#Division-of-poly_005fints-1"> &para;</a></span></h4>
+
+<p>Division of <code class="code">poly_int</code>s is possible for certain inputs.  The functions
+for division return true if the operation is possible and in most cases
+return the results by pointer.  The routines are:
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">multiple_p (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">multiple_p (<var class="var">a</var>, <var class="var">b</var>, &amp;<var class="var">quotient</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if <var class="var">a</var> is an exact multiple of <var class="var">b</var>, storing the result
+in <var class="var">quotient</var> if so.  There are overloads for various combinations
+of polynomial and constant <var class="var">a</var>, <var class="var">b</var> and <var class="var">quotient</var>.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">constant_multiple_p (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">constant_multiple_p (<var class="var">a</var>, <var class="var">b</var>, &amp;<var class="var">quotient</var>)</samp>&rsquo;</dt>
+<dd><p>Like <code class="code">multiple_p</code>, but also test whether the multiple is a
+compile-time constant.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">can_div_trunc_p (<var class="var">a</var>, <var class="var">b</var>, &amp;<var class="var">quotient</var>)</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">can_div_trunc_p (<var class="var">a</var>, <var class="var">b</var>, &amp;<var class="var">quotient</var>, &amp;<var class="var">remainder</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if we can calculate &lsquo;<samp class="samp">trunc (<var class="var">a</var> / <var class="var">b</var>)</samp>&rsquo; at compile
+time, storing the result in <var class="var">quotient</var> and <var class="var">remainder</var> if so.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">can_div_away_from_zero_p (<var class="var">a</var>, <var class="var">b</var>, &amp;<var class="var">quotient</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if we can calculate &lsquo;<samp class="samp"><var class="var">a</var> / <var class="var">b</var></samp>&rsquo; at compile time,
+rounding away from zero.  Store the result in <var class="var">quotient</var> if so.
+</p>
+<p>Note that this is true if and only if <code class="code">can_div_trunc_p</code> is true.
+The only difference is in the rounding of the result.
+</p></dd>
+</dl>
+
+<p>There is also an asserting form of division:
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">exact_div (<var class="var">a</var>, <var class="var">b</var>)</samp>&rsquo;</dt>
+<dd><p>Assert that <var class="var">a</var> is a multiple of <var class="var">b</var> and return
+&lsquo;<samp class="samp"><var class="var">a</var> / <var class="var">b</var></samp>&rsquo;.  The result is a <code class="code">poly_int</code> if <var class="var">a</var>
+is a <code class="code">poly_int</code>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Other-poly_005fint-arithmetic.html">Other <code class="code">poly_int</code> arithmetic</a>, Previous: <a href="wi-arithmetic-on-poly_005fints.html"><code class="code">wi</code> arithmetic on <code class="code">poly_int</code>s</a>, Up: <a href="Arithmetic-on-poly_005fints.html">Arithmetic on <code class="code">poly_int</code>s</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

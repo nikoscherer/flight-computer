@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Protocol Basics (Debugging with GDB)</title>
+
+<meta name="description" content="Protocol Basics (Debugging with GDB)">
+<meta name="keywords" content="Protocol Basics (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="File-I/O Remote Protocol Extension">
+<link href="The-F-Request-Packet.html" rel="next" title="The F Request Packet">
+<link href="File_002dI_002fO-Overview.html" rel="prev" title="File-I/O Overview">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Protocol-Basics">
+<div class="nav-panel">
+<p>
+Next: <a href="The-F-Request-Packet.html" accesskey="n" rel="next">The <code class="code">F</code> Request Packet</a>, Previous: <a href="File_002dI_002fO-Overview.html" accesskey="p" rel="prev">File-I/O Overview</a>, Up: <a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">File-I/O Remote Protocol Extension</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Protocol-Basics-1"><span>E.14.2 Protocol Basics<a class="copiable-link" href="#Protocol-Basics-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-protocol-basics_002c-file_002di_002fo"></a>
+
+<p>The File-I/O protocol uses the <code class="code">F</code> packet as the request as well
+as reply packet.  Since a File-I/O system call can only occur when
+<small class="sc">GDB</small> is waiting for a response from the continuing or stepping target, 
+the File-I/O request is a reply that <small class="sc">GDB</small> has to expect as a result
+of a previous &lsquo;<samp class="samp">C</samp>&rsquo;, &lsquo;<samp class="samp">c</samp>&rsquo;, &lsquo;<samp class="samp">S</samp>&rsquo; or &lsquo;<samp class="samp">s</samp>&rsquo; packet.
+This <code class="code">F</code> packet contains all information needed to allow <small class="sc">GDB</small>
+to call the appropriate host system call:
+</p>
+<ul class="itemize mark-bullet">
+<li>A unique identifier for the requested system call.
+
+</li><li>All parameters to the system call.  Pointers are given as addresses
+in the target memory address space.  Pointers to strings are given as
+pointer/length pair.  Numerical values are given as they are.
+Numerical control flags are given in a protocol-specific representation.
+
+</li></ul>
+
+<p>At this point, <small class="sc">GDB</small> has to perform the following actions.
+</p>
+<ul class="itemize mark-bullet">
+<li>If the parameters include pointer values to data needed as input to a 
+system call, <small class="sc">GDB</small> requests this data from the target with a
+standard <code class="code">m</code> packet request.  This additional communication has to be
+expected by the target implementation and is handled as any other <code class="code">m</code>
+packet.
+
+</li><li><small class="sc">GDB</small> translates all value from protocol representation to host
+representation as needed.  Datatypes are coerced into the host types.
+
+</li><li><small class="sc">GDB</small> calls the system call.
+
+</li><li>It then coerces datatypes back to protocol representation.
+
+</li><li>If the system call is expected to return data in buffer space specified
+by pointer parameters to the call, the data is transmitted to the
+target using a <code class="code">M</code> or <code class="code">X</code> packet.  This packet has to be expected
+by the target implementation and is handled as any other <code class="code">M</code> or <code class="code">X</code>
+packet.
+
+</li></ul>
+
+<p>Eventually <small class="sc">GDB</small> replies with another <code class="code">F</code> packet which contains all
+necessary information for the target to continue.  This at least contains
+</p>
+<ul class="itemize mark-bullet">
+<li>Return value.
+
+</li><li><code class="code">errno</code>, if has been changed by the system call.
+
+</li><li>&ldquo;Ctrl-C&rdquo; flag.
+
+</li></ul>
+
+<p>After having done the needed type and value coercion, the target continues
+the latest continue or step action.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="The-F-Request-Packet.html">The <code class="code">F</code> Request Packet</a>, Previous: <a href="File_002dI_002fO-Overview.html">File-I/O Overview</a>, Up: <a href="File_002dI_002fO-Remote-Protocol-Extension.html">File-I/O Remote Protocol Extension</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

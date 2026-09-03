@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Examples (Debugging with GDB)</title>
+
+<meta name="description" content="Examples (Debugging with GDB)">
+<meta name="keywords" content="Examples (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="next" title="File-I/O Remote Protocol Extension">
+<link href="Packet-Acknowledgment.html" rel="prev" title="Packet Acknowledgment">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Examples">
+<div class="nav-panel">
+<p>
+Next: <a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="n" rel="next">File-I/O Remote Protocol Extension</a>, Previous: <a href="Packet-Acknowledgment.html" accesskey="p" rel="prev">Packet Acknowledgment</a>, Up: <a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small> Remote Serial Protocol</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Examples-1"><span>E.13 Examples<a class="copiable-link" href="#Examples-1"> &para;</a></span></h3>
+
+<p>Example sequence of a target being re-started.  Notice how the restart
+does not get any direct output:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; <code class="code">R00</code>
+&lt;- <code class="code">+</code>
+<em class="emph">target restarts</em>
+-&gt; <code class="code">?</code>
+&lt;- <code class="code">+</code>
+&lt;- <code class="code">T001:1234123412341234</code>
+-&gt; <code class="code">+</code>
+</pre></div>
+
+<p>Example sequence of a target being stepped by a single instruction:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; <code class="code">G1445...</code>
+&lt;- <code class="code">+</code>
+-&gt; <code class="code">s</code>
+&lt;- <code class="code">+</code>
+<em class="emph">time passes</em>
+&lt;- <code class="code">T001:1234123412341234</code>
+-&gt; <code class="code">+</code>
+-&gt; <code class="code">g</code>
+&lt;- <code class="code">+</code>
+&lt;- <code class="code">1455...</code>
+-&gt; <code class="code">+</code>
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

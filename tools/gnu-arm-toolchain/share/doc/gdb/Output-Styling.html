@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Output Styling (Debugging with GDB)</title>
+
+<meta name="description" content="Output Styling (Debugging with GDB)">
+<meta name="keywords" content="Output Styling (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB">
+<link href="Numbers.html" rel="next" title="Numbers">
+<link href="Screen-Size.html" rel="prev" title="Screen Size">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Output-Styling">
+<div class="nav-panel">
+<p>
+Next: <a href="Numbers.html" accesskey="n" rel="next">Numbers</a>, Previous: <a href="Screen-Size.html" accesskey="p" rel="prev">Screen Size</a>, Up: <a href="Controlling-GDB.html" accesskey="u" rel="up">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Output-Styling-1"><span>22.5 Output Styling<a class="copiable-link" href="#Output-Styling-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-styling"></a>
+<a class="index-entry-id" id="index-colors"></a>
+
+<a class="index-entry-id" id="index-set-style"></a>
+<a class="index-entry-id" id="index-show-style"></a>
+<p><small class="sc">GDB</small> can style its output on a capable terminal.  This is
+enabled by default on most systems, but disabled by default when in
+batch mode (see <a class="pxref" href="Mode-Options.html">Choosing Modes</a>).  Various style settings are available;
+and styles can also be disabled entirely.
+</p>
+<dl class="table">
+<dt><code class="code">set style enabled &lsquo;<samp class="samp">on|off</samp>&rsquo;</code></dt>
+<dd><p>Enable or disable all styling.  The default is host-dependent, with
+most hosts defaulting to &lsquo;<samp class="samp">on</samp>&rsquo;.
+</p>
+<p>If the <code class="env">NO_COLOR</code> environment variable is set to a non-empty
+value, then <small class="sc">GDB</small> will change this to &lsquo;<samp class="samp">off</samp>&rsquo; at startup.
+</p>
+</dd>
+<dt><code class="code">show style enabled</code></dt>
+<dd><p>Show the current state of styling.
+</p>
+</dd>
+<dt><code class="code">set style sources &lsquo;<samp class="samp">on|off</samp>&rsquo;</code></dt>
+<dd><p>Enable or disable source code styling.  This affects whether source
+code, such as the output of the <code class="code">list</code> command, is styled.  The
+default is &lsquo;<samp class="samp">on</samp>&rsquo;.  Note that source styling only works if styling
+in general is enabled, and if a source highlighting library is
+available to <small class="sc">GDB</small>.
+</p>
+<p>There are two ways that highlighting can be done.  First, if
+<small class="sc">GDB</small> was linked with the GNU Source Highlight library, then it
+is used.  Otherwise, if <small class="sc">GDB</small> was configured with Python
+scripting support, and if the Python Pygments package is available,
+then it will be used.
+</p>
+</dd>
+<dt><code class="code">show style sources</code></dt>
+<dd><p>Show the current state of source code styling.
+</p>
+</dd>
+<dt><code class="code">set style tui-current-position &lsquo;<samp class="samp">on|off</samp>&rsquo;</code></dt>
+<dd><p>Enable or disable styling of the source and assembly code highlighted
+by the TUI&rsquo;s current position indicator.  The default is &lsquo;<samp class="samp">off</samp>&rsquo;.
+See <a class="xref" href="TUI.html"><small class="sc">GDB</small> Text User Interface</a>.
+</p>
+</dd>
+<dt><code class="code">show style tui-current-position</code></dt>
+<dd><p>Show whether the source and assembly code highlighted by the TUI&rsquo;s
+current position indicator is styled.
+</p>
+<a class="anchor" id="style_005fdisassembler_005fenabled"></a></dd>
+<dt><code class="code">set style disassembler enabled &lsquo;<samp class="samp">on|off</samp>&rsquo;</code></dt>
+<dd><p>Enable or disable disassembler styling.  This affects whether
+disassembler output, such as the output of the <code class="code">disassemble</code>
+command, is styled.  Disassembler styling only works if styling in
+general is enabled (with <code class="code">set style enabled on</code>), and if a source
+highlighting library is available to <small class="sc">GDB</small>.
+</p>
+<p>The two source highlighting libraries that <small class="sc">GDB</small> could use to
+style disassembler output are; <small class="sc">GDB</small>&rsquo;s builtin disassembler, or
+the Python Pygments package.
+</p>
+<p><small class="sc">GDB</small>&rsquo;s first choice will be to use the builtin disassembler
+for styling, this usually provides better results, being able to style
+different types of instruction operands differently.  However, the
+builtin disassembler is not able to style all architectures.
+</p>
+<p>For architectures that the builtin disassembler is unable to style,
+<small class="sc">GDB</small> will fall back to use the Python Pygments package where
+possible.  In order to use the Python Pygments package, <small class="sc">GDB</small>
+must be built with Python support, and the Pygments package must be
+installed.
+</p>
+<p>If neither of these options are available then <small class="sc">GDB</small> will
+produce unstyled disassembler output, even when this setting is
+&lsquo;<samp class="samp">on</samp>&rsquo;.
+</p>
+<p>To discover if the current architecture supports styling using the
+builtin disassembler library see <a class="ref" href="Maintenance-Commands.html#maint_005flibopcodes_005fstyling"><kbd class="kbd">maint
+show libopcodes-styling enabled</kbd></a>.
+</p>
+</dd>
+<dt><code class="code">show style disassembler enabled</code></dt>
+<dd><p>Show the current state of disassembler styling.
+</p>
+</dd>
+</dl>
+
+<p>Subcommands of <code class="code">set style</code> control specific forms of styling.
+These subcommands all follow the same pattern: each style-able object
+can be styled with a foreground color, a background color, and an
+intensity.
+</p>
+<p>For example, the style of file names can be controlled using the
+<code class="code">set style filename</code> group of commands:
+</p>
+<dl class="table">
+<dt><code class="code">set style filename background <var class="var">color</var></code></dt>
+<dd><p>Set the background to <var class="var">color</var>.  Valid colors are &lsquo;<samp class="samp">none</samp>&rsquo;
+(meaning the terminal&rsquo;s default color), &lsquo;<samp class="samp">black</samp>&rsquo;, &lsquo;<samp class="samp">red</samp>&rsquo;,
+&lsquo;<samp class="samp">green</samp>&rsquo;, &lsquo;<samp class="samp">yellow</samp>&rsquo;, &lsquo;<samp class="samp">blue</samp>&rsquo;, &lsquo;<samp class="samp">magenta</samp>&rsquo;, &lsquo;<samp class="samp">cyan</samp>&rsquo;,
+and&lsquo;<samp class="samp">white</samp>&rsquo;.
+</p>
+</dd>
+<dt><code class="code">set style filename foreground <var class="var">color</var></code></dt>
+<dd><p>Set the foreground to <var class="var">color</var>.  Valid colors are &lsquo;<samp class="samp">none</samp>&rsquo;
+(meaning the terminal&rsquo;s default color), &lsquo;<samp class="samp">black</samp>&rsquo;, &lsquo;<samp class="samp">red</samp>&rsquo;,
+&lsquo;<samp class="samp">green</samp>&rsquo;, &lsquo;<samp class="samp">yellow</samp>&rsquo;, &lsquo;<samp class="samp">blue</samp>&rsquo;, &lsquo;<samp class="samp">magenta</samp>&rsquo;, &lsquo;<samp class="samp">cyan</samp>&rsquo;,
+and&lsquo;<samp class="samp">white</samp>&rsquo;.
+</p>
+</dd>
+<dt><code class="code">set style filename intensity <var class="var">value</var></code></dt>
+<dd><p>Set the intensity to <var class="var">value</var>.  Valid intensities are &lsquo;<samp class="samp">normal</samp>&rsquo;
+(the default), &lsquo;<samp class="samp">bold</samp>&rsquo;, and &lsquo;<samp class="samp">dim</samp>&rsquo;.
+</p></dd>
+</dl>
+
+<p>The <code class="code">show style</code> command and its subcommands are styling
+a style name in their output using its own style.
+So, use <code class="command">show style</code> to see the complete list of styles,
+their characteristics and the visual aspect of each style.
+</p>
+<p>The style-able objects are:
+</p><dl class="table">
+<dt><code class="code">command</code></dt>
+<dd><p>Control the styling of any <small class="sc">GDB</small> commands that are displayed by
+<small class="sc">GDB</small>.  By default, this style&rsquo;s intensity is bold.
+</p>
+</dd>
+<dt><code class="code">filename</code></dt>
+<dd><p>Control the styling of file names and URLs.  By default, this style&rsquo;s
+foreground color is green.
+</p>
+</dd>
+<dt><code class="code">function</code></dt>
+<dd><p>Control the styling of function names.  These are managed with the
+<code class="code">set style function</code> family of commands.  By default, this
+style&rsquo;s foreground color is yellow.
+</p>
+<p>This style is also used for symbol names in styled disassembler output
+if <small class="sc">GDB</small> is using its builtin disassembler library for styling
+(see <a class="pxref" href="#style_005fdisassembler_005fenabled"><kbd class="kbd">set style disassembler
+enabled</kbd></a>).
+</p>
+</dd>
+<dt><code class="code">line-number</code></dt>
+<dd><p>Control the styling of line numbers.  By default, this style&rsquo;s
+intensity is dim.
+</p>
+</dd>
+<dt><code class="code">variable</code></dt>
+<dd><p>Control the styling of variable names.  These are managed with the
+<code class="code">set style variable</code> family of commands.  By default, this style&rsquo;s
+foreground color is cyan.
+</p>
+</dd>
+<dt><code class="code">address</code></dt>
+<dd><p>Control the styling of addresses.  These are managed with the
+<code class="code">set style address</code> family of commands.  By default, this style&rsquo;s
+foreground color is blue.
+</p>
+<p>This style is also used for addresses in styled disassembler output
+if <small class="sc">GDB</small> is using its builtin disassembler library for styling
+(see <a class="pxref" href="#style_005fdisassembler_005fenabled"><kbd class="kbd">set style disassembler
+enabled</kbd></a>).
+</p>
+</dd>
+<dt><code class="code">version</code></dt>
+<dd><p>Control the styling of <small class="sc">GDB</small>&rsquo;s version number text.  By
+default, this style&rsquo;s foreground color is magenta and it has bold
+intensity.  The version number is displayed in two places, the output
+of <code class="command">show version</code>, and when <small class="sc">GDB</small> starts up.
+</p>
+<p>In order to control how <small class="sc">GDB</small> styles the version number at
+startup, add the <code class="code">set style version</code> family of commands to the
+early initialization command file (see <a class="pxref" href="Initialization-Files.html">Initialization Files</a>).
+</p>
+</dd>
+<dt><code class="code">title</code></dt>
+<dd><p>Control the styling of titles.  These are managed with the
+<code class="code">set style title</code> family of commands.  By default, this style&rsquo;s
+intensity is bold.  The title style is used when displaying the header
+line of a list, for example the first line of the output of
+<code class="code">info breakpoints</code> (see <a class="pxref" href="Set-Breaks.html">Setting Breakpoints</a>).
+</p>
+</dd>
+<dt><code class="code">highlight</code></dt>
+<dd><p>Control the styling of highlightings.  These are managed with the
+<code class="code">set style highlight</code> family of commands.  By default, this style&rsquo;s
+foreground color is red.  Commands are using the highlight style to draw
+the user attention to some specific parts of their output.  For example,
+the command <code class="command">apropos -v REGEXP</code> uses the highlight style to
+mark the documentation parts matching <var class="var">regexp</var>.
+</p>
+</dd>
+<dt><code class="code">metadata</code></dt>
+<dd><p>Control the styling of data annotations added by <small class="sc">GDB</small> to data
+it displays.  By default, this style&rsquo;s intensity is dim.  Metadata
+annotations include the &lsquo;<samp class="samp">repeats <var class="var">n</var> times</samp>&rsquo; annotation for
+suppressed display of repeated array elements (see <a class="pxref" href="Print-Settings.html">Print Settings</a>),
+&lsquo;<samp class="samp">&lt;unavailable&gt;</samp>&rsquo; and &lsquo;<samp class="samp">&lt;error&nbsp;<var class="var">descr</var>&gt;</samp>&rsquo;<!-- /@w --> annotations
+for errors and &lsquo;<samp class="samp">&lt;optimized-out&gt;</samp>&rsquo; annotations for optimized-out
+values in displaying stack frame information in backtraces
+(see <a class="pxref" href="Backtrace.html">Backtraces</a>), etc.
+</p>
+</dd>
+<dt><code class="code">tui-border</code></dt>
+<dd><p>Control the styling of the TUI border.  Note that, unlike other
+styling options, only the color of the border can be controlled via
+<code class="code">set style</code>.  This was done for compatibility reasons, as TUI
+controls to set the border&rsquo;s intensity predated the addition of
+general styling to <small class="sc">GDB</small>.  See <a class="xref" href="TUI-Configuration.html">TUI Configuration Variables</a>.
+</p>
+</dd>
+<dt><code class="code">tui-active-border</code></dt>
+<dd><p>Control the styling of the active TUI border; that is, the TUI window
+that has the focus.
+</p>
+</dd>
+<dt><code class="code">disassembler comment</code></dt>
+<dd><p>Control the styling of comments in the disassembler output.  These are
+managed with the <code class="code">set style disassembler comment</code> family of
+commands.  This style is only used when <small class="sc">GDB</small> is styling using
+its builtin disassembler library
+(see <a class="pxref" href="#style_005fdisassembler_005fenabled"><kbd class="kbd">set style disassembler
+enabled</kbd></a>).  By default, this style&rsquo;s intensity is dim, and its
+foreground color is white.
+</p>
+</dd>
+<dt><code class="code">disassembler immediate</code></dt>
+<dd><p>Control the styling of numeric operands in the disassembler output.
+These are managed with the <code class="code">set style disassembler immediate</code>
+family of commands.  This style is not used for instruction operands
+that represent addresses, in that case the &lsquo;<samp class="samp">disassembler address</samp>&rsquo;
+style is used.  This style is only used when <small class="sc">GDB</small> is styling
+using its builtin disassembler library.  By default, this style&rsquo;s
+foreground color is blue.
+</p>
+</dd>
+<dt><code class="code">disassembler address</code></dt>
+<dd><p>Control the styling of address operands in the disassembler output.
+This is an alias for the &lsquo;<samp class="samp">address</samp>&rsquo; style.
+</p>
+</dd>
+<dt><code class="code">disassembler symbol</code></dt>
+<dd><p>Control the styling of symbol names in the disassembler output.  This
+is an alias for the &lsquo;<samp class="samp">function</samp>&rsquo; style.
+</p>
+</dd>
+<dt><code class="code">disassembler mnemonic</code></dt>
+<dd><p>Control the styling of instruction mnemonics in the disassembler
+output.  These are managed with the <code class="code">set style disassembler
+mnemonic</code> family of commands.  This style is also used for assembler
+directives, e.g. <code class="code">.byte</code>, <code class="code">.word</code>, etc.  This style is
+only used when <small class="sc">GDB</small> is styling using its builtin disassembler
+library.  By default, this style&rsquo;s foreground color is green.
+</p>
+</dd>
+<dt><code class="code">disassembler register</code></dt>
+<dd><p>Control the styling of register operands in the disassembler output.
+These are managed with the <code class="code">set style disassembler register</code>
+family of commands.  This style is only used when <small class="sc">GDB</small> is
+styling using its builtin disassembler library.  By default, this style&rsquo;s
+foreground color is red.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Numbers.html">Numbers</a>, Previous: <a href="Screen-Size.html">Screen Size</a>, Up: <a href="Controlling-GDB.html">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

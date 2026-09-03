@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Stack Variables (STABS)</title>
+
+<meta name="description" content="Stack Variables (STABS)">
+<meta name="keywords" content="Stack Variables (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Variables.html" rel="up" title="Variables">
+<link href="Global-Variables.html" rel="next" title="Global Variables">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Stack-Variables">
+<div class="nav-panel">
+<p>
+Next: <a href="Global-Variables.html" accesskey="n" rel="next">Global Variables</a>, Up: <a href="Variables.html" accesskey="u" rel="up">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Automatic-Variables-Allocated-on-the-Stack"><span>4.1 Automatic Variables Allocated on the Stack<a class="copiable-link" href="#Automatic-Variables-Allocated-on-the-Stack"> &para;</a></span></h3>
+
+<p>If a variable&rsquo;s scope is local to a function and its lifetime is only as
+long as that function executes (C calls such variables
+<em class="dfn">automatic</em>), it can be allocated in a register (see <a class="pxref" href="Register-Variables.html">Register Variables</a>) or on the stack.
+</p>
+<a class="index-entry-id" id="index-N_005fLSYM_002c-for-stack-variables"></a>
+<a class="index-entry-id" id="index-C_005fLSYM"></a>
+<p>Each variable allocated on the stack has a stab with the symbol
+descriptor omitted.  Since type information should begin with a digit,
+&lsquo;<samp class="samp">-</samp>&rsquo;, or &lsquo;<samp class="samp">(</samp>&rsquo;, only those characters precluded from being used
+for symbol descriptors.  However, the Acorn RISC machine (ARM) is said
+to get this wrong: it puts out a mere type definition here, without the
+preceding &lsquo;<samp class="samp"><var class="var">type-number</var>=</samp>&rsquo;.  This is a bad idea; there is no
+guarantee that type descriptors are distinct from symbol descriptors.
+Stabs for stack variables use the <code class="code">N_LSYM</code> stab type, or
+<code class="code">C_LSYM</code> for XCOFF.
+</p>
+<p>The value of the stab is the offset of the variable within the
+local variables.  On most machines this is an offset from the frame
+pointer and is negative.  The location of the stab specifies which block
+it is defined in; see <a class="ref" href="Block-Structure.html">Block Structure</a>.
+</p>
+<p>For example, the following C code:
+</p>
+<div class="example">
+<pre class="example-preformatted">int
+main ()
+{
+  int x;
+}
+</pre></div>
+
+<p>produces the following stabs:
+</p>
+<div class="example">
+<pre class="example-preformatted">.stabs &quot;main:F1&quot;,36,0,0,_main   # <span class="r">36 is N_FUN</span>
+.stabs &quot;x:1&quot;,128,0,0,-12        # <span class="r">128 is N_LSYM</span>
+.stabn 192,0,0,LBB2             # <span class="r">192 is N_LBRAC</span>
+.stabn 224,0,0,LBE2             # <span class="r">224 is N_RBRAC</span>
+</pre></div>
+
+<p>See <a class="ref" href="Procedures.html">Procedures</a> for more information on the <code class="code">N_FUN</code> stab, and
+<a class="ref" href="Block-Structure.html">Block Structure</a> for more information on the <code class="code">N_LBRAC</code> and
+<code class="code">N_RBRAC</code> stabs.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Global-Variables.html">Global Variables</a>, Up: <a href="Variables.html">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

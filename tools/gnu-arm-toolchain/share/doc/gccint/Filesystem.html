@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Filesystem (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Filesystem (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Filesystem (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Host-Config.html" rel="up" title="Host Config">
+<link href="Host-Misc.html" rel="next" title="Host Misc">
+<link href="Host-Common.html" rel="prev" title="Host Common">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Filesystem">
+<div class="nav-panel">
+<p>
+Next: <a href="Host-Misc.html" accesskey="n" rel="next">Host Misc</a>, Previous: <a href="Host-Common.html" accesskey="p" rel="prev">Host Common</a>, Up: <a href="Host-Config.html" accesskey="u" rel="up">Host Configuration</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Host-Filesystem"><span>18.2 Host Filesystem<a class="copiable-link" href="#Host-Filesystem"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-configuration-file"></a>
+<a class="index-entry-id" id="index-xm_002dmachine_002eh"></a>
+
+<p>GCC needs to know a number of things about the semantics of the host
+machine&rsquo;s filesystem.  Filesystems with Unix and MS-DOS semantics are
+automatically detected.  For other systems, you can define the
+following macros in <samp class="file">xm-<var class="var">machine</var>.h</samp>.
+</p>
+<dl class="ftable">
+<dt><a id="index-HAVE_005fDOS_005fBASED_005fFILE_005fSYSTEM"></a><span><code class="code">HAVE_DOS_BASED_FILE_SYSTEM</code><a class="copiable-link" href="#index-HAVE_005fDOS_005fBASED_005fFILE_005fSYSTEM"> &para;</a></span></dt>
+<dd><p>This macro is automatically defined by <samp class="file">system.h</samp> if the host
+file system obeys the semantics defined by MS-DOS instead of Unix.
+DOS file systems are case insensitive, file specifications may begin
+with a drive letter, and both forward slash and backslash (&lsquo;<samp class="samp">/</samp>&rsquo;
+and &lsquo;<samp class="samp">\</samp>&rsquo;) are directory separators.
+</p>
+</dd>
+<dt><a id="index-DIR_005fSEPARATOR"></a><span><code class="code">DIR_SEPARATOR</code><a class="copiable-link" href="#index-DIR_005fSEPARATOR"> &para;</a></span></dt>
+<dt><a id="index-DIR_005fSEPARATOR_005f2"></a><span><code class="code">DIR_SEPARATOR_2</code><a class="copiable-link" href="#index-DIR_005fSEPARATOR_005f2"> &para;</a></span></dt>
+<dd><p>If defined, these macros expand to character constants specifying
+separators for directory names within a file specification.
+<samp class="file">system.h</samp> will automatically give them appropriate values on
+Unix and MS-DOS file systems.  If your file system is neither of
+these, define one or both appropriately in <samp class="file">xm-<var class="var">machine</var>.h</samp>.
+</p>
+<p>However, operating systems like VMS, where constructing a pathname is
+more complicated than just stringing together directory names
+separated by a special character, should not define either of these
+macros.
+</p>
+</dd>
+<dt><a id="index-PATH_005fSEPARATOR"></a><span><code class="code">PATH_SEPARATOR</code><a class="copiable-link" href="#index-PATH_005fSEPARATOR"> &para;</a></span></dt>
+<dd><p>If defined, this macro should expand to a character constant
+specifying the separator for elements of search paths.  The default
+value is a colon (&lsquo;<samp class="samp">:</samp>&rsquo;).  DOS-based systems usually, but not
+always, use semicolon (&lsquo;<samp class="samp">;</samp>&rsquo;).
+</p>
+</dd>
+<dt><a id="index-VMS"></a><span><code class="code">VMS</code><a class="copiable-link" href="#index-VMS"> &para;</a></span></dt>
+<dd><p>Define this macro if the host system is VMS.
+</p>
+</dd>
+<dt><a id="index-HOST_005fOBJECT_005fSUFFIX"></a><span><code class="code">HOST_OBJECT_SUFFIX</code><a class="copiable-link" href="#index-HOST_005fOBJECT_005fSUFFIX"> &para;</a></span></dt>
+<dd><p>Define this macro to be a C string representing the suffix for object
+files on your host machine.  If you do not define this macro, GCC will
+use &lsquo;<samp class="samp">.o</samp>&rsquo; as the suffix for object files.
+</p>
+</dd>
+<dt><a id="index-HOST_005fEXECUTABLE_005fSUFFIX"></a><span><code class="code">HOST_EXECUTABLE_SUFFIX</code><a class="copiable-link" href="#index-HOST_005fEXECUTABLE_005fSUFFIX"> &para;</a></span></dt>
+<dd><p>Define this macro to be a C string representing the suffix for
+executable files on your host machine.  If you do not define this macro,
+GCC will use the null string as the suffix for executable files.
+</p>
+</dd>
+<dt><a id="index-HOST_005fBIT_005fBUCKET"></a><span><code class="code">HOST_BIT_BUCKET</code><a class="copiable-link" href="#index-HOST_005fBIT_005fBUCKET"> &para;</a></span></dt>
+<dd><p>A pathname defined by the host operating system, which can be opened as
+a file and written to, but all the information written is discarded.
+This is commonly known as a <em class="dfn">bit bucket</em> or <em class="dfn">null device</em>.  If
+you do not define this macro, GCC will use &lsquo;<samp class="samp">/dev/null</samp>&rsquo; as the bit
+bucket.  If the host does not support a bit bucket, define this macro to
+an invalid filename.
+</p>
+</dd>
+<dt><a id="index-UPDATE_005fPATH_005fHOST_005fCANONICALIZE-_0028path_0029"></a><span><code class="code">UPDATE_PATH_HOST_CANONICALIZE (<var class="var">path</var>)</code><a class="copiable-link" href="#index-UPDATE_005fPATH_005fHOST_005fCANONICALIZE-_0028path_0029"> &para;</a></span></dt>
+<dd><p>If defined, a C statement (sans semicolon) that performs host-dependent
+canonicalization when a path used in a compilation driver or
+preprocessor is canonicalized.  <var class="var">path</var> is a malloc-ed path to be
+canonicalized.  If the C statement does canonicalize <var class="var">path</var> into a
+different buffer, the old path should be freed and the new buffer should
+have been allocated with malloc.
+</p>
+</dd>
+<dt><a id="index-DUMPFILE_005fFORMAT"></a><span><code class="code">DUMPFILE_FORMAT</code><a class="copiable-link" href="#index-DUMPFILE_005fFORMAT"> &para;</a></span></dt>
+<dd><p>Define this macro to be a C string representing the format to use for
+constructing the index part of debugging dump file names.  The resultant
+string must fit in fifteen bytes.  The full filename will be the
+concatenation of: the prefix of the assembler file name, the string
+resulting from applying this format to an index number, and a string
+unique to each dump file kind, e.g. &lsquo;<samp class="samp">rtl</samp>&rsquo;.
+</p>
+<p>If you do not define this macro, GCC will use &lsquo;<samp class="samp">.%02d.</samp>&rsquo;.  You should
+define this macro if using the default will create an invalid file name.
+</p>
+</dd>
+<dt><a id="index-DELETE_005fIF_005fORDINARY"></a><span><code class="code">DELETE_IF_ORDINARY</code><a class="copiable-link" href="#index-DELETE_005fIF_005fORDINARY"> &para;</a></span></dt>
+<dd><p>Define this macro to be a C statement (sans semicolon) that performs
+host-dependent removal of ordinary temp files in the compilation driver.
+</p>
+<p>If you do not define this macro, GCC will use the default version.  You
+should define this macro if the default version does not reliably remove
+the temp file as, for example, on VMS which allows multiple versions
+of a file.
+</p>
+</dd>
+<dt><a id="index-HOST_005fLACKS_005fINODE_005fNUMBERS"></a><span><code class="code">HOST_LACKS_INODE_NUMBERS</code><a class="copiable-link" href="#index-HOST_005fLACKS_005fINODE_005fNUMBERS"> &para;</a></span></dt>
+<dd><p>Define this macro if the host filesystem does not report meaningful inode
+numbers in struct stat.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Host-Misc.html">Host Misc</a>, Previous: <a href="Host-Common.html">Host Common</a>, Up: <a href="Host-Config.html">Host Configuration</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Background Execution (Debugging with GDB)</title>
+
+<meta name="description" content="Background Execution (Debugging with GDB)">
+<meta name="keywords" content="Background Execution (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Thread-Stops.html" rel="up" title="Thread Stops">
+<link href="Thread_002dSpecific-Breakpoints.html" rel="next" title="Thread-Specific Breakpoints">
+<link href="Non_002dStop-Mode.html" rel="prev" title="Non-Stop Mode">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Background-Execution">
+<div class="nav-panel">
+<p>
+Next: <a href="Thread_002dSpecific-Breakpoints.html" accesskey="n" rel="next">Thread-Specific Breakpoints</a>, Previous: <a href="Non_002dStop-Mode.html" accesskey="p" rel="prev">Non-Stop Mode</a>, Up: <a href="Thread-Stops.html" accesskey="u" rel="up">Stopping and Starting Multi-thread Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Background-Execution-1"><span>5.5.3 Background Execution<a class="copiable-link" href="#Background-Execution-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-foreground-execution"></a>
+<a class="index-entry-id" id="index-background-execution"></a>
+<a class="index-entry-id" id="index-asynchronous-execution"></a>
+<a class="index-entry-id" id="index-execution_002c-foreground_002c-background-and-asynchronous"></a>
+
+<p><small class="sc">GDB</small>&rsquo;s execution commands have two variants:  the normal
+foreground (synchronous) behavior, and a background
+(asynchronous) behavior.  In foreground execution, <small class="sc">GDB</small> waits for
+the program to report that some thread has stopped before prompting for
+another command.  In background execution, <small class="sc">GDB</small> immediately gives
+a command prompt so that you can issue other commands while your program runs.
+</p>
+<p>If the target doesn&rsquo;t support async mode, <small class="sc">GDB</small> issues an error
+message if you attempt to use the background execution commands.
+</p>
+<a class="index-entry-id" id="index-_0026_002c-background-execution-of-commands"></a>
+<p>To specify background execution, add a <code class="code">&amp;</code> to the command.  For example,
+the background form of the <code class="code">continue</code> command is <code class="code">continue&amp;</code>, or
+just <code class="code">c&amp;</code>.  The execution commands that accept background execution
+are:
+</p>
+<dl class="table">
+<dt><a id="index-run_0026"></a><span><code class="code">run</code><a class="copiable-link" href="#index-run_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Starting.html">Starting your Program</a>.
+</p>
+</dd>
+<dt><a id="index-attach_0026"></a><span><code class="code">attach</code><a class="copiable-link" href="#index-attach_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Attach.html">Debugging an Already-running Process</a>.
+</p>
+</dd>
+<dt><a id="index-step_0026"></a><span><code class="code">step</code><a class="copiable-link" href="#index-step_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">step</a>.
+</p>
+</dd>
+<dt><a id="index-stepi_0026"></a><span><code class="code">stepi</code><a class="copiable-link" href="#index-stepi_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">stepi</a>.
+</p>
+</dd>
+<dt><a id="index-next_0026"></a><span><code class="code">next</code><a class="copiable-link" href="#index-next_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">next</a>.
+</p>
+</dd>
+<dt><a id="index-nexti_0026"></a><span><code class="code">nexti</code><a class="copiable-link" href="#index-nexti_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">nexti</a>.
+</p>
+</dd>
+<dt><a id="index-continue_0026"></a><span><code class="code">continue</code><a class="copiable-link" href="#index-continue_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">continue</a>.
+</p>
+</dd>
+<dt><a id="index-finish_0026"></a><span><code class="code">finish</code><a class="copiable-link" href="#index-finish_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">finish</a>.
+</p>
+</dd>
+<dt><a id="index-until_0026"></a><span><code class="code">until</code><a class="copiable-link" href="#index-until_0026"> &para;</a></span></dt>
+<dd><p>See <a class="xref" href="Continuing-and-Stepping.html">until</a>.
+</p>
+</dd>
+</dl>
+
+<p>Background execution is especially useful in conjunction with non-stop
+mode for debugging programs with multiple threads; see <a class="ref" href="Non_002dStop-Mode.html">Non-Stop Mode</a>.
+However, you can also use these commands in the normal all-stop mode with
+the restriction that you cannot issue another execution command until the
+previous one finishes.  Examples of commands that are valid in all-stop
+mode while the program is running include <code class="code">help</code> and <code class="code">info break</code>.
+</p>
+<p>You can interrupt your program while it is running in the background by
+using the <code class="code">interrupt</code> command.
+</p>
+<dl class="table">
+<dt><a id="index-interrupt-1"></a><span><code class="code">interrupt</code><a class="copiable-link" href="#index-interrupt-1"> &para;</a></span></dt>
+<dt><code class="code">interrupt -a</code></dt>
+<dd>
+<p>Suspend execution of the running program.  In all-stop mode,
+<code class="code">interrupt</code> stops the whole process, but in non-stop mode, it stops
+only the current thread.  To stop the whole program in non-stop mode,
+use <code class="code">interrupt -a</code>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Thread_002dSpecific-Breakpoints.html">Thread-Specific Breakpoints</a>, Previous: <a href="Non_002dStop-Mode.html">Non-Stop Mode</a>, Up: <a href="Thread-Stops.html">Stopping and Starting Multi-thread Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

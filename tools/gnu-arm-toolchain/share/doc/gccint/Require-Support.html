@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Require Support (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Require Support (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Require Support (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Test-Directives.html" rel="up" title="Test Directives">
+<link href="Final-Actions.html" rel="next" title="Final Actions">
+<link href="Remove-Options.html" rel="prev" title="Remove Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Require-Support">
+<div class="nav-panel">
+<p>
+Next: <a href="Final-Actions.html" accesskey="n" rel="next">Commands for use in <code class="code">dg-final</code></a>, Previous: <a href="Remove-Options.html" accesskey="p" rel="prev">Features for <code class="code">dg-remove-options</code></a>, Up: <a href="Test-Directives.html" accesskey="u" rel="up">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Variants-of-dg_002drequire_002dsupport"><span>6.2.6 Variants of <code class="code">dg-require-<var class="var">support</var></code><a class="copiable-link" href="#Variants-of-dg_002drequire_002dsupport"> &para;</a></span></h4>
+
+<p>A few of the <code class="code">dg-require</code> directives take arguments.
+</p>
+<dl class="table">
+<dt><code class="code">dg-require-iconv <var class="var">codeset</var></code></dt>
+<dd><p>Skip the test if the target does not support iconv.  <var class="var">codeset</var> is
+the codeset to convert to.
+</p>
+</dd>
+<dt><code class="code">dg-require-profiling <var class="var">profopt</var></code></dt>
+<dd><p>Skip the test if the target does not support profiling with option
+<var class="var">profopt</var>.
+</p>
+</dd>
+<dt><code class="code">dg-require-stack-check <var class="var">check</var></code></dt>
+<dd><p>Skip the test if the target does not support the <code class="code">-fstack-check</code>
+option.  If <var class="var">check</var> is <code class="code">&quot;&quot;</code>, support for <code class="code">-fstack-check</code>
+is checked, for <code class="code">-fstack-check=(&quot;<var class="var">check</var>&quot;)</code> otherwise.
+</p>
+</dd>
+<dt><code class="code">dg-require-stack-size <var class="var">size</var></code></dt>
+<dd><p>Skip the test if the target does not support a stack size of <var class="var">size</var>.
+</p>
+</dd>
+<dt><code class="code">dg-require-visibility <var class="var">vis</var></code></dt>
+<dd><p>Skip the test if the target does not support the <code class="code">visibility</code> attribute.
+If <var class="var">vis</var> is <code class="code">&quot;&quot;</code>, support for <code class="code">visibility(&quot;hidden&quot;)</code> is
+checked, for <code class="code">visibility(&quot;<var class="var">vis</var>&quot;)</code> otherwise.
+</p></dd>
+</dl>
+
+<p>The original <code class="code">dg-require</code> directives were defined before there
+was support for effective-target keywords.  The directives that do not
+take arguments could be replaced with effective-target keywords.
+</p>
+<dl class="table">
+<dt><code class="code">dg-require-alias &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support the &lsquo;<samp class="samp">alias</samp>&rsquo; attribute.
+</p>
+</dd>
+<dt><code class="code">dg-require-ascii-locale &quot;&quot;</code></dt>
+<dd><p>Skip the test if the host does not support an ASCII locale.
+</p>
+</dd>
+<dt><code class="code">dg-require-compat-dfp &quot;&quot;</code></dt>
+<dd><p>Skip this test unless both compilers in a <samp class="file">compat</samp> testsuite
+support decimal floating point.
+</p>
+</dd>
+<dt><code class="code">dg-require-cxa-atexit &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support <code class="code">__cxa_atexit</code>.
+This is equivalent to <code class="code">dg-require-effective-target cxa_atexit</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-dll &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support DLL attributes.
+</p>
+</dd>
+<dt><code class="code">dg-require-dot &quot;&quot;</code></dt>
+<dd><p>Skip the test if the host does not have <code class="command">dot</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-fork &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support <code class="code">fork</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-gc-sections &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target&rsquo;s linker does not support the
+<code class="code">--gc-sections</code> flags.
+This is equivalent to <code class="code">dg-require-effective-target gc-sections</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-host-local &quot;&quot;</code></dt>
+<dd><p>Skip the test if the host is remote, rather than the same as the build
+system.  Some tests are incompatible with DejaGnu&rsquo;s handling of remote
+hosts, which involves copying the source file to the host and compiling
+it with a relative path and &quot;<code class="code">-o a.out</code>&quot;.
+</p>
+</dd>
+<dt><code class="code">dg-require-linker-plugin &quot;&quot;</code></dt>
+<dd><p>Skip the test is the target does not support the linker plugin.
+This is equivalent to <code class="code">dg-require-effective-target linker_plugin</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-mkfifo &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support <code class="code">mkfifo</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-named-sections &quot;&quot;</code></dt>
+<dd><p>Skip the test is the target does not support named sections.
+This is equivalent to <code class="code">dg-require-effective-target named_sections</code>.
+</p>
+</dd>
+<dt><code class="code">dg-require-weak &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support weak symbols.
+</p>
+</dd>
+<dt><code class="code">dg-require-weak-override &quot;&quot;</code></dt>
+<dd><p>Skip the test if the target does not support overriding weak symbols.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Final-Actions.html">Commands for use in <code class="code">dg-final</code></a>, Previous: <a href="Remove-Options.html">Features for <code class="code">dg-remove-options</code></a>, Up: <a href="Test-Directives.html">Directives used within DejaGnu tests</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

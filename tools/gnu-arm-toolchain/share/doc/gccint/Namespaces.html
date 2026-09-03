@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Namespaces (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Namespaces (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Namespaces (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C-and-C_002b_002b-Trees.html" rel="up" title="C and C++ Trees">
+<link href="Classes.html" rel="next" title="Classes">
+<link href="Types-for-C_002b_002b.html" rel="prev" title="Types for C++">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Namespaces">
+<div class="nav-panel">
+<p>
+Next: <a href="Classes.html" accesskey="n" rel="next">Classes</a>, Previous: <a href="Types-for-C_002b_002b.html" accesskey="p" rel="prev">Types for C++</a>, Up: <a href="C-and-C_002b_002b-Trees.html" accesskey="u" rel="up">C and C++ Trees</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Namespaces-1"><span>10.10.2 Namespaces<a class="copiable-link" href="#Namespaces-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-namespace_002c-scope"></a>
+<a class="index-entry-id" id="index-NAMESPACE_005fDECL-1"></a>
+
+<p>The root of the entire intermediate representation is the variable
+<code class="code">global_namespace</code>.  This is the namespace specified with <code class="code">::</code>
+in C++ source code.  All other namespaces, types, variables, functions,
+and so forth can be found starting with this namespace.
+</p>
+<p>However, except for the fact that it is distinguished as the root of the
+representation, the global namespace is no different from any other
+namespace.  Thus, in what follows, we describe namespaces generally,
+rather than the global namespace in particular.
+</p>
+<p>A namespace is represented by a <code class="code">NAMESPACE_DECL</code> node.
+</p>
+<p>The following macros and functions can be used on a <code class="code">NAMESPACE_DECL</code>:
+</p>
+<dl class="ftable">
+<dt><a id="index-DECL_005fNAME-3"></a><span><code class="code">DECL_NAME</code><a class="copiable-link" href="#index-DECL_005fNAME-3"> &para;</a></span></dt>
+<dd><p>This macro is used to obtain the <code class="code">IDENTIFIER_NODE</code> corresponding to
+the unqualified name of the name of the namespace (see <a class="pxref" href="Identifiers.html">Identifiers</a>).
+The name of the global namespace is &lsquo;<samp class="samp">::</samp>&rsquo;, even though in C++ the
+global namespace is unnamed.  However, you should use comparison with
+<code class="code">global_namespace</code>, rather than <code class="code">DECL_NAME</code> to determine
+whether or not a namespace is the global one.  An unnamed namespace
+will have a <code class="code">DECL_NAME</code> equal to <code class="code">anonymous_namespace_name</code>.
+Within a single translation unit, all unnamed namespaces will have the
+same name.
+</p>
+</dd>
+<dt><a id="index-DECL_005fCONTEXT"></a><span><code class="code">DECL_CONTEXT</code><a class="copiable-link" href="#index-DECL_005fCONTEXT"> &para;</a></span></dt>
+<dd><p>This macro returns the enclosing namespace.  The <code class="code">DECL_CONTEXT</code> for
+the <code class="code">global_namespace</code> is <code class="code">NULL_TREE</code>.
+</p>
+</dd>
+<dt><a id="index-DECL_005fNAMESPACE_005fALIAS"></a><span><code class="code">DECL_NAMESPACE_ALIAS</code><a class="copiable-link" href="#index-DECL_005fNAMESPACE_005fALIAS"> &para;</a></span></dt>
+<dd><p>If this declaration is for a namespace alias, then
+<code class="code">DECL_NAMESPACE_ALIAS</code> is the namespace for which this one is an
+alias.
+</p>
+<p>Do not attempt to use <code class="code">cp_namespace_decls</code> for a namespace which is
+an alias.  Instead, follow <code class="code">DECL_NAMESPACE_ALIAS</code> links until you
+reach an ordinary, non-alias, namespace, and call
+<code class="code">cp_namespace_decls</code> there.
+</p>
+</dd>
+<dt><a id="index-DECL_005fNAMESPACE_005fSTD_005fP"></a><span><code class="code">DECL_NAMESPACE_STD_P</code><a class="copiable-link" href="#index-DECL_005fNAMESPACE_005fSTD_005fP"> &para;</a></span></dt>
+<dd><p>This predicate holds if the namespace is the special <code class="code">::std</code>
+namespace.
+</p>
+</dd>
+<dt><a id="index-cp_005fnamespace_005fdecls"></a><span><code class="code">cp_namespace_decls</code><a class="copiable-link" href="#index-cp_005fnamespace_005fdecls"> &para;</a></span></dt>
+<dd><p>This function will return the declarations contained in the namespace,
+including types, overloaded functions, other namespaces, and so forth.
+If there are no declarations, this function will return
+<code class="code">NULL_TREE</code>.  The declarations are connected through their
+<code class="code">TREE_CHAIN</code> fields.
+</p>
+<p>Although most entries on this list will be declarations,
+<code class="code">TREE_LIST</code> nodes may also appear.  In this case, the
+<code class="code">TREE_VALUE</code> will be an <code class="code">OVERLOAD</code>.  The value of the
+<code class="code">TREE_PURPOSE</code> is unspecified; back ends should ignore this value.
+As with the other kinds of declarations returned by
+<code class="code">cp_namespace_decls</code>, the <code class="code">TREE_CHAIN</code> will point to the next
+declaration in this list.
+</p>
+<p>For more information on the kinds of declarations that can occur on this
+list, See <a class="xref" href="Declarations.html">Declarations</a>.  Some declarations will not appear on this
+list.  In particular, no <code class="code">FIELD_DECL</code>, <code class="code">LABEL_DECL</code>, or
+<code class="code">PARM_DECL</code> nodes will appear here.
+</p>
+<p>This function cannot be used with namespaces that have
+<code class="code">DECL_NAMESPACE_ALIAS</code> set.
+</p>
+</dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Classes.html">Classes</a>, Previous: <a href="Types-for-C_002b_002b.html">Types for C++</a>, Up: <a href="C-and-C_002b_002b-Trees.html">C and C++ Trees</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

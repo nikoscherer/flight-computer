@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Branch Trace Configuration Format (Debugging with GDB)</title>
+
+<meta name="description" content="Branch Trace Configuration Format (Debugging with GDB)">
+<meta name="keywords" content="Branch Trace Configuration Format (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol">
+<link href="Branch-Trace-Format.html" rel="prev" title="Branch Trace Format">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Branch-Trace-Configuration-Format">
+<div class="nav-panel">
+<p>
+Previous: <a href="Branch-Trace-Format.html" accesskey="p" rel="prev">Branch Trace Format</a>, Up: <a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small> Remote Serial Protocol</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Branch-Trace-Configuration-Format-1"><span>E.21 Branch Trace Configuration Format<a class="copiable-link" href="#Branch-Trace-Configuration-Format-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-branch-trace-configuration-format"></a>
+
+<p>For each inferior thread, <small class="sc">GDB</small> can obtain the branch trace
+configuration using the &lsquo;<samp class="samp">qXfer:btrace-conf:read</samp>&rsquo;
+(see <a class="pxref" href="General-Query-Packets.html#qXfer-btrace_002dconf-read">qXfer btrace-conf read</a>) packet.
+</p>
+<p>The configuration describes the branch trace format and configuration
+settings for that format.  The following information is described:
+</p>
+<dl class="table">
+<dt><code class="code">bts</code></dt>
+<dd><p>This thread uses the <em class="dfn">Branch Trace Store</em> (<abbr class="acronym">BTS</abbr>) format.
+</p><dl class="table">
+<dt><code class="code">size</code></dt>
+<dd><p>The size of the <abbr class="acronym">BTS</abbr> ring buffer in bytes.
+</p></dd>
+</dl>
+</dd>
+<dt><code class="code">pt</code></dt>
+<dd><p>This thread uses the <em class="dfn">Intel Processor Trace</em> (<abbr class="acronym">Intel
+PT</abbr>) format.
+</p><dl class="table">
+<dt><code class="code">size</code></dt>
+<dd><p>The size of the <abbr class="acronym">Intel PT</abbr> ring buffer in bytes.
+</p></dd>
+</dl>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> must be linked with the Expat library to support XML
+branch trace configuration discovery.  See <a class="xref" href="Requirements.html#Expat">Expat</a>.
+</p>
+<p>The formal DTD for the branch trace configuration format is given below:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!ELEMENT btrace-conf		(bts?, pt?)&gt;
+&lt;!ATTLIST btrace-conf		version	CDATA	#FIXED &quot;1.0&quot;&gt;
+
+&lt;!ELEMENT bts	EMPTY&gt;
+&lt;!ATTLIST bts	size		CDATA	#IMPLIED&gt;
+
+&lt;!ELEMENT pt	EMPTY&gt;
+&lt;!ATTLIST pt	size		CDATA	#IMPLIED&gt;
+&lt;!ATTLIST pt	ptwrite		(yes | no)	#IMPLIED&gt;
+&lt;!ATTLIST pt	event-tracing	(yes | no)	#IMPLIED&gt;
+</pre></div>
+
+
+
+</div>
+
+
+
+</body>
+</html>

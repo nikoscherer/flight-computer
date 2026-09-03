@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Events In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Events In Python (Debugging with GDB)">
+<meta name="keywords" content="Events In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Threads-In-Python.html" rel="next" title="Threads In Python">
+<link href="Inferiors-In-Python.html" rel="prev" title="Inferiors In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Events-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Threads-In-Python.html" accesskey="n" rel="next">Threads In Python</a>, Previous: <a href="Inferiors-In-Python.html" accesskey="p" rel="prev">Inferiors In Python</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Events-In-Python-1"><span>23.3.2.18 Events In Python<a class="copiable-link" href="#Events-In-Python-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-inferior-events-in-Python"></a>
+
+<p><small class="sc">GDB</small> provides a general event facility so that Python code can be
+notified of various state changes, particularly changes that occur in
+the inferior.
+</p>
+<p>An <em class="dfn">event</em> is just an object that describes some state change.  The
+type of the object and its attributes will vary depending on the details
+of the change.  All the existing events are described below.
+</p>
+<p>In order to be notified of an event, you must register an event handler
+with an <em class="dfn">event registry</em>.  An event registry is an object in the
+<code class="code">gdb.events</code> module which dispatches particular events.  A registry
+provides methods to register and unregister event handlers:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-EventRegistry_002econnect"><span class="category-def">Function: </span><span><strong class="def-name">EventRegistry.connect</strong> <var class="def-var-arguments">(object)</var><a class="copiable-link" href="#index-EventRegistry_002econnect"> &para;</a></span></dt>
+<dd><p>Add the given callable <var class="var">object</var> to the registry.  This object will be
+called when an event corresponding to this registry occurs.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-EventRegistry_002edisconnect"><span class="category-def">Function: </span><span><strong class="def-name">EventRegistry.disconnect</strong> <var class="def-var-arguments">(object)</var><a class="copiable-link" href="#index-EventRegistry_002edisconnect"> &para;</a></span></dt>
+<dd><p>Remove the given <var class="var">object</var> from the registry.  Once removed, the object
+will no longer receive notifications of events.
+</p></dd></dl>
+
+<p>Here is an example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def exit_handler (event):
+    print (&quot;event type: exit&quot;)
+    if hasattr (event, 'exit_code'):
+        print (&quot;exit code: %d&quot; % (event.exit_code))
+    else:
+        print (&quot;exit code not available&quot;)
+
+gdb.events.exited.connect (exit_handler)
+</pre></div>
+
+<p>In the above example we connect our handler <code class="code">exit_handler</code> to the
+registry <code class="code">events.exited</code>.  Once connected, <code class="code">exit_handler</code> gets
+called when the inferior exits.  The argument <em class="dfn">event</em> in this example is
+of type <code class="code">gdb.ExitedEvent</code>.  As you can see in the example the
+<code class="code">ExitedEvent</code> object has an attribute which indicates the exit code of
+the inferior.
+</p>
+<p>Some events can be thread specific when <small class="sc">GDB</small> is running in
+non-stop mode.  When represented in Python, these events all extend
+<code class="code">gdb.ThreadEvent</code>.  This event is a base class and is never
+emitted directly; instead, events which are emitted by this or other
+modules might extend this event.  Examples of these events are
+<code class="code">gdb.BreakpointEvent</code> and <code class="code">gdb.ContinueEvent</code>.
+<code class="code">gdb.ThreadEvent</code> holds the following attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ThreadEvent_002einferior_005fthread"><span class="category-def">Variable: </span><span><strong class="def-name">ThreadEvent.inferior_thread</strong><a class="copiable-link" href="#index-ThreadEvent_002einferior_005fthread"> &para;</a></span></dt>
+<dd><p>In non-stop mode this attribute will be set to the specific thread which was
+involved in the emitted event. Otherwise, it will be set to <code class="code">None</code>.
+</p></dd></dl>
+
+<p>The following is a listing of the event registries that are available and
+details of the events they emit:
+</p>
+<dl class="table">
+<dt><code class="code">events.cont</code></dt>
+<dd><p>Emits <code class="code">gdb.ContinueEvent</code>, which extends <code class="code">gdb.ThreadEvent</code>.
+This event indicates that the inferior has been continued after a
+stop. For inherited attribute refer to <code class="code">gdb.ThreadEvent</code> above.
+</p>
+</dd>
+<dt><code class="code">events.exited</code></dt>
+<dd><p>Emits <code class="code">events.ExitedEvent</code>, which indicates that the inferior has
+exited.  <code class="code">events.ExitedEvent</code> has two attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ExitedEvent_002eexit_005fcode"><span class="category-def">Variable: </span><span><strong class="def-name">ExitedEvent.exit_code</strong><a class="copiable-link" href="#index-ExitedEvent_002eexit_005fcode"> &para;</a></span></dt>
+<dd><p>An integer representing the exit code, if available, which the inferior 
+has returned.  (The exit code could be unavailable if, for example,
+<small class="sc">GDB</small> detaches from the inferior.) If the exit code is unavailable,
+the attribute does not exist.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ExitedEvent_002einferior"><span class="category-def">Variable: </span><span><strong class="def-name">ExitedEvent.inferior</strong><a class="copiable-link" href="#index-ExitedEvent_002einferior"> &para;</a></span></dt>
+<dd><p>A reference to the inferior which triggered the <code class="code">exited</code> event.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.stop</code></dt>
+<dd><p>Emits <code class="code">gdb.StopEvent</code>, which extends <code class="code">gdb.ThreadEvent</code>.
+</p>
+<p>Indicates that the inferior has stopped.  All events emitted by this
+registry extend <code class="code">gdb.StopEvent</code>.  As a child of
+<code class="code">gdb.ThreadEvent</code>, <code class="code">gdb.StopEvent</code> will indicate the stopped
+thread when <small class="sc">GDB</small> is running in non-stop mode.  Refer to
+<code class="code">gdb.ThreadEvent</code> above for more details.
+</p>
+<p><code class="code">gdb.StopEvent</code> has the following additional attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-StopEvent_002edetails"><span class="category-def">Variable: </span><span><strong class="def-name">StopEvent.details</strong><a class="copiable-link" href="#index-StopEvent_002edetails"> &para;</a></span></dt>
+<dd><p>A dictionary holding any details relevant to the stop.  The exact keys
+and values depend on the type of stop, but are identical to the
+corresponding MI output (see <a class="pxref" href="GDB_002fMI-Async-Records.html"><small class="sc">GDB/MI</small> Async Records</a>).
+</p>
+<p>A dictionary was used for this (rather than adding attributes directly
+to the event object) so that the MI keys could be used unchanged.
+</p>
+<p>When a <code class="code">StopEvent</code> results from a <code class="code">finish</code> command, it will
+also hold the return value from the function, if that is available.
+This will be an entry named &lsquo;<samp class="samp">return-value</samp>&rsquo; in the <code class="code">details</code>
+dictionary.  The value of this entry will be a <code class="code">gdb.Value</code>
+object.
+</p></dd></dl>
+
+<p>Emits <code class="code">gdb.SignalEvent</code>, which extends <code class="code">gdb.StopEvent</code>.
+</p>
+<p>This event indicates that the inferior or one of its threads has
+received a signal.  <code class="code">gdb.SignalEvent</code> has the following
+attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-SignalEvent_002estop_005fsignal"><span class="category-def">Variable: </span><span><strong class="def-name">SignalEvent.stop_signal</strong><a class="copiable-link" href="#index-SignalEvent_002estop_005fsignal"> &para;</a></span></dt>
+<dd><p>A string representing the signal received by the inferior.  A list of possible
+signal values can be obtained by running the command <code class="code">info signals</code> in
+the <small class="sc">GDB</small> command prompt.
+</p></dd></dl>
+
+<p>Also emits <code class="code">gdb.BreakpointEvent</code>, which extends
+<code class="code">gdb.StopEvent</code>.
+</p>
+<p><code class="code">gdb.BreakpointEvent</code> event indicates that one or more breakpoints have
+been hit, and has the following attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointEvent_002ebreakpoints"><span class="category-def">Variable: </span><span><strong class="def-name">BreakpointEvent.breakpoints</strong><a class="copiable-link" href="#index-BreakpointEvent_002ebreakpoints"> &para;</a></span></dt>
+<dd><p>A sequence containing references to all the breakpoints (type 
+<code class="code">gdb.Breakpoint</code>) that were hit.
+See <a class="xref" href="Breakpoints-In-Python.html">Manipulating breakpoints using Python</a>, for details of the <code class="code">gdb.Breakpoint</code> object.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointEvent_002ebreakpoint"><span class="category-def">Variable: </span><span><strong class="def-name">BreakpointEvent.breakpoint</strong><a class="copiable-link" href="#index-BreakpointEvent_002ebreakpoint"> &para;</a></span></dt>
+<dd><p>A reference to the first breakpoint that was hit.  This attribute is
+maintained for backward compatibility and is now deprecated in favor
+of the <code class="code">gdb.BreakpointEvent.breakpoints</code> attribute.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.new_objfile</code></dt>
+<dd><p>Emits <code class="code">gdb.NewObjFileEvent</code> which indicates that a new object file has
+been loaded by <small class="sc">GDB</small>.  <code class="code">gdb.NewObjFileEvent</code> has one attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-NewObjFileEvent_002enew_005fobjfile"><span class="category-def">Variable: </span><span><strong class="def-name">NewObjFileEvent.new_objfile</strong><a class="copiable-link" href="#index-NewObjFileEvent_002enew_005fobjfile"> &para;</a></span></dt>
+<dd><p>A reference to the object file (<code class="code">gdb.Objfile</code>) which has been loaded.
+See <a class="xref" href="Objfiles-In-Python.html">Objfiles In Python</a>, for details of the <code class="code">gdb.Objfile</code> object.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.free_objfile</code></dt>
+<dd><p>Emits <code class="code">gdb.FreeObjFileEvent</code> which indicates that an object file
+is about to be removed from <small class="sc">GDB</small>.  One reason this can happen
+is when the inferior calls <code class="code">dlclose</code>.
+<code class="code">gdb.FreeObjFileEvent</code> has one attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-FreeObjFileEvent_002eobjfile"><span class="category-def">Variable: </span><span><strong class="def-name">FreeObjFileEvent.objfile</strong><a class="copiable-link" href="#index-FreeObjFileEvent_002eobjfile"> &para;</a></span></dt>
+<dd><p>A reference to the object file (<code class="code">gdb.Objfile</code>) which will be unloaded.
+See <a class="xref" href="Objfiles-In-Python.html">Objfiles In Python</a>, for details of the <code class="code">gdb.Objfile</code> object.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.clear_objfiles</code></dt>
+<dd><p>Emits <code class="code">gdb.ClearObjFilesEvent</code> which indicates that the list of object
+files for a program space has been reset.
+<code class="code">gdb.ClearObjFilesEvent</code> has one attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ClearObjFilesEvent_002eprogspace"><span class="category-def">Variable: </span><span><strong class="def-name">ClearObjFilesEvent.progspace</strong><a class="copiable-link" href="#index-ClearObjFilesEvent_002eprogspace"> &para;</a></span></dt>
+<dd><p>A reference to the program space (<code class="code">gdb.Progspace</code>) whose objfile list has
+been cleared.  See <a class="xref" href="Progspaces-In-Python.html">Program Spaces In Python</a>.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.inferior_call</code></dt>
+<dd><p>Emits events just before and after a function in the inferior is
+called by <small class="sc">GDB</small>.  Before an inferior call, this emits an event
+of type <code class="code">gdb.InferiorCallPreEvent</code>, and after an inferior call,
+this emits an event of type <code class="code">gdb.InferiorCallPostEvent</code>.
+</p>
+<dl class="table">
+<dt><a id="index-gdb_002eInferiorCallPreEvent"></a><span><code class="code"><code class="code">gdb.InferiorCallPreEvent</code></code><a class="copiable-link" href="#index-gdb_002eInferiorCallPreEvent"> &para;</a></span></dt>
+<dd><p>Indicates that a function in the inferior is about to be called.
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorCallPreEvent_002eptid"><span class="category-def">Variable: </span><span><strong class="def-name">InferiorCallPreEvent.ptid</strong><a class="copiable-link" href="#index-InferiorCallPreEvent_002eptid"> &para;</a></span></dt>
+<dd><p>The thread in which the call will be run.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorCallPreEvent_002eaddress"><span class="category-def">Variable: </span><span><strong class="def-name">InferiorCallPreEvent.address</strong><a class="copiable-link" href="#index-InferiorCallPreEvent_002eaddress"> &para;</a></span></dt>
+<dd><p>The location of the function to be called.
+</p></dd></dl>
+
+</dd>
+<dt><a id="index-gdb_002eInferiorCallPostEvent"></a><span><code class="code"><code class="code">gdb.InferiorCallPostEvent</code></code><a class="copiable-link" href="#index-gdb_002eInferiorCallPostEvent"> &para;</a></span></dt>
+<dd><p>Indicates that a function in the inferior has just been called.
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorCallPostEvent_002eptid"><span class="category-def">Variable: </span><span><strong class="def-name">InferiorCallPostEvent.ptid</strong><a class="copiable-link" href="#index-InferiorCallPostEvent_002eptid"> &para;</a></span></dt>
+<dd><p>The thread in which the call was run.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorCallPostEvent_002eaddress"><span class="category-def">Variable: </span><span><strong class="def-name">InferiorCallPostEvent.address</strong><a class="copiable-link" href="#index-InferiorCallPostEvent_002eaddress"> &para;</a></span></dt>
+<dd><p>The location of the function that was called.
+</p></dd></dl>
+</dd>
+</dl>
+
+</dd>
+<dt><code class="code">events.memory_changed</code></dt>
+<dd><p>Emits <code class="code">gdb.MemoryChangedEvent</code> which indicates that the memory of the
+inferior has been modified by the <small class="sc">GDB</small> user, for instance via a
+command like <code class="code">set&nbsp;*addr&nbsp;=&nbsp;value</code><!-- /@w -->.  The event has the following
+attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MemoryChangedEvent_002eaddress"><span class="category-def">Variable: </span><span><strong class="def-name">MemoryChangedEvent.address</strong><a class="copiable-link" href="#index-MemoryChangedEvent_002eaddress"> &para;</a></span></dt>
+<dd><p>The start address of the changed region.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MemoryChangedEvent_002elength"><span class="category-def">Variable: </span><span><strong class="def-name">MemoryChangedEvent.length</strong><a class="copiable-link" href="#index-MemoryChangedEvent_002elength"> &para;</a></span></dt>
+<dd><p>Length in bytes of the changed region.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.register_changed</code></dt>
+<dd><p>Emits <code class="code">gdb.RegisterChangedEvent</code> which indicates that a register in the
+inferior has been modified by the <small class="sc">GDB</small> user.
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RegisterChangedEvent_002eframe"><span class="category-def">Variable: </span><span><strong class="def-name">RegisterChangedEvent.frame</strong><a class="copiable-link" href="#index-RegisterChangedEvent_002eframe"> &para;</a></span></dt>
+<dd><p>A gdb.Frame object representing the frame in which the register was modified.
+</p></dd></dl>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RegisterChangedEvent_002eregnum"><span class="category-def">Variable: </span><span><strong class="def-name">RegisterChangedEvent.regnum</strong><a class="copiable-link" href="#index-RegisterChangedEvent_002eregnum"> &para;</a></span></dt>
+<dd><p>Denotes which register was modified.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.breakpoint_created</code></dt>
+<dd><p>This is emitted when a new breakpoint has been created.  The argument
+that is passed is the new <code class="code">gdb.Breakpoint</code> object.
+</p>
+</dd>
+<dt><code class="code">events.breakpoint_modified</code></dt>
+<dd><p>This is emitted when a breakpoint has been modified in some way.  The
+argument that is passed is the new <code class="code">gdb.Breakpoint</code> object.
+</p>
+</dd>
+<dt><code class="code">events.breakpoint_deleted</code></dt>
+<dd><p>This is emitted when a breakpoint has been deleted.  The argument that
+is passed is the <code class="code">gdb.Breakpoint</code> object.  When this event is
+emitted, the <code class="code">gdb.Breakpoint</code> object will already be in its
+invalid state; that is, the <code class="code">is_valid</code> method will return
+<code class="code">False</code>.
+</p>
+</dd>
+<dt><code class="code">events.before_prompt</code></dt>
+<dd><p>This event carries no payload.  It is emitted each time <small class="sc">GDB</small>
+presents a prompt to the user.
+</p>
+</dd>
+<dt><code class="code">events.new_inferior</code></dt>
+<dd><p>This is emitted when a new inferior is created.  Note that the
+inferior is not necessarily running; in fact, it may not even have an
+associated executable.
+</p>
+<p>The event is of type <code class="code">gdb.NewInferiorEvent</code>.  This has a single
+attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-NewInferiorEvent_002einferior"><span class="category-def">Variable: </span><span><strong class="def-name">NewInferiorEvent.inferior</strong><a class="copiable-link" href="#index-NewInferiorEvent_002einferior"> &para;</a></span></dt>
+<dd><p>The new inferior, a <code class="code">gdb.Inferior</code> object.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.inferior_deleted</code></dt>
+<dd><p>This is emitted when an inferior has been deleted.  Note that this is
+not the same as process exit; it is notified when the inferior itself
+is removed, say via <code class="code">remove-inferiors</code>.
+</p>
+<p>The event is of type <code class="code">gdb.InferiorDeletedEvent</code>.  This has a single
+attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorDeletedEvent_002einferior"><span class="category-def">Variable: </span><span><strong class="def-name">InferiorDeletedEvent.inferior</strong><a class="copiable-link" href="#index-InferiorDeletedEvent_002einferior"> &para;</a></span></dt>
+<dd><p>The inferior that is being removed, a <code class="code">gdb.Inferior</code> object.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.new_thread</code></dt>
+<dd><p>This is emitted when <small class="sc">GDB</small> notices a new thread.  The event is of
+type <code class="code">gdb.NewThreadEvent</code>, which extends <code class="code">gdb.ThreadEvent</code>.
+This has a single attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-NewThreadEvent_002einferior_005fthread"><span class="category-def">Variable: </span><span><strong class="def-name">NewThreadEvent.inferior_thread</strong><a class="copiable-link" href="#index-NewThreadEvent_002einferior_005fthread"> &para;</a></span></dt>
+<dd><p>The new thread.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.thread_exited</code></dt>
+<dd><p>This is emitted when <small class="sc">GDB</small> notices a thread has exited.  The event
+is of type <code class="code">gdb.ThreadExitedEvent</code> which extends <code class="code">gdb.ThreadEvent</code>.
+This has a single attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ThreadExitedEvent_002einferior_005fthread"><span class="category-def">Variable: </span><span><strong class="def-name">ThreadExitedEvent.inferior_thread</strong><a class="copiable-link" href="#index-ThreadExitedEvent_002einferior_005fthread"> &para;</a></span></dt>
+<dd><p>The exiting thread.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.gdb_exiting</code></dt>
+<dd><p>This is emitted when <small class="sc">GDB</small> exits.  This event is not emitted if
+<small class="sc">GDB</small> exits as a result of an internal error, or after an
+unexpected signal.  The event is of type <code class="code">gdb.GdbExitingEvent</code>,
+which has a single attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-GdbExitingEvent_002eexit_005fcode"><span class="category-def">Variable: </span><span><strong class="def-name">GdbExitingEvent.exit_code</strong><a class="copiable-link" href="#index-GdbExitingEvent_002eexit_005fcode"> &para;</a></span></dt>
+<dd><p>An integer, the value of the exit code <small class="sc">GDB</small> will return.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.connection_removed</code></dt>
+<dd><p>This is emitted when <small class="sc">GDB</small> removes a connection
+(see <a class="pxref" href="Connections-In-Python.html">Connections In Python</a>).  The event is of type
+<code class="code">gdb.ConnectionEvent</code>.  This has a single read-only attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ConnectionEvent_002econnection"><span class="category-def">Variable: </span><span><strong class="def-name">ConnectionEvent.connection</strong><a class="copiable-link" href="#index-ConnectionEvent_002econnection"> &para;</a></span></dt>
+<dd><p>The <code class="code">gdb.TargetConnection</code> that is being removed.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.executable_changed</code></dt>
+<dd><p>Emits <code class="code">gdb.ExecutableChangedEvent</code> which indicates that the
+<code class="code">gdb.Progspace.executable_filename</code> has changed.
+</p>
+<p>This event is emitted when either the value of
+<code class="code">gdb.Progspace.executable_filename </code> has changed to name a
+different file, or the executable file named by
+<code class="code">gdb.Progspace.executable_filename</code> has changed on disk, and
+<small class="sc">GDB</small> has therefore reloaded it.
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ExecutableChangedEvent_002eprogspace"><span class="category-def">Variable: </span><span><strong class="def-name">ExecutableChangedEvent.progspace</strong><a class="copiable-link" href="#index-ExecutableChangedEvent_002eprogspace"> &para;</a></span></dt>
+<dd><p>The <code class="code">gdb.Progspace</code> in which the current executable has changed.
+The file name of the updated executable will be visible in
+<code class="code">gdb.Progspace.executable_filename</code> (see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>).
+</p></dd></dl>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ExecutableChangedEvent_002ereload"><span class="category-def">Variable: </span><span><strong class="def-name">ExecutableChangedEvent.reload</strong><a class="copiable-link" href="#index-ExecutableChangedEvent_002ereload"> &para;</a></span></dt>
+<dd><p>This attribute will be <code class="code">True</code> if the value of
+<code class="code">gdb.Progspace.executable_filename</code> didn&rsquo;t change, but the file
+it names changed on disk instead, and <small class="sc">GDB</small> reloaded it.
+</p>
+<p>When this attribute is <code class="code">False</code>, the value in
+<code class="code">gdb.Progspace.executable_filename</code> was changed to name a
+different file.
+</p></dd></dl>
+
+<p>Remember that <small class="sc">GDB</small> tracks the executable file and the symbol
+file separately, these are visible as
+<code class="code">gdb.Progspace.executable_filename</code> and
+<code class="code">gdb.Progspace.filename</code> respectively.  When using the <kbd class="kbd">file</kbd>
+command, <small class="sc">GDB</small> updates both of these fields, but the executable
+file is updated first, so when this event is emitted, the executable
+filename will have changed, but the symbol filename might still hold
+its previous value.
+</p>
+</dd>
+<dt><code class="code">events.new_progspace</code></dt>
+<dd><p>This is emitted when <small class="sc">GDB</small> adds a new program space
+(see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>).  The event
+is of type <code class="code">gdb.NewProgspaceEvent</code>, and has a single read-only
+attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-NewProgspaceEvent_002eprogspace"><span class="category-def">Variable: </span><span><strong class="def-name">NewProgspaceEvent.progspace</strong><a class="copiable-link" href="#index-NewProgspaceEvent_002eprogspace"> &para;</a></span></dt>
+<dd><p>The <code class="code">gdb.Progspace</code> that was added to <small class="sc">GDB</small>.
+</p></dd></dl>
+
+<p>No <code class="code">NewProgspaceEvent</code> is emitted for the very first program
+space, which is assigned to the first inferior.  This first program
+space is created within <small class="sc">GDB</small> before any Python scripts are
+sourced.
+</p>
+</dd>
+<dt><code class="code">events.free_progspace</code></dt>
+<dd><p>This is emitted when <small class="sc">GDB</small> removes a program space
+(see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>), for example
+as a result of the <kbd class="kbd">remove-inferiors</kbd> command
+(see <a class="pxref" href="Inferiors-Connections-and-Programs.html#remove_005finferiors_005fcli"><kbd class="kbd">remove-inferiors</kbd></a>).  The event is
+of type <code class="code">gdb.FreeProgspaceEvent</code>, and has a single read-only
+attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-FreeProgspaceEvent_002eprogspace"><span class="category-def">Variable: </span><span><strong class="def-name">FreeProgspaceEvent.progspace</strong><a class="copiable-link" href="#index-FreeProgspaceEvent_002eprogspace"> &para;</a></span></dt>
+<dd><p>The <code class="code">gdb.Progspace</code> that is about to be removed from
+<small class="sc">GDB</small>.
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.tui_enabled</code></dt>
+<dd><p>This is emitted when the TUI is enabled or disabled.  The event is of
+type <code class="code">gdb.TuiEnabledEvent</code>, which has a single read-only
+attribute:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TuiEnabledEvent_002eenabled"><span class="category-def">Variable: </span><span><strong class="def-name">TuiEnabledEvent.enabled</strong><a class="copiable-link" href="#index-TuiEnabledEvent_002eenabled"> &para;</a></span></dt>
+<dd><p>If the TUI has just been enabled, this is <code class="code">True</code>; otherwise it is
+<code class="code">False</code>.
+</p></dd></dl>
+
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Threads-In-Python.html">Threads In Python</a>, Previous: <a href="Inferiors-In-Python.html">Inferiors In Python</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

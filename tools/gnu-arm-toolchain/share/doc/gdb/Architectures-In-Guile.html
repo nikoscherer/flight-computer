@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Architectures In Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Architectures In Guile (Debugging with GDB)">
+<meta name="keywords" content="Architectures In Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Disassembly-In-Guile.html" rel="next" title="Disassembly In Guile">
+<link href="Lazy-Strings-In-Guile.html" rel="prev" title="Lazy Strings In Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Architectures-In-Guile">
+<div class="nav-panel">
+<p>
+Next: <a href="Disassembly-In-Guile.html" accesskey="n" rel="next">Disassembly In Guile</a>, Previous: <a href="Lazy-Strings-In-Guile.html" accesskey="p" rel="prev">Guile representation of lazy strings.</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile-representation-of-architectures"><span>23.4.3.21 Guile representation of architectures<a class="copiable-link" href="#Guile-representation-of-architectures"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-architectures"></a>
+<a class="index-entry-id" id="index-_003cgdb_003aarch_003e"></a>
+
+<p><small class="sc">GDB</small> uses architecture specific parameters and artifacts in a
+number of its various computations.  An architecture is represented
+by an instance of the <code class="code">&lt;gdb:arch&gt;</code> class.
+</p>
+<p>The following architecture-related procedures are provided by the
+<code class="code">(gdb)</code> module:
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-arch_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is an object of type <code class="code">&lt;gdb:arch&gt;</code>.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-current_002darch"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">current-arch</strong><a class="copiable-link" href="#index-current_002darch"> &para;</a></span></dt>
+<dd><p>Return the current architecture as a <code class="code">&lt;gdb:arch&gt;</code> object.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dname"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-name</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dname"> &para;</a></span></dt>
+<dd><p>Return the name (string value) of <code class="code">&lt;gdb:arch&gt;</code> <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dcharset"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-charset</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dcharset"> &para;</a></span></dt>
+<dd><p>Return name of target character set of <code class="code">&lt;gdb:arch&gt;</code> <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dwide_002dcharset"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-wide-charset</strong><a class="copiable-link" href="#index-arch_002dwide_002dcharset"> &para;</a></span></dt>
+<dd><p>Return name of target wide character set of <code class="code">&lt;gdb:arch&gt;</code> <var class="var">arch</var>.
+</p></dd></dl>
+
+<p>Each architecture provides a set of predefined types, obtained by
+the following functions.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dvoid_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-void-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dvoid_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">void</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dchar_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-char-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dchar_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">char</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dshort_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-short-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dshort_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">short</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-int-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dint_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">int</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dlong_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-long-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dlong_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">long</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dschar_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-schar-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dschar_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">signed char</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duchar_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-uchar-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002duchar_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">unsigned char</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dushort_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-ushort-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dushort_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">unsigned short</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-uint-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002duint_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">unsigned int</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dulong_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-ulong-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dulong_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">unsigned long</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dfloat_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-float-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dfloat_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">float</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002ddouble_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-double-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002ddouble_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">double</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dlongdouble_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-longdouble-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dlongdouble_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">long double</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dbool_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-bool-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dbool_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">bool</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dlonglong_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-longlong-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dlonglong_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">long long</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dulonglong_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-ulonglong-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dulonglong_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">unsigned long long</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint8_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-int8-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dint8_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">int8</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint8_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-uint8-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002duint8_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">uint8</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint16_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-int16-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dint16_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">int16</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint16_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-uint16-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002duint16_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">uint16</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint32_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-int32-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dint32_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">int32</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint32_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-uint32-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002duint32_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">uint32</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint64_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-int64-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002dint64_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for an <code class="code">int64</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint64_002dtype"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">arch-uint64-type</strong> <var class="def-var-arguments">arch</var><a class="copiable-link" href="#index-arch_002duint64_002dtype"> &para;</a></span></dt>
+<dd><p>Return the <code class="code">&lt;gdb:type&gt;</code> object for a <code class="code">uint64</code> type
+of architecture <var class="var">arch</var>.
+</p></dd></dl>
+
+<p>Example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (type-name (arch-uchar-type (current-arch)))
+&quot;unsigned char&quot;
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Disassembly-In-Guile.html">Disassembly In Guile</a>, Previous: <a href="Lazy-Strings-In-Guile.html">Guile representation of lazy strings.</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

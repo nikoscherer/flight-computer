@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>open (Debugging with GDB)</title>
+
+<meta name="description" content="open (Debugging with GDB)">
+<meta name="keywords" content="open (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="List-of-Supported-Calls.html" rel="up" title="List of Supported Calls">
+<link href="close.html" rel="next" title="close">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="open">
+<div class="nav-panel">
+<p>
+Next: <a href="close.html" accesskey="n" rel="next">close</a>, Up: <a href="List-of-Supported-Calls.html" accesskey="u" rel="up">List of Supported Calls</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="open-1"><span>open<a class="copiable-link" href="#open-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-open_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+<dt>Synopsis:</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+</pre></div>
+
+</dd>
+<dt>Request:</dt>
+<dd><p>&lsquo;<samp class="samp">Fopen,<var class="var">pathptr</var>/<var class="var">len</var>,<var class="var">flags</var>,<var class="var">mode</var></samp>&rsquo;
+</p>
+<p><var class="var">flags</var> is the bitwise <code class="code">OR</code> of the following values:
+</p>
+<dl class="table">
+<dt><code class="code">O_CREAT</code></dt>
+<dd><p>If the file does not exist it will be created.  The host
+rules apply as far as file ownership and time stamps
+are concerned.
+</p>
+</dd>
+<dt><code class="code">O_EXCL</code></dt>
+<dd><p>When used with <code class="code">O_CREAT</code>, if the file already exists it is
+an error and open() fails.
+</p>
+</dd>
+<dt><code class="code">O_TRUNC</code></dt>
+<dd><p>If the file already exists and the open mode allows
+writing (<code class="code">O_RDWR</code> or <code class="code">O_WRONLY</code> is given) it will be
+truncated to zero length.
+</p>
+</dd>
+<dt><code class="code">O_APPEND</code></dt>
+<dd><p>The file is opened in append mode.
+</p>
+</dd>
+<dt><code class="code">O_RDONLY</code></dt>
+<dd><p>The file is opened for reading only.
+</p>
+</dd>
+<dt><code class="code">O_WRONLY</code></dt>
+<dd><p>The file is opened for writing only.
+</p>
+</dd>
+<dt><code class="code">O_RDWR</code></dt>
+<dd><p>The file is opened for reading and writing.
+</p></dd>
+</dl>
+
+<p>Other bits are silently ignored.
+</p>
+
+<p><var class="var">mode</var> is the bitwise <code class="code">OR</code> of the following values:
+</p>
+<dl class="table">
+<dt><code class="code">S_IRUSR</code></dt>
+<dd><p>User has read permission.
+</p>
+</dd>
+<dt><code class="code">S_IWUSR</code></dt>
+<dd><p>User has write permission.
+</p>
+</dd>
+<dt><code class="code">S_IRGRP</code></dt>
+<dd><p>Group has read permission.
+</p>
+</dd>
+<dt><code class="code">S_IWGRP</code></dt>
+<dd><p>Group has write permission.
+</p>
+</dd>
+<dt><code class="code">S_IROTH</code></dt>
+<dd><p>Others have read permission.
+</p>
+</dd>
+<dt><code class="code">S_IWOTH</code></dt>
+<dd><p>Others have write permission.
+</p></dd>
+</dl>
+
+<p>Other bits are silently ignored.
+</p>
+
+</dd>
+<dt>Return value:</dt>
+<dd><p><code class="code">open</code> returns the new file descriptor or -1 if an error
+occurred.
+</p>
+</dd>
+<dt>Errors:</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EEXIST</code></dt>
+<dd><p><var class="var">pathname</var> already exists and <code class="code">O_CREAT</code> and <code class="code">O_EXCL</code> were used.
+</p>
+</dd>
+<dt><code class="code">EISDIR</code></dt>
+<dd><p><var class="var">pathname</var> refers to a directory.
+</p>
+</dd>
+<dt><code class="code">EACCES</code></dt>
+<dd><p>The requested access is not allowed.
+</p>
+</dd>
+<dt><code class="code">ENAMETOOLONG</code></dt>
+<dd><p><var class="var">pathname</var> was too long.
+</p>
+</dd>
+<dt><code class="code">ENOENT</code></dt>
+<dd><p>A directory component in <var class="var">pathname</var> does not exist.
+</p>
+</dd>
+<dt><code class="code">ENODEV</code></dt>
+<dd><p><var class="var">pathname</var> refers to a device, pipe, named pipe or socket.
+</p>
+</dd>
+<dt><code class="code">EROFS</code></dt>
+<dd><p><var class="var">pathname</var> refers to a file on a read-only filesystem and
+write access was requested.
+</p>
+</dd>
+<dt><code class="code">EFAULT</code></dt>
+<dd><p><var class="var">pathname</var> is an invalid pointer value.
+</p>
+</dd>
+<dt><code class="code">ENOSPC</code></dt>
+<dd><p>No space on device to create the file.
+</p>
+</dd>
+<dt><code class="code">EMFILE</code></dt>
+<dd><p>The process already has the maximum number of files open.
+</p>
+</dd>
+<dt><code class="code">ENFILE</code></dt>
+<dd><p>The limit on the total number of files open on the system
+has been reached.
+</p>
+</dd>
+<dt><code class="code">EINTR</code></dt>
+<dd><p>The call was interrupted by the user.
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="close.html">close</a>, Up: <a href="List-of-Supported-Calls.html">List of Supported Calls</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI File Transfer Commands (Debugging with GDB)</title>
+
+<meta name="description" content="GDB/MI File Transfer Commands (Debugging with GDB)">
+<meta name="keywords" content="GDB/MI File Transfer Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="next" title="GDB/MI Ada Exceptions Commands">
+<link href="GDB_002fMI-Target-Manipulation.html" rel="prev" title="GDB/MI Target Manipulation">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-File-Transfer-Commands">
+<div class="nav-panel">
+<p>
+Next: <a href="GDB_002fMI-Ada-Exceptions-Commands.html" accesskey="n" rel="next">Ada Exceptions <small class="sc">GDB/MI</small> Commands</a>, Previous: <a href="GDB_002fMI-Target-Manipulation.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> Target Manipulation Commands</a>, Up: <a href="GDB_002fMI.html" accesskey="u" rel="up">The <small class="sc">GDB/MI</small> Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-File-Transfer-Commands"><span>27.21 <small class="sc">GDB/MI</small> File Transfer Commands<a class="copiable-link" href="#gdb_002fmi-File-Transfer-Commands"> &para;</a></span></h3>
+
+
+<a class="index-entry-id" id="index-_002dtarget_002dfile_002dput"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002dput-Command"><span>The <code class="code">-target-file-put</code> Command<a class="copiable-link" href="#The-_002dtarget_002dfile_002dput-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-99"><span>Synopsis<a class="copiable-link" href="#Synopsis-99"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-put <var class="var">hostfile</var> <var class="var">targetfile</var>
+</pre></div>
+
+<p>Copy file <var class="var">hostfile</var> from the host system (the machine running
+<small class="sc">GDB</small>) to <var class="var">targetfile</var> on the target system.
+</p>
+<h4 class="subsubheading" id="gdb-Command-81"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-81"> &para;</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is &lsquo;<samp class="samp">remote put</samp>&rsquo;.
+</p>
+<h4 class="subsubheading" id="Example-81"><span>Example<a class="copiable-link" href="#Example-81"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-put localfile remotefile
+^done
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dtarget_002dfile_002dget"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002dget-Command"><span>The <code class="code">-target-file-get</code> Command<a class="copiable-link" href="#The-_002dtarget_002dfile_002dget-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-100"><span>Synopsis<a class="copiable-link" href="#Synopsis-100"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-get <var class="var">targetfile</var> <var class="var">hostfile</var>
+</pre></div>
+
+<p>Copy file <var class="var">targetfile</var> from the target system to <var class="var">hostfile</var>
+on the host system.
+</p>
+<h4 class="subsubheading" id="gdb-Command-82"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-82"> &para;</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is &lsquo;<samp class="samp">remote get</samp>&rsquo;.
+</p>
+<h4 class="subsubheading" id="Example-82"><span>Example<a class="copiable-link" href="#Example-82"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-get remotefile localfile
+^done
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dtarget_002dfile_002ddelete"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002ddelete-Command"><span>The <code class="code">-target-file-delete</code> Command<a class="copiable-link" href="#The-_002dtarget_002dfile_002ddelete-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-101"><span>Synopsis<a class="copiable-link" href="#Synopsis-101"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-delete <var class="var">targetfile</var>
+</pre></div>
+
+<p>Delete <var class="var">targetfile</var> from the target system.
+</p>
+<h4 class="subsubheading" id="gdb-Command-83"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-83"> &para;</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is &lsquo;<samp class="samp">remote delete</samp>&rsquo;.
+</p>
+<h4 class="subsubheading" id="Example-83"><span>Example<a class="copiable-link" href="#Example-83"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-delete remotefile
+^done
+(gdb)
+</pre></div>
+
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Jumping (Debugging with GDB)</title>
+
+<meta name="description" content="Jumping (Debugging with GDB)">
+<meta name="keywords" content="Jumping (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Altering.html" rel="up" title="Altering">
+<link href="Signaling.html" rel="next" title="Signaling">
+<link href="Assignment.html" rel="prev" title="Assignment">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Jumping">
+<div class="nav-panel">
+<p>
+Next: <a href="Signaling.html" accesskey="n" rel="next">Giving your Program a Signal</a>, Previous: <a href="Assignment.html" accesskey="p" rel="prev">Assignment to Variables</a>, Up: <a href="Altering.html" accesskey="u" rel="up">Altering Execution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Continuing-at-a-Different-Address"><span>17.2 Continuing at a Different Address<a class="copiable-link" href="#Continuing-at-a-Different-Address"> &para;</a></span></h3>
+
+<p>Ordinarily, when you continue your program, you do so at the place where
+it stopped, with the <code class="code">continue</code> command.  You can instead continue at
+an address of your own choosing, with the following commands:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-j-_0028jump_0029"></a>
+<a id="index-jump"></a><span><code class="code">jump <var class="var">locspec</var></code><a class="copiable-link" href="#index-jump"> &para;</a></span></dt>
+<dt><code class="code">j <var class="var">locspec</var></code></dt>
+<dd><p>Resume execution at the address of the code location that results from
+resolving <var class="var">locspec</var>.
+See <a class="xref" href="Location-Specifications.html">Location Specifications</a>, for a description of the different
+forms of <var class="var">locspec</var>.  If <var class="var">locspec</var> resolves to more than one address,
+those outside the current compilation unit are ignored.  If considering just
+the addresses in the current compilation unit still doesn&rsquo;t yield a unique
+address, the command aborts before jumping.
+Execution stops again immediately if there is a breakpoint there.  It
+is common practice to use the <code class="code">tbreak</code> command in conjunction
+with <code class="code">jump</code>.  See <a class="xref" href="Set-Breaks.html">Setting Breakpoints</a>.
+</p>
+<p>The <code class="code">jump</code> command does not change the current stack frame, or
+the stack pointer, or the contents of any memory location or any
+register other than the program counter.  If <var class="var">locspec</var> resolves to
+an address in a different function from the one currently executing, the
+results may be bizarre if the two functions expect different patterns
+of arguments or of local variables.  For this reason, the <code class="code">jump</code>
+command requests confirmation if the jump address is not in the
+function currently executing.  However, even bizarre results are
+predictable if you are well acquainted with the machine-language code
+of your program.
+</p></dd>
+</dl>
+
+<p>On many systems, you can get much the same effect as the <code class="code">jump</code>
+command by storing a new value into the register <code class="code">$pc</code>.  The
+difference is that this does not start your program running; it only
+changes the address of where it <em class="emph">will</em> run when you continue.  For
+example,
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $pc = 0x485
+</pre></div>
+
+<p>makes the next <code class="code">continue</code> command or stepping command execute at
+address <code class="code">0x485</code>, rather than at the address where your program stopped.
+See <a class="xref" href="Continuing-and-Stepping.html">Continuing and Stepping</a>.
+</p>
+<p>However, writing directly to <code class="code">$pc</code> will only change the value of
+the program-counter register, while using <code class="code">jump</code> will ensure that
+any additional auxiliary state is also updated.  For example, on
+SPARC, <code class="code">jump</code> will update both <code class="code">$pc</code> and <code class="code">$npc</code>
+registers prior to resuming execution.  When using the approach of
+writing directly to <code class="code">$pc</code> it is your job to also update the
+<code class="code">$npc</code> register.
+</p>
+<p>The most common occasion to use the <code class="code">jump</code> command is to back
+up&mdash;perhaps with more breakpoints set&mdash;over a portion of a program
+that has already executed, in order to examine its execution in more
+detail.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Signaling.html">Giving your Program a Signal</a>, Previous: <a href="Assignment.html">Assignment to Variables</a>, Up: <a href="Altering.html">Altering Execution</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

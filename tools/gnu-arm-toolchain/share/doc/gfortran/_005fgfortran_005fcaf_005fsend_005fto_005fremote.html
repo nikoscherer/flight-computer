@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1999-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>_gfortran_caf_send_to_remote (The GNU Fortran Compiler)</title>
+
+<meta name="description" content="_gfortran_caf_send_to_remote (The GNU Fortran Compiler)">
+<meta name="keywords" content="_gfortran_caf_send_to_remote (The GNU Fortran Compiler)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Function-ABI-Documentation.html" rel="up" title="Function ABI Documentation">
+<link href="_005fgfortran_005fcaf_005ftransfer_005fbetween_005fremotes.html" rel="next" title="_gfortran_caf_transfer_between_remotes">
+<link href="_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote.html" rel="prev" title="_gfortran_caf_is_present_on_remote">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="g_t_005fgfortran_005fcaf_005fsend_005fto_005fremote">
+<div class="nav-panel">
+<p>
+Next: <a href="_005fgfortran_005fcaf_005ftransfer_005fbetween_005fremotes.html" accesskey="n" rel="next"><code class="code">_gfortran_caf_transfer_between_remotes</code> &mdash; Initiate data transfer between to remote images</a>, Previous: <a href="_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote.html" accesskey="p" rel="prev"><code class="code">_gfortran_caf_is_present_on_remote</code> &mdash; Check that a coarray or a part of it is allocated on the remote image</a>, Up: <a href="Function-ABI-Documentation.html" accesskey="u" rel="up">Function ABI Documentation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="g_t_005fgfortran_005fcaf_005fsend_005fto_005fremote-_002d_002d_002d-Send-data-to-a-remote-image-using-a-remote-side-accessor-to-store-it"><span>7.2.15 <code class="code">_gfortran_caf_send_to_remote</code> &mdash; Send data to a remote image using a remote side accessor to store it<a class="copiable-link" href="#g_t_005fgfortran_005fcaf_005fsend_005fto_005fremote-_002d_002d_002d-Send-data-to-a-remote-image-using-a-remote-side-accessor-to-store-it"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Coarray_002c-_005fgfortran_005fcaf_005fsend_005fto_005fremote"></a>
+
+<dl class="table">
+<dt><em class="emph">Synopsis</em>:</dt>
+<dd><p><code class="code">void _gfortran_caf_send_to_remote (caf_token_t token,
+gfc_descriptor_t *opt_dst_desc, const size_t *opt_dst_charlen,
+const int image_index, const size_t src_size, const void *src_data,
+size_t *opt_src_charlen, const gfc_descriptor_t *opt_src_desc,
+const int setter_index, void *add_data, const size_t add_data_size, int *stat,
+caf_team_t *team, int *team_number)</code>
+</p>
+</dd>
+<dt><em class="emph">Description</em>:</dt>
+<dd><p>Called to send a scalar, an array section or a whole array to a remote image
+identified by the <var class="var">image_index</var>. The call modifies the memory of the remote
+image.
+</p>
+</dd>
+<dt><em class="emph">Arguments</em>:</dt>
+<dd><table class="multitable">
+<tbody><tr><td width="15%"><var class="var">token</var></td><td width="70%">intent(in)  An opaque pointer identifying the coarray.</td></tr>
+<tr><td width="15%"><var class="var">opt_dst_desc</var></td><td width="70%">intent(inout)  A pointer to the descriptor when
+the object identified by <var class="var">token</var> is an array with a descriptor.  The
+parameter needs to be set to <code class="code">NULL</code>, when <var class="var">token</var> identifies a scalar
+or is an array without a descriptor.</td></tr>
+<tr><td width="15%"><var class="var">opt_dst_charlen</var></td><td width="70%">intent(in) When the object to send is a char
+array with deferred length, then this parameter needs to be set to point to its
+length.  Else the parameter needs to be set to <code class="code">NULL</code>.</td></tr>
+<tr><td width="15%"><var class="var">image_index</var></td><td width="70%">intent(in)  The ID of the remote image; must be a
+positive number.  <code class="code">this_image ()</code> is valid.</td></tr>
+<tr><td width="15%"><var class="var">src_size</var></td><td width="70%">intent(in) The size of data expected to be transferred
+to the remote image.  If the data type to get is a string or string array,
+then this needs to be set to the byte size of each character, i.e. <code class="code">4</code> for
+a <code class="code">CHARACTER (KIND=4)</code> string.  The length of the string is then given
+in <code class="code">opt_src_charlen</code> (also for string arrays).</td></tr>
+<tr><td width="15%"><var class="var">src_data</var></td><td width="70%">intent(in) A pointer the data to be send to the remote
+image.  When a descriptor is provided in <code class="code">opt_src_desc</code> then this parameter
+can be ignored by the library implementing the coarray functionality.</td></tr>
+<tr><td width="15%"><var class="var">opt_src_charlen</var></td><td width="70%">intent(in)  When a char array is send, this
+parameter is set to its length.</td></tr>
+<tr><td width="15%"><var class="var">opt_src_desc</var></td><td width="70%">intent(in)  When a descriptor array is send, then
+this parameter gives the handle.</td></tr>
+<tr><td width="15%"><var class="var">setter_index</var></td><td width="70%">intent(in)  The index of the accessor to execute
+as returned by <code class="code">_gfortran_caf_get_remote_function_index ()</code>.</td></tr>
+<tr><td width="15%"><var class="var">add_data</var></td><td width="70%">intent(inout)  Additional data needed in the accessor.
+I.e., when an array reference uses a local variable <var class="var">v</var>, it is transported
+in this structure and all references in the accessor are rewritten to access the
+member.  The data in the structure of <var class="var">add_data</var> may be changed by the
+accessor, but these changes are lost to the calling Fortran program.</td></tr>
+<tr><td width="15%"><var class="var">add_data_size</var></td><td width="70%">intent(in)  The size of the <var class="var">add_data</var>
+structure.</td></tr>
+<tr><td width="15%"><var class="var">stat</var></td><td width="70%">intent(out) When non-<code class="code">NULL</code> give the result of the
+operation, i.e., zero on success and non-zero on error.  When <code class="code">NULL</code> and an
+error occurs, then an error message is printed and the program is terminated.</td></tr>
+<tr><td width="15%"><var class="var">team</var></td><td width="70%">intent(in)  The opaque team handle as returned by
+<code class="code">FORM TEAM</code>.  Unused at the moment.</td></tr>
+<tr><td width="15%"><var class="var">team_number</var></td><td width="70%">intent(in)  The number of the team this access is
+to be part of.  Unused at the moment.</td></tr>
+</tbody>
+</table>
+
+</dd>
+<dt><em class="emph">Notes</em>:</dt>
+<dd><p>It is permitted to have <code class="code">image_index</code> equal the current image; the memory
+to send the data to and the memory to read for the data may (partially) overlap.
+The implementation has to take care that it handles this case, e.g. using
+<code class="code">memmove</code> which handles (partially) overlapping memory.
+</p></dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="_005fgfortran_005fcaf_005ftransfer_005fbetween_005fremotes.html"><code class="code">_gfortran_caf_transfer_between_remotes</code> &mdash; Initiate data transfer between to remote images</a>, Previous: <a href="_005fgfortran_005fcaf_005fis_005fpresent_005fon_005fremote.html"><code class="code">_gfortran_caf_is_present_on_remote</code> &mdash; Check that a coarray or a part of it is allocated on the remote image</a>, Up: <a href="Function-ABI-Documentation.html">Function ABI Documentation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Configuration Files (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Configuration Files (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Configuration Files (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Configuration.html" rel="up" title="Configuration">
+<link href="System-Config.html" rel="prev" title="System Config">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Configuration-Files">
+<div class="nav-panel">
+<p>
+Previous: <a href="System-Config.html" accesskey="p" rel="prev">The <samp class="file">config.build</samp>; <samp class="file">config.host</samp>; and <samp class="file">config.gcc</samp> Files</a>, Up: <a href="Configuration.html" accesskey="u" rel="up">Configuration in the <samp class="file">gcc</samp> Directory</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Files-Created-by-configure"><span>5.3.2.3 Files Created by <code class="code">configure</code><a class="copiable-link" href="#Files-Created-by-configure"> &para;</a></span></h4>
+
+<p>Here we spell out what files will be set up by <samp class="file">configure</samp> in the
+<samp class="file">gcc</samp> directory.  Some other files are created as temporary files
+in the configuration process, and are not used in the subsequent
+build; these are not documented.
+</p>
+<ul class="itemize mark-bullet">
+<li><samp class="file">Makefile</samp> is constructed from <samp class="file">Makefile.in</samp>, together with
+the host and target fragments (see <a class="pxref" href="Fragments.html">Makefile
+Fragments</a>) <samp class="file">t-<var class="var">target</var></samp> and <samp class="file">x-<var class="var">host</var></samp> from
+<samp class="file">config</samp>, if any, and language Makefile fragments
+<samp class="file"><var class="var">language</var>/Make-lang.in</samp>.
+</li><li><samp class="file">auto-host.h</samp> contains information about the host machine
+determined by <samp class="file">configure</samp>.  If the host machine is different from
+the build machine, then <samp class="file">auto-build.h</samp> is also created,
+containing such information about the build machine.
+</li><li><samp class="file">config.status</samp> is a script that may be run to recreate the
+current configuration.
+</li><li><samp class="file">configargs.h</samp> is a header containing details of the arguments
+passed to <samp class="file">configure</samp> to configure GCC, and of the thread model
+used.
+</li><li><samp class="file">cstamp-h</samp> is used as a timestamp.
+</li><li>If a language <samp class="file">config-lang.in</samp> file (see <a class="pxref" href="Front-End-Config.html">The Front End <samp class="file">config-lang.in</samp> File</a>) sets <code class="code">outputs</code>, then
+the files listed in <code class="code">outputs</code> there are also generated.
+</li></ul>
+
+<p>The following configuration headers are created from the Makefile,
+using <samp class="file">mkconfig.sh</samp>, rather than directly by <samp class="file">configure</samp>.
+<samp class="file">config.h</samp>, <samp class="file">bconfig.h</samp> and <samp class="file">tconfig.h</samp> all contain the
+<samp class="file">xm-<var class="var">machine</var>.h</samp> header, if any, appropriate to the host,
+build and target machines respectively, the configuration headers for
+the target, and some definitions; for the host and build machines,
+these include the autoconfigured headers generated by
+<samp class="file">configure</samp>.  The other configuration headers are determined by
+<samp class="file">config.gcc</samp>.  They also contain the typedefs for <code class="code">rtx</code>,
+<code class="code">rtvec</code> and <code class="code">tree</code>.
+</p>
+<ul class="itemize mark-bullet">
+<li><samp class="file">config.h</samp>, for use in programs that run on the host machine.
+</li><li><samp class="file">bconfig.h</samp>, for use in programs that run on the build machine.
+</li><li><samp class="file">tconfig.h</samp>, for use in programs and libraries for the target
+machine.
+</li><li><samp class="file">tm_p.h</samp>, which includes the header <samp class="file"><var class="var">machine</var>-protos.h</samp>
+that contains prototypes for functions in the target
+<samp class="file"><var class="var">machine</var>.c</samp> file.  The
+<samp class="file"><var class="var">machine</var>-protos.h</samp> header is included after the <samp class="file">rtl.h</samp>
+and/or <samp class="file">tree.h</samp> would have been included.
+The <samp class="file">tm_p.h</samp> also
+includes the header <samp class="file">tm-preds.h</samp> which is generated by
+<samp class="file">genpreds</samp> program during the build to define the declarations
+and inline functions for the predicate functions.
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="System-Config.html">The <samp class="file">config.build</samp>; <samp class="file">config.host</samp>; and <samp class="file">config.gcc</samp> Files</a>, Up: <a href="Configuration.html">Configuration in the <samp class="file">gcc</samp> Directory</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

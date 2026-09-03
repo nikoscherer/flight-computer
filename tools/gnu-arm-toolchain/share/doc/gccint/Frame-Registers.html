@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Frame Registers (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Frame Registers (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Frame Registers (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stack-and-Calling.html" rel="up" title="Stack and Calling">
+<link href="Elimination.html" rel="next" title="Elimination">
+<link href="Stack-Checking.html" rel="prev" title="Stack Checking">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Frame-Registers">
+<div class="nav-panel">
+<p>
+Next: <a href="Elimination.html" accesskey="n" rel="next">Eliminating Frame Pointer and Arg Pointer</a>, Previous: <a href="Stack-Checking.html" accesskey="p" rel="prev">Specifying How Stack Checking is Done</a>, Up: <a href="Stack-and-Calling.html" accesskey="u" rel="up">Stack Layout and Calling Conventions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Registers-That-Address-the-Stack-Frame"><span>17.9.4 Registers That Address the Stack Frame<a class="copiable-link" href="#Registers-That-Address-the-Stack-Frame"> &para;</a></span></h4>
+
+<p>This discusses registers that address the stack frame.
+</p>
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-STACK_005fPOINTER_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">STACK_POINTER_REGNUM</strong><a class="copiable-link" href="#index-STACK_005fPOINTER_005fREGNUM"> &para;</a></span></dt>
+<dd><p>The register number of the stack pointer register, which must also be a
+fixed register according to <code class="code">FIXED_REGISTERS</code>.  On most machines,
+the hardware determines which register this is.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-FRAME_005fPOINTER_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">FRAME_POINTER_REGNUM</strong><a class="copiable-link" href="#index-FRAME_005fPOINTER_005fREGNUM"> &para;</a></span></dt>
+<dd><p>The register number of the frame pointer register, which is used to
+access automatic variables in the stack frame.  On some machines, the
+hardware determines which register this is.  On other machines, you can
+choose any register you wish for this purpose.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-HARD_005fFRAME_005fPOINTER_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">HARD_FRAME_POINTER_REGNUM</strong><a class="copiable-link" href="#index-HARD_005fFRAME_005fPOINTER_005fREGNUM"> &para;</a></span></dt>
+<dd><p>On some machines the offset between the frame pointer and starting
+offset of the automatic variables is not known until after register
+allocation has been done (for example, because the saved registers are
+between these two locations).  On those machines, define
+<code class="code">FRAME_POINTER_REGNUM</code> the number of a special, fixed register to
+be used internally until the offset is known, and define
+<code class="code">HARD_FRAME_POINTER_REGNUM</code> to be the actual hard register number
+used for the frame pointer.
+</p>
+<p>You should define this macro only in the very rare circumstances when it
+is not possible to calculate the offset between the frame pointer and
+the automatic variables until after register allocation has been
+completed.  When this macro is defined, you must also indicate in your
+definition of <code class="code">ELIMINABLE_REGS</code> how to eliminate
+<code class="code">FRAME_POINTER_REGNUM</code> into either <code class="code">HARD_FRAME_POINTER_REGNUM</code>
+or <code class="code">STACK_POINTER_REGNUM</code>.
+</p>
+<p>Do not define this macro if it would be the same as
+<code class="code">FRAME_POINTER_REGNUM</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ARG_005fPOINTER_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">ARG_POINTER_REGNUM</strong><a class="copiable-link" href="#index-ARG_005fPOINTER_005fREGNUM"> &para;</a></span></dt>
+<dd><p>The register number of the arg pointer register, which is used to access
+the function&rsquo;s argument list.  On some machines, this is the same as the
+frame pointer register.  On some machines, the hardware determines which
+register this is.  On other machines, you can choose any register you
+wish for this purpose.  If this is not the same register as the frame
+pointer register, then you must mark it as a fixed register according to
+<code class="code">FIXED_REGISTERS</code>, or arrange to be able to eliminate it
+(see <a class="pxref" href="Elimination.html">Eliminating Frame Pointer and Arg Pointer</a>).
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-HARD_005fFRAME_005fPOINTER_005fIS_005fFRAME_005fPOINTER"><span class="category-def">Macro: </span><span><strong class="def-name">HARD_FRAME_POINTER_IS_FRAME_POINTER</strong><a class="copiable-link" href="#index-HARD_005fFRAME_005fPOINTER_005fIS_005fFRAME_005fPOINTER"> &para;</a></span></dt>
+<dd><p>Define this to a preprocessor constant that is nonzero if
+<code class="code">hard_frame_pointer_rtx</code> and <code class="code">frame_pointer_rtx</code> should be
+the same.  The default definition is &lsquo;<samp class="samp">(HARD_FRAME_POINTER_REGNUM
+== FRAME_POINTER_REGNUM)</samp>&rsquo;; you only need to define this macro if that
+definition is not suitable for use in preprocessor conditionals.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-HARD_005fFRAME_005fPOINTER_005fIS_005fARG_005fPOINTER"><span class="category-def">Macro: </span><span><strong class="def-name">HARD_FRAME_POINTER_IS_ARG_POINTER</strong><a class="copiable-link" href="#index-HARD_005fFRAME_005fPOINTER_005fIS_005fARG_005fPOINTER"> &para;</a></span></dt>
+<dd><p>Define this to a preprocessor constant that is nonzero if
+<code class="code">hard_frame_pointer_rtx</code> and <code class="code">arg_pointer_rtx</code> should be the
+same.  The default definition is &lsquo;<samp class="samp">(HARD_FRAME_POINTER_REGNUM ==
+ARG_POINTER_REGNUM)</samp>&rsquo;; you only need to define this macro if that
+definition is not suitable for use in preprocessor conditionals.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-RETURN_005fADDRESS_005fPOINTER_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">RETURN_ADDRESS_POINTER_REGNUM</strong><a class="copiable-link" href="#index-RETURN_005fADDRESS_005fPOINTER_005fREGNUM"> &para;</a></span></dt>
+<dd><p>The register number of the return address pointer register, which is used to
+access the current function&rsquo;s return address from the stack.  On some
+machines, the return address is not at a fixed offset from the frame
+pointer or stack pointer or argument pointer.  This register can be defined
+to point to the return address on the stack, and then be converted by
+<code class="code">ELIMINABLE_REGS</code> into either the frame pointer or stack pointer.
+</p>
+<p>Do not define this macro unless there is no other way to get the return
+address from the stack.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-STATIC_005fCHAIN_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">STATIC_CHAIN_REGNUM</strong><a class="copiable-link" href="#index-STATIC_005fCHAIN_005fREGNUM"> &para;</a></span></dt>
+<dt class="deffnx defmacx-alias-deffnx def-cmd-deffn" id="index-STATIC_005fCHAIN_005fINCOMING_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">STATIC_CHAIN_INCOMING_REGNUM</strong><a class="copiable-link" href="#index-STATIC_005fCHAIN_005fINCOMING_005fREGNUM"> &para;</a></span></dt>
+<dd><p>Register numbers used for passing a function&rsquo;s static chain pointer.  If
+register windows are used, the register number as seen by the called
+function is <code class="code">STATIC_CHAIN_INCOMING_REGNUM</code>, while the register
+number as seen by the calling function is <code class="code">STATIC_CHAIN_REGNUM</code>.  If
+these registers are the same, <code class="code">STATIC_CHAIN_INCOMING_REGNUM</code> need
+not be defined.
+</p>
+<p>The static chain register need not be a fixed register.
+</p>
+<p>If the static chain is passed in memory, these macros should not be
+defined; instead, the <code class="code">TARGET_STATIC_CHAIN</code> hook should be used.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fSTATIC_005fCHAIN"><span class="category-def">Target Hook: </span><span><code class="def-type">rtx</code> <strong class="def-name">TARGET_STATIC_CHAIN</strong> <code class="def-code-arguments">(const_tree <var class="var">fndecl_or_type</var>, bool <var class="var">incoming_p</var>)</code><a class="copiable-link" href="#index-TARGET_005fSTATIC_005fCHAIN"> &para;</a></span></dt>
+<dd><p>This hook replaces the use of <code class="code">STATIC_CHAIN_REGNUM</code> et al for
+targets that may use different static chain locations for different
+nested functions.  This may be required if the target has function
+attributes that affect the calling conventions of the function and
+those calling conventions use different static chain locations.
+</p>
+<p>The default version of this hook uses <code class="code">STATIC_CHAIN_REGNUM</code> et al.
+</p>
+<p>If the static chain is passed in memory, this hook should be used to
+provide rtx giving <code class="code">mem</code> expressions that denote where they are stored.
+Often the <code class="code">mem</code> expression as seen by the caller will be at an offset
+from the stack pointer and the <code class="code">mem</code> expression as seen by the callee
+will be at an offset from the frame pointer.
+<a class="index-entry-id" id="index-stack_005fpointer_005frtx"></a>
+<a class="index-entry-id" id="index-frame_005fpointer_005frtx"></a>
+<a class="index-entry-id" id="index-arg_005fpointer_005frtx"></a>
+The variables <code class="code">stack_pointer_rtx</code>, <code class="code">frame_pointer_rtx</code>, and
+<code class="code">arg_pointer_rtx</code> will have been initialized and should be used
+to refer to those items.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-DWARF_005fFRAME_005fREGISTERS"><span class="category-def">Macro: </span><span><strong class="def-name">DWARF_FRAME_REGISTERS</strong><a class="copiable-link" href="#index-DWARF_005fFRAME_005fREGISTERS"> &para;</a></span></dt>
+<dd><p>This macro specifies the maximum number of hard registers that can be
+saved in a call frame.  This is used to size data structures used in
+DWARF2 exception handling.
+</p>
+<p>Prior to GCC 3.0, this macro was needed in order to establish a stable
+exception handling ABI in the face of adding new hard registers for ISA
+extensions.  In GCC 3.0 and later, the EH ABI is insulated from changes
+in the number of hard registers.  Nevertheless, this macro can still be
+used to reduce the runtime memory requirements of the exception handling
+routines, which can be substantial if the ISA contains a lot of
+registers that are not call-saved.
+</p>
+<p>If this macro is not defined, it defaults to
+<code class="code">FIRST_PSEUDO_REGISTER</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-PRE_005fGCC3_005fDWARF_005fFRAME_005fREGISTERS"><span class="category-def">Macro: </span><span><strong class="def-name">PRE_GCC3_DWARF_FRAME_REGISTERS</strong><a class="copiable-link" href="#index-PRE_005fGCC3_005fDWARF_005fFRAME_005fREGISTERS"> &para;</a></span></dt>
+<dd>
+<p>This macro is similar to <code class="code">DWARF_FRAME_REGISTERS</code>, but is provided
+for backward compatibility in pre GCC 3.0 compiled code.
+</p>
+<p>If this macro is not defined, it defaults to
+<code class="code">DWARF_FRAME_REGISTERS</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-DWARF_005fREG_005fTO_005fUNWIND_005fCOLUMN"><span class="category-def">Macro: </span><span><strong class="def-name">DWARF_REG_TO_UNWIND_COLUMN</strong> <var class="def-var-arguments">(<var class="var">regno</var>)</var><a class="copiable-link" href="#index-DWARF_005fREG_005fTO_005fUNWIND_005fCOLUMN"> &para;</a></span></dt>
+<dd>
+<p>Define this macro if the target&rsquo;s representation for dwarf registers
+is different than the internal representation for unwind column.
+Given a dwarf register, this macro should return the internal unwind
+column number to use instead.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-DWARF_005fFRAME_005fREGNUM"><span class="category-def">Macro: </span><span><strong class="def-name">DWARF_FRAME_REGNUM</strong> <var class="def-var-arguments">(<var class="var">regno</var>)</var><a class="copiable-link" href="#index-DWARF_005fFRAME_005fREGNUM"> &para;</a></span></dt>
+<dd>
+<p>Define this macro if the target&rsquo;s representation for dwarf registers
+used in .eh_frame or .debug_frame is different from that used in other
+debug info sections.  Given a GCC hard register number, this macro
+should return the .eh_frame register number.  The default is
+<code class="code">DEBUGGER_REGNO (<var class="var">regno</var>)</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-DWARF2_005fFRAME_005fREG_005fOUT"><span class="category-def">Macro: </span><span><strong class="def-name">DWARF2_FRAME_REG_OUT</strong> <var class="def-var-arguments">(<var class="var">regno</var>, <var class="var">for_eh</var>)</var><a class="copiable-link" href="#index-DWARF2_005fFRAME_005fREG_005fOUT"> &para;</a></span></dt>
+<dd>
+<p>Define this macro to map register numbers held in the call frame info
+that GCC has collected using <code class="code">DWARF_FRAME_REGNUM</code> to those that
+should be output in .debug_frame (<code class="code"><var class="var">for_eh</var></code> is zero) and
+.eh_frame (<code class="code"><var class="var">for_eh</var></code> is nonzero).  The default is to
+return <code class="code"><var class="var">regno</var></code>.
+</p>
+</dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-REG_005fVALUE_005fIN_005fUNWIND_005fCONTEXT"><span class="category-def">Macro: </span><span><strong class="def-name">REG_VALUE_IN_UNWIND_CONTEXT</strong><a class="copiable-link" href="#index-REG_005fVALUE_005fIN_005fUNWIND_005fCONTEXT"> &para;</a></span></dt>
+<dd>
+<p>Define this macro if the target stores register values as
+<code class="code">_Unwind_Word</code> type in unwind context.  It should be defined if
+target register size is larger than the size of <code class="code">void *</code>.  The
+default is to store register values as <code class="code">void *</code> type.
+</p>
+</dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASSUME_005fEXTENDED_005fUNWIND_005fCONTEXT"><span class="category-def">Macro: </span><span><strong class="def-name">ASSUME_EXTENDED_UNWIND_CONTEXT</strong><a class="copiable-link" href="#index-ASSUME_005fEXTENDED_005fUNWIND_005fCONTEXT"> &para;</a></span></dt>
+<dd>
+<p>Define this macro to be 1 if the target always uses extended unwind
+context with version, args_size and by_value fields.  If it is undefined,
+it will be defined to 1 when <code class="code">REG_VALUE_IN_UNWIND_CONTEXT</code> is
+defined and 0 otherwise.
+</p>
+</dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-DWARF_005fLAZY_005fREGISTER_005fVALUE"><span class="category-def">Macro: </span><span><strong class="def-name">DWARF_LAZY_REGISTER_VALUE</strong> <var class="def-var-arguments">(<var class="var">regno</var>, <var class="var">value</var>)</var><a class="copiable-link" href="#index-DWARF_005fLAZY_005fREGISTER_005fVALUE"> &para;</a></span></dt>
+<dd><p>Define this macro if the target has pseudo DWARF registers whose
+values need to be computed lazily on demand by the unwinder (such as when
+referenced in a CFA expression).  The macro returns true if <var class="var">regno</var>
+is such a register and stores its value in &lsquo;<samp class="samp">*<var class="var">value</var></samp>&rsquo; if so.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Elimination.html">Eliminating Frame Pointer and Arg Pointer</a>, Previous: <a href="Stack-Checking.html">Specifying How Stack Checking is Done</a>, Up: <a href="Stack-and-Calling.html">Stack Layout and Calling Conventions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

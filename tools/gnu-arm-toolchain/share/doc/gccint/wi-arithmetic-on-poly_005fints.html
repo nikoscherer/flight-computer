@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>wi arithmetic on poly_ints (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="wi arithmetic on poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="wi arithmetic on poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Arithmetic-on-poly_005fints.html" rel="up" title="Arithmetic on poly_ints">
+<link href="Division-of-poly_005fints.html" rel="next" title="Division of poly_ints">
+<link href="Using-poly_005fint-with-C_002b_002b-arithmetic-operators.html" rel="prev" title="Using poly_int with C++ arithmetic operators">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="wi-arithmetic-on-poly_005fints">
+<div class="nav-panel">
+<p>
+Next: <a href="Division-of-poly_005fints.html" accesskey="n" rel="next">Division of <code class="code">poly_int</code>s</a>, Previous: <a href="Using-poly_005fint-with-C_002b_002b-arithmetic-operators.html" accesskey="p" rel="prev">Using <code class="code">poly_int</code> with C++ arithmetic operators</a>, Up: <a href="Arithmetic-on-poly_005fints.html" accesskey="u" rel="up">Arithmetic on <code class="code">poly_int</code>s</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="wi-arithmetic-on-poly_005fints-1"><span>9.4.2 <code class="code">wi</code> arithmetic on <code class="code">poly_int</code>s<a class="copiable-link" href="#wi-arithmetic-on-poly_005fints-1"> &para;</a></span></h4>
+
+<p>As well as the C++ operators, <code class="code">poly_int</code> supports the following
+<code class="code">wi</code> routines:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">wi::neg (<var class="var">p1</var>, &amp;<var class="var">overflow</var>)
+
+wi::add (<var class="var">p1</var>, <var class="var">p2</var>)
+wi::add (<var class="var">p1</var>, <var class="var">c2</var>)
+wi::add (<var class="var">c1</var>, <var class="var">p1</var>)
+wi::add (<var class="var">p1</var>, <var class="var">p2</var>, <var class="var">sign</var>, &amp;<var class="var">overflow</var>)
+
+wi::sub (<var class="var">p1</var>, <var class="var">p2</var>)
+wi::sub (<var class="var">p1</var>, <var class="var">c2</var>)
+wi::sub (<var class="var">c1</var>, <var class="var">p1</var>)
+wi::sub (<var class="var">p1</var>, <var class="var">p2</var>, <var class="var">sign</var>, &amp;<var class="var">overflow</var>)
+
+wi::mul (<var class="var">p1</var>, <var class="var">c2</var>)
+wi::mul (<var class="var">c1</var>, <var class="var">p1</var>)
+wi::mul (<var class="var">p1</var>, <var class="var">c2</var>, <var class="var">sign</var>, &amp;<var class="var">overflow</var>)
+
+wi::lshift (<var class="var">p1</var>, <var class="var">c2</var>)
+</pre></div>
+
+<p>These routines just check whether overflow occurs on any individual
+coefficient; it is not possible to know at compile time whether the
+final runtime value would overflow.
+</p>
+</div>
+
+
+
+</body>
+</html>

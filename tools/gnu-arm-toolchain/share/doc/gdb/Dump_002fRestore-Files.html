@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Dump/Restore Files (Debugging with GDB)</title>
+
+<meta name="description" content="Dump/Restore Files (Debugging with GDB)">
+<meta name="keywords" content="Dump/Restore Files (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Data.html" rel="up" title="Data">
+<link href="Core-File-Generation.html" rel="next" title="Core File Generation">
+<link href="Memory-Region-Attributes.html" rel="prev" title="Memory Region Attributes">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Dump_002fRestore-Files">
+<div class="nav-panel">
+<p>
+Next: <a href="Core-File-Generation.html" accesskey="n" rel="next">How to Produce a Core File from Your Program</a>, Previous: <a href="Memory-Region-Attributes.html" accesskey="p" rel="prev">Memory Region Attributes</a>, Up: <a href="Data.html" accesskey="u" rel="up">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Copy-Between-Memory-and-a-File"><span>10.19 Copy Between Memory and a File<a class="copiable-link" href="#Copy-Between-Memory-and-a-File"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-dump_002frestore-files"></a>
+<a class="index-entry-id" id="index-append-data-to-a-file"></a>
+<a class="index-entry-id" id="index-dump-data-to-a-file"></a>
+<a class="index-entry-id" id="index-restore-data-from-a-file"></a>
+
+<p>You can use the commands <code class="code">dump</code>, <code class="code">append</code>, and
+<code class="code">restore</code> to copy data between target memory and a file.  The
+<code class="code">dump</code> and <code class="code">append</code> commands write data to a file, and the
+<code class="code">restore</code> command reads data from a file back into the inferior&rsquo;s
+memory.  Files may be in binary, Motorola S-record, Intel hex,
+Tektronix Hex, or Verilog Hex format; however, <small class="sc">GDB</small> can only
+append to binary files, and cannot read from Verilog Hex files.
+</p>
+<dl class="table">
+<dt><a id="index-dump"></a><span><code class="code">dump <span class="r">[</span><var class="var">format</var><span class="r">]</span> memory <var class="var">filename</var> <var class="var">start_addr</var> <var class="var">end_addr</var></code><a class="copiable-link" href="#index-dump"> &para;</a></span></dt>
+<dt><code class="code">dump <span class="r">[</span><var class="var">format</var><span class="r">]</span> value <var class="var">filename</var> <var class="var">expr</var></code></dt>
+<dd><p>Dump the contents of memory from <var class="var">start_addr</var> to <var class="var">end_addr</var>,
+or the value of <var class="var">expr</var>, to <var class="var">filename</var> in the given format.
+</p>
+<p>The <var class="var">format</var> parameter may be any one of:
+</p><dl class="table">
+<dt><code class="code">binary</code></dt>
+<dd><p>Raw binary form.
+</p></dd>
+<dt><code class="code">ihex</code></dt>
+<dd><p>Intel hex format.
+</p></dd>
+<dt><code class="code">srec</code></dt>
+<dd><p>Motorola S-record format.
+</p></dd>
+<dt><code class="code">tekhex</code></dt>
+<dd><p>Tektronix Hex format.
+</p></dd>
+<dt><code class="code">verilog</code></dt>
+<dd><p>Verilog Hex format.
+</p></dd>
+</dl>
+
+<p><small class="sc">GDB</small> uses the same definitions of these formats as the
+<small class="sc">GNU</small> binary utilities, like &lsquo;<samp class="samp">objdump</samp>&rsquo; and &lsquo;<samp class="samp">objcopy</samp>&rsquo;.  If
+<var class="var">format</var> is omitted, <small class="sc">GDB</small> dumps the data in raw binary
+form.
+</p>
+</dd>
+<dt><a id="index-append"></a><span><code class="code">append <span class="r">[</span>binary<span class="r">]</span> memory <var class="var">filename</var> <var class="var">start_addr</var> <var class="var">end_addr</var></code><a class="copiable-link" href="#index-append"> &para;</a></span></dt>
+<dt><code class="code">append <span class="r">[</span>binary<span class="r">]</span> value <var class="var">filename</var> <var class="var">expr</var></code></dt>
+<dd><p>Append the contents of memory from <var class="var">start_addr</var> to <var class="var">end_addr</var>,
+or the value of <var class="var">expr</var>, to the file <var class="var">filename</var>, in raw binary form.
+(<small class="sc">GDB</small> can only append data to files in raw binary form.)
+</p>
+</dd>
+<dt><a id="index-restore"></a><span><code class="code">restore <var class="var">filename</var> <span class="r">[</span>binary<span class="r">]</span> <var class="var">bias</var> <var class="var">start</var> <var class="var">end</var></code><a class="copiable-link" href="#index-restore"> &para;</a></span></dt>
+<dd><p>Restore the contents of file <var class="var">filename</var> into memory.  The
+<code class="code">restore</code> command can automatically recognize any known <small class="sc">BFD</small>
+file format, except for raw binary.  To restore a raw binary file you
+must specify the optional keyword <code class="code">binary</code> after the filename.
+</p>
+<p>If <var class="var">bias</var> is non-zero, its value will be added to the addresses
+contained in the file.  Binary files always start at address zero, so
+they will be restored at address <var class="var">bias</var>.  Other bfd files have
+a built-in location; they will be restored at offset <var class="var">bias</var>
+from that location.
+</p>
+<p>If <var class="var">start</var> and/or <var class="var">end</var> are non-zero, then only data between
+file offset <var class="var">start</var> and file offset <var class="var">end</var> will be restored.
+These offsets are relative to the addresses in the file, before
+the <var class="var">bias</var> argument is applied.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Core-File-Generation.html">How to Produce a Core File from Your Program</a>, Previous: <a href="Memory-Region-Attributes.html">Memory Region Attributes</a>, Up: <a href="Data.html">Examining Data</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

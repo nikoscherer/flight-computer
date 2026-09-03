@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>S/390 and System z Features (Debugging with GDB)</title>
+
+<meta name="description" content="S/390 and System z Features (Debugging with GDB)">
+<meta name="keywords" content="S/390 and System z Features (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features">
+<link href="Sparc-Features.html" rel="next" title="Sparc Features">
+<link href="RX-Features.html" rel="prev" title="RX Features">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="S_002f390-and-System-z-Features">
+<div class="nav-panel">
+<p>
+Next: <a href="Sparc-Features.html" accesskey="n" rel="next">Sparc Features</a>, Previous: <a href="RX-Features.html" accesskey="p" rel="prev">RX Features</a>, Up: <a href="Standard-Target-Features.html" accesskey="u" rel="up">Standard Target Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="S_002f390-and-System-z-Features-1"><span>G.5.14 S/390 and System z Features<a class="copiable-link" href="#S_002f390-and-System-z-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-S_002f390-features"></a>
+<a class="index-entry-id" id="index-target-descriptions_002c-System-z-features"></a>
+
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.core</samp>&rsquo; feature is required for S/390 and
+System z targets.  It should contain the PSW and the 16 general
+registers.  In particular, System z targets should provide the 64-bit
+registers &lsquo;<samp class="samp">pswm</samp>&rsquo;, &lsquo;<samp class="samp">pswa</samp>&rsquo;, and &lsquo;<samp class="samp">r0</samp>&rsquo; through &lsquo;<samp class="samp">r15</samp>&rsquo;.
+S/390 targets should provide the 32-bit versions of these registers.
+A System z target that runs in 31-bit addressing mode should provide
+32-bit versions of &lsquo;<samp class="samp">pswm</samp>&rsquo; and &lsquo;<samp class="samp">pswa</samp>&rsquo;, as well as the general
+register&rsquo;s upper halves &lsquo;<samp class="samp">r0h</samp>&rsquo; through &lsquo;<samp class="samp">r15h</samp>&rsquo;, and their
+lower halves &lsquo;<samp class="samp">r0l</samp>&rsquo; through &lsquo;<samp class="samp">r15l</samp>&rsquo;.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.fpr</samp>&rsquo; feature is required.  It should
+contain the 64-bit registers &lsquo;<samp class="samp">f0</samp>&rsquo; through &lsquo;<samp class="samp">f15</samp>&rsquo;, and
+&lsquo;<samp class="samp">fpc</samp>&rsquo;.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.acr</samp>&rsquo; feature is required.  It should
+contain the 32-bit registers &lsquo;<samp class="samp">acr0</samp>&rsquo; through &lsquo;<samp class="samp">acr15</samp>&rsquo;.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.linux</samp>&rsquo; feature is optional.  It should
+contain the register &lsquo;<samp class="samp">orig_r2</samp>&rsquo;, which is 64-bit wide on System z
+targets and 32-bit otherwise.  In addition, the feature may contain
+the &lsquo;<samp class="samp">last_break</samp>&rsquo; register, whose width depends on the addressing
+mode, as well as the &lsquo;<samp class="samp">system_call</samp>&rsquo; register, which is always
+32-bit wide.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.tdb</samp>&rsquo; feature is optional.  It should
+contain the 64-bit registers &lsquo;<samp class="samp">tdb0</samp>&rsquo;, &lsquo;<samp class="samp">tac</samp>&rsquo;, &lsquo;<samp class="samp">tct</samp>&rsquo;,
+&lsquo;<samp class="samp">atia</samp>&rsquo;, and &lsquo;<samp class="samp">tr0</samp>&rsquo; through &lsquo;<samp class="samp">tr15</samp>&rsquo;.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.vx</samp>&rsquo; feature is optional.  It should contain
+64-bit wide registers &lsquo;<samp class="samp">v0l</samp>&rsquo; through &lsquo;<samp class="samp">v15l</samp>&rsquo;, which will be
+combined by <small class="sc">GDB</small> with the floating point registers &lsquo;<samp class="samp">f0</samp>&rsquo;
+through &lsquo;<samp class="samp">f15</samp>&rsquo; to present the 128-bit wide vector registers
+&lsquo;<samp class="samp">v0</samp>&rsquo; through &lsquo;<samp class="samp">v15</samp>&rsquo;.  In addition, this feature should
+contain the 128-bit wide vector registers &lsquo;<samp class="samp">v16</samp>&rsquo; through
+&lsquo;<samp class="samp">v31</samp>&rsquo;.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.gs</samp>&rsquo; feature is optional.  It should contain
+the 64-bit wide guarded-storage-control registers &lsquo;<samp class="samp">gsd</samp>&rsquo;,
+&lsquo;<samp class="samp">gssm</samp>&rsquo;, and &lsquo;<samp class="samp">gsepla</samp>&rsquo;.
+</p>
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.s390.gsbc</samp>&rsquo; feature is optional.  It should contain
+the 64-bit wide guarded-storage broadcast control registers
+&lsquo;<samp class="samp">bc_gsd</samp>&rsquo;, &lsquo;<samp class="samp">bc_gssm</samp>&rsquo;, and &lsquo;<samp class="samp">bc_gsepla</samp>&rsquo;.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Sparc-Features.html">Sparc Features</a>, Previous: <a href="RX-Features.html">RX Features</a>, Up: <a href="Standard-Target-Features.html">Standard Target Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

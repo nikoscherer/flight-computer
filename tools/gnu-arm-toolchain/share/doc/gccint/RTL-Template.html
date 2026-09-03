@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>RTL Template (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="RTL Template (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="RTL Template (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Machine-Desc.html" rel="up" title="Machine Desc">
+<link href="Output-Template.html" rel="next" title="Output Template">
+<link href="Example.html" rel="prev" title="Example">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="RTL-Template">
+<div class="nav-panel">
+<p>
+Next: <a href="Output-Template.html" accesskey="n" rel="next">Output Templates and Operand Substitution</a>, Previous: <a href="Example.html" accesskey="p" rel="prev">Example of <code class="code">define_insn</code></a>, Up: <a href="Machine-Desc.html" accesskey="u" rel="up">Machine Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="RTL-Template-1"><span>16.4 RTL Template<a class="copiable-link" href="#RTL-Template-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-RTL-insn-template"></a>
+<a class="index-entry-id" id="index-generating-insns"></a>
+<a class="index-entry-id" id="index-insns_002c-generating"></a>
+<a class="index-entry-id" id="index-recognizing-insns"></a>
+<a class="index-entry-id" id="index-insns_002c-recognizing"></a>
+
+<p>The RTL template is used to define which insns match the particular pattern
+and how to find their operands.  For named patterns, the RTL template also
+says how to construct an insn from specified operands.
+</p>
+<p>Construction involves substituting specified operands into a copy of the
+template.  Matching involves determining the values that serve as the
+operands in the insn being matched.  Both of these activities are
+controlled by special expression types that direct matching and
+substitution of the operands.
+</p>
+<dl class="table">
+<dt><a id="index-match_005foperand"></a><span><code class="code">(match_operand:<var class="var">m</var> <var class="var">n</var> <var class="var">predicate</var> <var class="var">constraint</var>)</code><a class="copiable-link" href="#index-match_005foperand"> &para;</a></span></dt>
+<dd><p>This expression is a placeholder for operand number <var class="var">n</var> of
+the insn.  When constructing an insn, operand number <var class="var">n</var>
+will be substituted at this point.  When matching an insn, whatever
+appears at this position in the insn will be taken as operand
+number <var class="var">n</var>; but it must satisfy <var class="var">predicate</var> or this instruction
+pattern will not match at all.
+</p>
+<p>Operand numbers must be chosen consecutively counting from zero in
+each instruction pattern.  There may be only one <code class="code">match_operand</code>
+expression in the pattern for each operand number.  Usually operands
+are numbered in the order of appearance in <code class="code">match_operand</code>
+expressions.  In the case of a <code class="code">define_expand</code>, any operand numbers
+used only in <code class="code">match_dup</code> expressions have higher values than all
+other operand numbers.
+</p>
+<p><var class="var">predicate</var> is a string that is the name of a function that
+accepts two arguments, an expression and a machine mode.
+See <a class="xref" href="Predicates.html">Predicates</a>.  During matching, the function will be called with
+the putative operand as the expression and <var class="var">m</var> as the mode
+argument (if <var class="var">m</var> is not specified, <code class="code">VOIDmode</code> will be used,
+which normally causes <var class="var">predicate</var> to accept any mode).  If it
+returns zero, this instruction pattern fails to match.
+<var class="var">predicate</var> may be an empty string; then it means no test is to be
+done on the operand, so anything which occurs in this position is
+valid.
+</p>
+<p>Most of the time, <var class="var">predicate</var> will reject modes other than <var class="var">m</var>&mdash;but
+not always.  For example, the predicate <code class="code">address_operand</code> uses
+<var class="var">m</var> as the mode of memory ref that the address should be valid for.
+Many predicates accept <code class="code">const_int</code> nodes even though their mode is
+<code class="code">VOIDmode</code>.
+</p>
+<p><var class="var">constraint</var> controls reloading and the choice of the best register
+class to use for a value, as explained later (see <a class="pxref" href="Constraints.html">Operand Constraints</a>).
+If the constraint would be an empty string, it can be omitted.
+</p>
+<p>People are often unclear on the difference between the constraint and the
+predicate.  The predicate helps decide whether a given insn matches the
+pattern.  The constraint plays no role in this decision; instead, it
+controls various decisions in the case of an insn which does match.
+</p>
+</dd>
+<dt><a id="index-match_005fscratch"></a><span><code class="code">(match_scratch:<var class="var">m</var> <var class="var">n</var> <var class="var">constraint</var>)</code><a class="copiable-link" href="#index-match_005fscratch"> &para;</a></span></dt>
+<dd><p>This expression is also a placeholder for operand number <var class="var">n</var>
+and indicates that operand must be a <code class="code">scratch</code> or <code class="code">reg</code>
+expression.
+</p>
+<p>When matching patterns, this is equivalent to
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(match_operand:<var class="var">m</var> <var class="var">n</var> &quot;scratch_operand&quot; <var class="var">constraint</var>)
+</pre></div>
+
+<p>but, when generating RTL, it produces a (<code class="code">scratch</code>:<var class="var">m</var>)
+expression.
+</p>
+<p>If the last few expressions in a <code class="code">parallel</code> are <code class="code">clobber</code>
+expressions whose operands are either a hard register or
+<code class="code">match_scratch</code>, the combiner can add or delete them when
+necessary.  See <a class="xref" href="Side-Effects.html">Side Effect Expressions</a>.
+</p>
+</dd>
+<dt><a id="index-match_005fdup"></a><span><code class="code">(match_dup <var class="var">n</var>)</code><a class="copiable-link" href="#index-match_005fdup"> &para;</a></span></dt>
+<dd><p>This expression is also a placeholder for operand number <var class="var">n</var>.
+It is used when the operand needs to appear more than once in the
+insn.
+</p>
+<p>In construction, <code class="code">match_dup</code> acts just like <code class="code">match_operand</code>:
+the operand is substituted into the insn being constructed.  But in
+matching, <code class="code">match_dup</code> behaves differently.  It assumes that operand
+number <var class="var">n</var> has already been determined by a <code class="code">match_operand</code>
+appearing earlier in the recognition template, and it matches only an
+identical-looking expression.
+</p>
+<p>Note that <code class="code">match_dup</code> should not be used to tell the compiler that
+a particular register is being used for two operands (example:
+<code class="code">add</code> that adds one register to another; the second register is
+both an input operand and the output operand).  Use a matching
+constraint (see <a class="pxref" href="Simple-Constraints.html">Simple Constraints</a>) for those.  <code class="code">match_dup</code> is for the cases where one
+operand is used in two places in the template, such as an instruction
+that computes both a quotient and a remainder, where the opcode takes
+two input operands but the RTL template has to refer to each of those
+twice; once for the quotient pattern and once for the remainder pattern.
+</p>
+</dd>
+<dt><a id="index-match_005foperator"></a><span><code class="code">(match_operator:<var class="var">m</var> <var class="var">n</var> <var class="var">predicate</var> [<var class="var">operands</var>&hellip;])</code><a class="copiable-link" href="#index-match_005foperator"> &para;</a></span></dt>
+<dd><p>This pattern is a kind of placeholder for a variable RTL expression
+code.
+</p>
+<p>When constructing an insn, it stands for an RTL expression whose
+expression code is taken from that of operand <var class="var">n</var>, and whose
+operands are constructed from the patterns <var class="var">operands</var>.
+</p>
+<p>When matching an expression, it matches an expression if the function
+<var class="var">predicate</var> returns nonzero on that expression <em class="emph">and</em> the
+patterns <var class="var">operands</var> match the operands of the expression.
+</p>
+<p>Suppose that the function <code class="code">commutative_operator</code> is defined as
+follows, to match any expression whose operator is one of the
+commutative arithmetic operators of RTL and whose mode is <var class="var">mode</var>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int
+commutative_operator (x, mode)
+     rtx x;
+     machine_mode mode;
+{
+  enum rtx_code code = GET_CODE (x);
+  if (GET_MODE (x) != mode)
+    return 0;
+  return (GET_RTX_CLASS (code) == RTX_COMM_ARITH
+          || code == EQ || code == NE);
+}
+</pre></div>
+
+<p>Then the following pattern will match any RTL expression consisting
+of a commutative operator applied to two general operands:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(match_operator:SI 3 &quot;commutative_operator&quot;
+  [(match_operand:SI 1 &quot;general_operand&quot; &quot;g&quot;)
+   (match_operand:SI 2 &quot;general_operand&quot; &quot;g&quot;)])
+</pre></div>
+
+<p>Here the vector <code class="code">[<var class="var">operands</var>&hellip;]</code> contains two patterns
+because the expressions to be matched all contain two operands.
+</p>
+<p>When this pattern does match, the two operands of the commutative
+operator are recorded as operands 1 and 2 of the insn.  (This is done
+by the two instances of <code class="code">match_operand</code>.)  Operand 3 of the insn
+will be the entire commutative expression: use <code class="code">GET_CODE
+(operands[3])</code> to see which commutative operator was used.
+</p>
+<p>The machine mode <var class="var">m</var> of <code class="code">match_operator</code> works like that of
+<code class="code">match_operand</code>: it is passed as the second argument to the
+predicate function, and that function is solely responsible for
+deciding whether the expression to be matched &ldquo;has&rdquo; that mode.
+</p>
+<p>When constructing an insn, argument 3 of the gen-function will specify
+the operation (i.e. the expression code) for the expression to be
+made.  It should be an RTL expression, whose expression code is copied
+into a new expression whose operands are arguments 1 and 2 of the
+gen-function.  The subexpressions of argument 3 are not used;
+only its expression code matters.
+</p>
+<p>When <code class="code">match_operator</code> is used in a pattern for matching an insn,
+it usually best if the operand number of the <code class="code">match_operator</code>
+is higher than that of the actual operands of the insn.  This improves
+register allocation because the register allocator often looks at
+operands 1 and 2 of insns to see if it can do register tying.
+</p>
+<p>There is no way to specify constraints in <code class="code">match_operator</code>.  The
+operand of the insn which corresponds to the <code class="code">match_operator</code>
+never has any constraints because it is never reloaded as a whole.
+However, if parts of its <var class="var">operands</var> are matched by
+<code class="code">match_operand</code> patterns, those parts may have constraints of
+their own.
+</p>
+</dd>
+<dt><a id="index-match_005fop_005fdup"></a><span><code class="code">(match_op_dup:<var class="var">m</var> <var class="var">n</var>[<var class="var">operands</var>&hellip;])</code><a class="copiable-link" href="#index-match_005fop_005fdup"> &para;</a></span></dt>
+<dd><p>Like <code class="code">match_dup</code>, except that it applies to operators instead of
+operands.  When constructing an insn, operand number <var class="var">n</var> will be
+substituted at this point.  But in matching, <code class="code">match_op_dup</code> behaves
+differently.  It assumes that operand number <var class="var">n</var> has already been
+determined by a <code class="code">match_operator</code> appearing earlier in the
+recognition template, and it matches only an identical-looking
+expression.
+</p>
+</dd>
+<dt><a id="index-match_005fparallel"></a><span><code class="code">(match_parallel <var class="var">n</var> <var class="var">predicate</var> [<var class="var">subpat</var>&hellip;])</code><a class="copiable-link" href="#index-match_005fparallel"> &para;</a></span></dt>
+<dd><p>This pattern is a placeholder for an insn that consists of a
+<code class="code">parallel</code> expression with a variable number of elements.  This
+expression should only appear at the top level of an insn pattern.
+</p>
+<p>When constructing an insn, operand number <var class="var">n</var> will be substituted at
+this point.  When matching an insn, it matches if the body of the insn
+is a <code class="code">parallel</code> expression with at least as many elements as the
+vector of <var class="var">subpat</var> expressions in the <code class="code">match_parallel</code>, if each
+<var class="var">subpat</var> matches the corresponding element of the <code class="code">parallel</code>,
+<em class="emph">and</em> the function <var class="var">predicate</var> returns nonzero on the
+<code class="code">parallel</code> that is the body of the insn.  It is the responsibility
+of the predicate to validate elements of the <code class="code">parallel</code> beyond
+those listed in the <code class="code">match_parallel</code>.
+</p>
+<p>A typical use of <code class="code">match_parallel</code> is to match load and store
+multiple expressions, which can contain a variable number of elements
+in a <code class="code">parallel</code>.  For example,
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_insn &quot;&quot;
+  [(match_parallel 0 &quot;load_multiple_operation&quot;
+     [(set (match_operand:SI 1 &quot;gpc_reg_operand&quot; &quot;=r&quot;)
+           (match_operand:SI 2 &quot;memory_operand&quot; &quot;m&quot;))
+      (use (reg:SI 179))
+      (clobber (reg:SI 179))])]
+  &quot;&quot;
+  &quot;loadm 0,0,%1,%2&quot;)
+</pre></div>
+
+<p>This example comes from <samp class="file">a29k.md</samp>.  The function
+<code class="code">load_multiple_operation</code> is defined in <samp class="file">a29k.c</samp> and checks
+that subsequent elements in the <code class="code">parallel</code> are the same as the
+<code class="code">set</code> in the pattern, except that they are referencing subsequent
+registers and memory locations.
+</p>
+<p>An insn that matches this pattern might look like:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(parallel
+ [(set (reg:SI 20) (mem:SI (reg:SI 100)))
+  (use (reg:SI 179))
+  (clobber (reg:SI 179))
+  (set (reg:SI 21)
+       (mem:SI (plus:SI (reg:SI 100)
+                        (const_int 4))))
+  (set (reg:SI 22)
+       (mem:SI (plus:SI (reg:SI 100)
+                        (const_int 8))))])
+</pre></div>
+
+</dd>
+<dt><a id="index-match_005fpar_005fdup"></a><span><code class="code">(match_par_dup <var class="var">n</var> [<var class="var">subpat</var>&hellip;])</code><a class="copiable-link" href="#index-match_005fpar_005fdup"> &para;</a></span></dt>
+<dd><p>Like <code class="code">match_op_dup</code>, but for <code class="code">match_parallel</code> instead of
+<code class="code">match_operator</code>.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Output-Template.html">Output Templates and Operand Substitution</a>, Previous: <a href="Example.html">Example of <code class="code">define_insn</code></a>, Up: <a href="Machine-Desc.html">Machine Descriptions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

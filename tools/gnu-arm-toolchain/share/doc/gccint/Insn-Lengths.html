@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Insn Lengths (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Insn Lengths (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Insn Lengths (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Insn-Attributes.html" rel="up" title="Insn Attributes">
+<link href="Constant-Attributes.html" rel="next" title="Constant Attributes">
+<link href="Attr-Example.html" rel="prev" title="Attr Example">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Insn-Lengths">
+<div class="nav-panel">
+<p>
+Next: <a href="Constant-Attributes.html" accesskey="n" rel="next">Constant Attributes</a>, Previous: <a href="Attr-Example.html" accesskey="p" rel="prev">Example of Attribute Specifications</a>, Up: <a href="Insn-Attributes.html" accesskey="u" rel="up">Instruction Attributes</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Computing-the-Length-of-an-Insn"><span>16.20.5 Computing the Length of an Insn<a class="copiable-link" href="#Computing-the-Length-of-an-Insn"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-insn-lengths_002c-computing"></a>
+<a class="index-entry-id" id="index-computing-the-length-of-an-insn"></a>
+
+<p>For many machines, multiple types of branch instructions are provided, each
+for different length branch displacements.  In most cases, the assembler
+will choose the correct instruction to use.  However, when the assembler
+cannot do so, GCC can when a special attribute, the <code class="code">length</code>
+attribute, is defined.  This attribute must be defined to have numeric
+values by specifying a null string in its <code class="code">define_attr</code>.
+</p>
+<p>In the case of the <code class="code">length</code> attribute, two additional forms of
+arithmetic terms are allowed in test expressions:
+</p>
+<dl class="table">
+<dt><a id="index-match_005fdup-and-attributes"></a><span><code class="code">(match_dup <var class="var">n</var>)</code><a class="copiable-link" href="#index-match_005fdup-and-attributes"> &para;</a></span></dt>
+<dd><p>This refers to the address of operand <var class="var">n</var> of the current insn, which
+must be a <code class="code">label_ref</code>.
+</p>
+</dd>
+<dt><a id="index-pc-and-attributes"></a><span><code class="code">(pc)</code><a class="copiable-link" href="#index-pc-and-attributes"> &para;</a></span></dt>
+<dd><p>For non-branch instructions and backward branch instructions, this refers
+to the address of the current insn.  But for forward branch instructions,
+this refers to the address of the next insn, because the length of the
+current insn is to be computed.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-addr_005fvec_002c-length-of"></a>
+<a class="index-entry-id" id="index-addr_005fdiff_005fvec_002c-length-of"></a>
+<p>For normal insns, the length will be determined by value of the
+<code class="code">length</code> attribute.  In the case of <code class="code">addr_vec</code> and
+<code class="code">addr_diff_vec</code> insn patterns, the length is computed as
+the number of vectors multiplied by the size of each vector.
+</p>
+<p>Lengths are measured in addressable storage units (bytes).
+</p>
+<p>Note that it is possible to call functions via the <code class="code">symbol_ref</code>
+mechanism to compute the length of an insn.  However, if you use this
+mechanism you must provide dummy clauses to express the maximum length
+without using the function call.  You can see an example of this in the
+<code class="code">pa</code> machine description for the <code class="code">call_symref</code> pattern.
+</p>
+<p>The following macros can be used to refine the length computation:
+</p>
+<dl class="table">
+<dt><a id="index-ADJUST_005fINSN_005fLENGTH"></a><span><code class="code">ADJUST_INSN_LENGTH (<var class="var">insn</var>, <var class="var">length</var>)</code><a class="copiable-link" href="#index-ADJUST_005fINSN_005fLENGTH"> &para;</a></span></dt>
+<dd><p>If defined, modifies the length assigned to instruction <var class="var">insn</var> as a
+function of the context in which it is used.  <var class="var">length</var> is an lvalue
+that contains the initially computed length of the insn and should be
+updated with the correct length of the insn.
+</p>
+<p>This macro will normally not be required.  A case in which it is
+required is the ROMP.  On this machine, the size of an <code class="code">addr_vec</code>
+insn must be increased by two to compensate for the fact that alignment
+may be required.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-get_005fattr_005flength"></a>
+<p>The routine that returns <code class="code">get_attr_length</code> (the value of the
+<code class="code">length</code> attribute) can be used by the output routine to
+determine the form of the branch instruction to be written, as the
+example below illustrates.
+</p>
+<p>As an example of the specification of variable-length branches, consider
+the IBM 360.  If we adopt the convention that a register will be set to
+the starting address of a function, we can jump to labels within 4k of
+the start using a four-byte instruction.  Otherwise, we need a six-byte
+sequence to load the address from memory and then branch to it.
+</p>
+<p>On such a machine, a pattern for a branch instruction might be specified
+as follows:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_insn &quot;jump&quot;
+  [(set (pc)
+        (label_ref (match_operand 0 &quot;&quot; &quot;&quot;)))]
+  &quot;&quot;
+{
+   return (get_attr_length (insn) == 4
+           ? &quot;b %l0&quot; : &quot;l r15,=a(%l0); br r15&quot;);
+}
+  [(set (attr &quot;length&quot;)
+        (if_then_else (lt (match_dup 0) (const_int 4096))
+                      (const_int 4)
+                      (const_int 6)))])
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Constant-Attributes.html">Constant Attributes</a>, Previous: <a href="Attr-Example.html">Example of Attribute Specifications</a>, Up: <a href="Insn-Attributes.html">Instruction Attributes</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

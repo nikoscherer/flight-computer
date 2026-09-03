@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Interrupted System Calls (Debugging with GDB)</title>
+
+<meta name="description" content="Interrupted System Calls (Debugging with GDB)">
+<meta name="keywords" content="Interrupted System Calls (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Thread-Stops.html" rel="up" title="Thread Stops">
+<link href="Observer-Mode.html" rel="next" title="Observer Mode">
+<link href="Thread_002dSpecific-Breakpoints.html" rel="prev" title="Thread-Specific Breakpoints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Interrupted-System-Calls">
+<div class="nav-panel">
+<p>
+Next: <a href="Observer-Mode.html" accesskey="n" rel="next">Observer Mode</a>, Previous: <a href="Thread_002dSpecific-Breakpoints.html" accesskey="p" rel="prev">Thread-Specific Breakpoints</a>, Up: <a href="Thread-Stops.html" accesskey="u" rel="up">Stopping and Starting Multi-thread Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Interrupted-System-Calls-1"><span>5.5.5 Interrupted System Calls<a class="copiable-link" href="#Interrupted-System-Calls-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-thread-breakpoints-and-system-calls"></a>
+<a class="index-entry-id" id="index-system-calls-and-thread-breakpoints"></a>
+<a class="index-entry-id" id="index-premature-return-from-system-calls"></a>
+<p>There is an unfortunate side effect when using <small class="sc">GDB</small> to debug
+multi-threaded programs.  If one thread stops for a
+breakpoint, or for some other reason, and another thread is blocked in a
+system call, then the system call may return prematurely.  This is a
+consequence of the interaction between multiple threads and the signals
+that <small class="sc">GDB</small> uses to implement breakpoints and other events that
+stop execution.
+</p>
+<p>To handle this problem, your program should check the return value of
+each system call and react appropriately.  This is good programming
+style anyways.
+</p>
+<p>For example, do not write code like this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  sleep (10);
+</pre></div>
+
+<p>The call to <code class="code">sleep</code> will return early if a different thread stops
+at a breakpoint or for some other reason.
+</p>
+<p>Instead, write this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  int unslept = 10;
+  while (unslept &gt; 0)
+    unslept = sleep (unslept);
+</pre></div>
+
+<p>A system call is allowed to return early, so the system is still
+conforming to its specification.  But <small class="sc">GDB</small> does cause your
+multi-threaded program to behave differently than it would without
+<small class="sc">GDB</small>.
+</p>
+<p>Also, <small class="sc">GDB</small> uses internal breakpoints in the thread library to
+monitor certain events such as thread creation and thread destruction.
+When such an event happens, a system call in another thread may return
+prematurely, even though your program does not appear to stop.
+</p>
+</div>
+
+
+
+</body>
+</html>

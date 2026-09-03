@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Miscellaneous poly_int routines (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Miscellaneous poly_int routines (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Miscellaneous poly_int routines (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="poly_005fint.html" rel="up" title="poly_int">
+<link href="Guidelines-for-using-poly_005fint.html" rel="next" title="Guidelines for using poly_int">
+<link href="Converting-poly_005fints.html" rel="prev" title="Converting poly_ints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Miscellaneous-poly_005fint-routines">
+<div class="nav-panel">
+<p>
+Next: <a href="Guidelines-for-using-poly_005fint.html" accesskey="n" rel="next">Guidelines for using <code class="code">poly_int</code></a>, Previous: <a href="Converting-poly_005fints.html" accesskey="p" rel="prev">Converting <code class="code">poly_int</code>s</a>, Up: <a href="poly_005fint.html" accesskey="u" rel="up">Sizes and offsets as runtime invariants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Miscellaneous-poly_005fint-routines-1"><span>9.8 Miscellaneous <code class="code">poly_int</code> routines<a class="copiable-link" href="#Miscellaneous-poly_005fint-routines-1"> &para;</a></span></h3>
+
+<dl class="table">
+<dt>&lsquo;<samp class="samp">print_dec (<var class="var">value</var>, <var class="var">file</var>, <var class="var">sign</var>)</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">print_dec (<var class="var">value</var>, <var class="var">file</var>)</samp>&rsquo;</dt>
+<dd><p>Print <var class="var">value</var> to <var class="var">file</var> as a decimal value, interpreting
+the coefficients according to <var class="var">sign</var>.  The final argument is
+optional if <var class="var">value</var> has an inherent sign; for example,
+<code class="code">poly_int64</code> values print as signed by default and
+<code class="code">poly_uint64</code> values print as unsigned by default.
+</p>
+<p>This is a simply a <code class="code">poly_int</code> version of a wide-int routine.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

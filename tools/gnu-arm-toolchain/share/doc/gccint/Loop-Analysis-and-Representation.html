@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Loop Analysis and Representation (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Loop Analysis and Representation (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Loop Analysis and Representation (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Machine-Desc.html" rel="next" title="Machine Desc">
+<link href="Control-Flow.html" rel="prev" title="Control Flow">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Loop-Analysis-and-Representation">
+<div class="nav-panel">
+<p>
+Next: <a href="Machine-Desc.html" accesskey="n" rel="next">Machine Descriptions</a>, Previous: <a href="Control-Flow.html" accesskey="p" rel="prev">Control Flow Graph</a>, Up: <a href="index.html" accesskey="u" rel="up">Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Analysis-and-Representation-of-Loops"><span>15 Analysis and Representation of Loops<a class="copiable-link" href="#Analysis-and-Representation-of-Loops"> &para;</a></span></h2>
+
+<p>GCC provides extensive infrastructure for work with natural loops, i.e.,
+strongly connected components of CFG with only one entry block.  This
+chapter describes representation of loops in GCC, both on GIMPLE and in
+RTL, as well as the interfaces to loop-related analyses (induction
+variable analysis and number of iterations analysis).
+</p>
+
+<ul class="mini-toc">
+<li><a href="Loop-representation.html" accesskey="1">Loop representation</a></li>
+<li><a href="Loop-querying.html" accesskey="2">Loop querying</a></li>
+<li><a href="Loop-manipulation.html" accesskey="3">Loop manipulation</a></li>
+<li><a href="LCSSA.html" accesskey="4">Loop-closed SSA form</a></li>
+<li><a href="Scalar-evolutions.html" accesskey="5">Scalar evolutions</a></li>
+<li><a href="loop_002div.html" accesskey="6">IV analysis on RTL</a></li>
+<li><a href="Number-of-iterations.html" accesskey="7">Number of iterations analysis</a></li>
+<li><a href="Dependency-analysis.html" accesskey="8">Data Dependency Analysis</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

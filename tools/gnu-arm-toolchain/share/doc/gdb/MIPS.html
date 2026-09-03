@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>MIPS (Debugging with GDB)</title>
+
+<meta name="description" content="MIPS (Debugging with GDB)">
+<meta name="keywords" content="MIPS (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Architectures.html" rel="up" title="Architectures">
+<link href="HPPA.html" rel="next" title="HPPA">
+<link href="Alpha.html" rel="prev" title="Alpha">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MIPS">
+<div class="nav-panel">
+<p>
+Next: <a href="HPPA.html" accesskey="n" rel="next">HPPA</a>, Previous: <a href="Alpha.html" accesskey="p" rel="prev">Alpha</a>, Up: <a href="Architectures.html" accesskey="u" rel="up">Architectures</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="MIPS-1"><span>21.4.4 <abbr class="acronym">MIPS</abbr><a class="copiable-link" href="#MIPS-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-stack-on-Alpha"></a>
+<a class="index-entry-id" id="index-stack-on-MIPS"></a>
+<a class="index-entry-id" id="index-Alpha-stack"></a>
+<a class="index-entry-id" id="index-MIPS-stack"></a>
+<p>Alpha- and <abbr class="acronym">MIPS</abbr>-based computers use an unusual stack frame, which
+sometimes requires <small class="sc">GDB</small> to search backward in the object code to
+find the beginning of a function.
+</p>
+<a class="index-entry-id" id="index-response-time_002c-MIPS-debugging"></a>
+<p>To improve response time (especially for embedded applications, where
+<small class="sc">GDB</small> may be restricted to a slow serial line for this search)
+you may want to limit the size of this search, using one of these
+commands:
+</p>
+<dl class="table">
+<dt><a id="index-heuristic_002dfence_002dpost-_0028Alpha_002c-MIPS_0029"></a><span><code class="code">set heuristic-fence-post <var class="var">limit</var></code><a class="copiable-link" href="#index-heuristic_002dfence_002dpost-_0028Alpha_002c-MIPS_0029"> &para;</a></span></dt>
+<dd><p>Restrict <small class="sc">GDB</small> to examining at most <var class="var">limit</var> bytes in its
+search for the beginning of a function.  A value of <var class="var">0</var> (the
+default) means there is no limit.  However, except for <var class="var">0</var>, the
+larger the limit the more bytes <code class="code">heuristic-fence-post</code> must search
+and therefore the longer it takes to run.  You should only need to use
+this command when debugging a stripped executable.
+</p>
+</dd>
+<dt><code class="code">show heuristic-fence-post</code></dt>
+<dd><p>Display the current limit.
+</p></dd>
+</dl>
+
+<p>These commands are available <em class="emph">only</em> when <small class="sc">GDB</small> is configured
+for debugging programs on Alpha or <abbr class="acronym">MIPS</abbr> processors.
+</p>
+<p>Several <abbr class="acronym">MIPS</abbr>-specific commands are available when debugging <abbr class="acronym">MIPS</abbr>
+programs:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set-ABI-for-MIPS"></a>
+<a id="index-set-mips-abi"></a><span><code class="code">set mips abi <var class="var">arg</var></code><a class="copiable-link" href="#index-set-mips-abi"> &para;</a></span></dt>
+<dd><p>Tell <small class="sc">GDB</small> which <abbr class="acronym">MIPS</abbr> ABI is used by the inferior.  Possible
+values of <var class="var">arg</var> are:
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">auto</samp>&rsquo;</dt>
+<dd><p>The default ABI associated with the current binary (this is the
+default).
+</p></dd>
+<dt>&lsquo;<samp class="samp">o32</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">o64</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">n32</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">n64</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">eabi32</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">eabi64</samp>&rsquo;</dt>
+</dl>
+
+</dd>
+<dt><a id="index-show-mips-abi"></a><span><code class="code">show mips abi</code><a class="copiable-link" href="#index-show-mips-abi"> &para;</a></span></dt>
+<dd><p>Show the <abbr class="acronym">MIPS</abbr> ABI used by <small class="sc">GDB</small> to debug the inferior.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-code-compression_002c-MIPS"></a>
+<a id="index-set-mips-compression"></a><span><code class="code">set mips compression <var class="var">arg</var></code><a class="copiable-link" href="#index-set-mips-compression"> &para;</a></span></dt>
+<dd><p>Tell <small class="sc">GDB</small> which <abbr class="acronym">MIPS</abbr> compressed
+<abbr class="acronym" title="Instruction Set Architecture">ISA</abbr> (Instruction Set Architecture) encoding is used by the
+inferior.  <small class="sc">GDB</small> uses this for code disassembly and other
+internal interpretation purposes.  This setting is only referred to
+when no executable has been associated with the debugging session or
+the executable does not provide information about the encoding it uses.
+Otherwise this setting is automatically updated from information
+provided by the executable.
+</p>
+<p>Possible values of <var class="var">arg</var> are &lsquo;<samp class="samp">mips16</samp>&rsquo; and &lsquo;<samp class="samp">micromips</samp>&rsquo;.
+The default compressed <abbr class="acronym" title="Instruction Set Architecture">ISA</abbr> encoding is &lsquo;<samp class="samp">mips16</samp>&rsquo;, as
+executables containing <abbr class="acronym">MIPS16</abbr> code frequently are not
+identified as such.
+</p>
+<p>This setting is &ldquo;sticky&rdquo;; that is, it retains its value across
+debugging sessions until reset either explicitly with this command or
+implicitly from an executable.
+</p>
+<p>The compiler and/or assembler typically add symbol table annotations to
+identify functions compiled for the <abbr class="acronym">MIPS16</abbr> or
+<abbr class="acronym">microMIPS</abbr> <abbr class="acronym" title="Instruction Set Architecture">ISA</abbr>s.  If these function-scope annotations
+are present, <small class="sc">GDB</small> uses them in preference to the global
+compressed <abbr class="acronym" title="Instruction Set Architecture">ISA</abbr> encoding setting.
+</p>
+</dd>
+<dt><a id="index-show-mips-compression"></a><span><code class="code">show mips compression</code><a class="copiable-link" href="#index-show-mips-compression"> &para;</a></span></dt>
+<dd><p>Show the <abbr class="acronym">MIPS</abbr> compressed <abbr class="acronym" title="Instruction Set Architecture">ISA</abbr> encoding used by
+<small class="sc">GDB</small> to debug the inferior.
+</p>
+</dd>
+<dt><code class="code">set mipsfpu</code></dt>
+<dt><code class="code">show mipsfpu</code></dt>
+<dd><p>See <a class="xref" href="MIPS-Embedded.html">set mipsfpu</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-MIPS-addresses_002c-masking"></a>
+<a id="index-set-mips-mask_002daddress"></a><span><code class="code">set mips mask-address <var class="var">arg</var></code><a class="copiable-link" href="#index-set-mips-mask_002daddress"> &para;</a></span></dt>
+<dd><p>This command determines whether the most-significant 32 bits of 64-bit
+<abbr class="acronym">MIPS</abbr> addresses are masked off.  The argument <var class="var">arg</var> can be
+&lsquo;<samp class="samp">on</samp>&rsquo;, &lsquo;<samp class="samp">off</samp>&rsquo;, or &lsquo;<samp class="samp">auto</samp>&rsquo;.  The latter is the default
+setting, which lets <small class="sc">GDB</small> determine the correct value.
+</p>
+</dd>
+<dt><a id="index-show-mips-mask_002daddress"></a><span><code class="code">show mips mask-address</code><a class="copiable-link" href="#index-show-mips-mask_002daddress"> &para;</a></span></dt>
+<dd><p>Show whether the upper 32 bits of <abbr class="acronym">MIPS</abbr> addresses are masked off or
+not.
+</p>
+</dd>
+<dt><a id="index-set-remote_002dmips64_002dtransfers_002d32bit_002dregs"></a><span><code class="code">set remote-mips64-transfers-32bit-regs</code><a class="copiable-link" href="#index-set-remote_002dmips64_002dtransfers_002d32bit_002dregs"> &para;</a></span></dt>
+<dd><p>This command controls compatibility with 64-bit <abbr class="acronym">MIPS</abbr> targets that
+transfer data in 32-bit quantities.  If you have an old <abbr class="acronym">MIPS</abbr> 64 target
+that transfers 32 bits for some registers, like <small class="sc">SR</small> and <small class="sc">FSR</small>,
+and 64 bits for other registers, set this option to &lsquo;<samp class="samp">on</samp>&rsquo;.
+</p>
+</dd>
+<dt><a id="index-show-remote_002dmips64_002dtransfers_002d32bit_002dregs"></a><span><code class="code">show remote-mips64-transfers-32bit-regs</code><a class="copiable-link" href="#index-show-remote_002dmips64_002dtransfers_002d32bit_002dregs"> &para;</a></span></dt>
+<dd><p>Show the current setting of compatibility with older <abbr class="acronym">MIPS</abbr> 64 targets.
+</p>
+</dd>
+<dt><a id="index-set-debug-mips"></a><span><code class="code">set debug mips</code><a class="copiable-link" href="#index-set-debug-mips"> &para;</a></span></dt>
+<dd><p>This command turns on and off debugging messages for the <abbr class="acronym">MIPS</abbr>-specific
+target code in <small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><a id="index-show-debug-mips"></a><span><code class="code">show debug mips</code><a class="copiable-link" href="#index-show-debug-mips"> &para;</a></span></dt>
+<dd><p>Show the current setting of <abbr class="acronym">MIPS</abbr> debugging messages.
+</p></dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="HPPA.html">HPPA</a>, Previous: <a href="Alpha.html">Alpha</a>, Up: <a href="Architectures.html">Architectures</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

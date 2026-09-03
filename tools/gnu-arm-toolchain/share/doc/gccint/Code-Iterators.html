@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Code Iterators (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Code Iterators (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Code Iterators (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Iterators.html" rel="up" title="Iterators">
+<link href="Int-Iterators.html" rel="next" title="Int Iterators">
+<link href="Mode-Iterators.html" rel="prev" title="Mode Iterators">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Code-Iterators">
+<div class="nav-panel">
+<p>
+Next: <a href="Int-Iterators.html" accesskey="n" rel="next">Int Iterators</a>, Previous: <a href="Mode-Iterators.html" accesskey="p" rel="prev">Mode Iterators</a>, Up: <a href="Iterators.html" accesskey="u" rel="up">Iterators</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Code-Iterators-1"><span>16.24.2 Code Iterators<a class="copiable-link" href="#Code-Iterators-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-code-iterators-in-_002emd-files"></a>
+<a class="index-entry-id" id="index-define_005fcode_005fiterator"></a>
+<a class="index-entry-id" id="index-define_005fcode_005fattr"></a>
+
+<p>Code iterators operate in a similar way to mode iterators.  See <a class="xref" href="Mode-Iterators.html">Mode Iterators</a>.
+</p>
+<p>The construct:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_code_iterator <var class="var">name</var> [(<var class="var">code1</var> &quot;<var class="var">cond1</var>&quot;) ... (<var class="var">coden</var> &quot;<var class="var">condn</var>&quot;)])
+</pre></div>
+
+<p>defines a pseudo rtx code <var class="var">name</var> that can be instantiated as
+<var class="var">codei</var> if condition <var class="var">condi</var> is true.  Each <var class="var">codei</var>
+must have the same rtx format.  See <a class="xref" href="RTL-Classes.html">RTL Classes and Formats</a>.
+</p>
+<p>As with mode iterators, each pattern that uses <var class="var">name</var> will be
+expanded <var class="var">n</var> times, once with all uses of <var class="var">name</var> replaced by
+<var class="var">code1</var>, once with all uses replaced by <var class="var">code2</var>, and so on.
+See <a class="xref" href="Defining-Mode-Iterators.html">Defining Mode Iterators</a>.
+</p>
+<p>It is possible to define attributes for codes as well as for modes.
+There are two standard code attributes: <code class="code">code</code>, the name of the
+code in lower case, and <code class="code">CODE</code>, the name of the code in upper case.
+Other attributes are defined using:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_code_attr <var class="var">name</var> [(<var class="var">code1</var> &quot;<var class="var">value1</var>&quot;) ... (<var class="var">coden</var> &quot;<var class="var">valuen</var>&quot;)])
+</pre></div>
+
+<p>Instruction patterns can use code attributes as rtx codes, which can be
+useful if two sets of codes act in tandem.  For example, the following
+<code class="code">define_insn</code> defines two patterns, one calculating a signed absolute
+difference and another calculating an unsigned absolute difference:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_code_iterator any_max [smax umax])
+(define_code_attr paired_min [(smax &quot;smin&quot;) (umax &quot;umin&quot;)])
+(define_insn ...
+  [(set (match_operand:SI 0 ...)
+        (minus:SI (any_max:SI (match_operand:SI 1 ...)
+                              (match_operand:SI 2 ...))
+                  (&lt;paired_min&gt;:SI (match_dup 1) (match_dup 2))))]
+  ...)
+</pre></div>
+
+<p>The signed version of the instruction uses <code class="code">smax</code> and <code class="code">smin</code>
+while the unsigned version uses <code class="code">umax</code> and <code class="code">umin</code>.  There
+are no versions that pair <code class="code">smax</code> with <code class="code">umin</code> or <code class="code">umax</code>
+with <code class="code">smin</code>.
+</p>
+<p>It is also possible to use other types of attributes as codes,
+in a similar way.  For example, an int iterator could be used to
+iterate over <code class="code">unspec</code> numbers, with an int attribute specifying
+an associated rtx code.  See <a class="xref" href="Int-Iterators.html">Int Iterators</a>.
+</p>
+<p>Here&rsquo;s an example of code iterators in action, taken from the MIPS port:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_code_iterator any_cond [unordered ordered unlt unge uneq ltgt unle ungt
+                                eq ne gt ge lt le gtu geu ltu leu])
+
+(define_expand &quot;b&lt;code&gt;&quot;
+  [(set (pc)
+        (if_then_else (any_cond:CC (cc0)
+                                   (const_int 0))
+                      (label_ref (match_operand 0 &quot;&quot;))
+                      (pc)))]
+  &quot;&quot;
+{
+  gen_conditional_branch (operands, &lt;CODE&gt;);
+  DONE;
+})
+</pre></div>
+
+<p>This is equivalent to:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_expand &quot;bunordered&quot;
+  [(set (pc)
+        (if_then_else (unordered:CC (cc0)
+                                    (const_int 0))
+                      (label_ref (match_operand 0 &quot;&quot;))
+                      (pc)))]
+  &quot;&quot;
+{
+  gen_conditional_branch (operands, UNORDERED);
+  DONE;
+})
+
+(define_expand &quot;bordered&quot;
+  [(set (pc)
+        (if_then_else (ordered:CC (cc0)
+                                  (const_int 0))
+                      (label_ref (match_operand 0 &quot;&quot;))
+                      (pc)))]
+  &quot;&quot;
+{
+  gen_conditional_branch (operands, ORDERED);
+  DONE;
+})
+
+...
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Int-Iterators.html">Int Iterators</a>, Previous: <a href="Mode-Iterators.html">Mode Iterators</a>, Up: <a href="Iterators.html">Iterators</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

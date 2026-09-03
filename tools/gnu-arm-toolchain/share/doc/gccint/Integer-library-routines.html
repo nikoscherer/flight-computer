@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Integer library routines (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Integer library routines (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Integer library routines (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Libgcc.html" rel="up" title="Libgcc">
+<link href="Soft-float-library-routines.html" rel="next" title="Soft float library routines">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Integer-library-routines">
+<div class="nav-panel">
+<p>
+Next: <a href="Soft-float-library-routines.html" accesskey="n" rel="next">Routines for floating point emulation</a>, Up: <a href="Libgcc.html" accesskey="u" rel="up">The GCC low-level runtime library</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Routines-for-integer-arithmetic"><span>3.1 Routines for integer arithmetic<a class="copiable-link" href="#Routines-for-integer-arithmetic"> &para;</a></span></h3>
+
+<p>The integer arithmetic routines are used on platforms that don&rsquo;t provide
+hardware support for arithmetic operations on some modes.
+</p>
+<ul class="mini-toc">
+<li><a href="#Arithmetic-functions" accesskey="1">Arithmetic functions</a></li>
+<li><a href="#Comparison-functions" accesskey="2">Comparison functions</a></li>
+<li><a href="#Trapping-arithmetic-functions" accesskey="3">Trapping arithmetic functions</a></li>
+<li><a href="#Bit-operations" accesskey="4">Bit operations</a></li>
+<li><a href="#Bit_002dprecise-integer-arithmetic-functions" accesskey="5">Bit-precise integer arithmetic functions</a></li>
+</ul>
+<div class="subsection-level-extent" id="Arithmetic-functions">
+<h4 class="subsection"><span>3.1.1 Arithmetic functions<a class="copiable-link" href="#Arithmetic-functions"> &para;</a></span></h4>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fashlsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ashlsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fashlsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fashldi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__ashldi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fashldi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fashlti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__ashlti3</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fashlti3"> &para;</a></span></dt>
+<dd><p>These functions return the result of shifting <var class="var">a</var> left by <var class="var">b</var> bits.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fashrsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ashrsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fashrsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fashrdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__ashrdi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fashrdi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fashrti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__ashrti3</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fashrti3"> &para;</a></span></dt>
+<dd><p>These functions return the result of arithmetically shifting <var class="var">a</var> right
+by <var class="var">b</var> bits.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fdivsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__divsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__divdi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivdi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__divti3</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivti3"> &para;</a></span></dt>
+<dd><p>These functions return the quotient of the signed division of <var class="var">a</var> and
+<var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005flshrsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__lshrsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005flshrsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005flshrdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__lshrdi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005flshrdi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005flshrti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__lshrti3</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005flshrti3"> &para;</a></span></dt>
+<dd><p>These functions return the result of logically shifting <var class="var">a</var> right by
+<var class="var">b</var> bits.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fmodsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__modsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmodsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmoddi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__moddi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmoddi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmodti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__modti3</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmodti3"> &para;</a></span></dt>
+<dd><p>These functions return the remainder of the signed division of <var class="var">a</var>
+and <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fmulsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__mulsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmulsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmuldi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__muldi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmuldi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmulti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__multi3</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmulti3"> &para;</a></span></dt>
+<dd><p>These functions return the product of <var class="var">a</var> and <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fnegdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__negdi2</strong> <code class="def-code-arguments">(long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnegti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__negti2</strong> <code class="def-code-arguments">(long long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegti2"> &para;</a></span></dt>
+<dd><p>These functions return the negation of <var class="var">a</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fudivsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__udivsi3</strong> <code class="def-code-arguments">(unsigned int <var class="var">a</var>, unsigned int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fudivsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fudivdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__udivdi3</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>, unsigned long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fudivdi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fudivti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__udivti3</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>, unsigned long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fudivti3"> &para;</a></span></dt>
+<dd><p>These functions return the quotient of the unsigned division of <var class="var">a</var>
+and <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fudivmoddi4"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__udivmoddi4</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>, unsigned long <var class="var">b</var>, unsigned long *<var class="var">c</var>)</code><a class="copiable-link" href="#index-_005f_005fudivmoddi4"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fudivmodti4"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__udivmodti4</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>, unsigned long long <var class="var">b</var>, unsigned long long *<var class="var">c</var>)</code><a class="copiable-link" href="#index-_005f_005fudivmodti4"> &para;</a></span></dt>
+<dd><p>These functions calculate both the quotient and remainder of the unsigned
+division of <var class="var">a</var> and <var class="var">b</var>.  The return value is the quotient, and
+the remainder is placed in variable pointed to by <var class="var">c</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fumodsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__umodsi3</strong> <code class="def-code-arguments">(unsigned int <var class="var">a</var>, unsigned int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fumodsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fumoddi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__umoddi3</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>, unsigned long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fumoddi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fumodti3"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__umodti3</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>, unsigned long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fumodti3"> &para;</a></span></dt>
+<dd><p>These functions return the remainder of the unsigned division of <var class="var">a</var>
+and <var class="var">b</var>.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Comparison-functions">
+<h4 class="subsection"><span>3.1.2 Comparison functions<a class="copiable-link" href="#Comparison-functions"> &para;</a></span></h4>
+
+<p>The following functions implement integral comparisons.  These functions
+implement a low-level compare, upon which the higher level comparison
+operators (such as less than and greater than or equal to) can be
+constructed.  The returned values lie in the range zero to two, to allow
+the high-level operators to be implemented by testing the returned
+result using either signed or unsigned comparison.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fcmpdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__cmpdi2</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fcmpdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fcmpti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__cmpti2</strong> <code class="def-code-arguments">(long long <var class="var">a</var>, long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fcmpti2"> &para;</a></span></dt>
+<dd><p>These functions perform a signed comparison of <var class="var">a</var> and <var class="var">b</var>.  If
+<var class="var">a</var> is less than <var class="var">b</var>, they return 0; if <var class="var">a</var> is greater than
+<var class="var">b</var>, they return 2; and if <var class="var">a</var> and <var class="var">b</var> are equal they return 1.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fucmpdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ucmpdi2</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>, unsigned long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fucmpdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fucmpti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ucmpti2</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>, unsigned long long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fucmpti2"> &para;</a></span></dt>
+<dd><p>These functions perform an unsigned comparison of <var class="var">a</var> and <var class="var">b</var>.
+If <var class="var">a</var> is less than <var class="var">b</var>, they return 0; if <var class="var">a</var> is greater than
+<var class="var">b</var>, they return 2; and if <var class="var">a</var> and <var class="var">b</var> are equal they return 1.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Trapping-arithmetic-functions">
+<h4 class="subsection"><span>3.1.3 Trapping arithmetic functions<a class="copiable-link" href="#Trapping-arithmetic-functions"> &para;</a></span></h4>
+
+<p>The following functions implement trapping arithmetic.  These functions
+call the libc function <code class="code">abort</code> upon signed arithmetic overflow.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fabsvsi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__absvsi2</strong> <code class="def-code-arguments">(int <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fabsvsi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fabsvdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__absvdi2</strong> <code class="def-code-arguments">(long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fabsvdi2"> &para;</a></span></dt>
+<dd><p>These functions return the absolute value of <var class="var">a</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005faddvsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__addvsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005faddvsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005faddvdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__addvdi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005faddvdi3"> &para;</a></span></dt>
+<dd><p>These functions return the sum of <var class="var">a</var> and <var class="var">b</var>; that is
+<code class="code"><var class="var">a</var> + <var class="var">b</var></code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fmulvsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__mulvsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmulvsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmulvdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__mulvdi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmulvdi3"> &para;</a></span></dt>
+<dd><p>The functions return the product of <var class="var">a</var> and <var class="var">b</var>; that is
+<code class="code"><var class="var">a</var> * <var class="var">b</var></code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fnegvsi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__negvsi2</strong> <code class="def-code-arguments">(int <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegvsi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnegvdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__negvdi2</strong> <code class="def-code-arguments">(long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegvdi2"> &para;</a></span></dt>
+<dd><p>These functions return the negation of <var class="var">a</var>; that is <code class="code">-<var class="var">a</var></code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fsubvsi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__subvsi3</strong> <code class="def-code-arguments">(int <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fsubvsi3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fsubvdi3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__subvdi3</strong> <code class="def-code-arguments">(long <var class="var">a</var>, long <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fsubvdi3"> &para;</a></span></dt>
+<dd><p>These functions return the difference between <var class="var">b</var> and <var class="var">a</var>;
+that is <code class="code"><var class="var">a</var> - <var class="var">b</var></code>.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Bit-operations">
+<h4 class="subsection"><span>3.1.4 Bit operations<a class="copiable-link" href="#Bit-operations"> &para;</a></span></h4>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fclzsi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__clzsi2</strong> <code class="def-code-arguments">(unsigned int <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fclzsi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fclzdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__clzdi2</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fclzdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fclzti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__clzti2</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fclzti2"> &para;</a></span></dt>
+<dd><p>These functions return the number of leading 0-bits in <var class="var">a</var>, starting
+at the most significant bit position.  If <var class="var">a</var> is zero, the result is
+undefined.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fctzsi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ctzsi2</strong> <code class="def-code-arguments">(unsigned int <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fctzsi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fctzdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ctzdi2</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fctzdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fctzti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ctzti2</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fctzti2"> &para;</a></span></dt>
+<dd><p>These functions return the number of trailing 0-bits in <var class="var">a</var>, starting
+at the least significant bit position.  If <var class="var">a</var> is zero, the result is
+undefined.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fffsdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ffsdi2</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fffsdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fffsti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ffsti2</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fffsti2"> &para;</a></span></dt>
+<dd><p>These functions return the index of the least significant 1-bit in <var class="var">a</var>,
+or the value zero if <var class="var">a</var> is zero.  The least significant bit is index
+one.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fparitysi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__paritysi2</strong> <code class="def-code-arguments">(unsigned int <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fparitysi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fparitydi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__paritydi2</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fparitydi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fparityti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__parityti2</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fparityti2"> &para;</a></span></dt>
+<dd><p>These functions return the value zero if the number of bits set in
+<var class="var">a</var> is even, and the value one otherwise.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fpopcountsi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__popcountsi2</strong> <code class="def-code-arguments">(unsigned int <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fpopcountsi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fpopcountdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__popcountdi2</strong> <code class="def-code-arguments">(unsigned long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fpopcountdi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fpopcountti2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__popcountti2</strong> <code class="def-code-arguments">(unsigned long long <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fpopcountti2"> &para;</a></span></dt>
+<dd><p>These functions return the number of bits set in <var class="var">a</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbswapsi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int32_t</code> <strong class="def-name">__bswapsi2</strong> <code class="def-code-arguments">(int32_t <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fbswapsi2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fbswapdi2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int64_t</code> <strong class="def-name">__bswapdi2</strong> <code class="def-code-arguments">(int64_t <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fbswapdi2"> &para;</a></span></dt>
+<dd><p>These functions return the <var class="var">a</var> byteswapped.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Bit_002dprecise-integer-arithmetic-functions">
+<h4 class="subsection"><span>3.1.5 Bit-precise integer arithmetic functions<a class="copiable-link" href="#Bit_002dprecise-integer-arithmetic-functions"> &para;</a></span></h4>
+
+<p><code class="code">_BitInt(<var class="var">n</var>)</code> library functions operate on arrays of limbs, where
+each limb has <code class="code">__LIBGCC_BITINT_LIMB_WIDTH__</code> bits and the limbs are
+ordered according to <code class="code">__LIBGCC_BITINT_ORDER__</code> ordering.  The most
+significant limb if <var class="var">n</var> is not divisible by
+<code class="code">__LIBGCC_BITINT_LIMB_WIDTH__</code> contains padding bits which should be
+ignored on read (sign or zero extended), but extended on write.  For the
+library functions, all bit-precise integers regardless of <var class="var">n</var> are
+represented like that, even when the target ABI says that for some small
+<var class="var">n</var> they should be represented differently in memory.  A pointer
+to the array of limbs argument is always accompanied with a bit size
+argument.  If that argument is positive, it is number of bits and the
+number is assumed to be zero-extended to infinite precision, if that
+argument is negative, it is negated number of bits above which all bits
+are assumed to be sign-extended to infinite precision.  These number of bits
+arguments don&rsquo;t need to match actual <var class="var">n</var> for the operation used in the
+source, they could be lowered because of sign or zero extensions on the
+input or because value-range optimization figures value will need certain
+lower number of bits.  For big-endian ordering of limbs, when lowering
+the bit size argument the pointer argument needs to be adjusted as well.
+Negative bit size argument should be always smaller or equal to <code class="code">-2</code>,
+because <code class="code">signed _BitInt(1)</code> is not valid.
+For output arguments, either the corresponding bit size argument should
+be always positive (for multiplication and division), or is negative when
+the output of conversion from floating-point value is signed and positive
+when unsigned.  The arrays of limbs output arguments point to should not
+overlap any inputs, while input arrays of limbs can overlap.
+<code class="code">UBILtype</code> below stands for unsigned integer type with
+<code class="code">__LIBGCC_BITINT_LIMB_WIDTH__</code> bit precision.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fmulbitint3"><span class="category-def">Runtime Function: </span><span><code class="def-type">void</code> <strong class="def-name">__mulbitint3</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">ret</var>, int32_t <var class="var">retprec</var>, const <code class="code">UBILtype</code> *u, int32_t <var class="var">uprec</var>, const <code class="code">UBILtype</code> *v, int32_t <var class="var">vprec</var>)</code><a class="copiable-link" href="#index-_005f_005fmulbitint3"> &para;</a></span></dt>
+<dd><p>This function multiplies bit-precise integer operands <var class="var">u</var> and <var class="var">v</var> and stores
+result into <var class="var">retprec</var> precision bit-precise integer result <var class="var">ret</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fdivmodbitint4"><span class="category-def">Runtime Function: </span><span><code class="def-type">void</code> <strong class="def-name">__divmodbitint4</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">q</var>, int32_t <var class="var">qprec</var>, <code class="code">UBILtype</code> *<var class="var">r</var>, int32_t <var class="var">rprec</var>,  const <code class="code">UBILtype</code> *u, int32_t <var class="var">uprec</var>, const <code class="code">UBILtype</code> *v, int32_t <var class="var">vprec</var>)</code><a class="copiable-link" href="#index-_005f_005fdivmodbitint4"> &para;</a></span></dt>
+<dd><p>This function divides bit-precise integer operands <var class="var">u</var> and <var class="var">v</var> and stores
+quotient into <var class="var">qprec</var> precision bit-precise integer result <var class="var">q</var>
+(unless <var class="var">q</var> is <code class="code">NULL</code> and <var class="var">qprec</var> is 0, in that case quotient
+is not stored anywhere) and remainder into <var class="var">rprec</var> precision bit-precise
+integer result <var class="var">r</var> (similarly, unless <var class="var">r</var> is <code class="code">NULL</code> and <var class="var">rprec</var>
+is 0).
+</p></dd></dl>
+
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Soft-float-library-routines.html">Routines for floating point emulation</a>, Up: <a href="Libgcc.html">The GCC low-level runtime library</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

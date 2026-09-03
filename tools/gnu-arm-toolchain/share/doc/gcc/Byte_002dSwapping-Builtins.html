@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the use of the GNU compilers.
+
+Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Byte-Swapping Builtins (Using the GNU Compiler Collection (GCC))</title>
+
+<meta name="description" content="Byte-Swapping Builtins (Using the GNU Compiler Collection (GCC))">
+<meta name="keywords" content="Byte-Swapping Builtins (Using the GNU Compiler Collection (GCC))">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Indices.html" rel="index" title="Indices">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Numeric-Builtins.html" rel="up" title="Numeric Builtins">
+<link href="CRC-Builtins.html" rel="next" title="CRC Builtins">
+<link href="Bit-Operation-Builtins.html" rel="prev" title="Bit Operation Builtins">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en_US">
+<div class="subsection-level-extent" id="Byte_002dSwapping-Builtins">
+<div class="nav-panel">
+<p>
+Next: <a href="CRC-Builtins.html" accesskey="n" rel="next">CRC Builtins</a>, Previous: <a href="Bit-Operation-Builtins.html" accesskey="p" rel="prev">Bit Operation Builtins</a>, Up: <a href="Numeric-Builtins.html" accesskey="u" rel="up">Additional Builtins for Numeric Operations</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Byte_002dSwapping-Builtins-1"><span>7.2.3 Byte-Swapping Builtins<a class="copiable-link" href="#Byte_002dSwapping-Builtins-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-byte_002dswapping-builtins"></a>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fbswap16"><span class="category-def">Built-in Function: </span><span><code class="def-type">uint16_t</code> <strong class="def-name">__builtin_bswap16</strong> <code class="def-code-arguments">(uint16_t <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fbswap16"> &para;</a></span></dt>
+<dd><p>Returns <var class="var">x</var> with the order of the bytes reversed; for example,
+<code class="code">0xabcd</code> becomes <code class="code">0xcdab</code>.  Byte here always means
+exactly 8 bits.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fbswap32"><span class="category-def">Built-in Function: </span><span><code class="def-type">uint32_t</code> <strong class="def-name">__builtin_bswap32</strong> <code class="def-code-arguments">(uint32_t <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fbswap32"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_bswap16</code>, except the argument and return types
+are 32-bit.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fbswap64"><span class="category-def">Built-in Function: </span><span><code class="def-type">uint64_t</code> <strong class="def-name">__builtin_bswap64</strong> <code class="def-code-arguments">(uint64_t <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fbswap64"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_bswap32</code>, except the argument and return types
+are 64-bit.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fbuiltin_005fbswap128"><span class="category-def">Built-in Function: </span><span><code class="def-type">uint128_t</code> <strong class="def-name">__builtin_bswap128</strong> <code class="def-code-arguments">(uint128_t <var class="var">x</var>)</code><a class="copiable-link" href="#index-_005f_005fbuiltin_005fbswap128"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">__builtin_bswap64</code>, except the argument and return types
+are 128-bit.  Only supported on targets when 128-bit types are supported.
+</p></dd></dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Registers In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Registers In Python (Debugging with GDB)">
+<meta name="keywords" content="Registers In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Connections-In-Python.html" rel="next" title="Connections In Python">
+<link href="Architectures-In-Python.html" rel="prev" title="Architectures In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Registers-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Connections-In-Python.html" accesskey="n" rel="next">Connections In Python</a>, Previous: <a href="Architectures-In-Python.html" accesskey="p" rel="prev">Python representation of architectures</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Registers-In-Python-1"><span>23.3.2.37 Registers In Python<a class="copiable-link" href="#Registers-In-Python-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Registers-In-Python"></a>
+
+<p>Python code can request from a <code class="code">gdb.Architecture</code> information
+about the set of registers available
+(see <a class="pxref" href="Architectures-In-Python.html#gdbpy_005farchitecture_005fregisters"><code class="code">Architecture.registers</code></a>).
+The register information is returned as a
+<code class="code">gdb.RegisterDescriptorIterator</code>, which is an iterator that in
+turn returns <code class="code">gdb.RegisterDescriptor</code> objects.
+</p>
+<p>A <code class="code">gdb.RegisterDescriptor</code> does not provide the value of a
+register (see <a class="pxref" href="Frames-In-Python.html#gdbpy_005fframe_005fread_005fregister"><code class="code">Frame.read_register</code></a>
+for reading a register&rsquo;s value), instead the <code class="code">RegisterDescriptor</code>
+is a way to discover which registers are available for a particular
+architecture.
+</p>
+<p>A <code class="code">gdb.RegisterDescriptor</code> has the following read-only properties:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RegisterDescriptor_002ename"><span class="category-def">Variable: </span><span><strong class="def-name">RegisterDescriptor.name</strong><a class="copiable-link" href="#index-RegisterDescriptor_002ename"> &para;</a></span></dt>
+<dd><p>The name of this register.
+</p></dd></dl>
+
+<p>It is also possible to lookup a register descriptor based on its name
+using the following <code class="code">gdb.RegisterDescriptorIterator</code> function:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-RegisterDescriptorIterator_002efind"><span class="category-def">Function: </span><span><strong class="def-name">RegisterDescriptorIterator.find</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-RegisterDescriptorIterator_002efind"> &para;</a></span></dt>
+<dd><p>Takes <var class="var">name</var> as an argument, which must be a string, and returns a
+<code class="code">gdb.RegisterDescriptor</code> for the register with that name, or
+<code class="code">None</code> if there is no register with that name.
+</p></dd></dl>
+
+<p>Python code can also request from a <code class="code">gdb.Architecture</code>
+information about the set of register groups available on a given
+architecture
+(see <a class="pxref" href="Architectures-In-Python.html#gdbpy_005farchitecture_005freggroups"><code class="code">Architecture.register_groups</code></a>).
+</p>
+<p>Every register can be a member of zero or more register groups.  Some
+register groups are used internally within <small class="sc">GDB</small> to control
+things like which registers must be saved when calling into the
+program being debugged (see <a class="pxref" href="Calling.html">Calling Program Functions</a>).
+Other register groups exist to allow users to easily see related sets
+of registers in commands like <code class="code">info registers</code>
+(see <a class="pxref" href="Registers.html#info_005fregisters_005freggroup"><code class="code">info registers
+<var class="var">reggroup</var></code></a>).
+</p>
+<p>The register groups information is returned as a
+<code class="code">gdb.RegisterGroupsIterator</code>, which is an iterator that in turn
+returns <code class="code">gdb.RegisterGroup</code> objects.
+</p>
+<p>A <code class="code">gdb.RegisterGroup</code> object has the following read-only
+properties:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RegisterGroup_002ename"><span class="category-def">Variable: </span><span><strong class="def-name">RegisterGroup.name</strong><a class="copiable-link" href="#index-RegisterGroup_002ename"> &para;</a></span></dt>
+<dd><p>A string that is the name of this register group.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Connections-In-Python.html">Connections In Python</a>, Previous: <a href="Architectures-In-Python.html">Python representation of architectures</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

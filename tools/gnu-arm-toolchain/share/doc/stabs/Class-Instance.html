@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Class Instance (STABS)</title>
+
+<meta name="description" content="Class Instance (STABS)">
+<meta name="keywords" content="Class Instance (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Cplusplus.html" rel="up" title="Cplusplus">
+<link href="Methods.html" rel="next" title="Methods">
+<link href="Simple-Classes.html" rel="prev" title="Simple Classes">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Class-Instance">
+<div class="nav-panel">
+<p>
+Next: <a href="Methods.html" accesskey="n" rel="next">Method Definition</a>, Previous: <a href="Simple-Classes.html" accesskey="p" rel="prev">Simple Class Definition</a>, Up: <a href="Cplusplus.html" accesskey="u" rel="up">GNU C<code class="t">++</code> Stabs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Class-Instance-1"><span>8.5 Class Instance<a class="copiable-link" href="#Class-Instance-1"> &para;</a></span></h3>
+
+<p>As shown above, describing even a simple C<code class="t">++</code> class definition is
+accomplished by massively extending the stab format used in C to
+describe structure types.  However, once the class is defined, C stabs
+with no modifications can be used to describe class instances.  The
+following source:
+</p>
+<div class="example">
+<pre class="example-preformatted">main () {
+        baseA AbaseA;
+}
+</pre></div>
+
+<p>yields the following stab describing the class instance.  It looks no
+different from a standard C stab describing a local variable.
+</p>
+<div class="display">
+<pre class="display-preformatted">.stabs &quot;name:type_ref(baseA)&quot;, N_LSYM, NIL, NIL, frame_ptr_offset
+</pre></div>
+
+<div class="example">
+<pre class="example-preformatted">.stabs &quot;AbaseA:20&quot;,128,0,0,-20
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

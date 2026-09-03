@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Missing Objfiles In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Missing Objfiles In Python (Debugging with GDB)">
+<meta name="keywords" content="Missing Objfiles In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Missing-Debug-Info-In-Python.html" rel="prev" title="Missing Debug Info In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Missing-Objfiles-In-Python">
+<div class="nav-panel">
+<p>
+Previous: <a href="Missing-Debug-Info-In-Python.html" accesskey="p" rel="prev">Missing Debug Info In Python</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Missing-Objfiles-In-Python-1"><span>23.3.2.42 Missing Objfiles In Python<a class="copiable-link" href="#Missing-Objfiles-In-Python-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-python_002c-handle-missing-objfiles"></a>
+
+<p>When <small class="sc">GDB</small> opens a core file, for example with the
+<kbd class="kbd">core-file</kbd> command (see <a class="pxref" href="Files.html#core_002dfile-command">core-file command</a>), <small class="sc">GDB</small> will
+attempt to load the corresponding executable and shared libraries.
+Often these files can be found on the local machine, but sometimes
+these files cannot be found, in which case the debugging experience
+will be restricted.
+</p>
+<p>If <small class="sc">GDB</small> fails to locate a particular file then there is an
+opportunity for a Python extension to step in.  A Python extension can
+potentially locate the missing file using some platform- or
+project-specific steps, and inform <small class="sc">GDB</small> of its location.  Or a
+Python extension might provide some platform- or project-specific
+advice to the user about how to obtain the missing file.
+</p>
+<p>A missing-objfile Python extension consists of a handler object which
+has the <code class="code">name</code> and <code class="code">enabled</code> attributes, and implements the
+<code class="code">__call__</code> method.  When <small class="sc">GDB</small> encounters a situation
+where a file cannot be found, but the build-id (see <a class="pxref" href="Separate-Debug-Files.html#build-ID">build ID</a>) for
+the missing file is known, then the <code class="code">__call__</code> method is invoked
+to try and find the file.  Full details of how handlers are written
+can be found below.
+</p>
+<h4 class="subheading" id="The-gdb_002emissing_005fobjfile-Module"><span>The <code class="code">gdb.missing_objfile</code> Module<a class="copiable-link" href="#The-gdb_002emissing_005fobjfile-Module"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> comes with a <code class="code">gdb.missing_objfile</code> module which
+contains the following class and global function:
+</p>
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002emissing_005fobjfile_002eMissingObjfileHandler"><span class="category-def">class: </span><span><strong class="def-name">gdb.missing_objfile.MissingObjfileHandler</strong><a class="copiable-link" href="#index-gdb_002emissing_005fobjfile_002eMissingObjfileHandler"> &para;</a></span></dt>
+<dd>
+<p><code class="code">MissingObjfileHandler</code> is a base class from which user-created
+handlers can derive, though it is not required that handlers derive
+from this class, so long as any user created handler has the
+<code class="code">name</code> and <code class="code">enabled</code> attributes, and implements the
+<code class="code">__call__</code> method.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-MissingObjfileHandler_002e_005f_005finit_005f_005f"><span class="category-def">Function: </span><span><strong class="def-name">MissingObjfileHandler.__init__</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-MissingObjfileHandler_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p>The <var class="var">name</var> is a string used to reference this missing-objfile
+handler within some <small class="sc">GDB</small> commands.  Valid names consist of the
+characters &lsquo;<samp class="samp">[-_a-zA-Z0-9]</samp>&rsquo;, creating a handler with an invalid
+name raises a <code class="code">ValueError</code> exception.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-MissingObjfileHandler_002e_005f_005fcall_005f_005f"><span class="category-def">Function: </span><span><strong class="def-name">MissingObjfileHandler.__call__</strong> <var class="def-var-arguments">(pspace, build_id, filename)</var><a class="copiable-link" href="#index-MissingObjfileHandler_002e_005f_005fcall_005f_005f"> &para;</a></span></dt>
+<dd>
+<p>Sub-classes must override the <code class="code">__call__</code> method.  The
+<var class="var">pspace</var> argument will be a <code class="code">gdb.Progspace</code>
+(see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>), this is the program space in which
+<small class="sc">GDB</small> is looking for the missing file.
+</p>
+<p>The <var class="var">build_id</var> argument is a string containing the build-id of the
+file that is missing, this will be in the same format as returned by
+<code class="code">Objfile.build_id</code> (see <a class="pxref" href="Objfiles-In-Python.html#Objfile_002ebuild_005fid">Objfile.build_id</a>).
+</p>
+<p>The <var class="var">filename</var> argument contains the name of the file that
+<small class="sc">GDB</small> is looking for.  This information is provided to allow
+handlers to generate informative messages for the user.  A handler is
+not required to place the missing file at this location.  There might
+already be a file present at this location, but it might not match the
+required build-id, in which case <small class="sc">GDB</small> will have ignored it.
+In some limited cases <small class="sc">GDB</small> might not be able to establish the
+<var class="var">filename</var> of the file it is searching for, in this case
+<small class="sc">GDB</small> will use a string &lsquo;<samp class="samp">with build-id <var class="var">build_id</var></samp>&rsquo; as a
+replacement.
+</p>
+<p>The return value from the <code class="code">__call__</code> method indicates what
+<small class="sc">GDB</small> should do next.  The possible return values are:
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">None</code>
+
+<p>This indicates that this handler could not locate the missing file and
+<small class="sc">GDB</small> should call any other registered handlers.
+</p>
+</li><li><code class="code">True</code>
+
+<p>This indicates that this handler has installed the missing file into a
+location where <small class="sc">GDB</small> would normally expect to find it.  The
+only location in which <small class="sc">GDB</small> will look is within the
+<samp class="file">.build-id</samp> sub-directory within the <var class="var">debug-file-directory</var>
+(see <a class="pxref" href="Separate-Debug-Files.html#debug_002dfile_002ddirectory">debug-file-directory</a>).
+</p>
+<p><small class="sc">GDB</small> will repeat the normal lookup process, which should now
+find the previously missing file.
+</p>
+<p>If <small class="sc">GDB</small> still doesn&rsquo;t find file after this second attempt,
+then the Python missing-objfile handlers are not invoked a second
+time, this prevents a badly behaved handler causing <small class="sc">GDB</small> to
+get stuck in a loop.  <small class="sc">GDB</small> will continue without the missing
+file, though this will degrade the debugging experience.
+</p>
+</li><li><code class="code">False</code>
+
+<p>This indicates that this handler has done everything that it intends
+to do but the missing file could not be found.  <small class="sc">GDB</small> will not
+call any other registered handlers to look for the missing file.
+<small class="sc">GDB</small> will continue without the missing file, though this will
+degrade the debugging experience.
+</p>
+</li><li>A string
+
+<p>The returned string should contain a filename.  <small class="sc">GDB</small> will not
+call any further registered handlers, and will instead use the
+returned filename as the missing file.
+</p></li></ul>
+
+<p>Invoking the <code class="code">__call__</code> method from this base class will raise a
+<code class="code">NotImplementedError</code> exception.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MissingObjfileHandler_002ename"><span class="category-def">Variable: </span><span><strong class="def-name">MissingObjfileHandler.name</strong><a class="copiable-link" href="#index-MissingObjfileHandler_002ename"> &para;</a></span></dt>
+<dd><p>A read-only attribute which is a string, the name of this handler
+passed to the <code class="code">__init__</code> method.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MissingObjfileHandler_002eenabled"><span class="category-def">Variable: </span><span><strong class="def-name">MissingObjfileHandler.enabled</strong><a class="copiable-link" href="#index-MissingObjfileHandler_002eenabled"> &para;</a></span></dt>
+<dd><p>A modifiable attribute containing a boolean; when <code class="code">True</code>, the
+handler is enabled, and will be used by <small class="sc">GDB</small>.  When
+<code class="code">False</code>, the handler has been disabled, and will not be used.
+</p></dd></dl>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002emissing_005fobjfile_002eregister_005fhandler"><span class="category-def">Function: </span><span><strong class="def-name">gdb.missing_objfile.register_handler</strong> <var class="def-var-arguments">(locus, handler, replace=<code class="code">False</code>)</var><a class="copiable-link" href="#index-gdb_002emissing_005fobjfile_002eregister_005fhandler"> &para;</a></span></dt>
+<dd><p>Register a new missing-objfile handler with <small class="sc">GDB</small>.
+</p>
+<p><var class="var">handler</var> is an instance of a sub-class of
+<code class="code">MissingObjfileHandler</code>, or at least an instance of an object that
+has the same attributes and methods as <code class="code">MissingObjfileHandler</code>.
+</p>
+<p><var class="var">locus</var> specifies to which handler list to prepend <var class="var">handler</var>.
+It can be either a <code class="code">gdb.Progspace</code> (see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>)
+or <code class="code">None</code>, in which case the handler is registered globally.  The
+newly registered <var class="var">handler</var> will be called before any other handler
+from the same locus.  Two handlers in the same locus cannot have the
+same name, an attempt to add a handler with an already existing name
+raises an exception unless <var class="var">replace</var> is <code class="code">True</code>, in which case
+the old handler is deleted and the new handler is prepended to the
+selected handler list.
+</p>
+<p><small class="sc">GDB</small> first calls the handlers for the current program space,
+and then the globally registered handlers.  As soon as a handler
+returns a value other than <code class="code">None</code>, no further handlers are
+called.
+</p></dd></dl>
+
+<h4 class="subheading" id="Managing-Missing_002dObjfile-Handlers"><span>Managing Missing-Objfile Handlers<a class="copiable-link" href="#Managing-Missing_002dObjfile-Handlers"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> defines the following commands to manage registered
+missing-objfile handlers:
+</p>
+<dl class="table">
+<dt><a id="index-info-missing_002dobjfile_002dhandlers"></a><span><code class="code">info missing-objfile-handlers <span class="r">[</span> <var class="var">locus</var> <span class="r">[</span> <var class="var">name-regexp</var> <span class="r">]</span> <span class="r">]</span></code><a class="copiable-link" href="#index-info-missing_002dobjfile_002dhandlers"> &para;</a></span></dt>
+<dd><p>Lists all registered missing-objfile handlers.  Arguments <var class="var">locus</var>
+and <var class="var">name-regexp</var> are both optional and can be used to filter
+which handlers are listed.
+</p>
+<p>The <var class="var">locus</var> argument should be either <kbd class="kbd">global</kbd>,
+<kbd class="kbd">progspace</kbd>, or the name of an object file.  Only handlers
+registered for the specified locus will be listed.
+</p>
+<p>The <var class="var">name-regexp</var> is a regular expression used to match against
+handler names.
+</p>
+</dd>
+<dt><a id="index-disable-missing_002dobjfile_002dhandler"></a><span><code class="code">disable missing-objfile-handler <span class="r">[</span> <var class="var">locus</var> <span class="r">[</span> <var class="var">name-regexp</var> <span class="r">]</span> <span class="r">]</span></code><a class="copiable-link" href="#index-disable-missing_002dobjfile_002dhandler"> &para;</a></span></dt>
+<dd><p>The <var class="var">locus</var> and <var class="var">name-regexp</var> are interpreted as in <kbd class="kbd">info
+missing-objfile-handlers</kbd> above, but instead of listing the matching
+handlers, all of the matching handlers are disabled.  The
+<code class="code">enabled</code> field of each matching handler is set to <code class="code">False</code>.
+</p>
+</dd>
+<dt><a id="index-enable-missing_002dobjfile_002dhandler"></a><span><code class="code">enable missing-objfile-handler <span class="r">[</span> <var class="var">locus</var> <span class="r">[</span> <var class="var">name-regexp</var> <span class="r">]</span> <span class="r">]</span></code><a class="copiable-link" href="#index-enable-missing_002dobjfile_002dhandler"> &para;</a></span></dt>
+<dd><p>The <var class="var">locus</var> and <var class="var">name-regexp</var> are interpreted as in <kbd class="kbd">info
+missing-objfile-handlers</kbd> above, but instead of listing the matching
+handlers, all of the matching handlers are enabled.  The
+<code class="code">enabled</code> field of each matching handler is set to <code class="code">True</code>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Missing-Debug-Info-In-Python.html">Missing Debug Info In Python</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

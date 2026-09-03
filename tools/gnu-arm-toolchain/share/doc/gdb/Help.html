@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Help (Debugging with GDB)</title>
+
+<meta name="description" content="Help (Debugging with GDB)">
+<meta name="keywords" content="Help (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Commands.html" rel="up" title="Commands">
+<link href="Command-Options.html" rel="prev" title="Command Options">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Help">
+<div class="nav-panel">
+<p>
+Previous: <a href="Command-Options.html" accesskey="p" rel="prev">Command options</a>, Up: <a href="Commands.html" accesskey="u" rel="up"><small class="sc">GDB</small> Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Getting-Help"><span>3.6 Getting Help<a class="copiable-link" href="#Getting-Help"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-online-documentation"></a>
+<a class="index-entry-id" id="index-help"></a>
+
+<p>You can always ask <small class="sc">GDB</small> itself for information on its commands,
+using the command <code class="code">help</code>.
+</p>
+<dl class="table">
+<dt><a id="index-h-_0028help_0029"></a><span><code class="code">help</code><a class="copiable-link" href="#index-h-_0028help_0029"> &para;</a></span></dt>
+<dt><code class="code">h</code></dt>
+<dd><p>You can use <code class="code">help</code> (abbreviated <code class="code">h</code>) with no arguments to
+display a short list of named classes of commands:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) help
+List of classes of commands:
+
+aliases -- User-defined aliases of other commands
+breakpoints -- Making program stop at certain points
+data -- Examining data
+files -- Specifying and examining files
+internals -- Maintenance commands
+obscure -- Obscure features
+running -- Running the program
+stack -- Examining the stack
+status -- Status inquiries
+support -- Support facilities
+tracepoints -- Tracing of program execution without
+               stopping the program
+user-defined -- User-defined commands
+
+Type &quot;help&quot; followed by a class name for a list of
+commands in that class.
+Type &quot;help&quot; followed by command name for full
+documentation.
+Command name abbreviations are allowed if unambiguous.
+(gdb)
+</pre></div>
+
+</dd>
+<dt><code class="code">help <var class="var">class</var></code></dt>
+<dd><p>Using one of the general help classes as an argument, you can get a
+list of the individual commands in that class.  If a command has
+aliases, the aliases are given after the command name, separated by
+commas.  If an alias has default arguments, the full definition of
+the alias is given after the first line.
+For example, here is the help display for the class <code class="code">status</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) help status
+Status inquiries.
+
+List of commands:
+
+info, inf, i -- Generic command for showing things
+        about the program being debugged
+info address, iamain  -- Describe where symbol SYM is stored.
+  alias iamain = info address main
+info all-registers -- List of all registers and their contents,
+        for selected stack frame.
+...
+show, info set -- Generic command for showing things
+        about the debugger
+
+Type &quot;help&quot; followed by command name for full
+documentation.
+Command name abbreviations are allowed if unambiguous.
+(gdb)
+</pre></div>
+
+</dd>
+<dt><code class="code">help <var class="var">command</var></code></dt>
+<dd><p>With a command name as <code class="code">help</code> argument, <small class="sc">GDB</small> displays a
+short paragraph on how to use that command.  If that command has
+one or more aliases, <small class="sc">GDB</small> will display a first line with
+the command name and all its aliases separated by commas.
+This first line will be followed by the full definition of all aliases
+having default arguments.
+When asking the help for an alias, the documentation for the aliased
+command is shown.
+</p>
+<p>A user-defined alias can optionally be documented using the
+<code class="code">document</code> command (see <a class="pxref" href="Define.html">document</a>).  <small class="sc">GDB</small> then
+considers this alias as different from the aliased command: this alias
+is not listed in the aliased command help output, and asking help for
+this alias will show the documentation provided for the alias instead of
+the documentation of the aliased command.
+</p>
+</dd>
+<dt><a id="index-apropos"></a><span><code class="code">apropos [-v] <var class="var">regexp</var></code><a class="copiable-link" href="#index-apropos"> &para;</a></span></dt>
+<dd><p>The <code class="code">apropos</code> command searches through all of the <small class="sc">GDB</small>
+commands and aliases, and their documentation, for the regular expression specified in
+<var class="var">args</var>.  It prints out all matches found.  The optional flag  &lsquo;<samp class="samp">-v</samp>&rsquo;,
+which stands for &lsquo;<samp class="samp">verbose</samp>&rsquo;, indicates to output the full documentation
+of the matching commands and highlight the parts of the documentation
+matching <var class="var">regexp</var>.  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">apropos alias
+</pre></div>
+
+<p>results in:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">alias -- Define a new command that is an alias of an existing command
+aliases -- User-defined aliases of other commands
+</pre></div></div>
+
+<p>while
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">apropos -v cut.*thread apply
+</pre></div>
+
+<p>results in the below output, where &lsquo;<samp class="samp">cut for 'thread apply</samp>&rsquo;
+is highlighted if styling is enabled.
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">taas -- Apply a command to all threads (ignoring errors
+and empty output).
+Usage: taas COMMAND
+shortcut for 'thread apply all -s COMMAND'
+
+tfaas -- Apply a command to all frames of all threads
+(ignoring errors and empty output).
+Usage: tfaas COMMAND
+shortcut for 'thread apply all -s frame apply all -s COMMAND'
+</pre></div></div>
+
+</dd>
+<dt><a id="index-complete"></a><span><code class="code">complete <var class="var">args</var></code><a class="copiable-link" href="#index-complete"> &para;</a></span></dt>
+<dd><p>The <code class="code">complete <var class="var">args</var></code> command lists all the possible completions
+for the beginning of a command.  Use <var class="var">args</var> to specify the beginning of the
+command you want completed.  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">complete i
+</pre></div>
+
+<p>results in:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">if
+ignore
+info
+inspect
+</pre></div></div>
+
+<p>This is intended for use by <small class="sc">GNU</small> Emacs.
+</p></dd>
+</dl>
+
+<p>In addition to <code class="code">help</code>, you can use the <small class="sc">GDB</small> commands <code class="code">info</code>
+and <code class="code">show</code> to inquire about the state of your program, or the state
+of <small class="sc">GDB</small> itself.  Each command supports many topics of inquiry; this
+manual introduces each of them in the appropriate context.  The listings
+under <code class="code">info</code> and under <code class="code">show</code> in the Command, Variable, and
+Function Index point to all the sub-commands.  See <a class="xref" href="Command-and-Variable-Index.html">Command, Variable, and Function Index</a>.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-i-_0028info_0029"></a>
+<a id="index-info"></a><span><code class="code">info</code><a class="copiable-link" href="#index-info"> &para;</a></span></dt>
+<dd><p>This command (abbreviated <code class="code">i</code>) is for describing the state of your
+program.  For example, you can show the arguments passed to a function
+with <code class="code">info args</code>, list the registers currently in use with <code class="code">info
+registers</code>, or list the breakpoints you have set with <code class="code">info breakpoints</code>.
+You can get a complete list of the <code class="code">info</code> sub-commands with
+<code class="code">help&nbsp;info</code><!-- /@w -->.
+</p>
+</dd>
+<dt><a id="index-set"></a><span><code class="code">set</code><a class="copiable-link" href="#index-set"> &para;</a></span></dt>
+<dd><p>You can assign the result of an expression to an environment variable with
+<code class="code">set</code>.  For example, you can set the <small class="sc">GDB</small> prompt to a $-sign with
+<code class="code">set prompt $</code>.
+</p>
+</dd>
+<dt><a id="index-show"></a><span><code class="code">show</code><a class="copiable-link" href="#index-show"> &para;</a></span></dt>
+<dd><p>In contrast to <code class="code">info</code>, <code class="code">show</code> is for describing the state of
+<small class="sc">GDB</small> itself.
+You can change most of the things you can <code class="code">show</code>, by using the
+related command <code class="code">set</code>; for example, you can control what number
+system is used for displays with <code class="code">set radix</code>, or simply inquire
+which is currently in use with <code class="code">show radix</code>.
+</p>
+<a class="index-entry-id" id="index-info-set"></a>
+<p>To display all the settable parameters and their current
+values, you can use <code class="code">show</code> with no arguments; you may also use
+<code class="code">info set</code>.  Both commands produce the same display.
+</p></dd>
+</dl>
+
+<p>Here are several miscellaneous <code class="code">show</code> subcommands, all of which are
+exceptional in lacking corresponding <code class="code">set</code> commands:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb-version-number"></a>
+<a id="index-show-version"></a><span><code class="code">show version</code><a class="copiable-link" href="#index-show-version"> &para;</a></span></dt>
+<dd><p>Show what version of <small class="sc">GDB</small> is running.  You should include this
+information in <small class="sc">GDB</small> bug-reports.  If multiple versions of
+<small class="sc">GDB</small> are in use at your site, you may need to determine which
+version of <small class="sc">GDB</small> you are running; as <small class="sc">GDB</small> evolves, new
+commands are introduced, and old ones may wither away.  Also, many
+system vendors ship variant versions of <small class="sc">GDB</small>, and there are
+variant versions of <small class="sc">GDB</small> in <small class="sc">GNU</small>/Linux distributions as well.
+The version number is the same as the one announced when you start
+<small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-info-copying"></a>
+<a class="index-entry-id" id="index-display-gdb-copyright"></a>
+<a id="index-show-copying"></a><span><code class="code">show copying</code><a class="copiable-link" href="#index-show-copying"> &para;</a></span></dt>
+<dt><code class="code">info copying</code></dt>
+<dd><p>Display information about permission for copying <small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-info-warranty"></a>
+<a id="index-show-warranty"></a><span><code class="code">show warranty</code><a class="copiable-link" href="#index-show-warranty"> &para;</a></span></dt>
+<dt><code class="code">info warranty</code></dt>
+<dd><p>Display the <small class="sc">GNU</small> &ldquo;NO WARRANTY&rdquo; statement, or a warranty,
+if your version of <small class="sc">GDB</small> comes with one.
+</p>
+<a class="anchor" id="show-configuration"></a></dd>
+<dt><a id="index-show-configuration"></a><span><code class="code">show configuration</code><a class="copiable-link" href="#index-show-configuration"> &para;</a></span></dt>
+<dd><p>Display detailed information about the way <small class="sc">GDB</small> was configured
+when it was built.  This displays the optional arguments passed to the
+<samp class="file">configure</samp> script and also configuration parameters detected
+automatically by <code class="command">configure</code>.  When reporting a <small class="sc">GDB</small>
+bug (see <a class="pxref" href="GDB-Bugs.html">Reporting Bugs in <small class="sc">GDB</small></a>), it is important to include this information in
+your report.
+</p>
+<p>This commands also displays the version number of the Readline library
+that <small class="sc">GDB</small> is using.  After the version number will appear
+either &lsquo;<samp class="samp">(system)</samp>&rsquo; indicating <small class="sc">GDB</small> is using the shared
+system Readline library, or &lsquo;<samp class="samp">(internal)</samp>&rsquo; indicating <small class="sc">GDB</small>
+is using a statically linked in version of the Readline library.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Command-Options.html">Command options</a>, Up: <a href="Commands.html"><small class="sc">GDB</small> Commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

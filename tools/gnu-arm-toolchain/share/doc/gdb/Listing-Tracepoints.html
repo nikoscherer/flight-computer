@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Listing Tracepoints (Debugging with GDB)</title>
+
+<meta name="description" content="Listing Tracepoints (Debugging with GDB)">
+<meta name="keywords" content="Listing Tracepoints (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints">
+<link href="Listing-Static-Tracepoint-Markers.html" rel="next" title="Listing Static Tracepoint Markers">
+<link href="Tracepoint-Actions.html" rel="prev" title="Tracepoint Actions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Listing-Tracepoints">
+<div class="nav-panel">
+<p>
+Next: <a href="Listing-Static-Tracepoint-Markers.html" accesskey="n" rel="next">Listing Static Tracepoint Markers</a>, Previous: <a href="Tracepoint-Actions.html" accesskey="p" rel="prev">Tracepoint Action Lists</a>, Up: <a href="Set-Tracepoints.html" accesskey="u" rel="up">Commands to Set Tracepoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Listing-Tracepoints-1"><span>13.1.7 Listing Tracepoints<a class="copiable-link" href="#Listing-Tracepoints-1"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-info-tp-_005bn_2026_005d"></a>
+<a class="index-entry-id" id="index-information-about-tracepoints"></a>
+<a id="index-info-tracepoints-_005bn_2026_005d"></a><span><code class="code">info tracepoints <span class="r">[</span><var class="var">num</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-info-tracepoints-_005bn_2026_005d"> &para;</a></span></dt>
+<dd><p>Display information about the tracepoint <var class="var">num</var>.  If you don&rsquo;t
+specify a tracepoint number, displays information about all the
+tracepoints defined so far.  The format is similar to that used for
+<code class="code">info breakpoints</code>; in fact, <code class="code">info tracepoints</code> is the same
+command, simply restricting itself to tracepoints.
+</p>
+<p>A tracepoint&rsquo;s listing may include additional information specific to
+tracing:
+</p>
+<ul class="itemize mark-bullet">
+<li>its passcount as given by the <code class="code">passcount <var class="var">n</var></code> command
+
+</li><li>the state about installed on target of each location
+</li></ul>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">info trace</b>
+Num     Type           Disp Enb Address    What
+1       tracepoint     keep y   0x0804ab57 in foo() at main.cxx:7
+        while-stepping 20
+          collect globfoo, $regs
+        end
+        collect globfoo2
+        end
+        pass count 1200 
+2       tracepoint     keep y   &lt;MULTIPLE&gt;
+        collect $eip
+2.1                         y     0x0804859c in func4 at change-loc.h:35
+        installed on target
+2.2                         y     0xb7ffc480 in func4 at change-loc.h:35
+        installed on target
+2.3                         y     &lt;PENDING&gt;  set_tracepoint
+3       tracepoint     keep y   0x080485b1 in foo at change-loc.c:29
+        not installed on target
+(gdb)
+</pre></div>
+
+<p>This command can be abbreviated <code class="code">info tp</code>.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

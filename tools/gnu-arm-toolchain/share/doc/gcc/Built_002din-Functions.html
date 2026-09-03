@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the use of the GNU compilers.
+
+Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Built-in Functions (Using the GNU Compiler Collection (GCC))</title>
+
+<meta name="description" content="Built-in Functions (Using the GNU Compiler Collection (GCC))">
+<meta name="keywords" content="Built-in Functions (Using the GNU Compiler Collection (GCC))">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Indices.html" rel="index" title="Indices">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="C_002b_002b-Extensions.html" rel="next" title="C++ Extensions">
+<link href="C-Extensions.html" rel="prev" title="C Extensions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en_US">
+<div class="chapter-level-extent" id="Built_002din-Functions">
+<div class="nav-panel">
+<p>
+Next: <a href="C_002b_002b-Extensions.html" accesskey="n" rel="next">Extensions to the C++ Language</a>, Previous: <a href="C-Extensions.html" accesskey="p" rel="prev">Extensions to the C Language Family</a>, Up: <a href="index.html" accesskey="u" rel="up">Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Built_002din-Functions-Provided-by-GCC"><span>7 Built-in Functions Provided by GCC<a class="copiable-link" href="#Built_002din-Functions-Provided-by-GCC"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-Built_002din-Functions"></a>
+
+<p>GCC provides a very large number of implicitly-declared built-in
+functions that are typically inlined by the compiler.  Some of these
+builtins directly correspond to standard library routines.  Some are
+for internal use in the processing of exceptions or variable-length
+argument lists and are not documented here because they may change
+from time to time; we do not recommend general use of these functions.
+</p>
+<p>The remaining functions are provided either for optimization purposes, or
+to expose low-level functionality needed to implement
+features provided by library functions or similar &ldquo;glue&rdquo; between GCC
+and other programming languages or libraries.  Others are
+target-specific, providing direct access to instructions that have no
+direct C equivalents without the need to write assembly language.  There
+are also builtins to support various kinds of runtime error checking.
+</p>
+<p>Most builtins have names prefixed with &lsquo;<samp class="samp">__builtin_</samp>&rsquo;, although not
+all of them use this convention.  Except as otherwise documented, all
+built-in functions are available from any of the C family languages
+supported by GCC.
+</p>
+<p>With the exception of built-ins that have library equivalents such as
+the standard C library functions discussed below in <a class="ref" href="Library-Builtins.html">Builtins for C Library Functions</a>,
+or that expand to
+library calls, GCC built-in functions are always expanded inline and
+thus do not have corresponding entry points and their address cannot
+be obtained.  Attempting to use them in an expression other than
+a function call results in a compile-time error.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Library-Builtins.html" accesskey="1">Builtins for C Library Functions</a></li>
+<li><a href="Numeric-Builtins.html" accesskey="2">Additional Builtins for Numeric Operations</a></li>
+<li><a href="Stack-Allocation.html" accesskey="3">Builtins for Stack Allocation</a></li>
+<li><a href="Nonlocal-Gotos.html" accesskey="4">Nonlocal Gotos</a></li>
+<li><a href="Constructing-Calls.html" accesskey="5">Constructing Function Calls</a></li>
+<li><a href="Return-Address.html" accesskey="6">Getting the Return or Frame Address of a Function</a></li>
+<li><a href="Stack-Scrubbing.html" accesskey="7">Stack scrubbing internal interfaces</a></li>
+<li><a href="Vector-Extensions.html" accesskey="8">Using Vector Instructions through Built-in Functions</a></li>
+<li><a href="Atomic-Memory-Access.html" accesskey="9">Builtins for Atomic Memory Access</a></li>
+<li><a href="Object-Size-Checking.html">Object Size Checking</a></li>
+<li><a href="New_002fDelete-Builtins.html">Built-in functions for C++ allocations and deallocations</a></li>
+<li><a href="Other-Builtins.html">Other Built-in Functions Provided by GCC</a></li>
+<li><a href="Target-Builtins.html">Built-in Functions Specific to Particular Target Machines</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="C_002b_002b-Extensions.html">Extensions to the C++ Language</a>, Previous: <a href="C-Extensions.html">Extensions to the C Language Family</a>, Up: <a href="index.html">Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

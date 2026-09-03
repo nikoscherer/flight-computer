@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Function Entry (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Function Entry (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Function Entry (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stack-and-Calling.html" rel="up" title="Stack and Calling">
+<link href="Profiling.html" rel="next" title="Profiling">
+<link href="Caller-Saves.html" rel="prev" title="Caller Saves">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Function-Entry">
+<div class="nav-panel">
+<p>
+Next: <a href="Profiling.html" accesskey="n" rel="next">Generating Code for Profiling</a>, Previous: <a href="Caller-Saves.html" accesskey="p" rel="prev">Caller-Saves Register Allocation</a>, Up: <a href="Stack-and-Calling.html" accesskey="u" rel="up">Stack Layout and Calling Conventions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Function-Entry-and-Exit"><span>17.9.11 Function Entry and Exit<a class="copiable-link" href="#Function-Entry-and-Exit"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-function-entry-and-exit"></a>
+<a class="index-entry-id" id="index-prologue"></a>
+<a class="index-entry-id" id="index-epilogue"></a>
+
+<p>This section describes the macros that output function entry
+(<em class="dfn">prologue</em>) and exit (<em class="dfn">epilogue</em>) code.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fPRINT_005fPATCHABLE_005fFUNCTION_005fENTRY"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_PRINT_PATCHABLE_FUNCTION_ENTRY</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>, unsigned HOST_WIDE_INT <var class="var">patch_area_size</var>, bool <var class="var">record_p</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fPRINT_005fPATCHABLE_005fFUNCTION_005fENTRY"> &para;</a></span></dt>
+<dd><p>Generate a patchable area at the function start, consisting of
+<var class="var">patch_area_size</var> NOP instructions.  If the target supports named
+sections and if <var class="var">record_p</var> is true, insert a pointer to the current
+location in the table of patchable functions.  The default implementation
+of the hook places the table of pointers in the special section named
+<code class="code">__patchable_function_entries</code>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fFUNCTION_005fPROLOGUE"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_FUNCTION_PROLOGUE</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fFUNCTION_005fPROLOGUE"> &para;</a></span></dt>
+<dd><p>If defined, a function that outputs the assembler code for entry to a
+function.  The prologue is responsible for setting up the stack frame,
+initializing the frame pointer register, saving registers that must be
+saved, and allocating <var class="var">size</var> additional bytes of storage for the
+local variables.  <var class="var">file</var> is a stdio stream to which the assembler
+code should be output.
+</p>
+<p>The label for the beginning of the function need not be output by this
+macro.  That has already been done when the macro is run.
+</p>
+<a class="index-entry-id" id="index-regs_005fever_005flive"></a>
+<p>To determine which registers to save, the macro can refer to the array
+<code class="code">regs_ever_live</code>: element <var class="var">r</var> is nonzero if hard register
+<var class="var">r</var> is used anywhere within the function.  This implies the function
+prologue should save register <var class="var">r</var>, provided it is not one of the
+call-used registers.  (<code class="code">TARGET_ASM_FUNCTION_EPILOGUE</code> must likewise use
+<code class="code">regs_ever_live</code>.)
+</p>
+<p>On machines that have &ldquo;register windows&rdquo;, the function entry code does
+not save on the stack the registers that are in the windows, even if
+they are supposed to be preserved by function calls; instead it takes
+appropriate steps to &ldquo;push&rdquo; the register stack, if any non-call-used
+registers are used in the function.
+</p>
+<a class="index-entry-id" id="index-frame_005fpointer_005fneeded"></a>
+<p>On machines where functions may or may not have frame-pointers, the
+function entry code must vary accordingly; it must set up the frame
+pointer if one is wanted, and not otherwise.  To determine whether a
+frame pointer is in wanted, the macro can refer to the variable
+<code class="code">frame_pointer_needed</code>.  The variable&rsquo;s value will be 1 at run
+time in a function that needs a frame pointer.  See <a class="xref" href="Elimination.html">Eliminating Frame Pointer and Arg Pointer</a>.
+</p>
+<p>The function entry code is responsible for allocating any stack space
+required for the function.  This stack space consists of the regions
+listed below.  In most cases, these regions are allocated in the
+order listed, with the last listed region closest to the top of the
+stack (the lowest address if <code class="code">STACK_GROWS_DOWNWARD</code> is defined, and
+the highest address if it is not defined).  You can use a different order
+for a machine if doing so is more convenient or required for
+compatibility reasons.  Except in cases where required by standard
+or by a debugger, there is no reason why the stack layout used by GCC
+need agree with that used by other compilers for a machine.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fFUNCTION_005fEND_005fPROLOGUE"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_FUNCTION_END_PROLOGUE</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fFUNCTION_005fEND_005fPROLOGUE"> &para;</a></span></dt>
+<dd><p>If defined, a function that outputs assembler code at the end of a
+prologue.  This should be used when the function prologue is being
+emitted as RTL, and you have some extra assembler that needs to be
+emitted.  See <a class="xref" href="Standard-Names.html#prologue-instruction-pattern">prologue instruction pattern</a>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fFUNCTION_005fBEGIN_005fEPILOGUE"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_FUNCTION_BEGIN_EPILOGUE</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fFUNCTION_005fBEGIN_005fEPILOGUE"> &para;</a></span></dt>
+<dd><p>If defined, a function that outputs assembler code at the start of an
+epilogue.  This should be used when the function epilogue is being
+emitted as RTL, and you have some extra assembler that needs to be
+emitted.  See <a class="xref" href="Standard-Names.html#epilogue-instruction-pattern">epilogue instruction pattern</a>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fFUNCTION_005fEPILOGUE"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_FUNCTION_EPILOGUE</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fFUNCTION_005fEPILOGUE"> &para;</a></span></dt>
+<dd><p>If defined, a function that outputs the assembler code for exit from a
+function.  The epilogue is responsible for restoring the saved
+registers and stack pointer to their values when the function was
+called, and returning control to the caller.  This macro takes the
+same argument as the macro <code class="code">TARGET_ASM_FUNCTION_PROLOGUE</code>, and the
+registers to restore are determined from <code class="code">regs_ever_live</code> and
+<code class="code">CALL_USED_REGISTERS</code> in the same way.
+</p>
+<p>On some machines, there is a single instruction that does all the work
+of returning from the function.  On these machines, give that
+instruction the name &lsquo;<samp class="samp">return</samp>&rsquo; and do not define the macro
+<code class="code">TARGET_ASM_FUNCTION_EPILOGUE</code> at all.
+</p>
+<p>Do not define a pattern named &lsquo;<samp class="samp">return</samp>&rsquo; if you want the
+<code class="code">TARGET_ASM_FUNCTION_EPILOGUE</code> to be used.  If you want the target
+switches to control whether return instructions or epilogues are used,
+define a &lsquo;<samp class="samp">return</samp>&rsquo; pattern with a validity condition that tests the
+target switches appropriately.  If the &lsquo;<samp class="samp">return</samp>&rsquo; pattern&rsquo;s validity
+condition is false, epilogues will be used.
+</p>
+<p>On machines where functions may or may not have frame-pointers, the
+function exit code must vary accordingly.  Sometimes the code for these
+two cases is completely different.  To determine whether a frame pointer
+is wanted, the macro can refer to the variable
+<code class="code">frame_pointer_needed</code>.  The variable&rsquo;s value will be 1 when compiling
+a function that needs a frame pointer.
+</p>
+<p>Normally, <code class="code">TARGET_ASM_FUNCTION_PROLOGUE</code> and
+<code class="code">TARGET_ASM_FUNCTION_EPILOGUE</code> must treat leaf functions specially.
+The C variable <code class="code">current_function_is_leaf</code> is nonzero for such a
+function.  See <a class="xref" href="Leaf-Functions.html">Handling Leaf Functions</a>.
+</p>
+<p>On some machines, some functions pop their arguments on exit while
+others leave that for the caller to do.  For example, the 68020 when
+given <samp class="option">-mrtd</samp> pops arguments in functions that take a fixed
+number of arguments.
+</p>
+<a class="index-entry-id" id="index-pops_005fargs"></a>
+<a class="index-entry-id" id="index-crtl_002d_003eargs_002epops_005fargs"></a>
+<p>Your definition of the macro <code class="code">RETURN_POPS_ARGS</code> decides which
+functions pop their own arguments.  <code class="code">TARGET_ASM_FUNCTION_EPILOGUE</code>
+needs to know what was decided.  The number of bytes of the current
+function&rsquo;s arguments that this function should pop is available in
+<code class="code">crtl-&gt;args.pops_args</code>.  See <a class="xref" href="Scalar-Return.html">How Scalar Function Values Are Returned</a>.
+</p></dd></dl>
+
+<ul class="itemize mark-bullet">
+<li><a class="index-entry-id" id="index-pretend_005fargs_005fsize"></a>
+<a class="index-entry-id" id="index-crtl_002d_003eargs_002epretend_005fargs_005fsize"></a>
+A region of <code class="code">crtl-&gt;args.pretend_args_size</code> bytes of
+uninitialized space just underneath the first argument arriving on the
+stack.  (This may not be at the very start of the allocated stack region
+if the calling sequence has pushed anything else since pushing the stack
+arguments.  But usually, on such machines, nothing else has been pushed
+yet, because the function prologue itself does all the pushing.)  This
+region is used on machines where an argument may be passed partly in
+registers and partly in memory, and, in some cases to support the
+features in <code class="code">&lt;stdarg.h&gt;</code>.
+
+</li><li>An area of memory used to save certain registers used by the function.
+The size of this area, which may also include space for such things as
+the return address and pointers to previous stack frames, is
+machine-specific and usually depends on which registers have been used
+in the function.  Machines with register windows often do not require
+a save area.
+
+</li><li>A region of at least <var class="var">size</var> bytes, possibly rounded up to an allocation
+boundary, to contain the local variables of the function.  On some machines,
+this region and the save area may occur in the opposite order, with the
+save area closer to the top of the stack.
+
+</li><li><a class="index-entry-id" id="index-ACCUMULATE_005fOUTGOING_005fARGS-and-stack-frames"></a>
+Optionally, when <code class="code">ACCUMULATE_OUTGOING_ARGS</code> is defined, a region of
+<code class="code">crtl-&gt;outgoing_args_size</code> bytes to be used for outgoing
+argument lists of the function.  See <a class="xref" href="Stack-Arguments.html">Passing Function Arguments on the Stack</a>.
+</li></ul>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EXIT_005fIGNORE_005fSTACK"><span class="category-def">Macro: </span><span><strong class="def-name">EXIT_IGNORE_STACK</strong><a class="copiable-link" href="#index-EXIT_005fIGNORE_005fSTACK"> &para;</a></span></dt>
+<dd><p>Define this macro as a C expression that is nonzero if the return
+instruction or the function epilogue ignores the value of the stack
+pointer; in other words, if it is safe to delete an instruction to
+adjust the stack pointer before a return from the function.  The
+default is 0.
+</p>
+<p>Note that this macro&rsquo;s value is relevant only for functions for which
+frame pointers are maintained.  It is never safe to delete a final
+stack adjustment in a function that has no frame pointer, and the
+compiler knows this regardless of <code class="code">EXIT_IGNORE_STACK</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EPILOGUE_005fUSES"><span class="category-def">Macro: </span><span><strong class="def-name">EPILOGUE_USES</strong> <var class="def-var-arguments">(<var class="var">regno</var>)</var><a class="copiable-link" href="#index-EPILOGUE_005fUSES"> &para;</a></span></dt>
+<dd><p>Define this macro as a C expression that is nonzero for registers that are
+used by the epilogue or the &lsquo;<samp class="samp">return</samp>&rsquo; pattern.  The stack and frame
+pointer registers are already assumed to be used as needed.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EH_005fUSES"><span class="category-def">Macro: </span><span><strong class="def-name">EH_USES</strong> <var class="def-var-arguments">(<var class="var">regno</var>)</var><a class="copiable-link" href="#index-EH_005fUSES"> &para;</a></span></dt>
+<dd><p>Define this macro as a C expression that is nonzero for registers that are
+used by the exception handling mechanism, and so should be considered live
+on entry to an exception edge.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fOUTPUT_005fMI_005fTHUNK"><span class="category-def">Target Hook: </span><span><code class="def-type">void</code> <strong class="def-name">TARGET_ASM_OUTPUT_MI_THUNK</strong> <code class="def-code-arguments">(FILE *<var class="var">file</var>, tree <var class="var">thunk_fndecl</var>, HOST_WIDE_INT <var class="var">delta</var>, HOST_WIDE_INT <var class="var">vcall_offset</var>, tree <var class="var">function</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fOUTPUT_005fMI_005fTHUNK"> &para;</a></span></dt>
+<dd><p>A function that outputs the assembler code for a thunk
+function, used to implement C++ virtual function calls with multiple
+inheritance.  The thunk acts as a wrapper around a virtual function,
+adjusting the implicit object parameter before handing control off to
+the real function.
+</p>
+<p>First, emit code to add the integer <var class="var">delta</var> to the location that
+contains the incoming first argument.  Assume that this argument
+contains a pointer, and is the one used to pass the <code class="code">this</code> pointer
+in C++.  This is the incoming argument <em class="emph">before</em> the function prologue,
+e.g. &lsquo;<samp class="samp">%o0</samp>&rsquo; on a sparc.  The addition must preserve the values of
+all other incoming arguments.
+</p>
+<p>Then, if <var class="var">vcall_offset</var> is nonzero, an additional adjustment should be
+made after adding <code class="code">delta</code>.  In particular, if <var class="var">p</var> is the
+adjusted pointer, the following adjustment should be made:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p += (*((ptrdiff_t **)p))[vcall_offset/sizeof(ptrdiff_t)]
+</pre></div>
+
+<p>After the additions, emit code to jump to <var class="var">function</var>, which is a
+<code class="code">FUNCTION_DECL</code>.  This is a direct pure jump, not a call, and does
+not touch the return address.  Hence returning from <var class="var">FUNCTION</var> will
+return to whoever called the current &lsquo;<samp class="samp">thunk</samp>&rsquo;.
+</p>
+<p>The effect must be as if <var class="var">function</var> had been called directly with
+the adjusted first argument.  This macro is responsible for emitting all
+of the code for a thunk function; <code class="code">TARGET_ASM_FUNCTION_PROLOGUE</code>
+and <code class="code">TARGET_ASM_FUNCTION_EPILOGUE</code> are not invoked.
+</p>
+<p>The <var class="var">thunk_fndecl</var> is redundant.  (<var class="var">delta</var> and <var class="var">function</var>
+have already been extracted from it.)  It might possibly be useful on
+some targets, but probably not.
+</p>
+<p>If you do not define this macro, the target-independent code in the C++
+front end will generate a less efficient heavyweight thunk that calls
+<var class="var">function</var> instead of jumping to it.  The generic approach does
+not support varargs.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-TARGET_005fASM_005fCAN_005fOUTPUT_005fMI_005fTHUNK"><span class="category-def">Target Hook: </span><span><code class="def-type">bool</code> <strong class="def-name">TARGET_ASM_CAN_OUTPUT_MI_THUNK</strong> <code class="def-code-arguments">(const_tree <var class="var">thunk_fndecl</var>, HOST_WIDE_INT <var class="var">delta</var>, HOST_WIDE_INT <var class="var">vcall_offset</var>, const_tree <var class="var">function</var>)</code><a class="copiable-link" href="#index-TARGET_005fASM_005fCAN_005fOUTPUT_005fMI_005fTHUNK"> &para;</a></span></dt>
+<dd><p>A function that returns true if TARGET_ASM_OUTPUT_MI_THUNK would be able
+to output the assembler code for the thunk function specified by the
+arguments it is passed, and false otherwise.  In the latter case, the
+generic approach will be used by the C++ front end, with the limitations
+previously exposed.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Profiling.html">Generating Code for Profiling</a>, Previous: <a href="Caller-Saves.html">Caller-Saves Register Allocation</a>, Up: <a href="Stack-and-Calling.html">Stack Layout and Calling Conventions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

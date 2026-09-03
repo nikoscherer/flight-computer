@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>gdb.ptwrite (Debugging with GDB)</title>
+
+<meta name="description" content="gdb.ptwrite (Debugging with GDB)">
+<meta name="keywords" content="gdb.ptwrite (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-modules.html" rel="up" title="Python modules">
+<link href="gdb_002eprompt.html" rel="prev" title="gdb.prompt">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="gdb_002eptwrite">
+<div class="nav-panel">
+<p>
+Previous: <a href="gdb_002eprompt.html" accesskey="p" rel="prev">gdb.prompt</a>, Up: <a href="Python-modules.html" accesskey="u" rel="up">Python modules</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb_002eptwrite-1"><span>23.3.4.4 gdb.ptwrite<a class="copiable-link" href="#gdb_002eptwrite-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdb_002eptwrite"></a>
+
+<p>This module provides additional functionality for recording programs that
+make use of the <code class="code">PTWRITE</code> instruction.  <code class="code">PTWRITE</code> is a x86
+instruction that allows to write values into the Intel Processor Trace
+(see <a class="pxref" href="Process-Record-and-Replay.html">Recording Inferior&rsquo;s Execution and Replaying It</a>).
+The <small class="sc">GCC</small> intrinsics for it are:
+</p><div class="example smallexample">
+<pre class="example-preformatted">void _ptwrite32 (unsigned int a)
+void _ptwrite64 (unsigned __int64 a)
+</pre></div>
+
+<p>If an inferior uses the instruction, <small class="sc">GDB</small> by default inserts the
+raw payload value as auxiliary information into the execution history.
+Auxiliary information is by default printed during
+<code class="code">record instruction-history</code>, <code class="code">record function-call-history</code>,
+and all stepping commands, and is accessible in Python as a
+<code class="code">RecordAuxiliary</code> object (see <a class="pxref" href="Recordings-In-Python.html">Recordings In Python</a>).
+</p>
+<p class="exdent">Sample program:
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">#include &lt;immintrin.h&gt;
+
+void
+ptwrite64 (unsigned long long value)
+{
+  _ptwrite64 (value);
+}
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">int
+main (void)
+{
+  ptwrite64 (0x42);
+  return 0; /* break here.  */
+}
+</pre></div></div>
+
+
+<p class="exdent"><small class="sc">GDB</small> output after recording the sample program in pt format:
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) record instruction-history 12,14
+12         0x0040074c &lt;ptwrite64+16&gt;:   ptwrite %rbx
+13           [0x42]
+14         0x00400751 &lt;ptwrite64+21&gt;:   mov -0x8(%rbp),%rbx
+(gdb) record function-call-history
+1       main
+2       ptwrite64
+          [0x42]
+3       main
+</pre></div></div>
+
+<p>The <code class="code">gdb.ptwrite</code> module allows customizing the default output of
+<code class="code">PTWRITE</code> auxiliary information.  A custom Python function can be
+registered as the <code class="code">PTWRITE</code> filter function.  This function will be
+called with the <code class="code">PTWRITE</code> payload and PC as arguments during trace
+decoding.  The function can return a string, which will be printed by
+<small class="sc">GDB</small> during the aforementioned commands, or <code class="code">None</code>, resulting
+in no output.  To register such a filter function, the user needs to
+provide a filter factory function, which returns a new filter function
+object to be called by <small class="sc">GDB</small>.
+</p>
+<a class="index-entry-id" id="index-gdb_002eptwrite_002eregister_005ffilter_005ffactory"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-register_005ffilter_005ffactory"><span class="category-def">Function: </span><span><strong class="def-name">register_filter_factory</strong> <var class="def-var-arguments">(filter_factory)</var><a class="copiable-link" href="#index-register_005ffilter_005ffactory"> &para;</a></span></dt>
+<dd><p>Used to register the <code class="code">PTWRITE</code> filter factory.  This filter factory can
+be any callable object that accepts one argument, the current thread as
+a <code class="code">gdb.InferiorThread</code>.
+It can return None or a callable.  This callable is the <code class="code">PTWRITE</code> filter
+function for the specified thread.  If <code class="code">None</code> is returned by the factory
+function, the default auxiliary information will be printed.
+</p></dd></dl>
+
+<a class="index-entry-id" id="index-gdb_002eptwrite_002eget_005ffilter"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-get_005ffilter"><span class="category-def">Function: </span><span><strong class="def-name">get_filter</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-get_005ffilter"> &para;</a></span></dt>
+<dd><p>Return the currently active <code class="code">PTWRITE</code> filter function.
+</p></dd></dl>
+
+<p>An example:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python-interactive
+&gt;&gt;&gt; class my_filter():
+...    def __init__(self):
+...        self.var = 0
+...    def __call__(self, payload, ip):
+...        self.var += 1
+...        return f&quot;counter: {self.var}, ip: {ip:#x}&quot;
+...
+&gt;&gt;&gt; def my_filter_factory(thread):
+...    if thread.global_num == 1:
+...        return my_filter()
+...    else:
+...        return None
+...
+&gt;&gt;&gt; import gdb.ptwrite
+&gt;&gt;&gt; gdb.ptwrite.register_filter_factory(my_filter_factory)
+&gt;&gt;&gt;
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">(gdb) record function-call-history 59,64
+59      pthread_create@GLIBC_2.2.5
+60      job()
+61      task(void*)
+62      ptwrite64(unsigned long)
+          [counter: 1, ip: 0x401156]
+63      task(void*)
+64      ptwrite32(unsigned int)
+          [counter: 2, ip: 0x40116c]
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">(gdb) info threads
+* 1    Thread 0x7ffff7fd8740 (LWP 25796) &quot;ptw_threads&quot; task ()
+    at bin/ptwrite/ptw_threads.c:45
+  2    Thread 0x7ffff6eb8700 (LWP 25797) &quot;ptw_threads&quot; task ()
+    at bin/ptwrite/ptw_threads.c:45
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">(gdb) thread 2
+[Switching to thread 2 (Thread 0x7ffff6eb8700 (LWP 25797))]
+#0  task (arg=0x0) at ptwrite_threads.c:45
+45        return NULL;
+</pre></div><pre class="example-preformatted">
+
+</pre><div class="group"><pre class="example-preformatted">(gdb) record function-call-history 10,14
+10    start_thread
+11    task(void*)
+12    ptwrite64(unsigned long)
+        [0x42]
+13    task(void*)
+14    ptwrite32(unsigned int)
+        [0x43]
+</pre></div></div>
+
+<p>This <small class="sc">GDB</small> feature is dependent on hardware and operating system
+support and requires the Intel Processor Trace decoder library in version
+2.0.0 or newer.
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="gdb_002eprompt.html">gdb.prompt</a>, Up: <a href="Python-modules.html">Python modules</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

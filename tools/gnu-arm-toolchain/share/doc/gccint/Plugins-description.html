@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Plugins description (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Plugins description (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Plugins description (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Plugins.html" rel="up" title="Plugins">
+<link href="Plugins-attr.html" rel="next" title="Plugins attr">
+<link href="Plugins-GC.html" rel="prev" title="Plugins GC">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Plugins-description">
+<div class="nav-panel">
+<p>
+Next: <a href="Plugins-attr.html" accesskey="n" rel="next">Registering custom attributes or pragmas</a>, Previous: <a href="Plugins-GC.html" accesskey="p" rel="prev">Interacting with the GCC Garbage Collector</a>, Up: <a href="Plugins.html" accesskey="u" rel="up">Plugins</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Giving-information-about-a-plugin"><span>23.5 Giving information about a plugin<a class="copiable-link" href="#Giving-information-about-a-plugin"> &para;</a></span></h3>
+
+<p>A plugin should give some information to the user about itself. This
+uses the following structure:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct plugin_info
+{
+  const char *version;
+  const char *help;
+};
+</pre></div>
+
+<p>Such a structure is passed as the <code class="code">user_data</code> by the plugin&rsquo;s
+init routine using <code class="code">register_callback</code> with the
+<code class="code">PLUGIN_INFO</code> pseudo-event and a null callback.
+</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Plugins (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Plugins (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Plugins (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="LTO.html" rel="next" title="LTO">
+<link href="Type-Information.html" rel="prev" title="Type Information">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Plugins">
+<div class="nav-panel">
+<p>
+Next: <a href="LTO.html" accesskey="n" rel="next">Link Time Optimization</a>, Previous: <a href="Type-Information.html" accesskey="p" rel="prev">Memory Management and Type Information</a>, Up: <a href="index.html" accesskey="u" rel="up">Introduction</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Plugins-1"><span>23 Plugins<a class="copiable-link" href="#Plugins-1"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-Plugins"></a>
+
+<p>GCC plugins are loadable modules that provide extra features to the
+compiler.  Like GCC itself they can be distributed in source and
+binary forms.
+</p>
+<p>GCC plugins provide developers with a rich subset of
+the GCC API to allow them to extend GCC as they see fit.
+Whether it is writing an additional optimization pass,
+transforming code, or analyzing information, plugins
+can be quite useful.
+</p>
+
+<ul class="mini-toc">
+<li><a href="Plugins-loading.html" accesskey="1">Loading Plugins</a></li>
+<li><a href="Plugin-API.html" accesskey="2">Plugin API</a></li>
+<li><a href="Plugins-pass.html" accesskey="3">Interacting with the pass manager</a></li>
+<li><a href="Plugins-GC.html" accesskey="4">Interacting with the GCC Garbage Collector</a></li>
+<li><a href="Plugins-description.html" accesskey="5">Giving information about a plugin</a></li>
+<li><a href="Plugins-attr.html" accesskey="6">Registering custom attributes or pragmas</a></li>
+<li><a href="Plugins-recording.html" accesskey="7">Recording information about pass execution</a></li>
+<li><a href="Plugins-gate.html" accesskey="8">Controlling which passes are being run</a></li>
+<li><a href="Plugins-tracking.html" accesskey="9">Keeping track of available passes</a></li>
+<li><a href="Plugins-building.html">Building GCC plugins</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

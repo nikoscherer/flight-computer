@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Soft float library routines (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Soft float library routines (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Soft float library routines (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Libgcc.html" rel="up" title="Libgcc">
+<link href="Decimal-float-library-routines.html" rel="next" title="Decimal float library routines">
+<link href="Integer-library-routines.html" rel="prev" title="Integer library routines">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Soft-float-library-routines">
+<div class="nav-panel">
+<p>
+Next: <a href="Decimal-float-library-routines.html" accesskey="n" rel="next">Routines for decimal floating point emulation</a>, Previous: <a href="Integer-library-routines.html" accesskey="p" rel="prev">Routines for integer arithmetic</a>, Up: <a href="Libgcc.html" accesskey="u" rel="up">The GCC low-level runtime library</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Routines-for-floating-point-emulation"><span>3.2 Routines for floating point emulation<a class="copiable-link" href="#Routines-for-floating-point-emulation"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-soft-float-library"></a>
+<a class="index-entry-id" id="index-arithmetic-library"></a>
+<a class="index-entry-id" id="index-math-library"></a>
+<a class="index-entry-id" id="index-msoft_002dfloat"></a>
+
+<p>The software floating point library is used on machines which do not
+have hardware support for floating point.  It is also used whenever
+<samp class="option">-msoft-float</samp> is used to disable generation of floating point
+instructions.  (Not all targets support this switch.)
+</p>
+<p>For compatibility with other compilers, the floating point emulation
+routines can be renamed with the <code class="code">DECLARE_LIBRARY_RENAMES</code> macro
+(see <a class="pxref" href="Library-Calls.html">Implicit Calls to Library Routines</a>).  In this section, the default names are used.
+</p>
+<p>Presently the library does not support <code class="code">XFmode</code>, which is used
+for <code class="code">long double</code> on some architectures.
+</p>
+<ul class="mini-toc">
+<li><a href="#Arithmetic-functions-1" accesskey="1">Arithmetic functions</a></li>
+<li><a href="#Conversion-functions" accesskey="2">Conversion functions</a></li>
+<li><a href="#Comparison-functions-1" accesskey="3">Comparison functions</a></li>
+<li><a href="#Other-floating_002dpoint-functions" accesskey="4">Other floating-point functions</a></li>
+</ul>
+<div class="subsection-level-extent" id="Arithmetic-functions-1">
+<h4 class="subsection"><span>3.2.1 Arithmetic functions<a class="copiable-link" href="#Arithmetic-functions-1"> &para;</a></span></h4>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005faddsf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__addsf3</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005faddsf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fadddf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__adddf3</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fadddf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005faddtf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__addtf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005faddtf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005faddxf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__addxf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005faddxf3"> &para;</a></span></dt>
+<dd><p>These functions return the sum of <var class="var">a</var> and <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fsubsf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__subsf3</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fsubsf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fsubdf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__subdf3</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fsubdf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fsubtf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__subtf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fsubtf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fsubxf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__subxf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fsubxf3"> &para;</a></span></dt>
+<dd><p>These functions return the difference between <var class="var">b</var> and <var class="var">a</var>;
+that is, <em class="math"><var class="var">a</var> - <var class="var">b</var></em><!-- /@w -->.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fmulsf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__mulsf3</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmulsf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmuldf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__muldf3</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmuldf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmultf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__multf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmultf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmulxf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__mulxf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fmulxf3"> &para;</a></span></dt>
+<dd><p>These functions return the product of <var class="var">a</var> and <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fdivsf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__divsf3</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivsf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivdf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__divdf3</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivdf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivtf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__divtf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivtf3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivxf3"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__divxf3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fdivxf3"> &para;</a></span></dt>
+<dd><p>These functions return the quotient of <var class="var">a</var> and <var class="var">b</var>; that is,
+<em class="math"><var class="var">a</var> / <var class="var">b</var></em><!-- /@w -->.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fnegsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__negsf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnegdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__negdf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnegtf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__negtf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegtf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnegxf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__negxf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fnegxf2"> &para;</a></span></dt>
+<dd><p>These functions return the negation of <var class="var">a</var>.  They simply flip the
+sign bit, so they can produce negative zero and negative NaN.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Conversion-functions">
+<h4 class="subsection"><span>3.2.2 Conversion functions<a class="copiable-link" href="#Conversion-functions"> &para;</a></span></h4>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fextendsfdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__extendsfdf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fextendsfdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fextendsftf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__extendsftf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fextendsftf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fextendsfxf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__extendsfxf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fextendsfxf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fextenddftf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__extenddftf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fextenddftf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fextenddfxf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__extenddfxf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005fextenddfxf2"> &para;</a></span></dt>
+<dd><p>These functions extend <var class="var">a</var> to the wider mode of their return
+type.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ftruncxfdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__truncxfdf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ftruncxfdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ftrunctfdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__trunctfdf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ftrunctfdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ftruncxfsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__truncxfsf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ftruncxfsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ftrunctfsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__trunctfsf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ftrunctfsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ftruncdfsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__truncdfsf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ftruncdfsf2"> &para;</a></span></dt>
+<dd><p>These functions truncate <var class="var">a</var> to the narrower mode of their return
+type, rounding toward zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixsfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__fixsfsi</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixsfsi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixdfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__fixdfsi</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixdfsi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixtfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__fixtfsi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixtfsi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixxfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__fixxfsi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixxfsi"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to a signed integer, rounding toward zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixsfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__fixsfdi</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixsfdi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixdfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__fixdfdi</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixdfdi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixtfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__fixtfdi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixtfdi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixxfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">long</code> <strong class="def-name">__fixxfdi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixxfdi"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to a signed long, rounding toward zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixsfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__fixsfti</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixsfti"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixdfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__fixdfti</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixdfti"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixtfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__fixtfti</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixtfti"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixxfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">long long</code> <strong class="def-name">__fixxfti</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixxfti"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to a signed long long, rounding toward zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixunssfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__fixunssfsi</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunssfsi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunsdfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__fixunsdfsi</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunsdfsi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunstfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__fixunstfsi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunstfsi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunsxfsi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned int</code> <strong class="def-name">__fixunsxfsi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunsxfsi"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to an unsigned integer, rounding
+toward zero.  Negative values all become zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixunssfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__fixunssfdi</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunssfdi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunsdfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__fixunsdfdi</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunsdfdi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunstfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__fixunstfdi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunstfdi"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunsxfdi"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long</code> <strong class="def-name">__fixunsxfdi</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunsxfdi"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to an unsigned long, rounding
+toward zero.  Negative values all become zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixunssfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__fixunssfti</strong> <code class="def-code-arguments">(float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunssfti"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunsdfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__fixunsdfti</strong> <code class="def-code-arguments">(double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunsdfti"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunstfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__fixunstfti</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunstfti"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixunsxfti"><span class="category-def">Runtime Function: </span><span><code class="def-type">unsigned long long</code> <strong class="def-name">__fixunsxfti</strong> <code class="def-code-arguments">(long double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixunsxfti"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to an unsigned long long, rounding
+toward zero.  Negative values all become zero.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloatsisf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floatsisf</strong> <code class="def-code-arguments">(int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatsisf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatsidf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floatsidf</strong> <code class="def-code-arguments">(int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatsidf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatsitf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatsitf</strong> <code class="def-code-arguments">(int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatsitf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatsixf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatsixf</strong> <code class="def-code-arguments">(int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatsixf"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">i</var>, a signed integer, to floating point.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloatdisf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floatdisf</strong> <code class="def-code-arguments">(long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatdisf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatdidf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floatdidf</strong> <code class="def-code-arguments">(long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatdidf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatditf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatditf</strong> <code class="def-code-arguments">(long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatditf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatdixf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatdixf</strong> <code class="def-code-arguments">(long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatdixf"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">i</var>, a signed long, to floating point.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloattisf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floattisf</strong> <code class="def-code-arguments">(long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloattisf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloattidf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floattidf</strong> <code class="def-code-arguments">(long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloattidf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloattitf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floattitf</strong> <code class="def-code-arguments">(long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloattitf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloattixf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floattixf</strong> <code class="def-code-arguments">(long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloattixf"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">i</var>, a signed long long, to floating point.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloatunsisf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floatunsisf</strong> <code class="def-code-arguments">(unsigned int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatunsisf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatunsidf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floatunsidf</strong> <code class="def-code-arguments">(unsigned int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatunsidf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatunsitf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatunsitf</strong> <code class="def-code-arguments">(unsigned int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatunsitf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatunsixf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatunsixf</strong> <code class="def-code-arguments">(unsigned int <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatunsixf"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">i</var>, an unsigned integer, to floating point.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloatundisf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floatundisf</strong> <code class="def-code-arguments">(unsigned long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatundisf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatundidf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floatundidf</strong> <code class="def-code-arguments">(unsigned long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatundidf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatunditf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatunditf</strong> <code class="def-code-arguments">(unsigned long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatunditf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatundixf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatundixf</strong> <code class="def-code-arguments">(unsigned long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatundixf"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">i</var>, an unsigned long, to floating point.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloatuntisf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floatuntisf</strong> <code class="def-code-arguments">(unsigned long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatuntisf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatuntidf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floatuntidf</strong> <code class="def-code-arguments">(unsigned long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatuntidf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatuntitf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatuntitf</strong> <code class="def-code-arguments">(unsigned long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatuntitf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatuntixf"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__floatuntixf</strong> <code class="def-code-arguments">(unsigned long long <var class="var">i</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatuntixf"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">i</var>, an unsigned long long, to floating point.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffixsfbitint"><span class="category-def">Runtime Function: </span><span><code class="def-type">void</code> <strong class="def-name">__fixsfbitint</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">r</var>, int32_t <var class="var">rprec</var>, float <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixsfbitint"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixdfbitint"><span class="category-def">Runtime Function: </span><span><code class="def-type">void</code> <strong class="def-name">__fixdfbitint</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">r</var>, int32_t <var class="var">rprec</var>, double <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixdfbitint"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixxfbitint"><span class="category-def">Runtime Function: </span><span><code class="def-type">void</code> <strong class="def-name">__fixxfbitint</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">r</var>, int32_t <var class="var">rprec</var>, __float80 <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixxfbitint"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffixtfbitint"><span class="category-def">Runtime Function: </span><span><code class="def-type">void</code> <strong class="def-name">__fixtfbitint</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">r</var>, int32_t <var class="var">rprec</var>, _Float128 <var class="var">a</var>)</code><a class="copiable-link" href="#index-_005f_005ffixtfbitint"> &para;</a></span></dt>
+<dd><p>These functions convert <var class="var">a</var> to bit-precise integer <var class="var">r</var>, rounding toward zero.
+If <var class="var">rprec</var> is positive, it converts to unsigned bit-precise integer and
+negative values all become zero, if <var class="var">rprec</var> is negative, it converts
+to signed bit-precise integer.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005ffloatbitintsf"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__floatbitintsf</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">i</var>, int32_t <var class="var">iprec</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatbitintsf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatbitintdf"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__floatbitintdf</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">i</var>, int32_t <var class="var">iprec</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatbitintdf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatbitintxf"><span class="category-def">Runtime Function: </span><span><code class="def-type">__float80</code> <strong class="def-name">__floatbitintxf</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">i</var>, int32_t <var class="var">iprec</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatbitintxf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatbitinttf"><span class="category-def">Runtime Function: </span><span><code class="def-type">_Float128</code> <strong class="def-name">__floatbitinttf</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">i</var>, int32_t <var class="var">iprec</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatbitinttf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatbitinthf"><span class="category-def">Runtime Function: </span><span><code class="def-type">_Float16</code> <strong class="def-name">__floatbitinthf</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">i</var>, int32_t <var class="var">iprec</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatbitinthf"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005ffloatbitintbf"><span class="category-def">Runtime Function: </span><span><code class="def-type">__bf16</code> <strong class="def-name">__floatbitintbf</strong> <code class="def-code-arguments">(<code class="code">UBILtype</code> *<var class="var">i</var>, int32_t <var class="var">iprec</var>)</code><a class="copiable-link" href="#index-_005f_005ffloatbitintbf"> &para;</a></span></dt>
+<dd><p>These functions convert bit-precise integer <var class="var">i</var> to floating point.  If
+<var class="var">iprec</var> is positive, it is conversion from unsigned bit-precise integer,
+otherwise from signed bit-precise integer.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Comparison-functions-1">
+<h4 class="subsection"><span>3.2.3 Comparison functions<a class="copiable-link" href="#Comparison-functions-1"> &para;</a></span></h4>
+
+<p>There are two sets of basic comparison functions.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fcmpsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__cmpsf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fcmpsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fcmpdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__cmpdf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fcmpdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fcmptf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__cmptf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fcmptf2"> &para;</a></span></dt>
+<dd><p>These functions calculate <em class="math">a &lt;=&gt; b</em>.  That is, if <var class="var">a</var> is less
+than <var class="var">b</var>, they return &minus;1; if <var class="var">a</var> is greater than <var class="var">b</var>, they
+return 1; and if <var class="var">a</var> and <var class="var">b</var> are equal they return 0.  If
+either argument is NaN they return 1, but you should not rely on this;
+if NaN is a possibility, use one of the higher-level comparison
+functions.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005funordsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__unordsf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005funordsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005funorddf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__unorddf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005funorddf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005funordtf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__unordtf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005funordtf2"> &para;</a></span></dt>
+<dd><p>These functions return a nonzero value if either argument is NaN, otherwise 0.
+</p></dd></dl>
+
+<p>There is also a complete group of higher level functions which
+correspond directly to comparison operators.  They implement the ISO C
+semantics for floating-point comparisons, taking NaN into account.
+Pay careful attention to the return values defined for each set.
+Under the hood, all of these routines are implemented as
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  if (__unord<var class="var">X</var>f2 (a, b))
+    return <var class="var">E</var>;
+  return __cmp<var class="var">X</var>f2 (a, b);
+</pre></div>
+
+<p>where <var class="var">E</var> is a constant chosen to give the proper behavior for
+NaN.  Thus, the meaning of the return value is different for each set.
+Do not rely on this implementation; only the semantics documented
+below are guaranteed.
+</p>
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005feqsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__eqsf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005feqsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005feqdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__eqdf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005feqdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005feqtf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__eqtf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005feqtf2"> &para;</a></span></dt>
+<dd><p>These functions return zero if neither argument is NaN, and <var class="var">a</var> and
+<var class="var">b</var> are equal.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fnesf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__nesf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fnesf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnedf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__nedf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fnedf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fnetf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__netf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fnetf2"> &para;</a></span></dt>
+<dd><p>These functions return a nonzero value if either argument is NaN, or
+if <var class="var">a</var> and <var class="var">b</var> are unequal.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fgesf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__gesf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fgesf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fgedf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__gedf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fgedf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fgetf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__getf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fgetf2"> &para;</a></span></dt>
+<dd><p>These functions return a value greater than or equal to zero if
+neither argument is NaN, and <var class="var">a</var> is greater than or equal to
+<var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fltsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ltsf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fltsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fltdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ltdf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fltdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005flttf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__lttf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005flttf2"> &para;</a></span></dt>
+<dd><p>These functions return a value less than zero if neither argument is
+NaN, and <var class="var">a</var> is strictly less than <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005flesf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__lesf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005flesf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fledf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__ledf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fledf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fletf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__letf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fletf2"> &para;</a></span></dt>
+<dd><p>These functions return a value less than or equal to zero if neither
+argument is NaN, and <var class="var">a</var> is less than or equal to <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fgtsf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__gtsf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fgtsf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fgtdf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__gtdf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fgtdf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fgttf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">int</code> <strong class="def-name">__gttf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fgttf2"> &para;</a></span></dt>
+<dd><p>These functions return a value greater than zero if neither argument
+is NaN, and <var class="var">a</var> is strictly greater than <var class="var">b</var>.
+</p></dd></dl>
+
+</div>
+<div class="subsection-level-extent" id="Other-floating_002dpoint-functions">
+<h4 class="subsection"><span>3.2.4 Other floating-point functions<a class="copiable-link" href="#Other-floating_002dpoint-functions"> &para;</a></span></h4>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fpowisf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">float</code> <strong class="def-name">__powisf2</strong> <code class="def-code-arguments">(float <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fpowisf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fpowidf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">double</code> <strong class="def-name">__powidf2</strong> <code class="def-code-arguments">(double <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fpowidf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fpowitf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__powitf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fpowitf2"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fpowixf2"><span class="category-def">Runtime Function: </span><span><code class="def-type">long double</code> <strong class="def-name">__powixf2</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, int <var class="var">b</var>)</code><a class="copiable-link" href="#index-_005f_005fpowixf2"> &para;</a></span></dt>
+<dd><p>These functions convert raise <var class="var">a</var> to the power <var class="var">b</var>.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fmulsc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex float</code> <strong class="def-name">__mulsc3</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>, float <var class="var">c</var>, float <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fmulsc3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmuldc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex double</code> <strong class="def-name">__muldc3</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>, double <var class="var">c</var>, double <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fmuldc3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmultc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex long double</code> <strong class="def-name">__multc3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>, long double <var class="var">c</var>, long double <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fmultc3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fmulxc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex long double</code> <strong class="def-name">__mulxc3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>, long double <var class="var">c</var>, long double <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fmulxc3"> &para;</a></span></dt>
+<dd><p>These functions return the product of <em class="math"><var class="var">a</var> + i<var class="var">b</var></em> and
+<em class="math"><var class="var">c</var> + i<var class="var">d</var></em>, following the rules of C99 Annex G.
+</p></dd></dl>
+
+<dl class="first-deftypefn">
+<dt class="deftypefn" id="index-_005f_005fdivsc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex float</code> <strong class="def-name">__divsc3</strong> <code class="def-code-arguments">(float <var class="var">a</var>, float <var class="var">b</var>, float <var class="var">c</var>, float <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fdivsc3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivdc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex double</code> <strong class="def-name">__divdc3</strong> <code class="def-code-arguments">(double <var class="var">a</var>, double <var class="var">b</var>, double <var class="var">c</var>, double <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fdivdc3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivtc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex long double</code> <strong class="def-name">__divtc3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>, long double <var class="var">c</var>, long double <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fdivtc3"> &para;</a></span></dt>
+<dt class="deftypefnx def-cmd-deftypefn" id="index-_005f_005fdivxc3"><span class="category-def">Runtime Function: </span><span><code class="def-type">complex long double</code> <strong class="def-name">__divxc3</strong> <code class="def-code-arguments">(long double <var class="var">a</var>, long double <var class="var">b</var>, long double <var class="var">c</var>, long double <var class="var">d</var>)</code><a class="copiable-link" href="#index-_005f_005fdivxc3"> &para;</a></span></dt>
+<dd><p>These functions return the quotient of <em class="math"><var class="var">a</var> + i<var class="var">b</var></em> and
+<em class="math"><var class="var">c</var> + i<var class="var">d</var></em> (i.e., <em class="math">(<var class="var">a</var> + i<var class="var">b</var>) / (<var class="var">c</var>
++ i<var class="var">d</var>)</em>), following the rules of C99 Annex G.
+</p></dd></dl>
+
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Decimal-float-library-routines.html">Routines for decimal floating point emulation</a>, Previous: <a href="Integer-library-routines.html">Routines for integer arithmetic</a>, Up: <a href="Libgcc.html">The GCC low-level runtime library</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

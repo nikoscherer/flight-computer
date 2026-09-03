@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>C Tests (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="C Tests (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="C Tests (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Testsuites.html" rel="up" title="Testsuites">
+<link href="LTO-Testing.html" rel="next" title="LTO Testing">
+<link href="Ada-Tests.html" rel="prev" title="Ada Tests">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="C-Tests">
+<div class="nav-panel">
+<p>
+Next: <a href="LTO-Testing.html" accesskey="n" rel="next">Support for testing link-time optimizations</a>, Previous: <a href="Ada-Tests.html" accesskey="p" rel="prev">Ada Language Testsuites</a>, Up: <a href="Testsuites.html" accesskey="u" rel="up">Testsuites</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="C-Language-Testsuites"><span>6.4 C Language Testsuites<a class="copiable-link" href="#C-Language-Testsuites"> &para;</a></span></h3>
+
+<p>GCC contains the following C language testsuites, in the
+<samp class="file">gcc/testsuite</samp> directory:
+</p>
+<dl class="table">
+<dt><samp class="file">gcc.dg</samp></dt>
+<dd><p>This contains tests of particular features of the C compiler, using the
+more modern &lsquo;<samp class="samp">dg</samp>&rsquo; harness.  Correctness tests for various compiler
+features should go here if possible.
+</p>
+<p>Magic comments determine whether the file
+is preprocessed, compiled, linked or run.  In these tests, error and warning
+message texts are compared against expected texts or regular expressions
+given in comments.  These tests are run with the options &lsquo;<samp class="samp">-ansi -pedantic</samp>&rsquo;
+unless other options are given in the test.  Except as noted below they
+are not run with multiple optimization options.
+</p></dd>
+<dt><samp class="file">gcc.dg/compat</samp></dt>
+<dd><p>This subdirectory contains tests for binary compatibility using
+<samp class="file">lib/compat.exp</samp>, which in turn uses the language-independent support
+(see <a class="pxref" href="compat-Testing.html">Support for testing binary compatibility</a>).
+</p></dd>
+<dt><samp class="file">gcc.dg/cpp</samp></dt>
+<dd><p>This subdirectory contains tests of the preprocessor.
+</p></dd>
+<dt><samp class="file">gcc.dg/debug</samp></dt>
+<dd><p>This subdirectory contains tests for debug formats.  Tests in this
+subdirectory are run for each debug format that the compiler supports.
+</p></dd>
+<dt><samp class="file">gcc.dg/format</samp></dt>
+<dd><p>This subdirectory contains tests of the <samp class="option">-Wformat</samp> format
+checking.  Tests in this directory are run with and without
+<samp class="option">-DWIDE</samp>.
+</p></dd>
+<dt><samp class="file">gcc.dg/noncompile</samp></dt>
+<dd><p>This subdirectory contains tests of code that should not compile and
+does not need any special compilation options.  They are run with
+multiple optimization options, since sometimes invalid code crashes
+the compiler with optimization.
+</p></dd>
+<dt><samp class="file">gcc.dg/special</samp></dt>
+<dd><p>FIXME: describe this.
+</p>
+</dd>
+<dt><samp class="file">gcc.c-torture</samp></dt>
+<dd><p>This contains particular code fragments which have historically broken easily.
+These tests are run with multiple optimization options, so tests for features
+which only break at some optimization levels belong here.  This also contains
+tests to check that certain optimizations occur.  It might be worthwhile to
+separate the correctness tests cleanly from the code quality tests, but
+it hasn&rsquo;t been done yet.
+</p>
+</dd>
+<dt><samp class="file">gcc.c-torture/compat</samp></dt>
+<dd><p>FIXME: describe this.
+</p>
+<p>This directory should probably not be used for new tests.
+</p></dd>
+<dt><samp class="file">gcc.c-torture/compile</samp></dt>
+<dd><p>This testsuite contains test cases that should compile, but do not
+need to link or run.  These test cases are compiled with several
+different combinations of optimization options.  All warnings are
+disabled for these test cases, so this directory is not suitable if
+you wish to test for the presence or absence of compiler warnings.
+While special options can be set, and tests disabled on specific
+platforms, by the use of <samp class="file">.x</samp> files, mostly these test cases
+should not contain platform dependencies.  FIXME: discuss how defines
+such as <code class="code">STACK_SIZE</code> are used.
+</p></dd>
+<dt><samp class="file">gcc.c-torture/execute</samp></dt>
+<dd><p>This testsuite contains test cases that should compile, link and run;
+otherwise the same comments as for <samp class="file">gcc.c-torture/compile</samp> apply.
+</p></dd>
+<dt><samp class="file">gcc.c-torture/execute/ieee</samp></dt>
+<dd><p>This contains tests which are specific to IEEE floating point.
+</p></dd>
+<dt><samp class="file">gcc.c-torture/unsorted</samp></dt>
+<dd><p>FIXME: describe this.
+</p>
+<p>This directory should probably not be used for new tests.
+</p></dd>
+<dt><samp class="file">gcc.misc-tests</samp></dt>
+<dd><p>This directory contains C tests that require special handling.  Some
+of these tests have individual expect files, and others share
+special-purpose expect files:
+</p>
+<dl class="table">
+<dt><samp class="file"><code class="code">bprob*.c</code></samp></dt>
+<dd><p>Test <samp class="option">-fbranch-probabilities</samp> using
+<samp class="file">gcc.misc-tests/bprob.exp</samp>, which
+in turn uses the generic, language-independent framework
+(see <a class="pxref" href="profopt-Testing.html">Support for testing profile-directed
+optimizations</a>).
+</p>
+</dd>
+<dt><samp class="file"><code class="code">gcov*.c</code></samp></dt>
+<dd><p>Test <code class="command">gcov</code> output using <samp class="file">gcov.exp</samp>, which in turn uses the
+language-independent support (see <a class="pxref" href="gcov-Testing.html">Support for testing gcov</a>).
+</p>
+</dd>
+<dt><samp class="file"><code class="code">i386-pf-*.c</code></samp></dt>
+<dd><p>Test i386-specific support for data prefetch using <samp class="file">i386-prefetch.exp</samp>.
+</p></dd>
+</dl>
+
+</dd>
+<dt><samp class="file">gcc.test-framework</samp></dt>
+<dd><dl class="table">
+<dt><samp class="file"><code class="code">dg-*.c</code></samp></dt>
+<dd><p>Test the testsuite itself using <samp class="file">gcc.test-framework/test-framework.exp</samp>.
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+<p>FIXME: merge in <samp class="file">testsuite/README.gcc</samp> and discuss the format of
+test cases and magic comments more.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="LTO-Testing.html">Support for testing link-time optimizations</a>, Previous: <a href="Ada-Tests.html">Ada Language Testsuites</a>, Up: <a href="Testsuites.html">Testsuites</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

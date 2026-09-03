@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Disable Insn Alternatives (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Disable Insn Alternatives (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Disable Insn Alternatives (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Constraints.html" rel="up" title="Constraints">
+<link href="Define-Constraints.html" rel="next" title="Define Constraints">
+<link href="Machine-Constraints.html" rel="prev" title="Machine Constraints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Disable-Insn-Alternatives">
+<div class="nav-panel">
+<p>
+Next: <a href="Define-Constraints.html" accesskey="n" rel="next">Defining Machine-Specific Constraints</a>, Previous: <a href="Machine-Constraints.html" accesskey="p" rel="prev">Constraints for Particular Machines</a>, Up: <a href="Constraints.html" accesskey="u" rel="up">Operand Constraints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Disable-insn-alternatives-using-the-enabled-attribute"><span>16.9.6 Disable insn alternatives using the <code class="code">enabled</code> attribute<a class="copiable-link" href="#Disable-insn-alternatives-using-the-enabled-attribute"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-enabled"></a>
+
+<p>There are three insn attributes that may be used to selectively disable
+instruction alternatives:
+</p>
+<dl class="table">
+<dt><code class="code">enabled</code></dt>
+<dd><p>Says whether an alternative is available on the current subtarget.
+</p>
+</dd>
+<dt><code class="code">preferred_for_size</code></dt>
+<dd><p>Says whether an enabled alternative should be used in code that is
+optimized for size.
+</p>
+</dd>
+<dt><code class="code">preferred_for_speed</code></dt>
+<dd><p>Says whether an enabled alternative should be used in code that is
+optimized for speed.
+</p></dd>
+</dl>
+
+<p>All these attributes should use <code class="code">(const_int 1)</code> to allow an alternative
+or <code class="code">(const_int 0)</code> to disallow it.  The attributes must be a static
+property of the subtarget; they cannot for example depend on the
+current operands, on the current optimization level, on the location
+of the insn within the body of a loop, on whether register allocation
+has finished, or on the current compiler pass.
+</p>
+<p>The <code class="code">enabled</code> attribute is a correctness property.  It tells GCC to act
+as though the disabled alternatives were never defined in the first place.
+This is useful when adding new instructions to an existing pattern in
+cases where the new instructions are only available for certain cpu
+architecture levels (typically mapped to the <code class="code">-march=</code> command-line
+option).
+</p>
+<p>In contrast, the <code class="code">preferred_for_size</code> and <code class="code">preferred_for_speed</code>
+attributes are strong optimization hints rather than correctness properties.
+<code class="code">preferred_for_size</code> tells GCC which alternatives to consider when
+adding or modifying an instruction that GCC wants to optimize for size.
+<code class="code">preferred_for_speed</code> does the same thing for speed.  Note that things
+like code motion can lead to cases where code optimized for size uses
+alternatives that are not preferred for size, and similarly for speed.
+</p>
+<p>Although <code class="code">define_insn</code>s can in principle specify the <code class="code">enabled</code>
+attribute directly, it is often clearer to have subsiduary attributes
+for each architectural feature of interest.  The <code class="code">define_insn</code>s
+can then use these subsiduary attributes to say which alternatives
+require which features.  The example below does this for <code class="code">cpu_facility</code>.
+</p>
+<p>E.g. the following two patterns could easily be merged using the <code class="code">enabled</code>
+attribute:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+(define_insn &quot;*movdi_old&quot;
+  [(set (match_operand:DI 0 &quot;register_operand&quot; &quot;=d&quot;)
+        (match_operand:DI 1 &quot;register_operand&quot; &quot; d&quot;))]
+  &quot;!TARGET_NEW&quot;
+  &quot;lgr %0,%1&quot;)
+
+(define_insn &quot;*movdi_new&quot;
+  [(set (match_operand:DI 0 &quot;register_operand&quot; &quot;=d,f,d&quot;)
+        (match_operand:DI 1 &quot;register_operand&quot; &quot; d,d,f&quot;))]
+  &quot;TARGET_NEW&quot;
+  &quot;@
+   lgr  %0,%1
+   ldgr %0,%1
+   lgdr %0,%1&quot;)
+
+</pre></div>
+
+<p>to:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+(define_insn &quot;*movdi_combined&quot;
+  [(set (match_operand:DI 0 &quot;register_operand&quot; &quot;=d,f,d&quot;)
+        (match_operand:DI 1 &quot;register_operand&quot; &quot; d,d,f&quot;))]
+  &quot;&quot;
+  &quot;@
+   lgr  %0,%1
+   ldgr %0,%1
+   lgdr %0,%1&quot;
+  [(set_attr &quot;cpu_facility&quot; &quot;*,new,new&quot;)])
+
+</pre></div>
+
+<p>with the <code class="code">enabled</code> attribute defined like this:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+(define_attr &quot;cpu_facility&quot; &quot;standard,new&quot; (const_string &quot;standard&quot;))
+
+(define_attr &quot;enabled&quot; &quot;&quot;
+  (cond [(eq_attr &quot;cpu_facility&quot; &quot;standard&quot;) (const_int 1)
+         (and (eq_attr &quot;cpu_facility&quot; &quot;new&quot;)
+              (ne (symbol_ref &quot;TARGET_NEW&quot;) (const_int 0)))
+         (const_int 1)]
+        (const_int 0)))
+
+</pre></div>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Define-Constraints.html">Defining Machine-Specific Constraints</a>, Previous: <a href="Machine-Constraints.html">Constraints for Particular Machines</a>, Up: <a href="Constraints.html">Operand Constraints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

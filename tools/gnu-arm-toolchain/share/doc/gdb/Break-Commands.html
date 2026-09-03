@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Break Commands (Debugging with GDB)</title>
+
+<meta name="description" content="Break Commands (Debugging with GDB)">
+<meta name="keywords" content="Break Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Breakpoints.html" rel="up" title="Breakpoints">
+<link href="Dynamic-Printf.html" rel="next" title="Dynamic Printf">
+<link href="Conditions.html" rel="prev" title="Conditions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Break-Commands">
+<div class="nav-panel">
+<p>
+Next: <a href="Dynamic-Printf.html" accesskey="n" rel="next">Dynamic Printf</a>, Previous: <a href="Conditions.html" accesskey="p" rel="prev">Break Conditions</a>, Up: <a href="Breakpoints.html" accesskey="u" rel="up">Breakpoints, Watchpoints, and Catchpoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Breakpoint-Command-Lists"><span>5.1.7 Breakpoint Command Lists<a class="copiable-link" href="#Breakpoint-Command-Lists"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-breakpoint-commands"></a>
+<p>You can give any breakpoint (or watchpoint or catchpoint) a series of
+commands to execute when your program stops due to that breakpoint.  For
+example, you might want to print the values of certain expressions, or
+enable other breakpoints.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-end-_0028breakpoint-commands_0029"></a>
+<a id="index-commands"></a><span><code class="code">commands <span class="r">[</span><var class="var">list</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-commands"> &para;</a></span></dt>
+<dt><code class="code">&hellip; <var class="var">command-list</var> &hellip;</code></dt>
+<dt><code class="code">end</code></dt>
+<dd><p>Specify a list of commands for the given breakpoints.  The commands
+themselves appear on the following lines.  Type a line containing just
+<code class="code">end</code> to terminate the commands.
+</p>
+<p>To remove all commands from a breakpoint, type <code class="code">commands</code> and
+follow it immediately with <code class="code">end</code>; that is, give no commands.
+</p>
+<p>With no argument, <code class="code">commands</code> refers to the last breakpoint,
+watchpoint, or catchpoint set (not to the breakpoint most recently
+encountered).  If the most recent breakpoints were set with a single
+command, then the <code class="code">commands</code> will apply to all the breakpoints
+set by that command.  This applies to breakpoints set by
+<code class="code">rbreak</code>, and also applies when a single <code class="code">break</code> command
+creates multiple breakpoints (see <a class="pxref" href="Ambiguous-Expressions.html">Ambiguous
+Expressions</a>).
+</p></dd>
+</dl>
+
+<p>Pressing <kbd class="key">RET</kbd> as a means of repeating the last <small class="sc">GDB</small> command is
+disabled within a <var class="var">command-list</var>.
+</p>
+<p>Inside a command list, you can use the command
+<kbd class="kbd">disable $_hit_bpnum</kbd> to disable the encountered breakpoint.
+</p>
+<p>If your breakpoint has several code locations, the command
+<kbd class="kbd">disable $_hit_bpnum.$_hit_locno</kbd> will disable the specific breakpoint
+code location encountered.  If the breakpoint has only one location,
+this command will disable the encountered breakpoint.
+</p>
+<p>You can use breakpoint commands to start your program up again.  Simply
+use the <code class="code">continue</code> command, or <code class="code">step</code>, or any other command
+that resumes execution.
+</p>
+<p>Any other commands in the command list, after a command that resumes
+execution, are ignored.  This is because any time you resume execution
+(even with a simple <code class="code">next</code> or <code class="code">step</code>), you may encounter
+another breakpoint&mdash;which could have its own command list, leading to
+ambiguities about which list to execute.
+</p>
+<a class="index-entry-id" id="index-silent"></a>
+<p>If the first command you specify in a command list is <code class="code">silent</code>, the
+usual message about stopping at a breakpoint is not printed.  This may
+be desirable for breakpoints that are to print a specific message and
+then continue.  If none of the remaining commands print anything, you
+see no sign that the breakpoint was reached.  <code class="code">silent</code> is
+meaningful only at the beginning of a breakpoint command list.
+</p>
+<p>The commands <code class="code">echo</code>, <code class="code">output</code>, and <code class="code">printf</code> allow you to
+print precisely controlled output, and are often useful in silent
+breakpoints.  See <a class="xref" href="Output.html">Commands for Controlled Output</a>.
+</p>
+<p>For example, here is how you could use breakpoint commands to print the
+value of <code class="code">x</code> at entry to <code class="code">foo</code> whenever <code class="code">x</code> is positive.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">break foo if x&gt;0
+commands
+silent
+printf &quot;x is %d\n&quot;,x
+cont
+end
+</pre></div>
+
+<p>One application for breakpoint commands is to compensate for one bug so
+you can test for another.  Put a breakpoint just after the erroneous line
+of code, give it a condition to detect the case in which something
+erroneous has been done, and give it commands to assign correct values
+to any variables that need them.  End with the <code class="code">continue</code> command
+so that your program does not stop, and start with the <code class="code">silent</code>
+command so that no output is produced.  Here is an example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">break 403
+commands
+silent
+set x = y + 4
+cont
+end
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Dynamic-Printf.html">Dynamic Printf</a>, Previous: <a href="Conditions.html">Break Conditions</a>, Up: <a href="Breakpoints.html">Breakpoints, Watchpoints, and Catchpoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Comparisons (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Comparisons (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Comparisons (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="RTL.html" rel="up" title="RTL">
+<link href="Bit_002dFields.html" rel="next" title="Bit-Fields">
+<link href="Arithmetic.html" rel="prev" title="Arithmetic">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Comparisons">
+<div class="nav-panel">
+<p>
+Next: <a href="Bit_002dFields.html" accesskey="n" rel="next">Bit-Fields</a>, Previous: <a href="Arithmetic.html" accesskey="p" rel="prev">RTL Expressions for Arithmetic</a>, Up: <a href="RTL.html" accesskey="u" rel="up">RTL Representation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Comparison-Operations"><span>13.10 Comparison Operations<a class="copiable-link" href="#Comparison-Operations"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-RTL-comparison-operations"></a>
+
+<p>Comparison operators test a relation on two operands and are considered
+to represent a machine-dependent nonzero value described by, but not
+necessarily equal to, <code class="code">STORE_FLAG_VALUE</code> (see <a class="pxref" href="Misc.html">Miscellaneous Parameters</a>)
+if the relation holds, or zero if it does not, for comparison operators
+whose results have a &lsquo;MODE_INT&rsquo; mode,
+<code class="code">FLOAT_STORE_FLAG_VALUE</code> (see <a class="pxref" href="Misc.html">Miscellaneous Parameters</a>) if the relation holds, or
+zero if it does not, for comparison operators that return floating-point
+values, and a vector of either <code class="code">VECTOR_STORE_FLAG_VALUE</code> (see <a class="pxref" href="Misc.html">Miscellaneous Parameters</a>)
+if the relation holds, or of zeros if it does not, for comparison operators
+that return vector results.
+The mode of the comparison operation is independent of the mode
+of the data being compared.  If the comparison operation is being tested
+(e.g., the first operand of an <code class="code">if_then_else</code>), the mode must be
+<code class="code">VOIDmode</code>.
+</p>
+<a class="index-entry-id" id="index-condition-codes"></a>
+<p>A comparison operation compares two data
+objects.  The mode of the comparison is determined by the operands; they
+must both be valid for a common machine mode.  A comparison with both
+operands constant would be invalid as the machine mode could not be
+deduced from it, but such a comparison should never exist in RTL due to
+constant folding.
+</p>
+<p>Usually only one style
+of comparisons is supported on a particular machine, but the combine
+pass will try to merge operations to produce code like
+<code class="code">(eq <var class="var">x</var> <var class="var">y</var>)</code>,
+in case it exists in the context of the particular insn involved.
+</p>
+<p>Inequality comparisons come in two flavors, signed and unsigned.  Thus,
+there are distinct expression codes <code class="code">gt</code> and <code class="code">gtu</code> for signed and
+unsigned greater-than.  These can produce different results for the same
+pair of integer values: for example, 1 is signed greater-than &minus;1 but not
+unsigned greater-than, because &minus;1 when regarded as unsigned is actually
+<code class="code">0xffffffff</code> which is greater than 1.
+</p>
+<p>The signed comparisons are also used for floating point values.  Floating
+point comparisons are distinguished by the machine modes of the operands.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-equal"></a>
+<a id="index-eq"></a><span><code class="code">(eq:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-eq"> &para;</a></span></dt>
+<dd><p><code class="code">STORE_FLAG_VALUE</code> if the values represented by <var class="var">x</var> and <var class="var">y</var>
+are equal, otherwise 0.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-not-equal"></a>
+<a id="index-ne"></a><span><code class="code">(ne:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-ne"> &para;</a></span></dt>
+<dd><p><code class="code">STORE_FLAG_VALUE</code> if the values represented by <var class="var">x</var> and <var class="var">y</var>
+are not equal, otherwise 0.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-greater-than"></a>
+<a id="index-gt"></a><span><code class="code">(gt:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-gt"> &para;</a></span></dt>
+<dd><p><code class="code">STORE_FLAG_VALUE</code> if the <var class="var">x</var> is greater than <var class="var">y</var>.  If they
+are fixed-point, the comparison is done in a signed sense.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-greater-than-1"></a>
+<a class="index-entry-id" id="index-unsigned-greater-than"></a>
+<a id="index-gtu"></a><span><code class="code">(gtu:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-gtu"> &para;</a></span></dt>
+<dd><p>Like <code class="code">gt</code> but does unsigned comparison, on fixed-point numbers only.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-less-than"></a>
+<a class="index-entry-id" id="index-ltu"></a>
+<a class="index-entry-id" id="index-unsigned-less-than"></a>
+<a id="index-lt"></a><span><code class="code">(lt:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-lt"> &para;</a></span></dt>
+<dt><code class="code">(ltu:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code></dt>
+<dd><p>Like <code class="code">gt</code> and <code class="code">gtu</code> but test for &ldquo;less than&rdquo;.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-greater-than-2"></a>
+<a class="index-entry-id" id="index-geu"></a>
+<a class="index-entry-id" id="index-unsigned-greater-than-1"></a>
+<a id="index-ge"></a><span><code class="code">(ge:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-ge"> &para;</a></span></dt>
+<dt><code class="code">(geu:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code></dt>
+<dd><p>Like <code class="code">gt</code> and <code class="code">gtu</code> but test for &ldquo;greater than or equal&rdquo;.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-less-than-or-equal"></a>
+<a class="index-entry-id" id="index-leu"></a>
+<a class="index-entry-id" id="index-unsigned-less-than-1"></a>
+<a id="index-le"></a><span><code class="code">(le:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code><a class="copiable-link" href="#index-le"> &para;</a></span></dt>
+<dt><code class="code">(leu:<var class="var">m</var> <var class="var">x</var> <var class="var">y</var>)</code></dt>
+<dd><p>Like <code class="code">gt</code> and <code class="code">gtu</code> but test for &ldquo;less than or equal&rdquo;.
+</p>
+</dd>
+<dt><a id="index-if_005fthen_005felse"></a><span><code class="code">(if_then_else <var class="var">cond</var> <var class="var">then</var> <var class="var">else</var>)</code><a class="copiable-link" href="#index-if_005fthen_005felse"> &para;</a></span></dt>
+<dd><p>This is not a comparison operation but is listed here because it is
+always used in conjunction with a comparison operation.  To be
+precise, <var class="var">cond</var> is a comparison expression.  This expression
+represents a choice, according to <var class="var">cond</var>, between the value
+represented by <var class="var">then</var> and the one represented by <var class="var">else</var>.
+</p>
+<p>On most machines, <code class="code">if_then_else</code> expressions are valid only
+to express conditional jumps.
+</p>
+</dd>
+<dt><a id="index-cond"></a><span><code class="code">(cond [<var class="var">test1</var> <var class="var">value1</var> <var class="var">test2</var> <var class="var">value2</var> &hellip;] <var class="var">default</var>)</code><a class="copiable-link" href="#index-cond"> &para;</a></span></dt>
+<dd><p>Similar to <code class="code">if_then_else</code>, but more general.  Each of <var class="var">test1</var>,
+<var class="var">test2</var>, &hellip; is performed in turn.  The result of this expression is
+the <var class="var">value</var> corresponding to the first nonzero test, or <var class="var">default</var> if
+none of the tests are nonzero expressions.
+</p>
+<p>This is currently not valid for instruction patterns and is supported only
+for insn attributes.  See <a class="xref" href="Insn-Attributes.html">Instruction Attributes</a>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Bit_002dFields.html">Bit-Fields</a>, Previous: <a href="Arithmetic.html">RTL Expressions for Arithmetic</a>, Up: <a href="RTL.html">RTL Representation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

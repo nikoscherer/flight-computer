@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Allocation Order (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Allocation Order (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Allocation Order (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Registers.html" rel="up" title="Registers">
+<link href="Values-in-Registers.html" rel="next" title="Values in Registers">
+<link href="Register-Basics.html" rel="prev" title="Register Basics">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Allocation-Order">
+<div class="nav-panel">
+<p>
+Next: <a href="Values-in-Registers.html" accesskey="n" rel="next">How Values Fit in Registers</a>, Previous: <a href="Register-Basics.html" accesskey="p" rel="prev">Basic Characteristics of Registers</a>, Up: <a href="Registers.html" accesskey="u" rel="up">Register Usage</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Order-of-Allocation-of-Registers"><span>17.7.2 Order of Allocation of Registers<a class="copiable-link" href="#Order-of-Allocation-of-Registers"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-order-of-register-allocation"></a>
+<a class="index-entry-id" id="index-register-allocation-order"></a>
+
+<p>Registers are allocated in order.
+</p>
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-REG_005fALLOC_005fORDER"><span class="category-def">Macro: </span><span><strong class="def-name">REG_ALLOC_ORDER</strong><a class="copiable-link" href="#index-REG_005fALLOC_005fORDER"> &para;</a></span></dt>
+<dd><p>If defined, an initializer for a vector of integers, containing the
+numbers of hard registers in the order in which GCC should prefer
+to use them (from most preferred to least).
+</p>
+<p>If this macro is not defined, registers are used lowest numbered first
+(all else being equal).
+</p>
+<p>One use of this macro is on machines where the highest numbered
+registers must always be saved and the save-multiple-registers
+instruction supports only sequences of consecutive registers.  On such
+machines, define <code class="code">REG_ALLOC_ORDER</code> to be an initializer that lists
+the highest numbered allocable register first.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ADJUST_005fREG_005fALLOC_005fORDER"><span class="category-def">Macro: </span><span><strong class="def-name">ADJUST_REG_ALLOC_ORDER</strong><a class="copiable-link" href="#index-ADJUST_005fREG_005fALLOC_005fORDER"> &para;</a></span></dt>
+<dd><p>A C statement (sans semicolon) to choose the order in which to allocate
+hard registers for pseudo-registers local to a basic block.
+</p>
+<p>Store the desired register order in the array <code class="code">reg_alloc_order</code>.
+Element 0 should be the register to allocate first; element 1, the next
+register; and so on.
+</p>
+<p>The macro body should not assume anything about the contents of
+<code class="code">reg_alloc_order</code> before execution of the macro.
+</p>
+<p>On most machines, it is not necessary to define this macro.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-HONOR_005fREG_005fALLOC_005fORDER"><span class="category-def">Macro: </span><span><strong class="def-name">HONOR_REG_ALLOC_ORDER</strong><a class="copiable-link" href="#index-HONOR_005fREG_005fALLOC_005fORDER"> &para;</a></span></dt>
+<dd><p>Normally, IRA tries to estimate the costs for saving a register in the
+prologue and restoring it in the epilogue.  This discourages it from
+using call-saved registers.  If a machine wants to ensure that IRA
+allocates registers in the order given by REG_ALLOC_ORDER even if some
+call-saved registers appear earlier than call-used ones, then define this
+macro as a C expression to nonzero. Default is 0.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-IRA_005fHARD_005fREGNO_005fADD_005fCOST_005fMULTIPLIER"><span class="category-def">Macro: </span><span><strong class="def-name">IRA_HARD_REGNO_ADD_COST_MULTIPLIER</strong> <var class="def-var-arguments">(<var class="var">regno</var>)</var><a class="copiable-link" href="#index-IRA_005fHARD_005fREGNO_005fADD_005fCOST_005fMULTIPLIER"> &para;</a></span></dt>
+<dd><p>In some case register allocation order is not enough for the
+Integrated Register Allocator (<abbr class="acronym">IRA</abbr>) to generate a good code.
+If this macro is defined, it should return a floating point value
+based on <var class="var">regno</var>.  The cost of using <var class="var">regno</var> for a pseudo will
+be increased by approximately the pseudo&rsquo;s usage frequency times the
+value returned by this macro.  Not defining this macro is equivalent
+to having it always return <code class="code">0.0</code>.
+</p>
+<p>On most machines, it is not necessary to define this macro.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Values-in-Registers.html">How Values Fit in Registers</a>, Previous: <a href="Register-Basics.html">Basic Characteristics of Registers</a>, Up: <a href="Registers.html">Register Usage</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Option properties (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Option properties (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Option properties (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Options.html" rel="up" title="Options">
+<link href="Option-file-format.html" rel="prev" title="Option file format">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Option-properties">
+<div class="nav-panel">
+<p>
+Previous: <a href="Option-file-format.html" accesskey="p" rel="prev">Option file format</a>, Up: <a href="Options.html" accesskey="u" rel="up">Option specification files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Option-properties-1"><span>7.2 Option properties<a class="copiable-link" href="#Option-properties-1"> &para;</a></span></h3>
+
+<p>The second field of an option record can specify any of the following
+properties.  When an option takes an argument, it is enclosed in parentheses
+following the option property name.  The parser that handles option files
+is quite simplistic, and will be tricked by any nested parentheses within
+the argument text itself; in this case, the entire option argument can
+be wrapped in curly braces within the parentheses to demarcate it, e.g.:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Condition({defined (USE_CYGWIN_LIBSTDCXX_WRAPPERS)})
+</pre></div>
+
+<dl class="table">
+<dt><code class="code">Common</code></dt>
+<dd><p>The option is available for all languages and targets.
+</p>
+</dd>
+<dt><code class="code">Target</code></dt>
+<dd><p>The option is available for all languages but is target-specific.
+</p>
+</dd>
+<dt><code class="code">Driver</code></dt>
+<dd><p>The option is handled by the compiler driver using code not shared
+with the compilers proper (<samp class="file">cc1</samp> etc.).
+</p>
+</dd>
+<dt><code class="code"><var class="var">language</var></code></dt>
+<dd><p>The option is available when compiling for the given language.
+</p>
+<p>It is possible to specify several different languages for the same
+option.  Each <var class="var">language</var> must have been declared by an earlier
+<code class="code">Language</code> record.  See <a class="xref" href="Option-file-format.html">Option file format</a>.
+</p>
+</dd>
+<dt><code class="code">RejectDriver</code></dt>
+<dd><p>The option is only handled by the compilers proper (<samp class="file">cc1</samp> etc.)
+and should not be accepted by the driver.
+</p>
+</dd>
+<dt><code class="code">RejectNegative</code></dt>
+<dd><p>The option does not have a &ldquo;no-&rdquo; form.  All options beginning with
+&ldquo;f&rdquo;, &ldquo;g&rdquo;, &ldquo;W&rdquo; or &ldquo;m&rdquo; are assumed to have a &ldquo;no-&rdquo; form unless
+this property is used.
+</p>
+</dd>
+<dt><code class="code">Negative(<var class="var">othername</var>)</code></dt>
+<dd><p>The option will turn off another option <var class="var">othername</var>, which is
+the option name with the leading &ldquo;-&rdquo; removed.  This chain action will
+propagate through the <code class="code">Negative</code> property of the option to be
+turned off.  The driver will prune options, removing those that are
+turned off by some later option.  This pruning is not done for options
+with <code class="code">Joined</code> or <code class="code">JoinedOrMissing</code> properties, unless the
+options have both the <code class="code">RejectNegative</code> property and the <code class="code">Negative</code>
+property mentions itself.
+</p>
+<p>As a consequence, if you have a group of mutually-exclusive
+options, their <code class="code">Negative</code> properties should form a circular chain.
+For example, if options <samp class="option">-<var class="var">a</var></samp>, <samp class="option">-<var class="var">b</var></samp> and
+<samp class="option">-<var class="var">c</var></samp> are mutually exclusive, their respective <code class="code">Negative</code>
+properties should be &lsquo;<samp class="samp">Negative(<var class="var">b</var>)</samp>&rsquo;, &lsquo;<samp class="samp">Negative(<var class="var">c</var>)</samp>&rsquo;
+and &lsquo;<samp class="samp">Negative(<var class="var">a</var>)</samp>&rsquo;.
+</p>
+</dd>
+<dt><code class="code">Joined</code></dt>
+<dt><code class="code">Separate</code></dt>
+<dd><p>The option takes a mandatory argument.  <code class="code">Joined</code> indicates
+that the option and argument can be included in the same <code class="code">argv</code>
+entry (as with <code class="code">-mflush-func=<var class="var">name</var></code>, for example).
+<code class="code">Separate</code> indicates that the option and argument can be
+separate <code class="code">argv</code> entries (as with <code class="code">-o</code>).  An option is
+allowed to have both of these properties.
+</p>
+</dd>
+<dt><code class="code">JoinedOrMissing</code></dt>
+<dd><p>The option takes an optional argument.  If the argument is given,
+it will be part of the same <code class="code">argv</code> entry as the option itself.
+</p>
+<p>This property cannot be used alongside <code class="code">Joined</code> or <code class="code">Separate</code>.
+</p>
+</dd>
+<dt><code class="code">MissingArgError(<var class="var">message</var>)</code></dt>
+<dd><p>For an option marked <code class="code">Joined</code> or <code class="code">Separate</code>, the message
+<var class="var">message</var> will be used as an error message if the mandatory
+argument is missing; for options without <code class="code">MissingArgError</code>, a
+generic error message is used.  <var class="var">message</var> should contain a single
+&lsquo;<samp class="samp">%qs</samp>&rsquo; format, which will be used to format the name of the option
+passed.
+</p>
+</dd>
+<dt><code class="code">Args(<var class="var">n</var>)</code></dt>
+<dd><p>For an option marked <code class="code">Separate</code>, indicate that it takes <var class="var">n</var>
+arguments.  The default is 1.
+</p>
+</dd>
+<dt><code class="code">UInteger</code></dt>
+<dd><p>The option&rsquo;s argument is a non-negative integer consisting of either
+decimal or hexadecimal digits interpreted as <code class="code">int</code>.  Hexadecimal
+integers may optionally start with the <code class="code">0x</code> or <code class="code">0X</code> prefix.
+The option parser validates and converts the argument before passing
+it to the relevant option handler.  <code class="code">UInteger</code> should also be used
+with options like <code class="code">-falign-loops</code> where both <code class="code">-falign-loops</code>
+and <code class="code">-falign-loops</code>=<var class="var">n</var> are supported to make sure the saved
+options are given a full integer.  Positive values of the argument in
+excess of <code class="code">INT_MAX</code> wrap around zero.
+</p>
+</dd>
+<dt><code class="code">Host_Wide_Int</code></dt>
+<dd><p>The option&rsquo;s argument is a non-negative integer consisting of either
+decimal or hexadecimal digits interpreted as the widest integer type
+on the host.  As with an <code class="code">UInteger</code> argument, hexadecimal integers
+may optionally start with the <code class="code">0x</code> or <code class="code">0X</code> prefix.  The option
+parser validates and converts the argument before passing it to
+the relevant option handler.  <code class="code">Host_Wide_Int</code> should be used with
+options that need to accept very large values.  Positive values of
+the argument in excess of <code class="code">HOST_WIDE_INT_M1U</code> are assigned
+<code class="code">HOST_WIDE_INT_M1U</code>.
+</p>
+</dd>
+<dt><code class="code">IntegerRange(<var class="var">n</var>, <var class="var">m</var>)</code></dt>
+<dd><p>The options&rsquo;s arguments are integers of type <code class="code">int</code>.  The option&rsquo;s
+parser validates that the value of an option integer argument is within
+the closed range [<var class="var">n</var>, <var class="var">m</var>].
+</p>
+</dd>
+<dt><code class="code">ByteSize</code></dt>
+<dd><p>A property applicable only to <code class="code">UInteger</code> or <code class="code">Host_Wide_Int</code>
+arguments.  The option&rsquo;s integer argument is interpreted as if in infinite
+precision using saturation arithmetic in the corresponding type.  The argument
+may be followed by a &lsquo;<samp class="samp">byte-size</samp>&rsquo; suffix designating a multiple of bytes
+such as <code class="code">kB</code> and <code class="code">KiB</code> for kilobyte and kibibyte, respectively,
+<code class="code">MB</code> and <code class="code">MiB</code> for megabyte and mebibyte, <code class="code">GB</code> and <code class="code">GiB</code>
+for gigabyte and gigibyte, and so on.  <code class="code">ByteSize</code> should be used for
+with options that take a very large argument representing a size in bytes,
+such as <samp class="option">-Wlarger-than=</samp>.
+</p>
+</dd>
+<dt><code class="code">ToLower</code></dt>
+<dd><p>The option&rsquo;s argument should be converted to lowercase as part of
+putting it in canonical form, and before comparing with the strings
+indicated by any <code class="code">Enum</code> property.
+</p>
+</dd>
+<dt><code class="code">NoDriverArg</code></dt>
+<dd><p>For an option marked <code class="code">Separate</code>, the option only takes an
+argument in the compiler proper, not in the driver.  This is for
+compatibility with existing options that are used both directly and
+via <samp class="option">-Wp,</samp>; new options should not have this property.
+</p>
+</dd>
+<dt><code class="code">Var(<var class="var">var</var>)</code></dt>
+<dd><p>The state of this option should be stored in variable <var class="var">var</var>
+(actually a macro for <code class="code">global_options.x_<var class="var">var</var></code>).
+The way that the state is stored depends on the type of option:
+</p>
+<ul class="itemize mark-bullet">
+<li>If the option uses the <code class="code">Mask</code> or <code class="code">InverseMask</code> properties,
+<var class="var">var</var> is the integer variable that contains the mask.
+
+</li><li>If the option is a normal on/off switch, <var class="var">var</var> is an integer
+variable that is nonzero when the option is enabled.  The options
+parser will set the variable to 1 when the positive form of the
+option is used and 0 when the &ldquo;no-&rdquo; form is used.
+
+</li><li>If the option takes an argument and has the <code class="code">UInteger</code> property,
+<var class="var">var</var> is an integer variable that stores the value of the argument.
+
+</li><li>If the option takes an argument and has the <code class="code">Enum</code> property,
+<var class="var">var</var> is a variable (type given in the <code class="code">Type</code> property of the
+&lsquo;<samp class="samp">Enum</samp>&rsquo; record whose <code class="code">Name</code> property has the same argument as
+the <code class="code">Enum</code> property of this option) that stores the value of the
+argument.
+
+</li><li>If the option has the <code class="code">Defer</code> property, <var class="var">var</var> is a pointer to
+a <code class="code">VEC(cl_deferred_option,heap)</code> that stores the option for later
+processing.  (<var class="var">var</var> is declared with type <code class="code">void *</code> and needs
+to be cast to <code class="code">VEC(cl_deferred_option,heap)</code> before use.)
+
+</li><li>Otherwise, if the option takes an argument, <var class="var">var</var> is a pointer to
+the argument string.  The pointer will be null if the argument is optional
+and wasn&rsquo;t given.
+</li></ul>
+
+<p>The option-processing script will usually zero-initialize <var class="var">var</var>.
+You can modify this behavior using <code class="code">Init</code>.
+</p>
+</dd>
+<dt><code class="code">Var(<var class="var">var</var>, <var class="var">set</var>)</code></dt>
+<dd><p>The option controls an integer variable <var class="var">var</var> and is active when
+<var class="var">var</var> equals <var class="var">set</var>.  The option parser will set <var class="var">var</var> to
+<var class="var">set</var> when the positive form of the option is used and <code class="code">!<var class="var">set</var></code>
+when the &ldquo;no-&rdquo; form is used.
+</p>
+<p><var class="var">var</var> is declared in the same way as for the single-argument form
+described above.
+</p>
+</dd>
+<dt><code class="code">Init(<var class="var">value</var>)</code></dt>
+<dd><p>The variable specified by the <code class="code">Var</code> property should be statically
+initialized to <var class="var">value</var>.  If more than one option using the same
+variable specifies <code class="code">Init</code>, all must specify the same initializer.
+</p>
+</dd>
+<dt><code class="code">WarnRemoved</code></dt>
+<dd><p>The option is removed and every usage of such option will
+result in a warning.  We use it option backward compatibility.
+</p>
+</dd>
+<dt><code class="code">Mask(<var class="var">name</var>)</code></dt>
+<dd><p>The option is associated with a bit in the <code class="code">target_flags</code>
+variable (see <a class="pxref" href="Run_002dtime-Target.html">Run-time Target Specification</a>) and is active when that bit is set.
+You may also specify <code class="code">Var</code> to select a variable other than
+<code class="code">target_flags</code>.
+</p>
+<p>The options-processing script will automatically allocate a unique bit
+for the option.  If the option is attached to &lsquo;<samp class="samp">target_flags</samp>&rsquo; or <code class="code">Var</code>
+which is defined by <code class="code">TargetVariable</code>,  the script will set the macro
+<code class="code">MASK_<var class="var">name</var></code> to the appropriate bitmask.  It will also declare a
+<code class="code">TARGET_<var class="var">name</var></code>, <code class="code">TARGET_<var class="var">name</var>_P</code> and
+<code class="code">TARGET_<var class="var">name</var>_OPTS_P</code>: <code class="code">TARGET_<var class="var">name</var></code> macros that has the
+value 1 when the option is active and 0 otherwise, <code class="code">TARGET_<var class="var">name</var>_P</code> is
+similar to <code class="code">TARGET_<var class="var">name</var></code> but take an argument as &lsquo;<samp class="samp">target_flags</samp>&rsquo;
+or <code class="code">TargetVariable</code>, and <code class="code">TARGET_<var class="var">name</var>_OPTS_P</code> also similar to
+<code class="code">TARGET_<var class="var">name</var></code> but take an argument as <code class="code">gcc_options</code>.
+If you use <code class="code">Var</code> to attach the option to a different variable which is not
+defined by <code class="code">TargetVariable</code>, the bitmask macro with be called
+<code class="code">OPTION_MASK_<var class="var">name</var></code>.
+</p>
+</dd>
+<dt><code class="code">InverseMask(<var class="var">othername</var>)</code></dt>
+<dt><code class="code">InverseMask(<var class="var">othername</var>, <var class="var">thisname</var>)</code></dt>
+<dd><p>The option is the inverse of another option that has the
+<code class="code">Mask(<var class="var">othername</var>)</code> property.  If <var class="var">thisname</var> is given,
+the options-processing script will declare <code class="code">TARGET_<var class="var">thisname</var></code>,
+<code class="code">TARGET_<var class="var">name</var>_P</code> and <code class="code">TARGET_<var class="var">name</var>_OPTS_P</code> macros:
+<code class="code">TARGET_<var class="var">thisname</var></code> is 1 when the option is active and 0 otherwise,
+<code class="code">TARGET_<var class="var">name</var>_P</code> is similar to <code class="code">TARGET_<var class="var">name</var></code> but takes an
+argument as &lsquo;<samp class="samp">target_flags</samp>&rsquo;, and <code class="code">TARGET_<var class="var">name</var>_OPTS_P</code> is also
+similar to <code class="code">TARGET_<var class="var">name</var></code> but takes an argument as <code class="code">gcc_options</code>.
+</p>
+</dd>
+<dt><code class="code">Enum(<var class="var">name</var>)</code></dt>
+<dd><p>The option&rsquo;s argument is a string from the set of strings associated
+with the corresponding &lsquo;<samp class="samp">Enum</samp>&rsquo; record.  The string is checked and
+converted to the integer specified in the corresponding
+&lsquo;<samp class="samp">EnumValue</samp>&rsquo; record before being passed to option handlers.
+</p>
+</dd>
+<dt><code class="code">EnumSet</code></dt>
+<dd><p>Must be used together with the <code class="code">Enum(<var class="var">name</var>)</code> property.
+Corresponding &lsquo;<samp class="samp">Enum</samp>&rsquo; record must use <code class="code">Set</code> properties.
+The option&rsquo;s argument is either a string from the set like for
+<code class="code">Enum(<var class="var">name</var>)</code>, but with a slightly different behavior that
+the whole <code class="code">Var</code> isn&rsquo;t overwritten, but only the bits in all the
+enumeration values with the same set bitwise ored together.
+Or option&rsquo;s argument can be a comma separated list of strings where
+each string is from a different <code class="code">Set(<var class="var">number</var>)</code>.
+</p>
+</dd>
+<dt><code class="code">EnumBitSet</code></dt>
+<dd><p>Must be used together with the <code class="code">Enum(<var class="var">name</var>)</code> property.
+Similar to &lsquo;<samp class="samp">EnumSet</samp>&rsquo;, but corresponding &lsquo;<samp class="samp">Enum</samp>&rsquo; record must
+not use <code class="code">Set</code> properties, each <code class="code">EnumValue</code> should have
+<code class="code">Value</code> that is a power of 2, each value is treated as its own
+set and its value as the set&rsquo;s mask, so there are no mutually
+exclusive arguments.
+</p>
+</dd>
+<dt><code class="code">Defer</code></dt>
+<dd><p>The option should be stored in a vector, specified with <code class="code">Var</code>,
+for later processing.
+</p>
+</dd>
+<dt><code class="code">Alias(<var class="var">opt</var>)</code></dt>
+<dt><code class="code">Alias(<var class="var">opt</var>, <var class="var">arg</var>)</code></dt>
+<dt><code class="code">Alias(<var class="var">opt</var>, <var class="var">posarg</var>, <var class="var">negarg</var>)</code></dt>
+<dd><p>The option is an alias for <samp class="option">-<var class="var">opt</var></samp> (or the negative form
+of that option, depending on <code class="code">NegativeAlias</code>).  In the first form,
+any argument passed to the alias is considered to be passed to
+<samp class="option">-<var class="var">opt</var></samp>, and <samp class="option">-<var class="var">opt</var></samp> is considered to be
+negated if the alias is used in negated form.  In the second form, the
+alias may not be negated or have an argument, and <var class="var">posarg</var> is
+considered to be passed as an argument to <samp class="option">-<var class="var">opt</var></samp>.  In the
+third form, the alias may not have an argument, if the alias is used
+in the positive form then <var class="var">posarg</var> is considered to be passed to
+<samp class="option">-<var class="var">opt</var></samp>, and if the alias is used in the negative form
+then <var class="var">negarg</var> is considered to be passed to <samp class="option">-<var class="var">opt</var></samp>.
+</p>
+<p>Aliases should not specify <code class="code">Var</code> or <code class="code">Mask</code> or
+<code class="code">UInteger</code>.  Aliases should normally specify the same languages
+as the target of the alias; the flags on the target will be used to
+determine any diagnostic for use of an option for the wrong language,
+while those on the alias will be used to identify what command-line
+text is the option and what text is any argument to that option.
+</p>
+<p>When an <code class="code">Alias</code> definition is used for an option, driver specs do
+not need to handle it and no &lsquo;<samp class="samp">OPT_</samp>&rsquo; enumeration value is defined
+for it; only the canonical form of the option will be seen in those
+places.
+</p>
+</dd>
+<dt><code class="code">NegativeAlias</code></dt>
+<dd><p>For an option marked with <code class="code">Alias(<var class="var">opt</var>)</code>, the option is
+considered to be an alias for the positive form of <samp class="option">-<var class="var">opt</var></samp>
+if negated and for the negative form of <samp class="option">-<var class="var">opt</var></samp> if not
+negated.  <code class="code">NegativeAlias</code> may not be used with the forms of
+<code class="code">Alias</code> taking more than one argument.
+</p>
+</dd>
+<dt><code class="code">Ignore</code></dt>
+<dd><p>This option is ignored apart from printing any warning specified using
+<code class="code">Warn</code>.  The option will not be seen by specs and no &lsquo;<samp class="samp">OPT_</samp>&rsquo;
+enumeration value is defined for it.
+</p>
+</dd>
+<dt><code class="code">SeparateAlias</code></dt>
+<dd><p>For an option marked with <code class="code">Joined</code>, <code class="code">Separate</code> and
+<code class="code">Alias</code>, the option only acts as an alias when passed a separate
+argument; with a joined argument it acts as a normal option, with an
+&lsquo;<samp class="samp">OPT_</samp>&rsquo; enumeration value.  This is for compatibility with the
+Java <samp class="option">-d</samp> option and should not be used for new options.
+</p>
+</dd>
+<dt><code class="code">Warn(<var class="var">message</var>)</code></dt>
+<dd><p>If this option is used, output the warning <var class="var">message</var>.
+<var class="var">message</var> is a format string, either taking a single operand with
+a &lsquo;<samp class="samp">%qs</samp>&rsquo; format which is the option name, or not taking any
+operands, which is passed to the &lsquo;<samp class="samp">warning</samp>&rsquo; function.  If an alias
+is marked <code class="code">Warn</code>, the target of the alias must not also be marked
+<code class="code">Warn</code>.
+</p>
+</dd>
+<dt><code class="code">Warning</code></dt>
+<dd><p>This is a warning option and should be shown as such in
+<samp class="option">--help</samp> output.  This flag does not currently affect anything
+other than <samp class="option">--help</samp>.
+</p>
+</dd>
+<dt><code class="code">Optimization</code></dt>
+<dd><p>This is an optimization option.  It should be shown as such in
+<samp class="option">--help</samp> output, and any associated variable named using
+<code class="code">Var</code> should be saved and restored when the optimization level is
+changed with <code class="code">optimize</code> attributes.
+</p>
+</dd>
+<dt><code class="code">PerFunction</code></dt>
+<dd><p>This is an option that can be overridden on a per-function basis.
+<code class="code">Optimization</code> implies <code class="code">PerFunction</code>, but options that do not
+affect executable code generation may use this flag instead, so that the
+option is not taken into account in ways that might affect executable
+code generation.
+</p>
+</dd>
+<dt><code class="code">Param</code></dt>
+<dd><p>This is an option that is a parameter.
+</p>
+</dd>
+<dt><code class="code">Undocumented</code></dt>
+<dd><p>The option is deliberately missing documentation and should not
+be included in the <samp class="option">--help</samp> output.
+</p>
+</dd>
+<dt><code class="code">Condition(<var class="var">cond</var>)</code></dt>
+<dd><p>The option should only be accepted if preprocessor condition
+<var class="var">cond</var> is true.  Note that any C declarations associated with the
+option will be present even if <var class="var">cond</var> is false; <var class="var">cond</var> simply
+controls whether the option is accepted and whether it is printed in
+the <samp class="option">--help</samp> output.
+</p>
+</dd>
+<dt><code class="code">Save</code></dt>
+<dd><p>Build the <code class="code">cl_target_option</code> structure to hold a copy of the
+option, add the functions <code class="code">cl_target_option_save</code> and
+<code class="code">cl_target_option_restore</code> to save and restore the options.
+</p>
+</dd>
+<dt><code class="code">SetByCombined</code></dt>
+<dd><p>The option may also be set by a combined option such as
+<samp class="option">-ffast-math</samp>.  This causes the <code class="code">gcc_options</code> struct to
+have a field <code class="code">frontend_set_<var class="var">name</var></code>, where <code class="code"><var class="var">name</var></code>
+is the name of the field holding the value of this option (without the
+leading <code class="code">x_</code>).  This gives the front end a way to indicate that
+the value has been set explicitly and should not be changed by the
+combined option.  For example, some front ends use this to prevent
+<samp class="option">-ffast-math</samp> and <samp class="option">-fno-fast-math</samp> from changing the
+value of <samp class="option">-fmath-errno</samp> for languages that do not use
+<code class="code">errno</code>.
+</p>
+</dd>
+<dt><code class="code">EnabledBy(<var class="var">opt</var>)</code></dt>
+<dt><code class="code">EnabledBy(<var class="var">opt</var> || <var class="var">opt2</var>)</code></dt>
+<dt><code class="code">EnabledBy(<var class="var">opt</var> &amp;&amp; <var class="var">opt2</var>)</code></dt>
+<dd><p>If not explicitly set, the option is set to the value of
+<samp class="option">-<var class="var">opt</var></samp>; multiple options can be given, separated by
+<code class="code">||</code>.  The third form using <code class="code">&amp;&amp;</code> specifies that the option is
+only set if both <var class="var">opt</var> and <var class="var">opt2</var> are set. The options <var class="var">opt</var>
+and <var class="var">opt2</var> must have the <code class="code">Common</code> property; otherwise, use
+<code class="code">LangEnabledBy</code>.
+</p>
+</dd>
+<dt><code class="code">LangEnabledBy(<var class="var">language</var>, <var class="var">opt</var>)</code></dt>
+<dt><code class="code">LangEnabledBy(<var class="var">language</var>, <var class="var">opt</var>, <var class="var">posarg</var>, <var class="var">negarg</var>)</code></dt>
+<dd><p>When compiling for the given language, the option is set to the value
+of <samp class="option">-<var class="var">opt</var></samp>, if not explicitly set. <var class="var">opt</var> can be also a list
+of <code class="code">||</code> separated options. In the second form, if
+<var class="var">opt</var> is used in the positive form then <var class="var">posarg</var> is considered
+to be passed to the option, and if <var class="var">opt</var> is used in the negative
+form then <var class="var">negarg</var> is considered to be passed to the option.  It
+is possible to specify several different languages.  Each
+<var class="var">language</var> must have been declared by an earlier <code class="code">Language</code>
+record.  See <a class="xref" href="Option-file-format.html">Option file format</a>.
+</p>
+</dd>
+<dt><code class="code">NoDWARFRecord</code></dt>
+<dd><p>The option is omitted from the producer string written by
+<samp class="option">-grecord-gcc-switches</samp>.
+</p>
+</dd>
+<dt><code class="code">PchIgnore</code></dt>
+<dd><p>Even if this is a target option, this option will not be recorded / compared
+to determine if a precompiled header file matches.
+</p>
+</dd>
+<dt><code class="code">CPP(<var class="var">var</var>)</code></dt>
+<dd><p>The state of this option should be kept in sync with the preprocessor
+option <var class="var">var</var>.  If this property is set, then properties <code class="code">Var</code>
+and <code class="code">Init</code> must be set as well.
+</p>
+</dd>
+<dt><code class="code">CppReason(<var class="var">CPP_W_Enum</var>)</code></dt>
+<dd><p>This warning option corresponds to <code class="code">cpplib.h</code> warning reason code
+<var class="var">CPP_W_Enum</var>.  This should only be used for warning options of the
+C-family front-ends.
+</p>
+</dd>
+<dt><code class="code">UrlSuffix(<var class="var">url_suffix</var>)</code></dt>
+<dd><p>Adjacent to each human-written <code class="code">.opt</code> file in the source tree is
+a corresponding file with a <code class="code">.opt.urls</code> extension.  These files
+contain <code class="code">UrlSuffix</code> directives giving the ending part of the URL
+for the documentation of the option, such as:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Wabi-tag
+UrlSuffix(gcc/C_002b_002b-Dialect-Options.html#index-Wabi-tag)
+</pre></div>
+
+<p>These URL suffixes are relative to <code class="code">DOCUMENTATION_ROOT_URL</code>.
+</p>
+<p>There files are generated from the <code class="code">.opt</code> files and the generated
+HTML documentation by <code class="code">regenerate-opt-urls.py</code>, and should be
+regenerated when adding new options, via manually invoking
+<code class="code">make regenerate-opt-urls</code>.
+</p>
+</dd>
+<dt><code class="code">LangUrlSuffix_<var class="var">lang</var>(<var class="var">url_suffix</var>)</code></dt>
+<dd><p>In addition to <code class="code">UrlSuffix</code> directives, <code class="code">regenerate-opt-urls.py</code>
+can generate language-specific URLs, such as:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">LangUrlSuffix_D(gdc/Code-Generation.html#index-MMD)
+</pre></div>
+
+</dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Option-file-format.html">Option file format</a>, Up: <a href="Options.html">Option specification files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

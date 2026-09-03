@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Disable Reading Source (Debugging with GDB)</title>
+
+<meta name="description" content="Disable Reading Source (Debugging with GDB)">
+<meta name="keywords" content="Disable Reading Source (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Source.html" rel="up" title="Source">
+<link href="Machine-Code.html" rel="prev" title="Machine Code">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Disable-Reading-Source">
+<div class="nav-panel">
+<p>
+Previous: <a href="Machine-Code.html" accesskey="p" rel="prev">Source and Machine Code</a>, Up: <a href="Source.html" accesskey="u" rel="up">Examining Source Files</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Disable-Reading-Source-Code"><span>9.7 Disable Reading Source Code<a class="copiable-link" href="#Disable-Reading-Source-Code"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-source-code_002c-disable-access"></a>
+
+<p>In some cases it can be desirable to prevent <small class="sc">GDB</small> from
+accessing source code files.  One case where this might be desirable
+is if the source code files are located over a slow network
+connection.
+</p>
+<p>The following command can be used to control whether <small class="sc">GDB</small>
+should access source code files or not:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-source-open"></a>
+<a id="index-set-source-open"></a><span><code class="code">set source open <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-set-source-open"> &para;</a></span></dt>
+<dt><code class="code">show source open</code></dt>
+<dd><p>When this option is <code class="code">on</code>, which is the default, <small class="sc">GDB</small> will
+access source code files when needed, for example to print source
+lines when <small class="sc">GDB</small> stops, or in response to the <code class="code">list</code>
+command.
+</p>
+<p>When this option is <code class="code">off</code>, <small class="sc">GDB</small> will not access source
+code files.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Tail Call Frames (Debugging with GDB)</title>
+
+<meta name="description" content="Tail Call Frames (Debugging with GDB)">
+<meta name="keywords" content="Tail Call Frames (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Optimized-Code.html" rel="up" title="Optimized Code">
+<link href="Inline-Functions.html" rel="prev" title="Inline Functions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Tail-Call-Frames">
+<div class="nav-panel">
+<p>
+Previous: <a href="Inline-Functions.html" accesskey="p" rel="prev">Inline Functions</a>, Up: <a href="Optimized-Code.html" accesskey="u" rel="up">Debugging Optimized Code</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Tail-Call-Frames-1"><span>11.2 Tail Call Frames<a class="copiable-link" href="#Tail-Call-Frames-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-tail-call-frames_002c-debugging"></a>
+
+<p>Function <code class="code">B</code> can call function <code class="code">C</code> in its very last statement.  In
+unoptimized compilation the call of <code class="code">C</code> is immediately followed by return
+instruction at the end of <code class="code">B</code> code.  Optimizing compiler may replace the
+call and return in function <code class="code">B</code> into one jump to function <code class="code">C</code>
+instead.  Such use of a jump instruction is called <em class="dfn">tail call</em>.
+</p>
+<p>During execution of function <code class="code">C</code>, there will be no indication in the
+function call stack frames that it was tail-called from <code class="code">B</code>.  If function
+<code class="code">A</code> regularly calls function <code class="code">B</code> which tail-calls function <code class="code">C</code>,
+then <small class="sc">GDB</small> will see <code class="code">A</code> as the caller of <code class="code">C</code>.  However, in
+some cases <small class="sc">GDB</small> can determine that <code class="code">C</code> was tail-called from
+<code class="code">B</code>, and it will then create fictitious call frame for that, with the
+return address set up as if <code class="code">B</code> called <code class="code">C</code> normally.
+</p>
+<p>This functionality is currently supported only by DWARF 2 debugging format and
+the compiler has to produce &lsquo;<samp class="samp">DW_TAG_call_site</samp>&rsquo; tags.  With
+<small class="sc">GCC</small>, you need to specify <samp class="option">-O -g</samp> during compilation, to get
+this information.
+</p>
+<p><kbd class="kbd">info frame</kbd> command (see <a class="pxref" href="Frame-Info.html">Information About a Frame</a>) will indicate the tail call frame
+kind by text <code class="code">tail call frame</code> such as in this sample <small class="sc">GDB</small> output:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) x/i $pc - 2
+   0x40066b &lt;b(int, double)+11&gt;: jmp 0x400640 &lt;c(int, double)&gt;
+(gdb) info frame
+Stack level 1, frame at 0x7fffffffda30:
+ rip = 0x40066d in b (amd64-entry-value.cc:59); saved rip 0x4004c5
+ tail call frame, caller of frame at 0x7fffffffda30
+ source language c++.
+ Arglist at unknown address.
+ Locals at unknown address, Previous frame's sp is 0x7fffffffda30
+</pre></div>
+
+<p>The detection of all the possible code path executions can find them ambiguous.
+There is no execution history stored (possible <a class="ref" href="Reverse-Execution.html">Running programs backward</a> is never
+used for this purpose) and the last known caller could have reached the known
+callee by multiple different jump sequences.  In such case <small class="sc">GDB</small> still
+tries to show at least all the unambiguous top tail callers and all the
+unambiguous bottom tail callees, if any.
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-debug-entry_002dvalues"></a></dd>
+<dt><a id="index-set-debug-entry_002dvalues"></a><span><code class="code">set debug entry-values</code><a class="copiable-link" href="#index-set-debug-entry_002dvalues"> &para;</a></span></dt>
+<dd><p>When set to on, enables printing of analysis messages for both frame argument
+values at function entry and tail calls.  It will show all the possible valid
+tail calls code paths it has considered.  It will also print the intersection
+of them with the final unambiguous (possibly partial or even empty) code path
+result.
+</p>
+</dd>
+<dt><a id="index-show-debug-entry_002dvalues"></a><span><code class="code">show debug entry-values</code><a class="copiable-link" href="#index-show-debug-entry_002dvalues"> &para;</a></span></dt>
+<dd><p>Show the current state of analysis messages printing for both frame argument
+values at function entry and tail calls.
+</p></dd>
+</dl>
+
+<p>The analysis messages for tail calls can for example show why the virtual tail
+call frame for function <code class="code">c</code> has not been recognized (due to the indirect
+reference by variable <code class="code">x</code>):
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">static void __attribute__((noinline, noclone)) c (void);
+void (*x) (void) = c;
+static void __attribute__((noinline, noclone)) a (void) { x++; }
+static void __attribute__((noinline, noclone)) c (void) { a (); }
+int main (void) { x (); return 0; }
+
+Breakpoint 1, DW_OP_entry_value resolving cannot find
+DW_TAG_call_site 0x40039a in main
+a () at t.c:3
+3	static void __attribute__((noinline, noclone)) a (void) { x++; }
+(gdb) bt
+#0  a () at t.c:3
+#1  0x000000000040039a in main () at t.c:5
+</pre></div>
+
+<p>Another possibility is an ambiguous virtual tail call frames resolution:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int i;
+static void __attribute__((noinline, noclone)) f (void) { i++; }
+static void __attribute__((noinline, noclone)) e (void) { f (); }
+static void __attribute__((noinline, noclone)) d (void) { f (); }
+static void __attribute__((noinline, noclone)) c (void) { d (); }
+static void __attribute__((noinline, noclone)) b (void)
+{ if (i) c (); else e (); }
+static void __attribute__((noinline, noclone)) a (void) { b (); }
+int main (void) { a (); return 0; }
+
+tailcall: initial: 0x4004d2(a) 0x4004ce(b) 0x4004b2(c) 0x4004a2(d)
+tailcall: compare: 0x4004d2(a) 0x4004cc(b) 0x400492(e)
+tailcall: reduced: 0x4004d2(a) |
+(gdb) bt
+#0  f () at t.c:2
+#1  0x00000000004004d2 in a () at t.c:8
+#2  0x0000000000400395 in main () at t.c:9
+</pre></div>
+
+
+
+<p>Frames #0 and #2 are real, #1 is a virtual tail call frame.
+The code can have possible execution paths <code class="code">main&rarr;a&rarr;b&rarr;c&rarr;d&rarr;f</code> or
+<code class="code">main&rarr;a&rarr;b&rarr;e&rarr;f</code>, <small class="sc">GDB</small> cannot find which one from the inferior state.
+</p>
+<p><code class="code">initial:</code> state shows some random possible calling sequence <small class="sc">GDB</small>
+has found.  It then finds another possible calling sequence - that one is
+prefixed by <code class="code">compare:</code>.  The non-ambiguous intersection of these two is
+printed as the <code class="code">reduced:</code> calling sequence.  That one could have many
+further <code class="code">compare:</code> and <code class="code">reduced:</code> statements as long as there remain
+any non-ambiguous sequence entries.
+</p>
+<p>For the frame of function <code class="code">b</code> in both cases there are different possible
+<code class="code">$pc</code> values (<code class="code">0x4004cc</code> or <code class="code">0x4004ce</code>), therefore this frame is
+also ambiguous.  The only non-ambiguous frame is the one for function <code class="code">a</code>,
+therefore this one is displayed to the user while the ambiguous frames are
+omitted.
+</p>
+<p>There can be also reasons why printing of frame argument values at function
+entry may fail:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int v;
+static void __attribute__((noinline, noclone)) c (int i) { v++; }
+static void __attribute__((noinline, noclone)) a (int i);
+static void __attribute__((noinline, noclone)) b (int i) { a (i); }
+static void __attribute__((noinline, noclone)) a (int i)
+{ if (i) b (i - 1); else c (0); }
+int main (void) { a (5); return 0; }
+
+(gdb) bt
+#0  c (i=i@entry=0) at t.c:2
+#1  0x0000000000400428 in a (DW_OP_entry_value resolving has found
+function &quot;a&quot; at 0x400420 can call itself via tail calls
+i=&lt;optimized out&gt;) at t.c:6
+#2  0x000000000040036e in main () at t.c:7
+</pre></div>
+
+<p><small class="sc">GDB</small> cannot find out from the inferior state if and how many times did
+function <code class="code">a</code> call itself (via function <code class="code">b</code>) as these calls would be
+tail calls.  Such tail calls would modify the <code class="code">i</code> variable, therefore
+<small class="sc">GDB</small> cannot be sure the value it knows would be right - <small class="sc">GDB</small>
+prints <code class="code">&lt;optimized out&gt;</code> instead.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Inline-Functions.html">Inline Functions</a>, Up: <a href="Optimized-Code.html">Debugging Optimized Code</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

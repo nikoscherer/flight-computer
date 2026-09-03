@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Storage References (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Storage References (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Storage References (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Expression-trees.html" rel="up" title="Expression trees">
+<link href="Unary-and-Binary-Expressions.html" rel="next" title="Unary and Binary Expressions">
+<link href="Constant-expressions.html" rel="prev" title="Constant expressions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Storage-References">
+<div class="nav-panel">
+<p>
+Next: <a href="Unary-and-Binary-Expressions.html" accesskey="n" rel="next">Unary and Binary Expressions</a>, Previous: <a href="Constant-expressions.html" accesskey="p" rel="prev">Constant expressions</a>, Up: <a href="Expression-trees.html" accesskey="u" rel="up">Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="References-to-storage"><span>10.6.2 References to storage<a class="copiable-link" href="#References-to-storage"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-ADDR_005fEXPR"></a>
+<a class="index-entry-id" id="index-INDIRECT_005fREF"></a>
+<a class="index-entry-id" id="index-MEM_005fREF"></a>
+<a class="index-entry-id" id="index-ARRAY_005fREF"></a>
+<a class="index-entry-id" id="index-ARRAY_005fRANGE_005fREF"></a>
+<a class="index-entry-id" id="index-TARGET_005fMEM_005fREF"></a>
+<a class="index-entry-id" id="index-COMPONENT_005fREF"></a>
+
+<dl class="table">
+<dt><code class="code">ARRAY_REF</code></dt>
+<dd><p>These nodes represent array accesses.  The first operand is the array;
+the second is the index.  To calculate the address of the memory
+accessed, you must scale the index by the size of the type of the array
+elements.  The type of these expressions must be the type of a component of
+the array.  The third and fourth operands are used after gimplification
+to represent the lower bound and component size but should not be used
+directly; call <code class="code">array_ref_low_bound</code> and <code class="code">array_ref_element_size</code>
+instead.
+</p>
+</dd>
+<dt><code class="code">ARRAY_RANGE_REF</code></dt>
+<dd><p>These nodes represent access to a range (or &ldquo;slice&rdquo;) of an array.  The
+operands are the same as that for <code class="code">ARRAY_REF</code> and have the same
+meanings.  The type of these expressions must be an array whose component
+type is the same as that of the first operand.  The range of that array
+type determines the amount of data these expressions access.
+</p>
+</dd>
+<dt><code class="code">COMPONENT_REF</code></dt>
+<dd><p>These nodes represent non-static data member accesses.  The first
+operand is the object (rather than a pointer to it); the second operand
+is the <code class="code">FIELD_DECL</code> for the data member.  The third operand represents
+the byte offset of the field, but should not be used directly; call
+<code class="code">component_ref_field_offset</code> instead.
+</p>
+</dd>
+<dt><code class="code">ADDR_EXPR</code></dt>
+<dd><p>These nodes are used to represent the address of an object.  (These
+expressions will always have pointer or reference type.)  The operand may
+be another expression, or it may be a declaration.
+</p>
+<p>As an extension, GCC allows users to take the address of a label.  In
+this case, the operand of the <code class="code">ADDR_EXPR</code> will be a
+<code class="code">LABEL_DECL</code>.  The type of such an expression is <code class="code">void*</code>.
+</p>
+<p>If the object addressed is not an lvalue, a temporary is created, and
+the address of the temporary is used.
+</p>
+</dd>
+<dt><code class="code">INDIRECT_REF</code></dt>
+<dd><p>These nodes are used to represent the object pointed to by a pointer.
+The operand is the pointer being dereferenced; it will always have
+pointer or reference type.
+</p>
+</dd>
+<dt><code class="code">MEM_REF</code></dt>
+<dd><p>These nodes are used to represent the object pointed to by a pointer
+offset by a constant.
+The first operand is the pointer being dereferenced; it will always have
+pointer or reference type.  The second operand is a pointer constant
+serving as constant offset applied to the pointer being dereferenced
+with its type specifying the type to be used for type-based alias analysis.
+The type of the node specifies the alignment of the access.
+</p>
+</dd>
+<dt><code class="code">TARGET_MEM_REF</code></dt>
+<dd><p>These nodes represent memory accesses whose address directly map to
+an addressing mode of the target architecture.  The first argument
+is <code class="code">TMR_BASE</code> and is a pointer to the object being accessed.
+The second argument is <code class="code">TMR_OFFSET</code> which is a pointer constant
+with dual purpose serving both as constant offset and holder of
+the type used for type-based alias analysis.  The first two operands
+have exactly the same semantics as <code class="code">MEM_REF</code>.  The third
+and fourth operand are <code class="code">TMR_INDEX</code> and <code class="code">TMR_STEP</code> where
+the former is an integer and the latter an integer constant.  The
+fifth and last operand is <code class="code">TMR_INDEX2</code> which is an alternate
+non-constant offset.  Any of the third to last operands may be
+<code class="code">NULL</code> if the corresponding component does not appear in
+the address, but <code class="code">TMR_INDEX</code> and <code class="code">TMR_STEP</code> shall be
+always supplied in pair.  The Address of the <code class="code">TARGET_MEM_REF</code>
+is determined in the following way.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">TMR_BASE + TMR_OFFSET + TMR_INDEX * TMR_STEP + TMR_INDEX2
+</pre></div>
+
+<p>The type of the node specifies the alignment of the access.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Unary-and-Binary-Expressions.html">Unary and Binary Expressions</a>, Previous: <a href="Constant-expressions.html">Constant expressions</a>, Up: <a href="Expression-trees.html">Expressions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

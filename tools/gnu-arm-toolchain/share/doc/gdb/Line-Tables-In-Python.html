@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Line Tables In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Line Tables In Python (Debugging with GDB)">
+<meta name="keywords" content="Line Tables In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Breakpoints-In-Python.html" rel="next" title="Breakpoints In Python">
+<link href="Symbol-Tables-In-Python.html" rel="prev" title="Symbol Tables In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Line-Tables-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Breakpoints-In-Python.html" accesskey="n" rel="next">Manipulating breakpoints using Python</a>, Previous: <a href="Symbol-Tables-In-Python.html" accesskey="p" rel="prev">Symbol table representation in Python</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Manipulating-line-tables-using-Python"><span>23.3.2.32 Manipulating line tables using Python<a class="copiable-link" href="#Manipulating-line-tables-using-Python"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-line-tables-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eLineTable"></a>
+
+<p>Python code can request and inspect line table information from a
+symbol table that is loaded in <small class="sc">GDB</small>.  A line table is a
+mapping of source lines to their executable locations in memory.  To
+acquire the line table information for a particular symbol table, use
+the <code class="code">linetable</code> function (see <a class="pxref" href="Symbol-Tables-In-Python.html">Symbol table representation in Python</a>).
+</p>
+<p>A <code class="code">gdb.LineTable</code> is iterable.  The iterator returns
+<code class="code">LineTableEntry</code> objects that correspond to the source line and
+address for each line table entry.  <code class="code">LineTableEntry</code> objects have
+the following attributes:
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LineTableEntry_002eline"><span class="category-def">Variable: </span><span><strong class="def-name">LineTableEntry.line</strong><a class="copiable-link" href="#index-LineTableEntry_002eline"> &para;</a></span></dt>
+<dd><p>The source line number for this line table entry.  This number
+corresponds to the actual line of source.  This attribute is not
+writable.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LineTableEntry_002epc"><span class="category-def">Variable: </span><span><strong class="def-name">LineTableEntry.pc</strong><a class="copiable-link" href="#index-LineTableEntry_002epc"> &para;</a></span></dt>
+<dd><p>The address that is associated with the line table entry where the
+executable code for that source line resides in memory.  This
+attribute is not writable.
+</p></dd></dl>
+
+<p>As there can be multiple addresses for a single source line, you may
+receive multiple <code class="code">LineTableEntry</code> objects with matching
+<code class="code">line</code> attributes, but with different <code class="code">pc</code> attributes.  The
+iterator is sorted in ascending <code class="code">pc</code> order.  Here is a small
+example illustrating iterating over a line table.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">symtab = gdb.selected_frame().find_sal().symtab
+linetable = symtab.linetable()
+for line in linetable:
+   print (&quot;Line: &quot;+str(line.line)+&quot; Address: &quot;+hex(line.pc))
+</pre></div>
+
+<p>This will have the following output:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Line: 33 Address: 0x4005c8L
+Line: 37 Address: 0x4005caL
+Line: 39 Address: 0x4005d2L
+Line: 40 Address: 0x4005f8L
+Line: 42 Address: 0x4005ffL
+Line: 44 Address: 0x400608L
+Line: 42 Address: 0x40060cL
+Line: 45 Address: 0x400615L
+</pre></div>
+
+<p>In addition to being able to iterate over a <code class="code">LineTable</code>, it also
+has the following direct access methods:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LineTable_002eline"><span class="category-def">Function: </span><span><strong class="def-name">LineTable.line</strong> <var class="def-var-arguments">(line)</var><a class="copiable-link" href="#index-LineTable_002eline"> &para;</a></span></dt>
+<dd><p>Return a Python <code class="code">Tuple</code> of <code class="code">LineTableEntry</code> objects for any
+entries in the line table for the given <var class="var">line</var>, which specifies
+the source code line.  If there are no entries for that source code
+<var class="var">line</var>, the Python <code class="code">None</code> is returned.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LineTable_002ehas_005fline"><span class="category-def">Function: </span><span><strong class="def-name">LineTable.has_line</strong> <var class="def-var-arguments">(line)</var><a class="copiable-link" href="#index-LineTable_002ehas_005fline"> &para;</a></span></dt>
+<dd><p>Return a Python <code class="code">Boolean</code> indicating whether there is an entry in
+the line table for this source line.  Return <code class="code">True</code> if an entry
+is found, or <code class="code">False</code> if not.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LineTable_002esource_005flines"><span class="category-def">Function: </span><span><strong class="def-name">LineTable.source_lines</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-LineTable_002esource_005flines"> &para;</a></span></dt>
+<dd><p>Return a Python <code class="code">List</code> of the source line numbers in the symbol
+table.  Only lines with executable code locations are returned.  The
+contents of the <code class="code">List</code> will just be the source line entries
+represented as Python <code class="code">Long</code> values.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Breakpoints-In-Python.html">Manipulating breakpoints using Python</a>, Previous: <a href="Symbol-Tables-In-Python.html">Symbol table representation in Python</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

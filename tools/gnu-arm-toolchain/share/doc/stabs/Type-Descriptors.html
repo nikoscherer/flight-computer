@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Type Descriptors (STABS)</title>
+
+<meta name="description" content="Type Descriptors (STABS)">
+<meta name="keywords" content="Type Descriptors (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html" rel="up" title="Top">
+<link href="Expanded-Reference.html" rel="next" title="Expanded Reference">
+<link href="Symbol-Descriptors.html" rel="prev" title="Symbol Descriptors">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Type-Descriptors">
+<div class="nav-panel">
+<p>
+Next: <a href="Expanded-Reference.html" accesskey="n" rel="next">Expanded Reference by Stab Type</a>, Previous: <a href="Symbol-Descriptors.html" accesskey="p" rel="prev">Table of Symbol Descriptors</a>, Up: <a href="index.html" accesskey="u" rel="up">The &quot;stabs&quot; representation of debugging information</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="Table-of-Type-Descriptors"><span>Appendix C Table of Type Descriptors<a class="copiable-link" href="#Table-of-Type-Descriptors"> &para;</a></span></h2>
+
+<p>The type descriptor is the character which follows the type number and
+an equals sign.  It specifies what kind of type is being defined.
+See <a class="xref" href="String-Field.html">The String Field</a>, for more information about their use.
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">digit</var></code></dt>
+<dt><code class="code">(</code></dt>
+<dd><p>Type reference; see <a class="ref" href="String-Field.html">The String Field</a>.
+</p>
+</dd>
+<dt><code class="code">-</code></dt>
+<dd><p>Reference to builtin type; see <a class="ref" href="Negative-Type-Numbers.html">Negative Type Numbers</a>.
+</p>
+</dd>
+<dt><code class="code">#</code></dt>
+<dd><p>Method (C<code class="t">++</code>); see <a class="ref" href="Method-Type-Descriptor.html">The &lsquo;<samp class="samp">#</samp>&rsquo; Type Descriptor</a>.
+</p>
+</dd>
+<dt><code class="code">*</code></dt>
+<dd><p>Pointer; see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.
+</p>
+</dd>
+<dt><code class="code">&amp;</code></dt>
+<dd><p>Reference (C<code class="t">++</code>).
+</p>
+</dd>
+<dt><code class="code">@</code></dt>
+<dd><p>Type Attributes (AIX); see <a class="ref" href="String-Field.html">The String Field</a>.  Member (class and variable)
+type (GNU C<code class="t">++</code>); see <a class="ref" href="Member-Type-Descriptor.html">The &lsquo;<samp class="samp">@</samp>&rsquo; Type Descriptor</a>.
+</p>
+</dd>
+<dt><code class="code">a</code></dt>
+<dd><p>Array; see <a class="ref" href="Arrays.html">Array Types</a>.
+</p>
+</dd>
+<dt><code class="code">A</code></dt>
+<dd><p>Open array; see <a class="ref" href="Arrays.html">Array Types</a>.
+</p>
+</dd>
+<dt><code class="code">b</code></dt>
+<dd><p>Pascal space type (AIX); see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.  Builtin integer
+type (Sun); see <a class="ref" href="Builtin-Type-Descriptors.html">Defining Builtin Types Using Builtin Type Descriptors</a>.  Const and volatile
+qualified type (OS9000).
+</p>
+</dd>
+<dt><code class="code">B</code></dt>
+<dd><p>Volatile-qualified type; see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.
+</p>
+</dd>
+<dt><code class="code">c</code></dt>
+<dd><p>Complex builtin type (AIX); see <a class="ref" href="Builtin-Type-Descriptors.html">Defining Builtin Types Using Builtin Type Descriptors</a>.
+Const-qualified type (OS9000).
+</p>
+</dd>
+<dt><code class="code">C</code></dt>
+<dd><p>COBOL Picture type.  See AIX documentation for details.
+</p>
+</dd>
+<dt><code class="code">d</code></dt>
+<dd><p>File type; see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.
+</p>
+</dd>
+<dt><code class="code">D</code></dt>
+<dd><p>N-dimensional dynamic array; see <a class="ref" href="Arrays.html">Array Types</a>.
+</p>
+</dd>
+<dt><code class="code">e</code></dt>
+<dd><p>Enumeration type; see <a class="ref" href="Enumerations.html">Enumerations</a>.
+</p>
+</dd>
+<dt><code class="code">E</code></dt>
+<dd><p>N-dimensional subarray; see <a class="ref" href="Arrays.html">Array Types</a>.
+</p>
+</dd>
+<dt><code class="code">f</code></dt>
+<dd><p>Function type; see <a class="ref" href="Function-Types.html">Function Types</a>.
+</p>
+</dd>
+<dt><code class="code">F</code></dt>
+<dd><p>Pascal function parameter; see <a class="ref" href="Function-Types.html">Function Types</a>
+</p>
+</dd>
+<dt><code class="code">g</code></dt>
+<dd><p>Builtin floating point type; see <a class="ref" href="Builtin-Type-Descriptors.html">Defining Builtin Types Using Builtin Type Descriptors</a>.
+</p>
+</dd>
+<dt><code class="code">G</code></dt>
+<dd><p>COBOL Group.  See AIX documentation for details.
+</p>
+</dd>
+<dt><code class="code">i</code></dt>
+<dd><p>Imported type (AIX); see <a class="ref" href="Cross_002dReferences.html">Cross-References to Other Types</a>.  Volatile-qualified
+type (OS9000).
+</p>
+</dd>
+<dt><code class="code">k</code></dt>
+<dd><p>Const-qualified type; see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.
+</p>
+</dd>
+<dt><code class="code">K</code></dt>
+<dd><p>COBOL File Descriptor.  See AIX documentation for details.
+</p>
+</dd>
+<dt><code class="code">M</code></dt>
+<dd><p>Multiple instance type; see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.
+</p>
+</dd>
+<dt><code class="code">n</code></dt>
+<dd><p>String type; see <a class="ref" href="Strings.html">Strings</a>.
+</p>
+</dd>
+<dt><code class="code">N</code></dt>
+<dd><p>Stringptr; see <a class="ref" href="Strings.html">Strings</a>.
+</p>
+</dd>
+<dt><code class="code">o</code></dt>
+<dd><p>Opaque type; see <a class="ref" href="Typedefs.html">Giving a Type a Name</a>.
+</p>
+</dd>
+<dt><code class="code">p</code></dt>
+<dd><p>Procedure; see <a class="ref" href="Function-Types.html">Function Types</a>.
+</p>
+</dd>
+<dt><code class="code">P</code></dt>
+<dd><p>Packed array; see <a class="ref" href="Arrays.html">Array Types</a>.
+</p>
+</dd>
+<dt><code class="code">r</code></dt>
+<dd><p>Range type; see <a class="ref" href="Subranges.html">Subrange Types</a>.
+</p>
+</dd>
+<dt><code class="code">R</code></dt>
+<dd><p>Builtin floating type; see <a class="ref" href="Builtin-Type-Descriptors.html">Defining Builtin Types Using Builtin Type Descriptors</a> (Sun).  Pascal
+subroutine parameter; see <a class="ref" href="Function-Types.html">Function Types</a> (AIX).  Detecting this
+conflict is possible with careful parsing (hint: a Pascal subroutine
+parameter type will always contain a comma, and a builtin type
+descriptor never will).
+</p>
+</dd>
+<dt><code class="code">s</code></dt>
+<dd><p>Structure type; see <a class="ref" href="Structures.html">Structures</a>.
+</p>
+</dd>
+<dt><code class="code">S</code></dt>
+<dd><p>Set type; see <a class="ref" href="Miscellaneous-Types.html">Miscellaneous Types</a>.
+</p>
+</dd>
+<dt><code class="code">u</code></dt>
+<dd><p>Union; see <a class="ref" href="Unions.html">Unions</a>.
+</p>
+</dd>
+<dt><code class="code">v</code></dt>
+<dd><p>Variant record.  This is a Pascal and Modula-2 feature which is like a
+union within a struct in C.  See AIX documentation for details.
+</p>
+</dd>
+<dt><code class="code">w</code></dt>
+<dd><p>Wide character; see <a class="ref" href="Builtin-Type-Descriptors.html">Defining Builtin Types Using Builtin Type Descriptors</a>.
+</p>
+</dd>
+<dt><code class="code">x</code></dt>
+<dd><p>Cross-reference; see <a class="ref" href="Cross_002dReferences.html">Cross-References to Other Types</a>.
+</p>
+</dd>
+<dt><code class="code">Y</code></dt>
+<dd><p>Used by IBM&rsquo;s xlC C<code class="t">++</code> compiler (for structures, I think).
+</p>
+</dd>
+<dt><code class="code">z</code></dt>
+<dd><p>gstring; see <a class="ref" href="Strings.html">Strings</a>.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Expanded-Reference.html">Expanded Reference by Stab Type</a>, Previous: <a href="Symbol-Descriptors.html">Table of Symbol Descriptors</a>, Up: <a href="index.html">The &quot;stabs&quot; representation of debugging information</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

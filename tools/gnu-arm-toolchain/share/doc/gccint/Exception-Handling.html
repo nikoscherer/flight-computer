@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Exception Handling (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Exception Handling (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Exception Handling (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stack-and-Calling.html" rel="up" title="Stack and Calling">
+<link href="Stack-Checking.html" rel="next" title="Stack Checking">
+<link href="Frame-Layout.html" rel="prev" title="Frame Layout">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Exception-Handling">
+<div class="nav-panel">
+<p>
+Next: <a href="Stack-Checking.html" accesskey="n" rel="next">Specifying How Stack Checking is Done</a>, Previous: <a href="Frame-Layout.html" accesskey="p" rel="prev">Basic Stack Layout</a>, Up: <a href="Stack-and-Calling.html" accesskey="u" rel="up">Stack Layout and Calling Conventions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Exception-Handling-Support"><span>17.9.2 Exception Handling Support<a class="copiable-link" href="#Exception-Handling-Support"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-exception-handling-1"></a>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EH_005fRETURN_005fDATA_005fREGNO"><span class="category-def">Macro: </span><span><strong class="def-name">EH_RETURN_DATA_REGNO</strong> <var class="def-var-arguments">(<var class="var">N</var>)</var><a class="copiable-link" href="#index-EH_005fRETURN_005fDATA_005fREGNO"> &para;</a></span></dt>
+<dd><p>A C expression whose value is the <var class="var">N</var>th register number used for
+data by exception handlers, or <code class="code">INVALID_REGNUM</code> if fewer than
+<var class="var">N</var> registers are usable.
+</p>
+<p>The exception handling library routines communicate with the exception
+handlers via a set of agreed upon registers.  Ideally these registers
+should be call-clobbered; it is possible to use call-saved registers,
+but may negatively impact code size.  The target must support at least
+2 data registers, but should define 4 if there are enough free registers.
+</p>
+<p>You must define this macro if you want to support call frame exception
+handling like that provided by DWARF 2.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EH_005fRETURN_005fSTACKADJ_005fRTX"><span class="category-def">Macro: </span><span><strong class="def-name">EH_RETURN_STACKADJ_RTX</strong><a class="copiable-link" href="#index-EH_005fRETURN_005fSTACKADJ_005fRTX"> &para;</a></span></dt>
+<dd><p>A C expression whose value is RTL representing a location in which
+to store a stack adjustment to be applied before function return.
+This is used to unwind the stack to an exception handler&rsquo;s call frame.
+It will be assigned zero on code paths that return normally.
+</p>
+<p>Typically this is a call-clobbered hard register that is otherwise
+untouched by the epilogue, but could also be a stack slot.
+</p>
+<p>Do not define this macro if the stack pointer is saved and restored
+by the regular prolog and epilog code in the call frame itself; in
+this case, the exception handling library routines will update the
+stack location to be restored in place.  Otherwise, you must define
+this macro if you want to support call frame exception handling like
+that provided by DWARF 2.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EH_005fRETURN_005fHANDLER_005fRTX"><span class="category-def">Macro: </span><span><strong class="def-name">EH_RETURN_HANDLER_RTX</strong><a class="copiable-link" href="#index-EH_005fRETURN_005fHANDLER_005fRTX"> &para;</a></span></dt>
+<dd><p>A C expression whose value is RTL representing a location in which
+to store the address of an exception handler to which we should
+return.  It will not be assigned on code paths that return normally.
+</p>
+<p>Typically this is the location in the call frame at which the normal
+return address is stored.  For targets that return by popping an
+address off the stack, this might be a memory address just below
+the <em class="emph">target</em> call frame rather than inside the current call
+frame.  If defined, <code class="code">EH_RETURN_STACKADJ_RTX</code> will have already
+been assigned, so it may be used to calculate the location of the
+target call frame.
+</p>
+<p>Some targets have more complex requirements than storing to an
+address calculable during initial code generation.  In that case
+the <code class="code">eh_return</code> instruction pattern should be used instead.
+</p>
+<p>If you want to support call frame exception handling, you must
+define either this macro or the <code class="code">eh_return</code> instruction pattern.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-EH_005fRETURN_005fTAKEN_005fRTX"><span class="category-def">Macro: </span><span><strong class="def-name">EH_RETURN_TAKEN_RTX</strong><a class="copiable-link" href="#index-EH_005fRETURN_005fTAKEN_005fRTX"> &para;</a></span></dt>
+<dd><p>A C expression whose value is RTL representing a location in which
+to store if the EH return path was taken instead of a normal return.
+This macro allows conditionally executing different code in the
+epilogue for the EH and normal return cases.
+</p>
+<p>When this macro is defined, the macros <code class="code">EH_RETURN_STACKADJ_RTX</code>
+and <code class="code">EH_RETURN_HANDLER_RTX</code> are only meaningful in the epilogue
+when 1 is stored to the specified location. The value 0 means normal
+return.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-RETURN_005fADDR_005fOFFSET"><span class="category-def">Macro: </span><span><strong class="def-name">RETURN_ADDR_OFFSET</strong><a class="copiable-link" href="#index-RETURN_005fADDR_005fOFFSET"> &para;</a></span></dt>
+<dd><p>If defined, an integer-valued C expression for which rtl will be generated
+to add it to the exception handler address before it is searched in the
+exception handling tables, and to subtract it again from the address before
+using it to return to the exception handler.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fPREFERRED_005fEH_005fDATA_005fFORMAT"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_PREFERRED_EH_DATA_FORMAT</strong> <var class="def-var-arguments">(<var class="var">code</var>, <var class="var">global</var>)</var><a class="copiable-link" href="#index-ASM_005fPREFERRED_005fEH_005fDATA_005fFORMAT"> &para;</a></span></dt>
+<dd><p>This macro chooses the encoding of pointers embedded in the exception
+handling sections.  If at all possible, this should be defined such
+that the exception handling section will not require dynamic relocations,
+and so may be read-only.
+</p>
+<p><var class="var">code</var> is 0 for data, 1 for code labels, 2 for function pointers.
+<var class="var">global</var> is true if the symbol may be affected by dynamic relocations.
+The macro should return a combination of the <code class="code">DW_EH_PE_*</code> defines
+as found in <samp class="file">dwarf2.h</samp>.
+</p>
+<p>If this macro is not defined, pointers will not be encoded but
+represented directly.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-ASM_005fMAYBE_005fOUTPUT_005fENCODED_005fADDR_005fRTX"><span class="category-def">Macro: </span><span><strong class="def-name">ASM_MAYBE_OUTPUT_ENCODED_ADDR_RTX</strong> <var class="def-var-arguments">(<var class="var">file</var>, <var class="var">encoding</var>, <var class="var">size</var>, <var class="var">addr</var>, <var class="var">done</var>)</var><a class="copiable-link" href="#index-ASM_005fMAYBE_005fOUTPUT_005fENCODED_005fADDR_005fRTX"> &para;</a></span></dt>
+<dd><p>This macro allows the target to emit whatever special magic is required
+to represent the encoding chosen by <code class="code">ASM_PREFERRED_EH_DATA_FORMAT</code>.
+Generic code takes care of pc-relative and indirect encodings; this must
+be defined if the target uses text-relative or data-relative encodings.
+</p>
+<p>This is a C statement that branches to <var class="var">done</var> if the format was
+handled.  <var class="var">encoding</var> is the format chosen, <var class="var">size</var> is the number
+of bytes that the format occupies, <var class="var">addr</var> is the <code class="code">SYMBOL_REF</code>
+to be emitted.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-MD_005fFALLBACK_005fFRAME_005fSTATE_005fFOR"><span class="category-def">Macro: </span><span><strong class="def-name">MD_FALLBACK_FRAME_STATE_FOR</strong> <var class="def-var-arguments">(<var class="var">context</var>, <var class="var">fs</var>)</var><a class="copiable-link" href="#index-MD_005fFALLBACK_005fFRAME_005fSTATE_005fFOR"> &para;</a></span></dt>
+<dd><p>This macro allows the target to add CPU and operating system specific
+code to the call-frame unwinder for use when there is no unwind data
+available.  The most common reason to implement this macro is to unwind
+through signal frames.
+</p>
+<p>This macro is called from <code class="code">uw_frame_state_for</code> in
+<samp class="file">unwind-dw2.c</samp>, <samp class="file">unwind-dw2-xtensa.c</samp> and
+<samp class="file">unwind-ia64.c</samp>.  <var class="var">context</var> is an <code class="code">_Unwind_Context</code>;
+<var class="var">fs</var> is an <code class="code">_Unwind_FrameState</code>.  Examine <code class="code">context-&gt;ra</code>
+for the address of the code being executed and <code class="code">context-&gt;cfa</code> for
+the stack pointer value.  If the frame can be decoded, the register
+save addresses should be updated in <var class="var">fs</var> and the macro should
+evaluate to <code class="code">_URC_NO_REASON</code>.  If the frame cannot be decoded,
+the macro should evaluate to <code class="code">_URC_END_OF_STACK</code>.
+</p>
+<p>For proper signal handling in Java this macro is accompanied by
+<code class="code">MAKE_THROW_FRAME</code>, defined in <samp class="file">libjava/include/*-signal.h</samp> headers.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-MD_005fHANDLE_005fUNWABI"><span class="category-def">Macro: </span><span><strong class="def-name">MD_HANDLE_UNWABI</strong> <var class="def-var-arguments">(<var class="var">context</var>, <var class="var">fs</var>)</var><a class="copiable-link" href="#index-MD_005fHANDLE_005fUNWABI"> &para;</a></span></dt>
+<dd><p>This macro allows the target to add operating system specific code to the
+call-frame unwinder to handle the IA-64 <code class="code">.unwabi</code> unwinding directive,
+usually used for signal or interrupt frames.
+</p>
+<p>This macro is called from <code class="code">uw_update_context</code> in libgcc&rsquo;s
+<samp class="file">unwind-ia64.c</samp>.  <var class="var">context</var> is an <code class="code">_Unwind_Context</code>;
+<var class="var">fs</var> is an <code class="code">_Unwind_FrameState</code>.  Examine <code class="code">fs-&gt;unwabi</code>
+for the abi and context in the <code class="code">.unwabi</code> directive.  If the
+<code class="code">.unwabi</code> directive can be handled, the register save addresses should
+be updated in <var class="var">fs</var>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defmac-alias-first-deffn">
+<dt class="deffn defmac-alias-deffn" id="index-TARGET_005fUSES_005fWEAK_005fUNWIND_005fINFO"><span class="category-def">Macro: </span><span><strong class="def-name">TARGET_USES_WEAK_UNWIND_INFO</strong><a class="copiable-link" href="#index-TARGET_005fUSES_005fWEAK_005fUNWIND_005fINFO"> &para;</a></span></dt>
+<dd><p>A C expression that evaluates to true if the target requires unwind
+info to be given comdat linkage.  Define it to be <code class="code">1</code> if comdat
+linkage is necessary.  The default is <code class="code">0</code>.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Stack-Checking.html">Specifying How Stack Checking is Done</a>, Previous: <a href="Frame-Layout.html">Basic Stack Layout</a>, Up: <a href="Stack-and-Calling.html">Stack Layout and Calling Conventions</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

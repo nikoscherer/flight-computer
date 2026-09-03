@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Tracepoint Actions (Debugging with GDB)</title>
+
+<meta name="description" content="Tracepoint Actions (Debugging with GDB)">
+<meta name="keywords" content="Tracepoint Actions (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints">
+<link href="Listing-Tracepoints.html" rel="next" title="Listing Tracepoints">
+<link href="Trace-State-Variables.html" rel="prev" title="Trace State Variables">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tracepoint-Actions">
+<div class="nav-panel">
+<p>
+Next: <a href="Listing-Tracepoints.html" accesskey="n" rel="next">Listing Tracepoints</a>, Previous: <a href="Trace-State-Variables.html" accesskey="p" rel="prev">Trace State Variables</a>, Up: <a href="Set-Tracepoints.html" accesskey="u" rel="up">Commands to Set Tracepoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Tracepoint-Action-Lists"><span>13.1.6 Tracepoint Action Lists<a class="copiable-link" href="#Tracepoint-Action-Lists"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-tracepoint-actions"></a>
+<a id="index-actions"></a><span><code class="code">actions <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-actions"> &para;</a></span></dt>
+<dd><p>This command will prompt for a list of actions to be taken when the
+tracepoint is hit.  If the tracepoint number <var class="var">num</var> is not
+specified, this command sets the actions for the one that was most
+recently defined (so that you can define a tracepoint and then say
+<code class="code">actions</code> without bothering about its number).  You specify the
+actions themselves on the following lines, one action at a time, and
+terminate the actions list with a line containing just <code class="code">end</code>.  So
+far, the only defined actions are <code class="code">collect</code>, <code class="code">teval</code>, and
+<code class="code">while-stepping</code>.
+</p>
+<p><code class="code">actions</code> is actually equivalent to <code class="code">commands</code> (see <a class="pxref" href="Break-Commands.html">Breakpoint Command Lists</a>), except that only the defined
+actions are allowed; any other <small class="sc">GDB</small> command is rejected.
+</p>
+<a class="index-entry-id" id="index-remove-actions-from-a-tracepoint"></a>
+<p>To remove all actions from a tracepoint, type &lsquo;<samp class="samp">actions <var class="var">num</var></samp>&rsquo;
+and follow it immediately with &lsquo;<samp class="samp">end</samp>&rsquo;.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">collect <var class="var">data</var></b> // collect some data
+
+(gdb) <b class="b">while-stepping 5</b> // single-step 5 times, collect data
+
+(gdb) <b class="b">end</b>              // signals the end of actions.
+</pre></div>
+
+<p>In the following example, the action list begins with <code class="code">collect</code>
+commands indicating the things to be collected when the tracepoint is
+hit.  Then, in order to single-step and collect additional data
+following the tracepoint, a <code class="code">while-stepping</code> command is used,
+followed by the list of things to be collected after each step in a
+sequence of single steps.  The <code class="code">while-stepping</code> command is
+terminated by its own separate <code class="code">end</code> command.  Lastly, the action
+list is terminated by an <code class="code">end</code> command.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">trace foo</b>
+(gdb) <b class="b">actions</b>
+Enter actions for tracepoint 1, one per line:
+&gt; collect bar,baz
+&gt; collect $regs
+&gt; while-stepping 12
+  &gt; collect $pc, arr[i]
+  &gt; end
+end
+</pre></div>
+
+</dd>
+<dt><a id="index-collect-_0028tracepoints_0029"></a><span><code class="code">collect<span class="r">[</span>/<var class="var">mods</var><span class="r">]</span> <var class="var">expr1</var>, <var class="var">expr2</var>, &hellip;</code><a class="copiable-link" href="#index-collect-_0028tracepoints_0029"> &para;</a></span></dt>
+<dd><p>Collect values of the given expressions when the tracepoint is hit.
+This command accepts a comma-separated list of any valid expressions.
+In addition to global, static, or local variables, the following
+special arguments are supported:
+</p>
+<dl class="table">
+<dt><code class="code">$regs</code></dt>
+<dd><p>Collect all registers.
+</p>
+</dd>
+<dt><code class="code">$args</code></dt>
+<dd><p>Collect all function arguments.
+</p>
+</dd>
+<dt><code class="code">$locals</code></dt>
+<dd><p>Collect all local variables.
+</p>
+</dd>
+<dt><code class="code">$_ret</code></dt>
+<dd><p>Collect the return address.  This is helpful if you want to see more
+of a backtrace.
+</p>
+<p><em class="emph">Note:</em> The return address location can not always be reliably
+determined up front, and the wrong address / registers may end up
+collected instead.  On some architectures the reliability is higher
+for tracepoints at function entry, while on others it&rsquo;s the opposite.
+When this happens, backtracing will stop because the return address is
+found unavailable (unless another collect rule happened to match it).
+</p>
+</dd>
+<dt><code class="code">$_probe_argc</code></dt>
+<dd><p>Collects the number of arguments from the static probe at which the
+tracepoint is located.
+See <a class="xref" href="Static-Probe-Points.html">Static Probe Points</a>.
+</p>
+</dd>
+<dt><code class="code">$_probe_arg<var class="var">n</var></code></dt>
+<dd><p><var class="var">n</var> is an integer between 0 and 11.  Collects the <var class="var">n</var>th argument
+from the static probe at which the tracepoint is located.
+See <a class="xref" href="Static-Probe-Points.html">Static Probe Points</a>.
+</p>
+</dd>
+<dt><a id="index-_0024_005fsdata_002c-collect"></a><span><code class="code">$_sdata</code><a class="copiable-link" href="#index-_0024_005fsdata_002c-collect"> &para;</a></span></dt>
+<dd><p>Collect static tracepoint marker specific data.  Only available for
+static tracepoints.  See <a class="xref" href="#Tracepoint-Actions">Tracepoint Action
+Lists</a>.  On the UST static tracepoints library backend, an
+instrumentation point resembles a <code class="code">printf</code> function call.  The
+tracing library is able to collect user specified data formatted to a
+character string using the format provided by the programmer that
+instrumented the program.  Other backends have similar mechanisms.
+Here&rsquo;s an example of a UST marker call:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"> const char master_name[] = &quot;$your_name&quot;;
+ trace_mark(channel1, marker1, &quot;hello %s&quot;, master_name)
+</pre></div>
+
+<p>In this case, collecting <code class="code">$_sdata</code> collects the string
+&lsquo;<samp class="samp">hello $yourname</samp>&rsquo;.  When analyzing the trace buffer, you can
+inspect &lsquo;<samp class="samp">$_sdata</samp>&rsquo; like any other variable available to
+<small class="sc">GDB</small>.
+</p></dd>
+</dl>
+
+<p>You can give several consecutive <code class="code">collect</code> commands, each one
+with a single argument, or one <code class="code">collect</code> command with several
+arguments separated by commas; the effect is the same.
+</p>
+<p>The optional <var class="var">mods</var> changes the usual handling of the arguments.
+<code class="code">s</code> requests that pointers to chars be handled as strings, in
+particular collecting the contents of the memory being pointed at, up
+to the first zero.  The upper bound is by default the value of the
+<code class="code">print characters</code> variable; if <code class="code">s</code> is followed by a decimal
+number, that is the upper bound instead.  So for instance
+&lsquo;<samp class="samp">collect/s25 mystr</samp>&rsquo; collects as many as 25 characters at
+&lsquo;<samp class="samp">mystr</samp>&rsquo;.
+</p>
+<p>The command <code class="code">info scope</code> (see <a class="pxref" href="Symbols.html">info scope</a>) is
+particularly useful for figuring out what data to collect.
+</p>
+</dd>
+<dt><a id="index-teval-_0028tracepoints_0029"></a><span><code class="code">teval <var class="var">expr1</var>, <var class="var">expr2</var>, &hellip;</code><a class="copiable-link" href="#index-teval-_0028tracepoints_0029"> &para;</a></span></dt>
+<dd><p>Evaluate the given expressions when the tracepoint is hit.  This
+command accepts a comma-separated list of expressions.  The results
+are discarded, so this is mainly useful for assigning values to trace
+state variables (see <a class="pxref" href="Trace-State-Variables.html">Trace State Variables</a>) without adding those
+values to the trace buffer, as would be the case if the <code class="code">collect</code>
+action were used.
+</p>
+</dd>
+<dt><a id="index-while_002dstepping-_0028tracepoints_0029"></a><span><code class="code">while-stepping <var class="var">n</var></code><a class="copiable-link" href="#index-while_002dstepping-_0028tracepoints_0029"> &para;</a></span></dt>
+<dd><p>Perform <var class="var">n</var> single-step instruction traces after the tracepoint,
+collecting new data after each step.  The <code class="code">while-stepping</code>
+command is followed by the list of what to collect while stepping
+(followed by its own <code class="code">end</code> command):
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&gt; while-stepping 12
+  &gt; collect $regs, myglobal
+  &gt; end
+&gt;
+</pre></div>
+
+<p>Note that <code class="code">$pc</code> is not automatically collected by
+<code class="code">while-stepping</code>; you need to explicitly collect that register if
+you need it.  You may abbreviate <code class="code">while-stepping</code> as <code class="code">ws</code> or
+<code class="code">stepping</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-default-collection-action"></a>
+<a id="index-set-default_002dcollect"></a><span><code class="code">set default-collect <var class="var">expr1</var>, <var class="var">expr2</var>, &hellip;</code><a class="copiable-link" href="#index-set-default_002dcollect"> &para;</a></span></dt>
+<dd><p>This variable is a list of expressions to collect at each tracepoint
+hit.  It is effectively an additional <code class="code">collect</code> action prepended
+to every tracepoint action list.  The expressions are parsed
+individually for each tracepoint, so for instance a variable named
+<code class="code">xyz</code> may be interpreted as a global for one tracepoint, and a
+local for another, as appropriate to the tracepoint&rsquo;s location.
+</p>
+</dd>
+<dt><a id="index-show-default_002dcollect"></a><span><code class="code">show default-collect</code><a class="copiable-link" href="#index-show-default_002dcollect"> &para;</a></span></dt>
+<dd><p>Show the list of expressions that are collected by default at each
+tracepoint hit.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Listing-Tracepoints.html">Listing Tracepoints</a>, Previous: <a href="Trace-State-Variables.html">Trace State Variables</a>, Up: <a href="Set-Tracepoints.html">Commands to Set Tracepoints</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

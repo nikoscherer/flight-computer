@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Top Level (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Top Level (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Top Level (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Source-Tree.html" rel="up" title="Source Tree">
+<link href="gcc-Directory.html" rel="next" title="gcc Directory">
+<link href="Configure-Terms.html" rel="prev" title="Configure Terms">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Top-Level">
+<div class="nav-panel">
+<p>
+Next: <a href="gcc-Directory.html" accesskey="n" rel="next">The <samp class="file">gcc</samp> Subdirectory</a>, Previous: <a href="Configure-Terms.html" accesskey="p" rel="prev">Configure Terms and History</a>, Up: <a href="Source-Tree.html" accesskey="u" rel="up">Source Tree Structure and Build System</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Top-Level-Source-Directory"><span>5.2 Top Level Source Directory<a class="copiable-link" href="#Top-Level-Source-Directory"> &para;</a></span></h3>
+
+<p>The top level source directory in a GCC distribution contains several
+files and directories that are shared with other software
+distributions such as that of GNU Binutils.  It also contains several
+subdirectories that contain parts of GCC and its runtime libraries:
+</p>
+<dl class="table">
+<dt><samp class="file">c++tools</samp></dt>
+<dd><p>Contains the sources for the g++-mapper-server, a tool used with
+C++ modules.
+</p>
+</dd>
+<dt><samp class="file">config</samp></dt>
+<dd><p>Autoconf macros and Makefile fragments used throughout the tree.
+</p>
+</dd>
+<dt><samp class="file">contrib</samp></dt>
+<dd><p>Contributed scripts that may be found useful in conjunction with GCC.
+One of these, <samp class="file">contrib/texi2pod.pl</samp>, is used to generate man
+pages from Texinfo manuals as part of the GCC build process.
+</p>
+</dd>
+<dt><samp class="file">fixincludes</samp></dt>
+<dd><p>The support for fixing system headers to work with GCC.  See
+<samp class="file">fixincludes/README</samp> for more information.  The headers fixed by
+this mechanism are installed in <samp class="file"><var class="var">libsubdir</var>/include-fixed</samp>.
+Along with those headers, <samp class="file">README-fixinc</samp> is also installed, as
+<samp class="file"><var class="var">libsubdir</var>/include-fixed/README</samp>.
+</p>
+</dd>
+<dt><samp class="file">gcc</samp></dt>
+<dd><p>The main sources of GCC itself (except for runtime libraries),
+including optimizers, support for different target architectures,
+language front ends, and testsuites.  See <a class="xref" href="gcc-Directory.html">The
+<samp class="file">gcc</samp> Subdirectory</a>, for details.
+</p>
+</dd>
+<dt><samp class="file">gnattools</samp></dt>
+<dd><p>Support tools for GNAT.
+</p>
+</dd>
+<dt><samp class="file">gotools</samp></dt>
+<dd><p>Support tools for Go.
+</p>
+</dd>
+<dt><samp class="file">include</samp></dt>
+<dd><p>Headers for the <code class="code">libiberty</code> library.
+</p>
+</dd>
+<dt><samp class="file">intl</samp></dt>
+<dd><p>GNU <code class="code">libintl</code>, from GNU <code class="code">gettext</code>, for systems which do not
+include it in <code class="code">libc</code>.
+</p>
+</dd>
+<dt><samp class="file">libada</samp></dt>
+<dd><p>The Ada runtime library.
+</p>
+</dd>
+<dt><samp class="file">libatomic</samp></dt>
+<dd><p>The runtime support library for atomic operations (e.g. for <code class="code">__sync</code>
+and <code class="code">__atomic</code>).
+</p>
+</dd>
+<dt><samp class="file">libbacktrace</samp></dt>
+<dd><p>A library that allows GCC to produce backtraces when it crashes.
+</p>
+</dd>
+<dt><samp class="file">libcc1</samp></dt>
+<dd><p>A library that allows GDB to make use of the compiler.
+</p>
+</dd>
+<dt><samp class="file">libcody</samp></dt>
+<dd><p>A compiler dynamism library to allow communication between compilers and
+build systems, for purposes such as C++ modules.
+</p>
+</dd>
+<dt><samp class="file">libcpp</samp></dt>
+<dd><p>The C preprocessor library.
+</p>
+</dd>
+<dt><samp class="file">libdecnumber</samp></dt>
+<dd><p>The Decimal Float support library.
+</p>
+</dd>
+<dt><samp class="file">libffi</samp></dt>
+<dd><p>The <code class="code">libffi</code> library, used as part of the Go runtime library.
+</p>
+</dd>
+<dt><samp class="file">libgcc</samp></dt>
+<dd><p>The GCC runtime library.
+</p>
+</dd>
+<dt><samp class="file">libgcobol</samp></dt>
+<dd><p>The COBOL runtime library.
+</p>
+</dd>
+<dt><samp class="file">libgfortran</samp></dt>
+<dd><p>The Fortran runtime library.
+</p>
+</dd>
+<dt><samp class="file">libgm2</samp></dt>
+<dd><p>The Modula-2 runtime library.
+</p>
+</dd>
+<dt><samp class="file">libgo</samp></dt>
+<dd><p>The Go runtime library.  The bulk of this library is mirrored from the
+<a class="uref" href="https://github.com/golang/go">master Go repository</a>.
+</p>
+</dd>
+<dt><samp class="file">libgomp</samp></dt>
+<dd><p>The GNU Offloading and Multi Processing Runtime Library.
+</p>
+</dd>
+<dt><samp class="file">libiberty</samp></dt>
+<dd><p>The <code class="code">libiberty</code> library, used for portability and for some
+generally useful data structures and algorithms.  See <a data-manual="libiberty" href="https://gcc.gnu.org/onlinedocs/libiberty/index.html#Top">Introduction</a> in <cite class="cite"><small class="sc">GNU</small> libiberty</cite>, for more information
+about this library.
+</p>
+</dd>
+<dt><samp class="file">libitm</samp></dt>
+<dd><p>The runtime support library for transactional memory.
+</p>
+</dd>
+<dt><samp class="file">libobjc</samp></dt>
+<dd><p>The Objective-C and Objective-C++ runtime library.
+</p>
+</dd>
+<dt><samp class="file">libphobos</samp></dt>
+<dd><p>The D standard and runtime library.  The bulk of this library is mirrored
+from the <a class="uref" href="https://github.com/dlang">master D repositories</a>.
+</p>
+</dd>
+<dt><samp class="file">libquadmath</samp></dt>
+<dd><p>The runtime support library for quad-precision math operations.
+</p>
+</dd>
+<dt><samp class="file">libsanitizer</samp></dt>
+<dd><p>Libraries for various sanitizers.  The bulk of this directory is mirrored
+from the <a class="uref" href="https://github.com/google/sanitizers">Google sanitizers
+repositories</a>.
+</p>
+</dd>
+<dt><samp class="file">libssp</samp></dt>
+<dd><p>The Stack protector runtime library.
+</p>
+</dd>
+<dt><samp class="file">libstdc++-v3</samp></dt>
+<dd><p>The C++ runtime library.
+</p>
+</dd>
+<dt><samp class="file">libvtv</samp></dt>
+<dd><p>The vtable verification library.
+</p>
+</dd>
+<dt><samp class="file">lto-plugin</samp></dt>
+<dd><p>Plugin used by the linker if link-time optimizations are enabled.
+</p>
+</dd>
+<dt><samp class="file">maintainer-scripts</samp></dt>
+<dd><p>Scripts used by the <code class="code">gccadmin</code> account on <code class="code">gcc.gnu.org</code>.
+</p>
+</dd>
+<dt><samp class="file">zlib</samp></dt>
+<dd><p>The <code class="code">zlib</code> compression library, used for compressing and
+uncompressing GCC&rsquo;s intermediate language in LTO object files.
+</p></dd>
+</dl>
+
+<p>The build system in the top level directory, including how recursion
+into subdirectories works and how building runtime libraries for
+multilibs is handled, is documented in a separate manual, included
+with GNU Binutils.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="gcc-Directory.html">The <samp class="file">gcc</samp> Subdirectory</a>, Previous: <a href="Configure-Terms.html">Configure Terms and History</a>, Up: <a href="Source-Tree.html">Source Tree Structure and Build System</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

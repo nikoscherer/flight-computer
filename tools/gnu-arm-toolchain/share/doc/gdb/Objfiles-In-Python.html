@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Objfiles In Python (Debugging with GDB)</title>
+
+<meta name="description" content="Objfiles In Python (Debugging with GDB)">
+<meta name="keywords" content="Objfiles In Python (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Frames-In-Python.html" rel="next" title="Frames In Python">
+<link href="Progspaces-In-Python.html" rel="prev" title="Progspaces In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Objfiles-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Frames-In-Python.html" accesskey="n" rel="next">Accessing inferior stack frames from Python</a>, Previous: <a href="Progspaces-In-Python.html" accesskey="p" rel="prev">Program Spaces In Python</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Objfiles-In-Python-1"><span>23.3.2.27 Objfiles In Python<a class="copiable-link" href="#Objfiles-In-Python-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-objfiles-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eObjfile"></a>
+<a class="index-entry-id" id="index-Objfile"></a>
+<p><small class="sc">GDB</small> loads symbols for an inferior from various
+symbol-containing files (see <a class="pxref" href="Files.html">Commands to Specify Files</a>).  These include the primary
+executable file, any shared libraries used by the inferior, and any
+separate debug info files (see <a class="pxref" href="Separate-Debug-Files.html">Debugging Information in Separate Files</a>).
+<small class="sc">GDB</small> calls these symbol-containing files <em class="dfn">objfiles</em>.
+</p>
+<p>The following objfile-related functions are available in the
+<code class="code">gdb</code> module:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ecurrent_005fobjfile"><span class="category-def">Function: </span><span><strong class="def-name">gdb.current_objfile</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ecurrent_005fobjfile"> &para;</a></span></dt>
+<dd><p>When auto-loading a Python script (see <a class="pxref" href="Python-Auto_002dloading.html">Python Auto-loading</a>), <small class="sc">GDB</small>
+sets the &ldquo;current objfile&rdquo; to the corresponding objfile.  This
+function returns the current objfile.  If there is no current objfile,
+this function returns <code class="code">None</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eobjfiles"><span class="category-def">Function: </span><span><strong class="def-name">gdb.objfiles</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eobjfiles"> &para;</a></span></dt>
+<dd><p>Return a sequence of objfiles referenced by the current program space.
+See <a class="xref" href="#Objfiles-In-Python">Objfiles In Python</a>, and <a class="ref" href="Progspaces-In-Python.html">Program Spaces In Python</a>.  This is identical
+to <code class="code">gdb.selected_inferior().progspace.objfiles()</code> and is included for
+historical compatibility.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fobjfile"><span class="category-def">Function: </span><span><strong class="def-name">gdb.lookup_objfile</strong> <var class="def-var-arguments">(name <span class="r">[</span>, by_build_id<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fobjfile"> &para;</a></span></dt>
+<dd><p>Look up <var class="var">name</var>, a file name or build ID, in the list of objfiles
+for the current program space (see <a class="pxref" href="Progspaces-In-Python.html">Program Spaces In Python</a>).
+If the objfile is not found throw the Python <code class="code">ValueError</code> exception.
+</p>
+<p>If <var class="var">name</var> is a relative file name, then it will match any
+source file name with the same trailing components.  For example, if
+<var class="var">name</var> is &lsquo;<samp class="samp">gcc/expr.c</samp>&rsquo;, then it will match source file
+name of <samp class="file">/build/trunk/gcc/expr.c</samp>, but not
+<samp class="file">/build/trunk/libcpp/expr.c</samp> or <samp class="file">/build/trunk/gcc/x-expr.c</samp>.
+</p>
+<p>If <var class="var">by_build_id</var> is provided and is <code class="code">True</code> then <var class="var">name</var>
+is the build ID of the objfile.  Otherwise, <var class="var">name</var> is a file name.
+This is supported only on some operating systems, notably those which use
+the ELF format for binary files and the <small class="sc">GNU</small> Binutils.  For more details
+about this feature, see the description of the <samp class="option">--build-id</samp>
+command-line option in <a data-manual="ld" href="https://sourceware.org/binutils/docs/ld/Options.html#Options">Command Line Options</a> in <cite class="cite">The GNU Linker</cite>.
+</p></dd></dl>
+
+<p>Each objfile is represented by an instance of the <code class="code">gdb.Objfile</code>
+class.
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002efilename"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.filename</strong><a class="copiable-link" href="#index-Objfile_002efilename"> &para;</a></span></dt>
+<dd><p>The file name of the objfile as a string, with symbolic links resolved.
+</p>
+<p>The value is <code class="code">None</code> if the objfile is no longer valid.
+See the <code class="code">gdb.Objfile.is_valid</code> method, described below.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002eusername"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.username</strong><a class="copiable-link" href="#index-Objfile_002eusername"> &para;</a></span></dt>
+<dd><p>The file name of the objfile as specified by the user as a string.
+</p>
+<p>The value is <code class="code">None</code> if the objfile is no longer valid.
+See the <code class="code">gdb.Objfile.is_valid</code> method, described below.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002eis_005ffile"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.is_file</strong><a class="copiable-link" href="#index-Objfile_002eis_005ffile"> &para;</a></span></dt>
+<dd><p>An objfile often comes from an ordinary file, but in some cases it may
+be constructed from the contents of memory.  This attribute is
+<code class="code">True</code> for file-backed objfiles, and <code class="code">False</code> for other
+kinds.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002eowner"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.owner</strong><a class="copiable-link" href="#index-Objfile_002eowner"> &para;</a></span></dt>
+<dd><p>For separate debug info objfiles this is the corresponding <code class="code">gdb.Objfile</code>
+object that debug info is being provided for.
+Otherwise this is <code class="code">None</code>.
+Separate debug info objfiles are added with the
+<code class="code">gdb.Objfile.add_separate_debug_file</code> method, described below.
+</p></dd></dl>
+
+<a class="anchor" id="Objfile_002ebuild_005fid"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002ebuild_005fid"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.build_id</strong><a class="copiable-link" href="#index-Objfile_002ebuild_005fid"> &para;</a></span></dt>
+<dd><p>The build ID of the objfile as a string.
+If the objfile does not have a build ID then the value is <code class="code">None</code>.
+</p>
+<p>This is supported only on some operating systems, notably those which use
+the ELF format for binary files and the <small class="sc">GNU</small> Binutils.  For more details
+about this feature, see the description of the <samp class="option">--build-id</samp>
+command-line option in <a data-manual="ld" href="https://sourceware.org/binutils/docs/ld/Options.html#Options">Command Line Options</a> in <cite class="cite">The GNU Linker</cite>.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002eprogspace"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.progspace</strong><a class="copiable-link" href="#index-Objfile_002eprogspace"> &para;</a></span></dt>
+<dd><p>The containing program space of the objfile as a <code class="code">gdb.Progspace</code>
+object.  See <a class="xref" href="Progspaces-In-Python.html">Program Spaces In Python</a>.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002epretty_005fprinters"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.pretty_printers</strong><a class="copiable-link" href="#index-Objfile_002epretty_005fprinters"> &para;</a></span></dt>
+<dd><p>The <code class="code">pretty_printers</code> attribute is a list of functions.  It is
+used to look up pretty-printers.  A <code class="code">Value</code> is passed to each
+function in order; if the function returns <code class="code">None</code>, then the
+search continues.  Otherwise, the return value should be an object
+which is used to format the value.  See <a class="xref" href="Pretty-Printing-API.html">Pretty Printing API</a>, for more
+information.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002etype_005fprinters"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.type_printers</strong><a class="copiable-link" href="#index-Objfile_002etype_005fprinters"> &para;</a></span></dt>
+<dd><p>The <code class="code">type_printers</code> attribute is a list of type printer objects.
+See <a class="xref" href="Type-Printing-API.html">Type Printing API</a>, for more information.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_002eframe_005ffilters"><span class="category-def">Variable: </span><span><strong class="def-name">Objfile.frame_filters</strong><a class="copiable-link" href="#index-Objfile_002eframe_005ffilters"> &para;</a></span></dt>
+<dd><p>The <code class="code">frame_filters</code> attribute is a dictionary of frame filter
+objects.  See <a class="xref" href="Frame-Filter-API.html">Filtering Frames</a>, for more information.
+</p></dd></dl>
+
+<p>One may add arbitrary attributes to <code class="code">gdb.Objfile</code> objects
+in the usual Python way.
+This is useful if, for example, one needs to do some extra record keeping
+associated with the objfile.
+</p>
+<p>See <a class="xref" href="Inferiors-In-Python.html#choosing-attribute-names">choosing attribute names</a>, for guidance on selecting a suitable
+name for new attributes.
+</p>
+<p>In this contrived example we record the time when <small class="sc">GDB</small>
+loaded the objfile.
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python
+import datetime
+def new_objfile_handler(event):
+    # Set the time_loaded attribute of the new objfile.
+    event.new_objfile.time_loaded = datetime.datetime.today()
+gdb.events.new_objfile.connect(new_objfile_handler)
+end
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) file ./hello
+Reading symbols from ./hello...
+(gdb) python print(gdb.objfiles()[0].time_loaded)
+2014-10-09 11:41:36.770345
+</pre></div></div>
+
+<p>A <code class="code">gdb.Objfile</code> object has the following methods:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Objfile_002eis_005fvalid"><span class="category-def">Function: </span><span><strong class="def-name">Objfile.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Objfile_002eis_005fvalid"> &para;</a></span></dt>
+<dd><p>Returns <code class="code">True</code> if the <code class="code">gdb.Objfile</code> object is valid,
+<code class="code">False</code> if not.  A <code class="code">gdb.Objfile</code> object can become invalid
+if the object file it refers to is not loaded in <small class="sc">GDB</small> any
+longer.  All other <code class="code">gdb.Objfile</code> methods will throw an exception
+if it is invalid at the time the method is called.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Objfile_002eadd_005fseparate_005fdebug_005ffile"><span class="category-def">Function: </span><span><strong class="def-name">Objfile.add_separate_debug_file</strong> <var class="def-var-arguments">(file)</var><a class="copiable-link" href="#index-Objfile_002eadd_005fseparate_005fdebug_005ffile"> &para;</a></span></dt>
+<dd><p>Add <var class="var">file</var> to the list of files that <small class="sc">GDB</small> will search for
+debug information for the objfile.
+This is useful when the debug info has been removed from the program
+and stored in a separate file.  <small class="sc">GDB</small> has built-in support for
+finding separate debug info files (see <a class="pxref" href="Separate-Debug-Files.html">Debugging Information in Separate Files</a>), but if
+the file doesn&rsquo;t live in one of the standard places that <small class="sc">GDB</small>
+searches then this function can be used to add a debug info file
+from a different place.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Objfile_002elookup_005fglobal_005fsymbol"><span class="category-def">Function: </span><span><strong class="def-name">Objfile.lookup_global_symbol</strong> <var class="def-var-arguments">(name <span class="r">[</span>, domain<span class="r">]</span>)</var><a class="copiable-link" href="#index-Objfile_002elookup_005fglobal_005fsymbol"> &para;</a></span></dt>
+<dd><p>Search for a global symbol named <var class="var">name</var> in this objfile.  Optionally, the
+search scope can be restricted with the <var class="var">domain</var> argument.
+The <var class="var">domain</var> argument must be a domain constant defined in the <code class="code">gdb</code>
+module and described in <a class="ref" href="Symbols-In-Python.html">Python representation of Symbols</a>.  This function is similar to
+<code class="code">gdb.lookup_global_symbol</code>, except that the search is limited to this
+objfile.
+</p>
+<p>The result is a <code class="code">gdb.Symbol</code> object or <code class="code">None</code> if the symbol
+is not found.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Objfile_002elookup_005fstatic_005fsymbol"><span class="category-def">Function: </span><span><strong class="def-name">Objfile.lookup_static_symbol</strong> <var class="def-var-arguments">(name <span class="r">[</span>, domain<span class="r">]</span>)</var><a class="copiable-link" href="#index-Objfile_002elookup_005fstatic_005fsymbol"> &para;</a></span></dt>
+<dd><p>Like <code class="code">Objfile.lookup_global_symbol</code>, but searches for a global
+symbol with static linkage named <var class="var">name</var> in this objfile.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Frames-In-Python.html">Accessing inferior stack frames from Python</a>, Previous: <a href="Progspaces-In-Python.html">Program Spaces In Python</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

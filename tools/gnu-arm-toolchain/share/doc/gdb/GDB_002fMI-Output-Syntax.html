@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI Output Syntax (Debugging with GDB)</title>
+
+<meta name="description" content="GDB/MI Output Syntax (Debugging with GDB)">
+<meta name="keywords" content="GDB/MI Output Syntax (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB_002fMI-Command-Syntax.html" rel="up" title="GDB/MI Command Syntax">
+<link href="GDB_002fMI-Input-Syntax.html" rel="prev" title="GDB/MI Input Syntax">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Output-Syntax">
+<div class="nav-panel">
+<p>
+Previous: <a href="GDB_002fMI-Input-Syntax.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> Input Syntax</a>, Up: <a href="GDB_002fMI-Command-Syntax.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small> Command Syntax</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="gdb_002fmi-Output-Syntax"><span>27.2.2 <small class="sc">GDB/MI</small> Output Syntax<a class="copiable-link" href="#gdb_002fmi-Output-Syntax"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-output-syntax-of-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-output-syntax"></a>
+<p>The output from <small class="sc">GDB/MI</small> consists of zero or more out-of-band records
+followed, optionally, by a single result record.  This result record
+is for the most recent command.  The sequence of output records is
+terminated by &lsquo;<samp class="samp">(gdb)</samp>&rsquo;.
+</p>
+<p>If an input command was prefixed with a <code class="code"><var class="var">token</var></code> then the
+corresponding output for that command will also be prefixed by that same
+<var class="var">token</var>.
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">output</var> &rarr;</code></dt>
+<dd><p><code class="code">( <var class="var">out-of-band-record</var> )* [ <var class="var">result-record</var> ] &quot;(gdb)&quot; <var class="var">nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">result-record</var> &rarr;</code></dt>
+<dd><p><code class="code"> [ <var class="var">token</var> ] &quot;^&quot; <var class="var">result-class</var> ( &quot;,&quot; <var class="var">result</var> )* <var class="var">nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">out-of-band-record</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">async-record</var> | <var class="var">stream-record</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">async-record</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">exec-async-output</var> | <var class="var">status-async-output</var> | <var class="var">notify-async-output</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">exec-async-output</var> &rarr;</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &quot;*&quot; <var class="var">async-output nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">status-async-output</var> &rarr;</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &quot;+&quot; <var class="var">async-output nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">notify-async-output</var> &rarr;</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &quot;=&quot; <var class="var">async-output nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">async-output</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">async-class</var> ( &quot;,&quot; <var class="var">result</var> )*</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">result-class</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;done&quot; | &quot;running&quot; | &quot;connected&quot; | &quot;error&quot; | &quot;exit&quot;</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">async-class</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;stopped&quot; | <var class="var">others</var></code> (where <var class="var">others</var> will be added
+depending on the needs&mdash;this is still in development).
+</p>
+</dd>
+<dt><code class="code"><var class="var">result</var> &rarr;</code></dt>
+<dd><p><code class="code"> <var class="var">variable</var> &quot;=&quot; <var class="var">value</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">variable</var> &rarr;</code></dt>
+<dd><p><code class="code"> <var class="var">string</var> </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">value</var> &rarr;</code></dt>
+<dd><p><code class="code"> <var class="var">const</var> | <var class="var">tuple</var> | <var class="var">list</var> </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">const</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">c-string</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">tuple</var> &rarr;</code></dt>
+<dd><p><code class="code"> &quot;{}&quot; | &quot;{&quot; <var class="var">result</var> ( &quot;,&quot; <var class="var">result</var> )* &quot;}&quot; </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">list</var> &rarr;</code></dt>
+<dd><p><code class="code"> &quot;[]&quot; | &quot;[&quot; <var class="var">value</var> ( &quot;,&quot; <var class="var">value</var> )* &quot;]&quot; | &quot;[&quot;
+<var class="var">result</var> ( &quot;,&quot; <var class="var">result</var> )* &quot;]&quot; </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">stream-record</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">console-stream-output</var> | <var class="var">target-stream-output</var> | <var class="var">log-stream-output</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">console-stream-output</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;~&quot; <var class="var">c-string nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">target-stream-output</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;@&quot; <var class="var">c-string nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">log-stream-output</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;&amp;&quot; <var class="var">c-string nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">nl</var> &rarr;</code></dt>
+<dd><p><code class="code">CR | CR-LF</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">token</var> &rarr;</code></dt>
+<dd><p><em class="emph">any sequence of digits</em>.
+</p></dd>
+</dl>
+
+<p>Notes:
+</p>
+<ul class="itemize mark-bullet">
+<li>All output sequences end in a single line containing a period.
+
+</li><li>The <code class="code"><var class="var">token</var></code> is from the corresponding request.  Note that
+for all async output, while the token is allowed by the grammar and
+may be output by future versions of <small class="sc">GDB</small> for select async
+output messages, it is generally omitted.  Frontends should treat
+all async output as reporting general changes in the state of the
+target and there should be no need to associate async output to any
+prior command.
+
+</li><li><a class="index-entry-id" id="index-status-output-in-gdb_002fmi"></a>
+<var class="var">status-async-output</var> contains on-going status information about the
+progress of a slow operation.  It can be discarded.  All status output is
+prefixed by &lsquo;<samp class="samp">+</samp>&rsquo;.
+
+</li><li><a class="index-entry-id" id="index-async-output-in-gdb_002fmi"></a>
+<var class="var">exec-async-output</var> contains asynchronous state change on the target
+(stopped, started, disappeared).  All async output is prefixed by
+&lsquo;<samp class="samp">*</samp>&rsquo;.
+
+</li><li><a class="index-entry-id" id="index-notify-output-in-gdb_002fmi"></a>
+<var class="var">notify-async-output</var> contains supplementary information that the
+client should handle (e.g., a new breakpoint information).  All notify
+output is prefixed by &lsquo;<samp class="samp">=</samp>&rsquo;.
+
+</li><li><a class="index-entry-id" id="index-console-output-in-gdb_002fmi"></a>
+<var class="var">console-stream-output</var> is output that should be displayed as is in the
+console.  It is the textual response to a CLI command.  All the console
+output is prefixed by &lsquo;<samp class="samp">~</samp>&rsquo;.
+
+</li><li><a class="index-entry-id" id="index-target-output-in-gdb_002fmi"></a>
+<var class="var">target-stream-output</var> is the output produced by the target program.
+All the target output is prefixed by &lsquo;<samp class="samp">@</samp>&rsquo;.
+
+</li><li><a class="index-entry-id" id="index-log-output-in-gdb_002fmi"></a>
+<var class="var">log-stream-output</var> is output text coming from <small class="sc">GDB</small>&rsquo;s internals, for
+instance messages that should be displayed as part of an error log.  All
+the log output is prefixed by &lsquo;<samp class="samp">&amp;</samp>&rsquo;.
+
+</li><li><a class="index-entry-id" id="index-list-output-in-gdb_002fmi"></a>
+New <small class="sc">GDB/MI</small> commands should only output <var class="var">lists</var> containing
+<var class="var">values</var>.
+
+
+</li></ul>
+
+<p>See <a class="xref" href="GDB_002fMI-Stream-Records.html"><small class="sc">GDB/MI</small> Stream Records</a>, for more
+details about the various output records.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="GDB_002fMI-Input-Syntax.html"><small class="sc">GDB/MI</small> Input Syntax</a>, Up: <a href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small> Command Syntax</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

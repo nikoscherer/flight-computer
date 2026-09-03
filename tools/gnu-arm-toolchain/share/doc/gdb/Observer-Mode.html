@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Observer Mode (Debugging with GDB)</title>
+
+<meta name="description" content="Observer Mode (Debugging with GDB)">
+<meta name="keywords" content="Observer Mode (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Thread-Stops.html" rel="up" title="Thread Stops">
+<link href="Interrupted-System-Calls.html" rel="prev" title="Interrupted System Calls">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Observer-Mode">
+<div class="nav-panel">
+<p>
+Previous: <a href="Interrupted-System-Calls.html" accesskey="p" rel="prev">Interrupted System Calls</a>, Up: <a href="Thread-Stops.html" accesskey="u" rel="up">Stopping and Starting Multi-thread Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Observer-Mode-1"><span>5.5.6 Observer Mode<a class="copiable-link" href="#Observer-Mode-1"> &para;</a></span></h4>
+
+<p>If you want to build on non-stop mode and observe program behavior
+without any chance of disruption by <small class="sc">GDB</small>, you can set
+variables to disable all of the debugger&rsquo;s attempts to modify state,
+whether by writing memory, inserting breakpoints, etc.  These operate
+at a low level, intercepting operations from all commands.
+</p>
+<p>When all of these are set to <code class="code">off</code>, then <small class="sc">GDB</small> is said to
+be <em class="dfn">observer mode</em>.  As a convenience, the variable
+<code class="code">observer</code> can be set to disable these, plus enable non-stop
+mode.
+</p>
+<p>Note that <small class="sc">GDB</small> will not prevent you from making nonsensical
+combinations of these settings. For instance, if you have enabled
+<code class="code">may-insert-breakpoints</code> but disabled <code class="code">may-write-memory</code>,
+then breakpoints that work by writing trap instructions into the code
+stream will still not be able to be placed.
+</p>
+<dl class="table">
+<dt><a id="index-observer"></a><span><code class="code">set observer on</code><a class="copiable-link" href="#index-observer"> &para;</a></span></dt>
+<dt><code class="code">set observer off</code></dt>
+<dd><p>When set to <code class="code">on</code>, this disables all the permission variables
+below (except for <code class="code">insert-fast-tracepoints</code>), plus enables
+non-stop debugging.  Setting this to <code class="code">off</code> switches back to
+normal debugging, though remaining in non-stop mode.
+</p>
+</dd>
+<dt><code class="code">show observer</code></dt>
+<dd><p>Show whether observer mode is on or off.
+</p>
+</dd>
+<dt><a id="index-may_002dwrite_002dregisters"></a><span><code class="code">set may-write-registers on</code><a class="copiable-link" href="#index-may_002dwrite_002dregisters"> &para;</a></span></dt>
+<dt><code class="code">set may-write-registers off</code></dt>
+<dd><p>This controls whether <small class="sc">GDB</small> will attempt to alter the values of
+registers, such as with assignment expressions in <code class="code">print</code>, or the
+<code class="code">jump</code> command.  It defaults to <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">show may-write-registers</code></dt>
+<dd><p>Show the current permission to write registers.
+</p>
+</dd>
+<dt><a id="index-may_002dwrite_002dmemory"></a><span><code class="code">set may-write-memory on</code><a class="copiable-link" href="#index-may_002dwrite_002dmemory"> &para;</a></span></dt>
+<dt><code class="code">set may-write-memory off</code></dt>
+<dd><p>This controls whether <small class="sc">GDB</small> will attempt to alter the contents
+of memory, such as with assignment expressions in <code class="code">print</code>.  It
+defaults to <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">show may-write-memory</code></dt>
+<dd><p>Show the current permission to write memory.
+</p>
+</dd>
+<dt><a id="index-may_002dinsert_002dbreakpoints"></a><span><code class="code">set may-insert-breakpoints on</code><a class="copiable-link" href="#index-may_002dinsert_002dbreakpoints"> &para;</a></span></dt>
+<dt><code class="code">set may-insert-breakpoints off</code></dt>
+<dd><p>This controls whether <small class="sc">GDB</small> will attempt to insert breakpoints.
+This affects all breakpoints, including internal breakpoints defined
+by <small class="sc">GDB</small>.  It defaults to <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">show may-insert-breakpoints</code></dt>
+<dd><p>Show the current permission to insert breakpoints.
+</p>
+</dd>
+<dt><a id="index-may_002dinsert_002dtracepoints"></a><span><code class="code">set may-insert-tracepoints on</code><a class="copiable-link" href="#index-may_002dinsert_002dtracepoints"> &para;</a></span></dt>
+<dt><code class="code">set may-insert-tracepoints off</code></dt>
+<dd><p>This controls whether <small class="sc">GDB</small> will attempt to insert (regular)
+tracepoints at the beginning of a tracing experiment.  It affects only
+non-fast tracepoints, fast tracepoints being under the control of
+<code class="code">may-insert-fast-tracepoints</code>.  It defaults to <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">show may-insert-tracepoints</code></dt>
+<dd><p>Show the current permission to insert tracepoints.
+</p>
+</dd>
+<dt><a id="index-may_002dinsert_002dfast_002dtracepoints"></a><span><code class="code">set may-insert-fast-tracepoints on</code><a class="copiable-link" href="#index-may_002dinsert_002dfast_002dtracepoints"> &para;</a></span></dt>
+<dt><code class="code">set may-insert-fast-tracepoints off</code></dt>
+<dd><p>This controls whether <small class="sc">GDB</small> will attempt to insert fast
+tracepoints at the beginning of a tracing experiment.  It affects only
+fast tracepoints, regular (non-fast) tracepoints being under the
+control of <code class="code">may-insert-tracepoints</code>.  It defaults to <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">show may-insert-fast-tracepoints</code></dt>
+<dd><p>Show the current permission to insert fast tracepoints.
+</p>
+</dd>
+<dt><a id="index-may_002dinterrupt"></a><span><code class="code">set may-interrupt on</code><a class="copiable-link" href="#index-may_002dinterrupt"> &para;</a></span></dt>
+<dt><code class="code">set may-interrupt off</code></dt>
+<dd><p>This controls whether <small class="sc">GDB</small> will attempt to interrupt or stop
+program execution.  When this variable is <code class="code">off</code>, the
+<code class="code">interrupt</code> command will have no effect, nor will
+<kbd class="kbd">Ctrl-c</kbd>. It defaults to <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">show may-interrupt</code></dt>
+<dd><p>Show the current permission to interrupt or stop the program.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Interrupted-System-Calls.html">Interrupted System Calls</a>, Up: <a href="Thread-Stops.html">Stopping and Starting Multi-thread Programs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

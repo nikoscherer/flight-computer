@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Frames (Debugging with GDB)</title>
+
+<meta name="description" content="Frames (Debugging with GDB)">
+<meta name="keywords" content="Frames (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Stack.html" rel="up" title="Stack">
+<link href="Backtrace.html" rel="next" title="Backtrace">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Frames">
+<div class="nav-panel">
+<p>
+Next: <a href="Backtrace.html" accesskey="n" rel="next">Backtraces</a>, Up: <a href="Stack.html" accesskey="u" rel="up">Examining the Stack</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Stack-Frames"><span>8.1 Stack Frames<a class="copiable-link" href="#Stack-Frames"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-frame_002c-definition"></a>
+<a class="index-entry-id" id="index-stack-frame"></a>
+<p>The call stack is divided up into contiguous pieces called <em class="dfn">stack
+frames</em>, or <em class="dfn">frames</em> for short; each frame is the data associated
+with one call to one function.  The frame contains the arguments given
+to the function, the function&rsquo;s local variables, and the address at
+which the function is executing.
+</p>
+<a class="index-entry-id" id="index-initial-frame"></a>
+<a class="index-entry-id" id="index-outermost-frame"></a>
+<a class="index-entry-id" id="index-innermost-frame"></a>
+<p>When your program is started, the stack has only one frame, that of the
+function <code class="code">main</code>.  This is called the <em class="dfn">initial</em> frame or the
+<em class="dfn">outermost</em> frame.  Each time a function is called, a new frame is
+made.  Each time a function returns, the frame for that function invocation
+is eliminated.  If a function is recursive, there can be many frames for
+the same function.  The frame for the function in which execution is
+actually occurring is called the <em class="dfn">innermost</em> frame.  This is the most
+recently created of all the stack frames that still exist.
+</p>
+<a class="index-entry-id" id="index-frame-pointer"></a>
+<p>Inside your program, stack frames are identified by their addresses.  A
+stack frame consists of many bytes, each of which has its own address; each
+kind of computer has a convention for choosing one byte whose
+address serves as the address of the frame.  Usually this address is kept
+in a register called the <em class="dfn">frame pointer register</em>
+(see <a class="pxref" href="Registers.html">$fp</a>) while execution is going on in that frame.
+</p>
+<a class="index-entry-id" id="index-frame-level"></a>
+<a class="index-entry-id" id="index-frame-number"></a>
+<p><small class="sc">GDB</small> labels each existing stack frame with a <em class="dfn">level</em>, a
+number that is zero for the innermost frame, one for the frame that
+called it, and so on upward.  These level numbers give you a way of
+designating stack frames in <small class="sc">GDB</small> commands.  The terms
+<em class="dfn">frame number</em> and <em class="dfn">frame level</em> can be used interchangeably to
+describe this number.
+</p>
+<a class="index-entry-id" id="index-frameless-execution"></a>
+<p>Some compilers provide a way to compile functions so that they operate
+without stack frames.  (For example, the <small class="sc">GCC</small> option
+</p><div class="example smallexample">
+<pre class="example-preformatted">&lsquo;<samp class="samp">-fomit-frame-pointer</samp>&rsquo;
+</pre></div>
+<p>generates functions without a frame.)
+This is occasionally done with heavily used library functions to save
+the frame setup time.  <small class="sc">GDB</small> has limited facilities for dealing
+with these function invocations.  If the innermost function invocation
+has no stack frame, <small class="sc">GDB</small> nevertheless regards it as though
+it had a separate frame, which is numbered zero as usual, allowing
+correct tracing of the function call chain.  However, <small class="sc">GDB</small> has
+no provision for frameless functions elsewhere in the stack.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Backtrace.html">Backtraces</a>, Up: <a href="Stack.html">Examining the Stack</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

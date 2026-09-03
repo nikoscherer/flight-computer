@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI Ada Exceptions Commands (Debugging with GDB)</title>
+
+<meta name="description" content="GDB/MI Ada Exceptions Commands (Debugging with GDB)">
+<meta name="keywords" content="GDB/MI Ada Exceptions Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Support-Commands.html" rel="next" title="GDB/MI Support Commands">
+<link href="GDB_002fMI-File-Transfer-Commands.html" rel="prev" title="GDB/MI File Transfer Commands">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Ada-Exceptions-Commands">
+<div class="nav-panel">
+<p>
+Next: <a href="GDB_002fMI-Support-Commands.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small> Support Commands</a>, Previous: <a href="GDB_002fMI-File-Transfer-Commands.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> File Transfer Commands</a>, Up: <a href="GDB_002fMI.html" accesskey="u" rel="up">The <small class="sc">GDB/MI</small> Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Ada-Exceptions-gdb_002fmi-Commands"><span>27.22 Ada Exceptions <small class="sc">GDB/MI</small> Commands<a class="copiable-link" href="#Ada-Exceptions-gdb_002fmi-Commands"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-_002dinfo_002dada_002dexceptions"></a>
+<h4 class="subheading" id="The-_002dinfo_002dada_002dexceptions-Command"><span>The <code class="code">-info-ada-exceptions</code> Command<a class="copiable-link" href="#The-_002dinfo_002dada_002dexceptions-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-102"><span>Synopsis<a class="copiable-link" href="#Synopsis-102"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -info-ada-exceptions [ <var class="var">regexp</var>]
+</pre></div>
+
+<p>List all Ada exceptions defined within the program being debugged.
+With a regular expression <var class="var">regexp</var>, only those exceptions whose
+names match <var class="var">regexp</var> are listed.
+</p>
+<h4 class="subsubheading" id="gdb-Command-84"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-84"> &para;</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is &lsquo;<samp class="samp">info exceptions</samp>&rsquo;.
+</p>
+<h4 class="subsubheading" id="Result-7"><span>Result<a class="copiable-link" href="#Result-7"> &para;</a></span></h4>
+
+<p>The result is a table of Ada exceptions.  The following columns are
+defined for each exception:
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">name</samp>&rsquo;</dt>
+<dd><p>The name of the exception.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">address</samp>&rsquo;</dt>
+<dd><p>The address of the exception.
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-84"><span>Example<a class="copiable-link" href="#Example-84"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-info-ada-exceptions aint
+^done,ada-exceptions={nr_rows=&quot;2&quot;,nr_cols=&quot;2&quot;,
+hdr=[{width=&quot;1&quot;,alignment=&quot;-1&quot;,col_name=&quot;name&quot;,colhdr=&quot;Name&quot;},
+{width=&quot;1&quot;,alignment=&quot;-1&quot;,col_name=&quot;address&quot;,colhdr=&quot;Address&quot;}],
+body=[{name=&quot;constraint_error&quot;,address=&quot;0x0000000000613da0&quot;},
+{name=&quot;const.aint_global_e&quot;,address=&quot;0x0000000000613b00&quot;}]}
+</pre></div>
+
+<h4 class="subheading" id="Catching-Ada-Exceptions"><span>Catching Ada Exceptions<a class="copiable-link" href="#Catching-Ada-Exceptions"> &para;</a></span></h4>
+
+<p>The commands describing how to ask <small class="sc">GDB</small> to stop when a program
+raises an exception are described at <a class="ref" href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html">Ada Exception <small class="sc">GDB/MI</small> Catchpoints</a>.
+</p>
+
+</div>
+
+
+
+</body>
+</html>

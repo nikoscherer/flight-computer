@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Temporaries (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Temporaries (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Temporaries (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="GIMPLE.html" rel="up" title="GIMPLE">
+<link href="Operands.html" rel="next" title="Operands">
+<link href="GIMPLE-Exception-Handling.html" rel="prev" title="GIMPLE Exception Handling">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Temporaries">
+<div class="nav-panel">
+<p>
+Next: <a href="Operands.html" accesskey="n" rel="next">Operands</a>, Previous: <a href="GIMPLE-Exception-Handling.html" accesskey="p" rel="prev">Exception Handling</a>, Up: <a href="GIMPLE.html" accesskey="u" rel="up">GIMPLE</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Temporaries-1"><span>11.5 Temporaries<a class="copiable-link" href="#Temporaries-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-Temporaries"></a>
+
+<p>When gimplification encounters a subexpression that is too
+complex, it creates a new temporary variable to hold the value of
+the subexpression, and adds a new statement to initialize it
+before the current statement. These special temporaries are known
+as &lsquo;<samp class="samp">expression temporaries</samp>&rsquo;, and are allocated using
+<code class="code">get_formal_tmp_var</code>.  The compiler tries to always evaluate
+identical expressions into the same temporary, to simplify
+elimination of redundant calculations.
+</p>
+<p>We can only use expression temporaries when we know that it will
+not be reevaluated before its value is used, and that it will not
+be otherwise modified<a class="footnote" id="DOCF3" href="#FOOT3"><sup>3</sup></a>. Other temporaries can be allocated
+using <code class="code">get_initialized_tmp_var</code> or <code class="code">create_tmp_var</code>.
+</p>
+<p>Currently, an expression like <code class="code">a = b + 5</code> is not reduced any
+further.  We tried converting it to something like
+</p><div class="example smallexample">
+<pre class="example-preformatted">T1 = b + 5;
+a = T1;
+</pre></div>
+<p>but this bloated the representation for minimal benefit.  However, a
+variable which must live in memory cannot appear in an expression; its
+value is explicitly loaded into a temporary first.  Similarly, storing
+the value of an expression to a memory variable goes through a
+temporary.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT3" href="#DOCF3">(3)</a></h5>
+<p>These restrictions are derived
+from those in Morgan 4.8.</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the use of the GNU compilers.
+
+Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Asm constexprs (Using the GNU Compiler Collection (GCC))</title>
+
+<meta name="description" content="Asm constexprs (Using the GNU Compiler Collection (GCC))">
+<meta name="keywords" content="Asm constexprs (Using the GNU Compiler Collection (GCC))">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Indices.html" rel="index" title="Indices">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Using-Assembly-Language-with-C.html" rel="up" title="Using Assembly Language with C">
+<link href="Asm-Labels.html" rel="next" title="Asm Labels">
+<link href="Constraints.html" rel="prev" title="Constraints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en_US">
+<div class="subsection-level-extent" id="Asm-constexprs">
+<div class="nav-panel">
+<p>
+Next: <a href="Asm-Labels.html" accesskey="n" rel="next">Controlling Names Used in Assembler Code</a>, Previous: <a href="Constraints.html" accesskey="p" rel="prev">Constraints for <code class="code">asm</code> Operands</a>, Up: <a href="Using-Assembly-Language-with-C.html" accesskey="u" rel="up">How to Use Inline Assembly Language in C Code</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Indices.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="C_002b_002b11-Constant-Expressions-instead-of-String-Literals"><span>6.11.4 C++11 Constant Expressions instead of String Literals<a class="copiable-link" href="#C_002b_002b11-Constant-Expressions-instead-of-String-Literals"> &para;</a></span></h4>
+
+<p>In C++ with <samp class="option">-std=gnu++11</samp> or later, strings that appear in asm
+syntax&mdash;specifically, the assembler template, constraints, and
+clobbers&mdash;can be specified as parenthesized compile-time constant
+expressions as well as by string literals.  The parentheses around such
+an expression are a required part of the syntax.  The constant expression
+can return a container with <code class="code">data ()</code> and <code class="code">size ()</code>
+member functions, following similar rules as the C++26 <code class="code">static_assert</code>
+message.  Any string is converted to the character set of the source code.
+When this feature is available the <code class="code">__GXX_CONSTEXPR_ASM__</code> preprocessor
+macro is predefined.
+</p>
+<p>This extension is supported for both the basic and extended asm syntax.
+</p>
+<div class="example">
+<pre class="example-preformatted">#include &lt;string&gt;
+constexpr std::string_view genfoo() { return &quot;foo&quot;; }
+
+void function()
+{
+  asm((genfoo()));
+}
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

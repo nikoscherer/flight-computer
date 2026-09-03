@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Special Fortran Commands (Debugging with GDB)</title>
+
+<meta name="description" content="Special Fortran Commands (Debugging with GDB)">
+<meta name="keywords" content="Special Fortran Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Fortran.html" rel="up" title="Fortran">
+<link href="Fortran-Intrinsics.html" rel="prev" title="Fortran Intrinsics">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Special-Fortran-Commands">
+<div class="nav-panel">
+<p>
+Previous: <a href="Fortran-Intrinsics.html" accesskey="p" rel="prev">Fortran Intrinsics</a>, Up: <a href="Fortran.html" accesskey="u" rel="up">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Special-Fortran-Commands-1"><span>15.4.6.4 Special Fortran Commands<a class="copiable-link" href="#Special-Fortran-Commands-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Special-Fortran-commands"></a>
+
+<p><small class="sc">GDB</small> has some commands to support Fortran-specific features,
+such as displaying common blocks.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-info-common"></a>
+<a id="index-COMMON-blocks_002c-Fortran"></a><span><code class="code">info common <span class="r">[</span><var class="var">common-name</var><span class="r">]</span></code><a class="copiable-link" href="#index-COMMON-blocks_002c-Fortran"> &para;</a></span></dt>
+<dd><p>This command prints the values contained in the Fortran <code class="code">COMMON</code>
+block whose name is <var class="var">common-name</var>.  With no argument, the names of
+all <code class="code">COMMON</code> blocks visible at the current program location are
+printed.
+<a class="index-entry-id" id="index-arrays-slices-_0028Fortran_0029"></a>
+<a class="index-entry-id" id="index-set-fortran-repack_002darray_002dslices"></a>
+<a class="index-entry-id" id="index-show-fortran-repack_002darray_002dslices"></a>
+</p></dd>
+<dt><code class="code">set fortran repack-array-slices [on|off]</code></dt>
+<dt><code class="code">show fortran repack-array-slices</code></dt>
+<dd><p>When taking a slice from an array, a Fortran compiler can choose to
+either produce an array descriptor that describes the slice in place,
+or it may repack the slice, copying the elements of the slice into a
+new region of memory.
+</p>
+<p>When this setting is on, then <small class="sc">GDB</small> will also repack array
+slices in some situations.  When this setting is off, then
+<small class="sc">GDB</small> will create array descriptors for slices that reference
+the original data in place.
+</p>
+<p><small class="sc">GDB</small> will never repack an array slice if the data for the
+slice is contiguous within the original array.
+</p>
+<p><small class="sc">GDB</small> will always repack string slices if the data for the
+slice is non-contiguous within the original string as <small class="sc">GDB</small>
+does not support printing non-contiguous strings.
+</p>
+<p>The default for this setting is <code class="code">off</code>.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Decimal Floating Point (Debugging with GDB)</title>
+
+<meta name="description" content="Decimal Floating Point (Debugging with GDB)">
+<meta name="keywords" content="Decimal Floating Point (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="C.html" rel="up" title="C">
+<link href="Debugging-C-Plus-Plus.html" rel="prev" title="Debugging C Plus Plus">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Decimal-Floating-Point">
+<div class="nav-panel">
+<p>
+Previous: <a href="Debugging-C-Plus-Plus.html" accesskey="p" rel="prev"><small class="sc">GDB</small> Features for C<code class="t">++</code></a>, Up: <a href="C.html" accesskey="u" rel="up">C and C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Decimal-Floating-Point-format"><span>15.4.1.8 Decimal Floating Point format<a class="copiable-link" href="#Decimal-Floating-Point-format"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-decimal-floating-point-format"></a>
+
+<p><small class="sc">GDB</small> can examine, set and perform computations with numbers in
+decimal floating point format, which in the C language correspond to the
+<code class="code">_Decimal32</code>, <code class="code">_Decimal64</code> and <code class="code">_Decimal128</code> types as
+specified by the extension to support decimal floating-point arithmetic.
+</p>
+<p>There are two encodings in use, depending on the architecture: BID (Binary
+Integer Decimal) for x86 and x86-64, and DPD (Densely Packed Decimal) for
+PowerPC and S/390.  <small class="sc">GDB</small> will use the appropriate encoding for the
+configured target.
+</p>
+<p>Because of a limitation in <samp class="file">libdecnumber</samp>, the library used by <small class="sc">GDB</small>
+to manipulate decimal floating point numbers, it is not possible to convert
+(using a cast, for example) integers wider than 32-bit to decimal float.
+</p>
+<p>In addition, in order to imitate <small class="sc">GDB</small>&rsquo;s behavior with binary floating
+point computations, error checking in decimal float operations ignores
+underflow, overflow and divide by zero exceptions.
+</p>
+<p>In the PowerPC architecture, <small class="sc">GDB</small> provides a set of pseudo-registers
+to inspect <code class="code">_Decimal128</code> values stored in floating point registers.
+See <a class="ref" href="PowerPC.html">PowerPC</a> for more details.
+</p>
+</div>
+
+
+
+</body>
+</html>

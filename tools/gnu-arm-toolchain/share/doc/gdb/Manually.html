@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Manually (Debugging with GDB)</title>
+
+<meta name="description" content="Manually (Debugging with GDB)">
+<meta name="keywords" content="Manually (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Setting.html" rel="up" title="Setting">
+<link href="Automatically.html" rel="next" title="Automatically">
+<link href="Filenames.html" rel="prev" title="Filenames">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Manually">
+<div class="nav-panel">
+<p>
+Next: <a href="Automatically.html" accesskey="n" rel="next">Having <small class="sc">GDB</small> Infer the Source Language</a>, Previous: <a href="Filenames.html" accesskey="p" rel="prev">List of Filename Extensions and Languages</a>, Up: <a href="Setting.html" accesskey="u" rel="up">Switching Between Source Languages</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Setting-the-Working-Language"><span>15.1.2 Setting the Working Language<a class="copiable-link" href="#Setting-the-Working-Language"> &para;</a></span></h4>
+
+<p>If you allow <small class="sc">GDB</small> to set the language automatically,
+expressions are interpreted the same way in your debugging session and
+your program.
+</p>
+<a class="index-entry-id" id="index-set-language"></a>
+<p>If you wish, you may set the language manually.  To do this, issue the
+command &lsquo;<samp class="samp">set language <var class="var">lang</var></samp>&rsquo;, where <var class="var">lang</var> is the name of
+a language, such as
+<code class="code">c</code> or <code class="code">modula-2</code>.
+For a list of the supported languages, type &lsquo;<samp class="samp">set language</samp>&rsquo;.
+</p>
+<p>Setting the language manually prevents <small class="sc">GDB</small> from updating the working
+language automatically.  This can lead to confusion if you try
+to debug a program when the working language is not the same as the
+source language, when an expression is acceptable to both
+languages&mdash;but means different things.  For instance, if the current
+source file were written in C, and <small class="sc">GDB</small> was parsing Modula-2, a
+command such as:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">print a = b + c
+</pre></div>
+
+<p>might not have the effect you intended.  In C, this means to add
+<code class="code">b</code> and <code class="code">c</code> and place the result in <code class="code">a</code>.  The result
+printed would be the value of <code class="code">a</code>.  In Modula-2, this means to compare
+<code class="code">a</code> to the result of <code class="code">b+c</code>, yielding a <code class="code">BOOLEAN</code> value.
+</p>
+</div>
+
+
+
+</body>
+</html>

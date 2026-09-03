@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>MicroBlaze (Debugging with GDB)</title>
+
+<meta name="description" content="MicroBlaze (Debugging with GDB)">
+<meta name="keywords" content="MicroBlaze (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Embedded-Processors.html" rel="up" title="Embedded Processors">
+<link href="MIPS-Embedded.html" rel="next" title="MIPS Embedded">
+<link href="M68K.html" rel="prev" title="M68K">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MicroBlaze">
+<div class="nav-panel">
+<p>
+Next: <a href="MIPS-Embedded.html" accesskey="n" rel="next"><abbr class="acronym">MIPS</abbr> Embedded</a>, Previous: <a href="M68K.html" accesskey="p" rel="prev">M68k</a>, Up: <a href="Embedded-Processors.html" accesskey="u" rel="up">Embedded Processors</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="MicroBlaze-1"><span>21.3.5 MicroBlaze<a class="copiable-link" href="#MicroBlaze-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Xilinx-MicroBlaze"></a>
+<a class="index-entry-id" id="index-XMD_002c-Xilinx-Microprocessor-Debugger"></a>
+
+<p>The MicroBlaze is a soft-core processor supported on various Xilinx
+FPGAs, such as Spartan or Virtex series.  Boards with these processors
+usually have JTAG ports which connect to a host system running the Xilinx
+Embedded Development Kit (EDK) or Software Development Kit (SDK).
+This host system is used to download the configuration bitstream to
+the target FPGA.  The Xilinx Microprocessor Debugger (XMD) program
+communicates with the target board using the JTAG interface and
+presents a <code class="code">gdbserver</code> interface to the board.  By default
+<code class="code">xmd</code> uses port <code class="code">1234</code>.  (While it is possible to change 
+this default port, it requires the use of undocumented <code class="code">xmd</code> 
+commands.  Contact Xilinx support if you need to do this.)
+</p>
+<p>Use these GDB commands to connect to the MicroBlaze target processor.
+</p>
+<dl class="table">
+<dt><code class="code">target remote :1234</code></dt>
+<dd><p>Use this command to connect to the target if you are running <small class="sc">GDB</small>
+on the same system as <code class="code">xmd</code>.
+</p>
+</dd>
+<dt><code class="code">target remote <var class="var">xmd-host</var>:1234</code></dt>
+<dd><p>Use this command to connect to the target if it is connected to <code class="code">xmd</code>
+running on a different system named <var class="var">xmd-host</var>.
+</p>
+</dd>
+<dt><code class="code">load</code></dt>
+<dd><p>Use this command to download a program to the MicroBlaze target.
+</p>
+</dd>
+<dt><code class="code">set debug microblaze <var class="var">n</var></code></dt>
+<dd><p>Enable MicroBlaze-specific debugging messages if non-zero.
+</p>
+</dd>
+<dt><code class="code">show debug microblaze <var class="var">n</var></code></dt>
+<dd><p>Show MicroBlaze-specific debugging level.
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

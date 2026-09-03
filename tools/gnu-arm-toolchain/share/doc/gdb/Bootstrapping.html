@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Bootstrapping (Debugging with GDB)</title>
+
+<meta name="description" content="Bootstrapping (Debugging with GDB)">
+<meta name="keywords" content="Bootstrapping (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Remote-Stub.html" rel="up" title="Remote Stub">
+<link href="Debug-Session.html" rel="next" title="Debug Session">
+<link href="Stub-Contents.html" rel="prev" title="Stub Contents">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Bootstrapping">
+<div class="nav-panel">
+<p>
+Next: <a href="Debug-Session.html" accesskey="n" rel="next">Putting it All Together</a>, Previous: <a href="Stub-Contents.html" accesskey="p" rel="prev">What the Stub Can Do for You</a>, Up: <a href="Remote-Stub.html" accesskey="u" rel="up">Implementing a Remote Stub</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="What-You-Must-Do-for-the-Stub"><span>20.5.2 What You Must Do for the Stub<a class="copiable-link" href="#What-You-Must-Do-for-the-Stub"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-remote-stub_002c-support-routines"></a>
+<p>The debugging stubs that come with <small class="sc">GDB</small> are set up for a particular
+chip architecture, but they have no information about the rest of your
+debugging target machine.
+</p>
+<p>First of all you need to tell the stub how to communicate with the
+serial port.
+</p>
+<dl class="table">
+<dt><a id="index-getDebugChar"></a><span><code class="code">int getDebugChar()</code><a class="copiable-link" href="#index-getDebugChar"> &para;</a></span></dt>
+<dd><p>Write this subroutine to read a single character from the serial port.
+It may be identical to <code class="code">getchar</code> for your target system; a
+different name is used to allow you to distinguish the two if you wish.
+</p>
+</dd>
+<dt><a id="index-putDebugChar"></a><span><code class="code">void putDebugChar(int)</code><a class="copiable-link" href="#index-putDebugChar"> &para;</a></span></dt>
+<dd><p>Write this subroutine to write a single character to the serial port.
+It may be identical to <code class="code">putchar</code> for your target system; a
+different name is used to allow you to distinguish the two if you wish.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-control-C_002c-and-remote-debugging"></a>
+<a class="index-entry-id" id="index-interrupting-remote-targets"></a>
+<p>If you want <small class="sc">GDB</small> to be able to stop your program while it is
+running, you need to use an interrupt-driven serial driver, and arrange
+for it to stop when it receives a <code class="code">^C</code> (&lsquo;<samp class="samp">\003</samp>&rsquo;, the control-C
+character).  That is the character which <small class="sc">GDB</small> uses to tell the
+remote system to stop.
+</p>
+<p>Getting the debugging target to return the proper status to <small class="sc">GDB</small>
+probably requires changes to the standard stub; one quick and dirty way
+is to just execute a breakpoint instruction (the &ldquo;dirty&rdquo; part is that
+<small class="sc">GDB</small> reports a <code class="code">SIGTRAP</code> instead of a <code class="code">SIGINT</code>).
+</p>
+<p>Other routines you need to supply are:
+</p>
+<dl class="table">
+<dt><a id="index-exceptionHandler"></a><span><code class="code">void exceptionHandler (int <var class="var">exception_number</var>, void *<var class="var">exception_address</var>)</code><a class="copiable-link" href="#index-exceptionHandler"> &para;</a></span></dt>
+<dd><p>Write this function to install <var class="var">exception_address</var> in the exception
+handling tables.  You need to do this because the stub does not have any
+way of knowing what the exception handling tables on your target system
+are like (for example, the processor&rsquo;s table might be in <small class="sc">ROM</small>,
+containing entries which point to a table in <small class="sc">RAM</small>).
+The <var class="var">exception_number</var> specifies the exception which should be changed;
+its meaning is architecture-dependent (for example, different numbers
+might represent divide by zero, misaligned access, etc).  When this
+exception occurs, control should be transferred directly to
+<var class="var">exception_address</var>, and the processor state (stack, registers,
+and so on) should be just as it is when a processor exception occurs.  So if
+you want to use a jump instruction to reach <var class="var">exception_address</var>, it
+should be a simple jump, not a jump to subroutine.
+</p>
+<p>For the 386, <var class="var">exception_address</var> should be installed as an interrupt
+gate so that interrupts are masked while the handler runs.  The gate
+should be at privilege level 0 (the most privileged level).  The
+<small class="sc">SPARC</small> and 68k stubs are able to mask interrupts themselves without
+help from <code class="code">exceptionHandler</code>.
+</p>
+</dd>
+<dt><a id="index-flush_005fi_005fcache"></a><span><code class="code">void flush_i_cache()</code><a class="copiable-link" href="#index-flush_005fi_005fcache"> &para;</a></span></dt>
+<dd><p>On <small class="sc">SPARC</small> and <small class="sc">SPARCLITE</small> only, write this subroutine to flush the
+instruction cache, if any, on your target machine.  If there is no
+instruction cache, this subroutine may be a no-op.
+</p>
+<p>On target machines that have instruction caches, <small class="sc">GDB</small> requires this
+function to make certain that the state of your program is stable.
+</p></dd>
+</dl>
+
+<p>You must also make sure this library routine is available:
+</p>
+<dl class="table">
+<dt><a id="index-memset"></a><span><code class="code">void *memset(void *, int, int)</code><a class="copiable-link" href="#index-memset"> &para;</a></span></dt>
+<dd><p>This is the standard library function <code class="code">memset</code> that sets an area of
+memory to a known value.  If you have one of the free versions of
+<code class="code">libc.a</code>, <code class="code">memset</code> can be found there; otherwise, you must
+either obtain it from your hardware manufacturer, or write your own.
+</p></dd>
+</dl>
+
+<p>If you do not use the GNU C compiler, you may need other standard
+library subroutines as well; this varies from one stub to another,
+but in general the stubs are likely to use any of the common library
+subroutines which <code class="code"><small class="sc">GCC</small></code> generates as inline code.
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Debug-Session.html">Putting it All Together</a>, Previous: <a href="Stub-Contents.html">What the Stub Can Do for You</a>, Up: <a href="Remote-Stub.html">Implementing a Remote Stub</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

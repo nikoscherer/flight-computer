@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Numbers (Debugging with GDB)</title>
+
+<meta name="description" content="Numbers (Debugging with GDB)">
+<meta name="keywords" content="Numbers (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB">
+<link href="ABI.html" rel="next" title="ABI">
+<link href="Output-Styling.html" rel="prev" title="Output Styling">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Numbers">
+<div class="nav-panel">
+<p>
+Next: <a href="ABI.html" accesskey="n" rel="next">Configuring the Current ABI</a>, Previous: <a href="Output-Styling.html" accesskey="p" rel="prev">Output Styling</a>, Up: <a href="Controlling-GDB.html" accesskey="u" rel="up">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Numbers-1"><span>22.6 Numbers<a class="copiable-link" href="#Numbers-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-number-representation"></a>
+<a class="index-entry-id" id="index-entering-numbers"></a>
+
+<p>You can always enter numbers in octal, decimal, or hexadecimal in
+<small class="sc">GDB</small> by the usual conventions: octal numbers begin with
+&lsquo;<samp class="samp">0</samp>&rsquo;, decimal numbers end with &lsquo;<samp class="samp">.</samp>&rsquo;, and hexadecimal numbers
+begin with &lsquo;<samp class="samp">0x</samp>&rsquo;.  Numbers that neither begin with &lsquo;<samp class="samp">0</samp>&rsquo; or
+&lsquo;<samp class="samp">0x</samp>&rsquo;, nor end with a &lsquo;<samp class="samp">.</samp>&rsquo; are, by default, entered in base
+10; likewise, the default display for numbers&mdash;when no particular
+format is specified&mdash;is base 10.  You can change the default base for
+both input and output with the commands described below.
+</p>
+<dl class="table">
+<dt><a id="index-set-input_002dradix"></a><span><code class="code">set input-radix <var class="var">base</var></code><a class="copiable-link" href="#index-set-input_002dradix"> &para;</a></span></dt>
+<dd><p>Set the default base for numeric input.  Supported choices
+for <var class="var">base</var> are decimal 8, 10, or 16.  The base must itself be
+specified either unambiguously or using the current input radix; for
+example, any of
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set input-radix 012
+set input-radix 10.
+set input-radix 0xa
+</pre></div>
+
+<p>sets the input base to decimal.  On the other hand, &lsquo;<samp class="samp">set input-radix 10</samp>&rsquo;
+leaves the input radix unchanged, no matter what it was, since
+&lsquo;<samp class="samp">10</samp>&rsquo;, being without any leading or trailing signs of its base, is
+interpreted in the current radix.  Thus, if the current radix is 16,
+&lsquo;<samp class="samp">10</samp>&rsquo; is interpreted in hex, i.e. as 16 decimal, which doesn&rsquo;t
+change the radix.
+</p>
+</dd>
+<dt><a id="index-set-output_002dradix"></a><span><code class="code">set output-radix <var class="var">base</var></code><a class="copiable-link" href="#index-set-output_002dradix"> &para;</a></span></dt>
+<dd><p>Set the default base for numeric display.  Supported choices
+for <var class="var">base</var> are decimal 8, 10, or 16.  The base must itself be
+specified either unambiguously or using the current input radix.
+</p>
+</dd>
+<dt><a id="index-show-input_002dradix"></a><span><code class="code">show input-radix</code><a class="copiable-link" href="#index-show-input_002dradix"> &para;</a></span></dt>
+<dd><p>Display the current default base for numeric input.
+</p>
+</dd>
+<dt><a id="index-show-output_002dradix"></a><span><code class="code">show output-radix</code><a class="copiable-link" href="#index-show-output_002dradix"> &para;</a></span></dt>
+<dd><p>Display the current default base for numeric display.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-radix"></a>
+<a id="index-set-radix"></a><span><code class="code">set radix <span class="r">[</span><var class="var">base</var><span class="r">]</span></code><a class="copiable-link" href="#index-set-radix"> &para;</a></span></dt>
+<dt><code class="code">show radix</code></dt>
+<dd><p>These commands set and show the default base for both input and output
+of numbers.  <code class="code">set radix</code> sets the radix of input and output to
+the same base; without an argument, it resets the radix back to its
+default value of 10.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="ABI.html">Configuring the Current ABI</a>, Previous: <a href="Output-Styling.html">Output Styling</a>, Up: <a href="Controlling-GDB.html">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Dump examples (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Dump examples (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Dump examples (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Optimization-info.html" rel="up" title="Optimization info">
+<link href="Dump-types.html" rel="prev" title="Dump types">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Dump-examples">
+<div class="nav-panel">
+<p>
+Previous: <a href="Dump-types.html" accesskey="p" rel="prev">Dump types</a>, Up: <a href="Optimization-info.html" accesskey="u" rel="up">Optimization info</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Dump-examples-1"><span>8.7.6 Dump examples<a class="copiable-link" href="#Dump-examples-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-dump-examples"></a>
+
+<div class="example smallexample">
+<pre class="example-preformatted">gcc -O3 -fopt-info-missed=missed.all
+</pre></div>
+
+<p>outputs missed optimization report from all the passes into
+<samp class="file">missed.all</samp>.
+</p>
+<p>As another example,
+</p><div class="example smallexample">
+<pre class="example-preformatted">gcc -O3 -fopt-info-inline-optimized-missed=inline.txt
+</pre></div>
+
+<p>will output information about missed optimizations as well as
+optimized locations from all the inlining passes into
+<samp class="file">inline.txt</samp>.
+</p>
+<p>If the <var class="var">filename</var> is provided, then the dumps from all the
+applicable optimizations are concatenated into the <samp class="file">filename</samp>.
+Otherwise the dump is output onto <samp class="file">stderr</samp>. If <var class="var">options</var> is
+omitted, it defaults to <samp class="option">optimized-optall</samp>, which means dump
+all information about successful optimizations from all the passes.
+In the following example, the optimization information is output on
+to <samp class="file">stderr</samp>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gcc -O3 -fopt-info
+</pre></div>
+
+<p>Note that <samp class="option">-fopt-info-vec-missed</samp> behaves the same as
+<samp class="option">-fopt-info-missed-vec</samp>.  The order of the optimization group
+names and message types listed after <samp class="option">-fopt-info</samp> does not matter.
+</p>
+<p>As another example, consider
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gcc -fopt-info-vec-missed=vec.miss -fopt-info-loop-optimized=loop.opt
+</pre></div>
+
+<p>Here the two output file names <samp class="file">vec.miss</samp> and <samp class="file">loop.opt</samp> are
+in conflict since only one output file is allowed. In this case, only
+the first option takes effect and the subsequent options are
+ignored. Thus only the <samp class="file">vec.miss</samp> is produced which containts
+dumps from the vectorizer about missed opportunities.
+</p></div>
+
+
+
+</body>
+</html>

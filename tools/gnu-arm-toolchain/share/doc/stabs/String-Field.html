@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>String Field (STABS)</title>
+
+<meta name="description" content="String Field (STABS)">
+<meta name="keywords" content="String Field (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Overview.html" rel="up" title="Overview">
+<link href="C-Example.html" rel="next" title="C Example">
+<link href="Stabs-Format.html" rel="prev" title="Stabs Format">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="String-Field">
+<div class="nav-panel">
+<p>
+Next: <a href="C-Example.html" accesskey="n" rel="next">A Simple Example in C Source</a>, Previous: <a href="Stabs-Format.html" accesskey="p" rel="prev">Overview of Stab Format</a>, Up: <a href="Overview.html" accesskey="u" rel="up">Overview of Stabs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="The-String-Field"><span>1.3 The String Field<a class="copiable-link" href="#The-String-Field"> &para;</a></span></h3>
+
+<p>For most stabs the string field holds the meat of the
+debugging information.  The flexible nature of this field
+is what makes stabs extensible.  For some stab types the string field
+contains only a name.  For other stab types the contents can be a great
+deal more complex.
+</p>
+<p>The overall format of the string field for most stab types is:
+</p>
+<div class="example">
+<pre class="example-preformatted">&quot;<var class="var">name</var>:<var class="var">symbol-descriptor</var> <var class="var">type-information</var>&quot;
+</pre></div>
+
+<p><var class="var">name</var> is the name of the symbol represented by the stab; it can
+contain a pair of colons (see <a class="pxref" href="Nested-Symbols.html">Defining a Symbol Within Another Type</a>).  <var class="var">name</var> can be
+omitted, which means the stab represents an unnamed object.  For
+example, &lsquo;<samp class="samp">:t10=*2</samp>&rsquo; defines type 10 as a pointer to type 2, but does
+not give the type a name.  Omitting the <var class="var">name</var> field is supported by
+AIX dbx and GDB after about version 4.8, but not other debuggers.  GCC
+sometimes uses a single space as the name instead of omitting the name
+altogether; apparently that is supported by most debuggers.
+</p>
+<p>The <var class="var">symbol-descriptor</var> following the &lsquo;<samp class="samp">:</samp>&rsquo; is an alphabetic
+character that tells more specifically what kind of symbol the stab
+represents. If the <var class="var">symbol-descriptor</var> is omitted, but type
+information follows, then the stab represents a local variable.  For a
+list of symbol descriptors, see <a class="ref" href="Symbol-Descriptors.html">Table of Symbol Descriptors</a>.  The &lsquo;<samp class="samp">c</samp>&rsquo;
+symbol descriptor is an exception in that it is not followed by type
+information.  See <a class="xref" href="Constants.html">Constants</a>.
+</p>
+<p><var class="var">type-information</var> is either a <var class="var">type-number</var>, or
+&lsquo;<samp class="samp"><var class="var">type-number</var>=</samp>&rsquo;.  A <var class="var">type-number</var> alone is a type
+reference, referring directly to a type that has already been defined.
+</p>
+<p>The &lsquo;<samp class="samp"><var class="var">type-number</var>=</samp>&rsquo; form is a type definition, where the
+number represents a new type which is about to be defined.  The type
+definition may refer to other types by number, and those type numbers
+may be followed by &lsquo;<samp class="samp">=</samp>&rsquo; and nested definitions.  Also, the Lucid
+compiler will repeat &lsquo;<samp class="samp"><var class="var">type-number</var>=</samp>&rsquo; more than once if it
+wants to define several type numbers at once.
+</p>
+<p>In a type definition, if the character that follows the equals sign is
+non-numeric then it is a <var class="var">type-descriptor</var>, and tells what kind of
+type is about to be defined.  Any other values following the
+<var class="var">type-descriptor</var> vary, depending on the <var class="var">type-descriptor</var>.
+See <a class="xref" href="Type-Descriptors.html">Table of Type Descriptors</a>, for a list of <var class="var">type-descriptor</var> values.  If
+a number follows the &lsquo;<samp class="samp">=</samp>&rsquo; then the number is a <var class="var">type-reference</var>.
+For a full description of types, <a class="ref" href="Types.html">Defining Types</a>.
+</p>
+<p>A <var class="var">type-number</var> is often a single number.  The GNU and Sun tools
+additionally permit a <var class="var">type-number</var> to be a pair
+(<var class="var">file-number</var>,<var class="var">filetype-number</var>) (the parentheses appear in the
+string, and serve to distinguish the two cases).  The <var class="var">file-number</var>
+is 0 for the base source file, 1 for the first included file, 2 for the
+next, and so on.  The <var class="var">filetype-number</var> is a number starting with
+1 which is incremented for each new type defined in the file.
+(Separating the file number and the type number permits the
+<code class="code">N_BINCL</code> optimization to succeed more often; see <a class="ref" href="Include-Files.html">Names of Include Files</a>).
+</p>
+<p>There is an AIX extension for type attributes.  Following the &lsquo;<samp class="samp">=</samp>&rsquo;
+are any number of type attributes.  Each one starts with &lsquo;<samp class="samp">@</samp>&rsquo; and
+ends with &lsquo;<samp class="samp">;</samp>&rsquo;.  Debuggers, including AIX&rsquo;s dbx and GDB 4.10, skip
+any type attributes they do not recognize.  GDB 4.9 and other versions
+of dbx may not do this.  Because of a conflict with C<code class="t">++</code>
+(see <a class="pxref" href="Cplusplus.html">GNU C<code class="t">++</code> Stabs</a>), new attributes should not be defined which begin
+with a digit, &lsquo;<samp class="samp">(</samp>&rsquo;, or &lsquo;<samp class="samp">-</samp>&rsquo;; GDB may be unable to distinguish
+those from the C<code class="t">++</code> type descriptor &lsquo;<samp class="samp">@</samp>&rsquo;.  The attributes are:
+</p>
+<dl class="table">
+<dt><code class="code">a<var class="var">boundary</var></code></dt>
+<dd><p><var class="var">boundary</var> is an integer specifying the alignment.  I assume it
+applies to all variables of this type.
+</p>
+</dd>
+<dt><code class="code">p<var class="var">integer</var></code></dt>
+<dd><p>Pointer class (for checking).  Not sure what this means, or how
+<var class="var">integer</var> is interpreted.
+</p>
+</dd>
+<dt><code class="code">P</code></dt>
+<dd><p>Indicate this is a packed type, meaning that structure fields or array
+elements are placed more closely in memory, to save memory at the
+expense of speed.
+</p>
+</dd>
+<dt><code class="code">s<var class="var">size</var></code></dt>
+<dd><p>Size in bits of a variable of this type.  This is fully supported by GDB
+4.11 and later.
+</p>
+</dd>
+<dt><code class="code">S</code></dt>
+<dd><p>Indicate that this type is a string instead of an array of characters,
+or a bitstring instead of a set.  It doesn&rsquo;t change the layout of the
+data being represented, but does enable the debugger to know which type
+it is.
+</p>
+</dd>
+<dt><code class="code">V</code></dt>
+<dd><p>Indicate that this type is a vector instead of an array.  The only 
+major difference between vectors and arrays is that vectors are
+passed by value instead of by reference (vector coprocessor extension).
+</p>
+</dd>
+</dl>
+
+<p>All of this can make the string field quite long.  All versions of GDB,
+and some versions of dbx, can handle arbitrarily long strings.  But many
+versions of dbx (or assemblers or linkers, I&rsquo;m not sure which)
+cretinously limit the strings to about 80 characters, so compilers which
+must work with such systems need to split the <code class="code">.stabs</code> directive
+into several <code class="code">.stabs</code> directives.  Each stab duplicates every field
+except the string field.  The string field of every stab except the last
+is marked as continued with a backslash at the end (in the assembly code
+this may be written as a double backslash, depending on the assembler).
+Removing the backslashes and concatenating the string fields of each
+stab produces the original, long string.  Just to be incompatible (or so
+they don&rsquo;t have to worry about what the assembler does with
+backslashes), AIX can use &lsquo;<samp class="samp">?</samp>&rsquo; instead of backslash.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="C-Example.html">A Simple Example in C Source</a>, Previous: <a href="Stabs-Format.html">Overview of Stab Format</a>, Up: <a href="Overview.html">Overview of Stabs</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

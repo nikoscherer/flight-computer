@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1992-2024 Free Software Foundation, Inc.
+Contributed by Cygnus Support.  Written by Julia Menapace, Jim Kingdon,
+and David MacKenzie.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License". -->
+<title>Common Blocks (STABS)</title>
+
+<meta name="description" content="Common Blocks (STABS)">
+<meta name="keywords" content="Common Blocks (STABS)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Symbol-Types-Index.html" rel="index" title="Symbol Types Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Variables.html" rel="up" title="Variables">
+<link href="Statics.html" rel="next" title="Statics">
+<link href="Register-Variables.html" rel="prev" title="Register Variables">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Common-Blocks">
+<div class="nav-panel">
+<p>
+Next: <a href="Statics.html" accesskey="n" rel="next">Static Variables</a>, Previous: <a href="Register-Variables.html" accesskey="p" rel="prev">Register Variables</a>, Up: <a href="Variables.html" accesskey="u" rel="up">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Symbol-Types-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Common-Blocks-1"><span>4.4 Common Blocks<a class="copiable-link" href="#Common-Blocks-1"> &para;</a></span></h3>
+
+<p>A common block is a statically allocated section of memory which can be
+referred to by several source files.  It may contain several variables.
+I believe Fortran is the only language with this feature.
+</p>
+<a class="index-entry-id" id="index-N_005fBCOMM"></a>
+<a class="index-entry-id" id="index-N_005fECOMM"></a>
+<a class="index-entry-id" id="index-C_005fBCOMM"></a>
+<a class="index-entry-id" id="index-C_005fECOMM"></a>
+<p>A <code class="code">N_BCOMM</code> stab begins a common block and an <code class="code">N_ECOMM</code> stab
+ends it.  The only field that is significant in these two stabs is the
+string, which names a normal (non-debugging) symbol that gives the
+address of the common block.  According to IBM documentation, only the
+<code class="code">N_BCOMM</code> has the name of the common block (even though their
+compiler actually puts it both places).
+</p>
+<a class="index-entry-id" id="index-N_005fECOML"></a>
+<a class="index-entry-id" id="index-C_005fECOML"></a>
+<p>The stabs for the members of the common block are between the
+<code class="code">N_BCOMM</code> and the <code class="code">N_ECOMM</code>; the value of each stab is the
+offset within the common block of that variable.  IBM uses the
+<code class="code">C_ECOML</code> stab type, and there is a corresponding <code class="code">N_ECOML</code>
+stab type, but Sun&rsquo;s Fortran compiler uses <code class="code">N_GSYM</code> instead.  The
+variables within a common block use the &lsquo;<samp class="samp">V</samp>&rsquo; symbol descriptor (I
+believe this is true of all Fortran variables).  Other stabs (at least
+type declarations using <code class="code">C_DECL</code>) can also be between the
+<code class="code">N_BCOMM</code> and the <code class="code">N_ECOMM</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Alignment of poly_ints (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Alignment of poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Alignment of poly_ints (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="poly_005fint.html" rel="up" title="poly_int">
+<link href="Computing-bounds-on-poly_005fints.html" rel="next" title="Computing bounds on poly_ints">
+<link href="Arithmetic-on-poly_005fints.html" rel="prev" title="Arithmetic on poly_ints">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Alignment-of-poly_005fints">
+<div class="nav-panel">
+<p>
+Next: <a href="Computing-bounds-on-poly_005fints.html" accesskey="n" rel="next">Computing bounds on <code class="code">poly_int</code>s</a>, Previous: <a href="Arithmetic-on-poly_005fints.html" accesskey="p" rel="prev">Arithmetic on <code class="code">poly_int</code>s</a>, Up: <a href="poly_005fint.html" accesskey="u" rel="up">Sizes and offsets as runtime invariants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Alignment-of-poly_005fints-1"><span>9.5 Alignment of <code class="code">poly_int</code>s<a class="copiable-link" href="#Alignment-of-poly_005fints-1"> &para;</a></span></h3>
+
+<p><code class="code">poly_int</code> provides various routines for aligning values and for querying
+misalignments.  In each case the alignment must be a power of 2.
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">can_align_p (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if we can align <var class="var">value</var> up or down to the nearest multiple
+of <var class="var">align</var> at compile time.  The answer is the same for both directions.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">can_align_down (<var class="var">value</var>, <var class="var">align</var>, &amp;<var class="var">aligned</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if <code class="code">can_align_p</code>; if so, set <var class="var">aligned</var> to the greatest
+aligned value that is less than or equal to <var class="var">value</var>.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">can_align_up (<var class="var">value</var>, <var class="var">align</var>, &amp;<var class="var">aligned</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if <code class="code">can_align_p</code>; if so, set <var class="var">aligned</var> to the lowest
+aligned value that is greater than or equal to <var class="var">value</var>.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">known_equal_after_align_down (<var class="var">a</var>, <var class="var">b</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if we can align <var class="var">a</var> and <var class="var">b</var> down to the nearest
+<var class="var">align</var> boundary at compile time and if the two results are equal.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">known_equal_after_align_up (<var class="var">a</var>, <var class="var">b</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if we can align <var class="var">a</var> and <var class="var">b</var> up to the nearest
+<var class="var">align</var> boundary at compile time and if the two results are equal.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">aligned_lower_bound (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Return a result that is no greater than <var class="var">value</var> and that is aligned
+to <var class="var">align</var>.  The result will the closest aligned value for some
+indeterminate values but not necessarily for all.
+</p>
+<p>For example, suppose we are allocating an object of <var class="var">size</var> bytes
+in a downward-growing stack whose current limit is given by <var class="var">limit</var>.
+If the object requires <var class="var">align</var> bytes of alignment, the new stack
+limit is given by:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">aligned_lower_bound (<var class="var">limit</var> - <var class="var">size</var>, <var class="var">align</var>)
+</pre></div>
+
+</dd>
+<dt>&lsquo;<samp class="samp">aligned_upper_bound (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Likewise return a result that is no less than <var class="var">value</var> and that is
+aligned to <var class="var">align</var>.  This is the routine that would be used for
+upward-growing stacks in the scenario just described.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">known_misalignment (<var class="var">value</var>, <var class="var">align</var>, &amp;<var class="var">misalign</var>)</samp>&rsquo;</dt>
+<dd><p>Return true if we can calculate the misalignment of <var class="var">value</var>
+with respect to <var class="var">align</var> at compile time, storing the result in
+<var class="var">misalign</var> if so.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">known_alignment (<var class="var">value</var>)</samp>&rsquo;</dt>
+<dd><p>Return the minimum alignment that <var class="var">value</var> is known to have
+(in other words, the largest alignment that can be guaranteed
+whatever the values of the indeterminates turn out to be).
+Return 0 if <var class="var">value</var> is known to be 0.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">force_align_down (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Assert that <var class="var">value</var> can be aligned down to <var class="var">align</var> at compile
+time and return the result.  When using this routine, please add a
+comment explaining why the assertion is known to hold.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">force_align_up (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Likewise, but aligning up.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">force_align_down_and_div (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Divide the result of <code class="code">force_align_down</code> by <var class="var">align</var>.  Again,
+please add a comment explaining why the assertion in <code class="code">force_align_down</code>
+is known to hold.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">force_align_up_and_div (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Likewise for <code class="code">force_align_up</code>.
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">force_get_misalignment (<var class="var">value</var>, <var class="var">align</var>)</samp>&rsquo;</dt>
+<dd><p>Assert that we can calculate the misalignment of <var class="var">value</var> with
+respect to <var class="var">align</var> at compile time and return the misalignment.
+When using this function, please add a comment explaining why
+the assertion is known to hold.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Computing-bounds-on-poly_005fints.html">Computing bounds on <code class="code">poly_int</code>s</a>, Previous: <a href="Arithmetic-on-poly_005fints.html">Arithmetic on <code class="code">poly_int</code>s</a>, Up: <a href="poly_005fint.html">Sizes and offsets as runtime invariants</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

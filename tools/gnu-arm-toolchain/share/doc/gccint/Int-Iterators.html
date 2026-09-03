@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Int Iterators (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Int Iterators (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Int Iterators (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Iterators.html" rel="up" title="Iterators">
+<link href="Subst-Iterators.html" rel="next" title="Subst Iterators">
+<link href="Code-Iterators.html" rel="prev" title="Code Iterators">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Int-Iterators">
+<div class="nav-panel">
+<p>
+Next: <a href="Subst-Iterators.html" accesskey="n" rel="next">Subst Iterators</a>, Previous: <a href="Code-Iterators.html" accesskey="p" rel="prev">Code Iterators</a>, Up: <a href="Iterators.html" accesskey="u" rel="up">Iterators</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Int-Iterators-1"><span>16.24.3 Int Iterators<a class="copiable-link" href="#Int-Iterators-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-int-iterators-in-_002emd-files"></a>
+<a class="index-entry-id" id="index-define_005fint_005fiterator"></a>
+<a class="index-entry-id" id="index-define_005fint_005fattr"></a>
+
+<p>Int iterators operate in a similar way to code iterators.  See <a class="xref" href="Code-Iterators.html">Code Iterators</a>.
+</p>
+<p>The construct:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_int_iterator <var class="var">name</var> [(<var class="var">int1</var> &quot;<var class="var">cond1</var>&quot;) ... (<var class="var">intn</var> &quot;<var class="var">condn</var>&quot;)])
+</pre></div>
+
+<p>defines a pseudo integer constant <var class="var">name</var> that can be instantiated as
+<var class="var">inti</var> if condition <var class="var">condi</var> is true.  Int iterators can appear in
+only those rtx fields that have &lsquo;i&rsquo;, &lsquo;n&rsquo;, &lsquo;w&rsquo;, or &lsquo;p&rsquo; as the specifier.
+This means that each <var class="var">int</var> has to be a constant defined using
+&lsquo;<samp class="samp">define_constant</samp>&rsquo; or &lsquo;<samp class="samp">define_c_enum</samp>&rsquo;.
+</p>
+<p>As with mode and code iterators, each pattern that uses <var class="var">name</var> will be
+expanded <var class="var">n</var> times, once with all uses of <var class="var">name</var> replaced by
+<var class="var">int1</var>, once with all uses replaced by <var class="var">int2</var>, and so on.
+See <a class="xref" href="Defining-Mode-Iterators.html">Defining Mode Iterators</a>.
+</p>
+<p>It is possible to define attributes for ints as well as for codes and modes.
+Attributes are defined using:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_int_attr <var class="var">attr_name</var> [(<var class="var">int1</var> &quot;<var class="var">value1</var>&quot;) ... (<var class="var">intn</var> &quot;<var class="var">valuen</var>&quot;)])
+</pre></div>
+
+<p>In additon to these user-defined attributes, it is possible to use
+&lsquo;<samp class="samp">&lt;<var class="var">name</var>&gt;</samp>&rsquo; to refer to the current expansion of iterator
+<var class="var">name</var> (such as <var class="var">int1</var>, <var class="var">int2</var>, and so on).
+</p>
+<p>Here&rsquo;s an example of int iterators in action, taken from the ARM port:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_int_iterator QABSNEG [UNSPEC_VQABS UNSPEC_VQNEG])
+
+(define_int_attr absneg [(UNSPEC_VQABS &quot;abs&quot;) (UNSPEC_VQNEG &quot;neg&quot;)])
+
+(define_insn &quot;neon_vq&lt;absneg&gt;&lt;mode&gt;&quot;
+  [(set (match_operand:VDQIW 0 &quot;s_register_operand&quot; &quot;=w&quot;)
+	(unspec:VDQIW [(match_operand:VDQIW 1 &quot;s_register_operand&quot; &quot;w&quot;)
+		       (match_operand:SI 2 &quot;immediate_operand&quot; &quot;i&quot;)]
+		      QABSNEG))]
+  &quot;TARGET_NEON&quot;
+  &quot;vq&lt;absneg&gt;.&lt;V_s_elem&gt;\t%&lt;V_reg&gt;0, %&lt;V_reg&gt;1&quot;
+  [(set_attr &quot;type&quot; &quot;neon_vqneg_vqabs&quot;)]
+)
+
+</pre></div>
+
+<p>This is equivalent to:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define_insn &quot;neon_vqabs&lt;mode&gt;&quot;
+  [(set (match_operand:VDQIW 0 &quot;s_register_operand&quot; &quot;=w&quot;)
+	(unspec:VDQIW [(match_operand:VDQIW 1 &quot;s_register_operand&quot; &quot;w&quot;)
+		       (match_operand:SI 2 &quot;immediate_operand&quot; &quot;i&quot;)]
+		      UNSPEC_VQABS))]
+  &quot;TARGET_NEON&quot;
+  &quot;vqabs.&lt;V_s_elem&gt;\t%&lt;V_reg&gt;0, %&lt;V_reg&gt;1&quot;
+  [(set_attr &quot;type&quot; &quot;neon_vqneg_vqabs&quot;)]
+)
+
+(define_insn &quot;neon_vqneg&lt;mode&gt;&quot;
+  [(set (match_operand:VDQIW 0 &quot;s_register_operand&quot; &quot;=w&quot;)
+	(unspec:VDQIW [(match_operand:VDQIW 1 &quot;s_register_operand&quot; &quot;w&quot;)
+		       (match_operand:SI 2 &quot;immediate_operand&quot; &quot;i&quot;)]
+		      UNSPEC_VQNEG))]
+  &quot;TARGET_NEON&quot;
+  &quot;vqneg.&lt;V_s_elem&gt;\t%&lt;V_reg&gt;0, %&lt;V_reg&gt;1&quot;
+  [(set_attr &quot;type&quot; &quot;neon_vqneg_vqabs&quot;)]
+)
+
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Subst-Iterators.html">Subst Iterators</a>, Previous: <a href="Code-Iterators.html">Code Iterators</a>, Up: <a href="Iterators.html">Iterators</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

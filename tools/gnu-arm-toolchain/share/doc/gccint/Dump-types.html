@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+Texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development. -->
+<title>Dump types (GNU Compiler Collection (GCC) Internals)</title>
+
+<meta name="description" content="Dump types (GNU Compiler Collection (GCC) Internals)">
+<meta name="keywords" content="Dump types (GNU Compiler Collection (GCC) Internals)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Option-Index.html" rel="index" title="Option Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Optimization-info.html" rel="up" title="Optimization info">
+<link href="Dump-examples.html" rel="next" title="Dump examples">
+<link href="Dump-output-verbosity.html" rel="prev" title="Dump output verbosity">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Dump-types">
+<div class="nav-panel">
+<p>
+Next: <a href="Dump-examples.html" accesskey="n" rel="next">Dump examples</a>, Previous: <a href="Dump-output-verbosity.html" accesskey="p" rel="prev">Dump output verbosity</a>, Up: <a href="Optimization-info.html" accesskey="u" rel="up">Optimization info</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Dump-types-1"><span>8.7.5 Dump types<a class="copiable-link" href="#Dump-types-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-dump-types"></a>
+
+<dl class="ftable">
+<dt><a id="index-dump_005fprintf"></a><span><code class="code">dump_printf</code><a class="copiable-link" href="#index-dump_005fprintf"> &para;</a></span></dt>
+<dd>
+<p>This is a generic method for doing formatted output. It takes an
+additional argument <code class="code">dump_kind</code> which signifies the type of
+dump. This method outputs information only when the dumps are enabled
+for this particular <code class="code">dump_kind</code>. Note that the caller doesn&rsquo;t
+need to know if the particular dump is enabled or not, or even the
+file name. The caller only needs to decide which dump output
+information is relevant, and under what conditions. This determines
+the associated flags.
+</p>
+<p>Consider the following example from <samp class="file">loop-unroll.cc</samp> where an
+informative message about a loop (along with its location) is printed
+when any of the following flags is enabled
+</p><ul class="itemize mark-minus">
+<li>optimization messages
+</li><li>RTL dumps
+</li><li>detailed dumps
+
+</li></ul>
+
+<div class="example">
+<pre class="example-preformatted">int report_flags = MSG_OPTIMIZED_LOCATIONS | TDF_RTL | TDF_DETAILS;
+dump_printf_loc (report_flags, insn,
+                 &quot;loop turned into non-loop; it never loops.\n&quot;);
+</pre></div>
+
+</dd>
+<dt><a id="index-dump_005fbasic_005fblock"></a><span><code class="code">dump_basic_block</code><a class="copiable-link" href="#index-dump_005fbasic_005fblock"> &para;</a></span></dt>
+<dd><p>Output basic block.
+</p></dd>
+<dt><a id="index-dump_005fgeneric_005fexpr"></a><span><code class="code">dump_generic_expr</code><a class="copiable-link" href="#index-dump_005fgeneric_005fexpr"> &para;</a></span></dt>
+<dd><p>Output generic expression.
+</p></dd>
+<dt><a id="index-dump_005fgimple_005fstmt"></a><span><code class="code">dump_gimple_stmt</code><a class="copiable-link" href="#index-dump_005fgimple_005fstmt"> &para;</a></span></dt>
+<dd><p>Output gimple statement.
+</p>
+<p>Note that the above methods also have variants prefixed with
+<code class="code">_loc</code>, such as <code class="code">dump_printf_loc</code>, which are similar except
+they also output the source location information.  The <code class="code">_loc</code> variants
+take a <code class="code">const dump_location_t &amp;</code>.  This class can be constructed from
+a <code class="code">gimple *</code> or from a <code class="code">rtx_insn *</code>, and so callers can pass
+a <code class="code">gimple *</code> or a <code class="code">rtx_insn *</code> as the <code class="code">_loc</code> argument.
+The <code class="code">dump_location_t</code> constructor will extract the source location
+from the statement or instruction, along with the profile count, and
+the location in GCC&rsquo;s own source code (or the plugin) from which the dump
+call was emitted.  Only the source location is currently used.
+There is also a <code class="code">dump_user_location_t</code> class, capturing the
+source location and profile count, but not the dump emission location,
+so that locations in the user&rsquo;s code can be passed around.  This
+can also be constructed from a <code class="code">gimple *</code> and from a <code class="code">rtx_insn *</code>,
+and it too can be passed as the <code class="code">_loc</code> argument.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Dump-examples.html">Dump examples</a>, Previous: <a href="Dump-output-verbosity.html">Dump output verbosity</a>, Up: <a href="Optimization-info.html">Optimization info</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Option-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

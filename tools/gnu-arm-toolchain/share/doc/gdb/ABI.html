@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2024 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>ABI (Debugging with GDB)</title>
+
+<meta name="description" content="ABI (Debugging with GDB)">
+<meta name="keywords" content="ABI (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB">
+<link href="Auto_002dloading.html" rel="next" title="Auto-loading">
+<link href="Numbers.html" rel="prev" title="Numbers">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="ABI">
+<div class="nav-panel">
+<p>
+Next: <a href="Auto_002dloading.html" accesskey="n" rel="next">Automatically loading associated files</a>, Previous: <a href="Numbers.html" accesskey="p" rel="prev">Numbers</a>, Up: <a href="Controlling-GDB.html" accesskey="u" rel="up">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Configuring-the-Current-ABI"><span>22.7 Configuring the Current ABI<a class="copiable-link" href="#Configuring-the-Current-ABI"> &para;</a></span></h3>
+
+<p><small class="sc">GDB</small> can determine the <em class="dfn">ABI</em> (Application Binary Interface) of your
+application automatically.  However, sometimes you need to override its
+conclusions.  Use these commands to manage <small class="sc">GDB</small>&rsquo;s view of the
+current ABI.
+</p>
+<a class="index-entry-id" id="index-OS-ABI"></a>
+<a class="index-entry-id" id="index-set-osabi"></a>
+<a class="index-entry-id" id="index-show-osabi"></a>
+<a class="index-entry-id" id="index-Newlib-OS-ABI-and-its-influence-on-the-longjmp-handling"></a>
+
+<p>One <small class="sc">GDB</small> configuration can debug binaries for multiple operating
+system targets, either via remote debugging or native emulation.
+<small class="sc">GDB</small> will autodetect the <em class="dfn">OS ABI</em> (Operating System ABI) in use,
+but you can override its conclusion using the <code class="code">set osabi</code> command.
+One example where this is useful is in debugging of binaries which use
+an alternate C library (e.g. <small class="sc">UCLIBC</small> for <small class="sc">GNU</small>/Linux) which does
+not have the same identifying marks that the standard C library for your
+platform provides.
+</p>
+<p>When <small class="sc">GDB</small> is debugging the AArch64 architecture, it provides a
+&ldquo;Newlib&rdquo; OS ABI.  This is useful for handling <code class="code">setjmp</code> and
+<code class="code">longjmp</code> when debugging binaries that use the <small class="sc">NEWLIB</small> C library.
+The &ldquo;Newlib&rdquo; OS ABI can be selected by <code class="code">set osabi Newlib</code>.
+</p>
+<dl class="table">
+<dt><code class="code">show osabi</code></dt>
+<dd><p>Show the OS ABI currently in use.
+</p>
+</dd>
+<dt><code class="code">set osabi</code></dt>
+<dd><p>With no argument, show the list of registered available OS ABI&rsquo;s.
+</p>
+</dd>
+<dt><code class="code">set osabi <var class="var">abi</var></code></dt>
+<dd><p>Set the current OS ABI to <var class="var">abi</var>.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-float-promotion"></a>
+
+<p>Generally, the way that an argument of type <code class="code">float</code> is passed to a
+function depends on whether the function is prototyped.  For a prototyped
+(i.e. ANSI/ISO style) function, <code class="code">float</code> arguments are passed unchanged,
+according to the architecture&rsquo;s convention for <code class="code">float</code>.  For unprototyped
+(i.e. K&amp;R style) functions, <code class="code">float</code> arguments are first promoted to type
+<code class="code">double</code> and then passed.
+</p>
+<p>Unfortunately, some forms of debug information do not reliably indicate whether
+a function is prototyped.  If <small class="sc">GDB</small> calls a function that is not marked
+as prototyped, it consults <kbd class="kbd">set coerce-float-to-double</kbd>.
+</p>
+<dl class="table">
+<dt><a id="index-set-coerce_002dfloat_002dto_002ddouble"></a><span><code class="code">set coerce-float-to-double</code><a class="copiable-link" href="#index-set-coerce_002dfloat_002dto_002ddouble"> &para;</a></span></dt>
+<dt><code class="code">set coerce-float-to-double on</code></dt>
+<dd><p>Arguments of type <code class="code">float</code> will be promoted to <code class="code">double</code> when passed
+to an unprototyped function.  This is the default setting.
+</p>
+</dd>
+<dt><code class="code">set coerce-float-to-double off</code></dt>
+<dd><p>Arguments of type <code class="code">float</code> will be passed directly to unprototyped
+functions.
+</p>
+</dd>
+<dt><a id="index-show-coerce_002dfloat_002dto_002ddouble"></a><span><code class="code">show coerce-float-to-double</code><a class="copiable-link" href="#index-show-coerce_002dfloat_002dto_002ddouble"> &para;</a></span></dt>
+<dd><p>Show the current setting of promoting <code class="code">float</code> to <code class="code">double</code>.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-set-cp_002dabi"></a>
+<a class="index-entry-id" id="index-show-cp_002dabi"></a>
+<p><small class="sc">GDB</small> needs to know the ABI used for your program&rsquo;s C<code class="t">++</code>
+objects.  The correct C<code class="t">++</code> ABI depends on which C<code class="t">++</code> compiler was
+used to build your application.  <small class="sc">GDB</small> only fully supports
+programs with a single C<code class="t">++</code> ABI; if your program contains code using
+multiple C<code class="t">++</code> ABI&rsquo;s or if <small class="sc">GDB</small> can not identify your
+program&rsquo;s ABI correctly, you can tell <small class="sc">GDB</small> which ABI to use.
+Currently supported ABI&rsquo;s include &ldquo;gnu-v2&rdquo;, for <code class="code">g++</code> versions
+before 3.0, &ldquo;gnu-v3&rdquo;, for <code class="code">g++</code> versions 3.0 and later, and
+&ldquo;hpaCC&rdquo; for the HP ANSI C<code class="t">++</code> compiler.  Other C<code class="t">++</code> compilers may
+use the &ldquo;gnu-v2&rdquo; or &ldquo;gnu-v3&rdquo; ABI&rsquo;s as well.  The default setting is
+&ldquo;auto&rdquo;.
+</p>
+<dl class="table">
+<dt><code class="code">show cp-abi</code></dt>
+<dd><p>Show the C<code class="t">++</code> ABI currently in use.
+</p>
+</dd>
+<dt><code class="code">set cp-abi</code></dt>
+<dd><p>With no argument, show the list of supported C<code class="t">++</code> ABI&rsquo;s.
+</p>
+</dd>
+<dt><code class="code">set cp-abi <var class="var">abi</var></code></dt>
+<dt><code class="code">set cp-abi auto</code></dt>
+<dd><p>Set the current C<code class="t">++</code> ABI to <var class="var">abi</var>, or return to automatic detection.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Auto_002dloading.html">Automatically loading associated files</a>, Previous: <a href="Numbers.html">Numbers</a>, Up: <a href="Controlling-GDB.html">Controlling <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
