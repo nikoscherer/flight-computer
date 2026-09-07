@@ -6,5 +6,5 @@
   "cmake.preferredGenerators": [
     "Ninja"
   ],
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": true
 }

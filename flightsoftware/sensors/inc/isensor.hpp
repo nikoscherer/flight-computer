@@ -10,7 +10,9 @@ public:
     kOk = 0,
     kBusy = 1,
     kError = 2,
-    kInvalidID = 3
+    kBusReadError = 3,
+    kBusWriteError = 4,
+    kInvalidID = 5,
   };
 
   virtual Status init() = 0;
