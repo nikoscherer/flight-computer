@@ -1,8 +1,0 @@
-CompileFlags:
-  CompilationDatabase: build/host-tests
-  Compiler: arm-none-eabi-g++
-  Add:
-    - >-
-      -IC:/Bulldog-Rocketry/flight-computer/firmware/tools/gnu-arm-toolchain/arm-none-eabi/include/c++/15.3.1
-    - >-
-      -IC:/Bulldog-Rocketry/flight-computer/firmware/tools/gnu-arm-toolchain/arm-none-eabi/include/c++/15.3.1/arm-none-eabi
