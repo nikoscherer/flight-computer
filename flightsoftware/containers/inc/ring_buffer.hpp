@@ -8,17 +8,17 @@ public:
   RingBuffer() {}
 
   void push(T *in_data) {
-    incrementPtr(head_);
-    if (head_ == tail_) {
-      incrementPtr(tail_);
+    if (size_ != 0) {
+      incrementPtr(head_);
+
+      if (head_ == tail_) {
+        incrementPtr(tail_);
+      }
     }
+
     buffer_[head_] = in_data;
 
     if (size_ != N) {
-      if (size_ == 0) {
-        ++tail_;
-      }
-
       ++size_;
     }
   }
@@ -41,12 +41,22 @@ public:
     return true;
   }
 
-  bool peakFront(T *&out_data) {
+  bool peakHead(const T *&out_data) {
     if (buffer_[head_] == nullptr) {
       return false;
     }
 
     out_data = buffer_[head_];
+
+    return true;
+  }
+
+  bool peakTail(const T *&out_data) {
+    if (buffer_[tail_] == nullptr) {
+      return false;
+    }
+
+    out_data = buffer_[tail_];
 
     return true;
   }

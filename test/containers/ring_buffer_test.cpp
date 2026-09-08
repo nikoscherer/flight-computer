@@ -23,15 +23,12 @@ TEST(PushTest, VerifiesZeroCopy) {
   rb_.push(&original_data);
   EXPECT_EQ(rb_.getSize(), 1); // Ring Buffer size should be 1 now
 
-  MockIMUData *out_data;
+  const MockIMUData *out_data;
   EXPECT_TRUE(
-      rb_.peakFront(out_data)); // Should return true (retrieved a pointer)
-  EXPECT_EQ(rb_.getSize(), 1);  // Ring Buffer size should stay 1
+      rb_.peakTail(out_data)); // Should return true (retrieved a pointer)
+  EXPECT_EQ(rb_.getSize(), 1); // Ring Buffer size should stay 1
 
   EXPECT_EQ(out_data, &original_data); // Output should equal input.
-
-  out_data->x = new_x;
-  EXPECT_EQ(out_data, &original_data);
 }
 
 TEST(PushPopTest, VerifiesWrapping) {
@@ -63,6 +60,31 @@ TEST(PushPopTest, VerifiesWrapping) {
   EXPECT_EQ(rb_.getSize(), 2); // Size should go down to 2 (popped tail)
 
   EXPECT_EQ(out_data, &od2);
+}
+
+TEST(PeakTest, VerifiesHeadTailPeak) {
+  RingBuffer<MockIMUData, small_size> rb_;
+
+  MockIMUData od1{0, 1, 2};
+  MockIMUData od2{3, 4, 5};
+
+  rb_.push(&od1); // [od1(head), nullptr, nullptr]
+  EXPECT_EQ(rb_.getSize(), 1);
+
+  rb_.push(&od2); // [od1, od2(head), nullptr]
+  EXPECT_EQ(rb_.getSize(), 2);
+
+  const MockIMUData *peak_head;
+  EXPECT_TRUE(rb_.peakHead(peak_head));
+  EXPECT_EQ(rb_.getSize(), 2);
+
+  EXPECT_EQ(peak_head, &od2);
+
+  const MockIMUData *peak_tail;
+  EXPECT_TRUE(rb_.peakTail(peak_tail));
+  EXPECT_EQ(rb_.getSize(), 2);
+
+  EXPECT_EQ(peak_tail, &od1);
 }
 
 TEST(PopTest, VerifiesPopReturn) {
