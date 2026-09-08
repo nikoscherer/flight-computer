@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.22)
 project(FlightSoftwareCore)
 
 # Flight Logic Library
-# add_library(flight_logic STATIC
-#     containers/src/ring_buffer.cpp # Useless file to allow library creation
-# )
+add_library(flight_logic STATIC
+    containers/src/ring_buffer.cpp # Useless file to allow library creation
+)
 
-# target_include_directories(flight_logic PUBLIC
-#     containers/inc
-#     bus/inc
-# )
+target_include_directories(flight_logic PUBLIC
+    containers/inc
+    bus/inc
+)
 
 # Flight Core Library
 if(NOT BUILD_TESTING)
@@ -29,6 +29,6 @@ if(NOT BUILD_TESTING)
 
     target_link_libraries(flight_core PUBLIC
         stm32cubemx
-        # flight_logic
+        flight_logic
     )
 endif()

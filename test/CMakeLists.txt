@@ -15,6 +15,7 @@ include(CTest)
 
 add_executable(unit_tests
     test_main.cpp
+    containers/ring_buffer_test.cpp
 )
 
 target_link_libraries(unit_tests

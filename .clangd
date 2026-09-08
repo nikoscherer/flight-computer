@@ -1,5 +1,5 @@
 CompileFlags:
-  CompilationDatabase: build/Debug
+  CompilationDatabase: build/host-tests
   Compiler: arm-none-eabi-g++
   Add:
     - >-
