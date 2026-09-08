@@ -6,7 +6,7 @@
 
 class STM32I2CBus : public IBus {
 public:
-  STM32I2CBus(I2C_HandleTypeDef *hi2c, uint8_t device_address);
+  explicit STM32I2CBus(I2C_HandleTypeDef *hi2c, uint8_t device_address);
 
   Status writeRegister(const uint8_t reg, uint8_t *data, const size_t size,
                        const uint32_t timeoutMs) override;

@@ -6,22 +6,37 @@
             "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}",
-		    "toolchainFile": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake",
+            "cacheVariables": {}
+        },
+        {
+            "name": "firmware-base",
+            "hidden": true,
+            "inherits": "default",
+            "toolchainFile": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake",
             "cacheVariables": {
+                "BUILD_TESTING": "OFF"
             }
         },
         {
             "name": "Debug",
-            "inherits": "default",
+            "inherits": "firmware-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
             "name": "Release",
-            "inherits": "default",
+            "inherits": "firmware-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "host-tests",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTING": "ON"
             }
         }
     ],
@@ -33,6 +48,10 @@
         {
             "name": "Release",
             "configurePreset": "Release"
+        },
+        {
+            "name": "host-tests",
+            "configurePreset": "host-tests"
         }
     ]
 }

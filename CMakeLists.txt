@@ -16,7 +16,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
@@ -35,38 +34,30 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 # Enable CMake support for ASM and C languages
 enable_language(CXX C ASM)
 
-# Create an executable object type only for firmware builds
-add_executable(${CMAKE_PROJECT_NAME})
+#---------------------------------------------------------------
 
-# Add STM32CubeMX generated sources
-add_subdirectory(cmake/stm32cubemx)
+# Option for building testing code
+option(BUILD_TESTING "Build the testing code" ON)
+
+# Add flight software directory
 add_subdirectory(flightsoftware)
 
-# Link directories setup
-target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined library search paths
-)
+# Options for when BUILD_TESTING is ON/OFF
+if(NOT BUILD_TESTING)
+    add_executable(${CMAKE_PROJECT_NAME}) # Create an executable object type only for firmware builds
+    add_subdirectory(cmake/stm32cubemx) # Add STM32CubeMX generated sources
+    target_link_libraries(${CMAKE_PROJECT_NAME} # Add STM32CubeMX generated library and flight_core
+        stm32cubemx
+        flight_core
+    )
+endif()
 
-# Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-)
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
-# Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    flightsoftware/inc/
-)
-
-# Add project symbols (macros)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined symbols
-)
+#---------------------------------------------------------------
 
 # Remove wrong libob.a library dependency when using cpp files
 list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
-
-# Add linked libraries
-target_link_libraries(${CMAKE_PROJECT_NAME}
-    stm32cubemx
-    flight_core
-    # Add user defined libraries
-)

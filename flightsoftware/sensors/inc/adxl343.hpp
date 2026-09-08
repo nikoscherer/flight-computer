@@ -7,7 +7,7 @@
 
 class ADXL343 : public ISensor {
 public:
-  ADXL343(IBus *bus);
+  explicit ADXL343(IBus *bus);
   ~ADXL343();
 
   struct ADXL343Data {
