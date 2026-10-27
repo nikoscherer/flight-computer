@@ -1,0 +1,10 @@
+{
+  "source": {
+    "sourceType": "STM32CubeMX"
+  },
+  "board": "NUCLEO-L412RB-P",
+  "device": "STM32L412RBT6P",
+  "core": "Cortex-M4",
+  "order": 0,
+  "toolchain": "GCC"
+}
