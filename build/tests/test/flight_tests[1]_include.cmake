@@ -1,0 +1,5 @@
+if(EXISTS "C:/Bulldog-Rocketry/flight-computer/build/tests/test/flight_tests[1]_tests.cmake")
+  include("C:/Bulldog-Rocketry/flight-computer/build/tests/test/flight_tests[1]_tests.cmake")
+else()
+  add_test(flight_tests_NOT_BUILT flight_tests_NOT_BUILT)
+endif()

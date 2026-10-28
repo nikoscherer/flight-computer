@@ -1,6 +1,7 @@
 #pragma once
 
-#include "main.h"
+#include <cstddef>
+#include <cstdint>
 
 enum class CommBusType { kSPI = 0 };
 
@@ -12,7 +13,7 @@ struct BusRequest {
     size_t length;
     uint32_t timeout;
 
-    GPIO_TypeDef* cs_gpio_port;
+    int* cs_gpio_port;
     uint16_t cs_pin;
 
     BusRequestType comm_type;

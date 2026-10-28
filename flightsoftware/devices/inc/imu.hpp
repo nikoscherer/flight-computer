@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cstdint>
+
 #include "ibus.hpp"
 #include "isensor.hpp"
-#include "main.h"
 
 struct IMUData {
     float x_accel;
@@ -12,9 +13,9 @@ struct IMUData {
 
 class IMU : public ISensor {
    public:
-    IMU(CommBusType bus_type);
+    IMU(CommBusType bus_type, int* cs_gpio_port, uint16_t cs_pin);
 
-    void requestRead(BusRequest& request);
+    void requestRead(BusRequest& request, uint32_t timeout);
 
     void getAccel(IMUData& imu_data);
 
@@ -23,6 +24,9 @@ class IMU : public ISensor {
 
    private:
     CommBusType bus_type_;
+
+    int* cs_gpio_port_;
+    uint16_t cs_pin_;
 
     constexpr static uint8_t kRegisterOUTX_L_A_ = 0x28,
                              kRegisterLengthOUT_L_A = 7;

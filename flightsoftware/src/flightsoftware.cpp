@@ -9,7 +9,7 @@
 STM32SPIBus spi1 = STM32SPIBus(&hspi1);
 BusHandler spi1_handler = BusHandler(&spi1);
 
-IMU imu = IMU(CommBusType::kSPI);
+IMU imu = IMU(CommBusType::kSPI, (int*)IMU_CS_GPIO_Port, IMU_CS_Pin);
 
 uint8_t rx_whoami[2];
 void fsw_init() {
@@ -36,7 +36,7 @@ int fail_count = 0;
 
 void fsw_loop() {
     BusRequest imu_read_request;
-    imu.requestRead(imu_read_request);
+    imu.requestRead(imu_read_request, HAL_MAX_DELAY);
 
     imu.getAccel(imu_data);
 

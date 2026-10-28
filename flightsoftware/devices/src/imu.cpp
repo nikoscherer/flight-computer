@@ -1,18 +1,20 @@
 #include "imu.hpp"
 
+#include <cstdint>
+
 #include "ibus.hpp"
-#include "main.h"
 
-IMU::IMU(CommBusType bus_type) : bus_type_(bus_type) {}
+IMU::IMU(CommBusType bus_type, int* cs_gpio_port, uint16_t cs_pin)
+    : bus_type_(bus_type), cs_gpio_port_(cs_gpio_port), cs_pin_(cs_pin) {}
 
-void IMU::requestRead(BusRequest& request) {
+void IMU::requestRead(BusRequest& request, uint32_t timeout) {
     request.tx_buffer = tx_read_buffer_;
     request.rx_buffer = rx_read_buffer_;
     request.length = kRegisterLengthOUT_L_A;
-    request.timeout = HAL_MAX_DELAY;
+    request.timeout = timeout;
 
-    request.cs_gpio_port = IMU_CS_GPIO_Port;
-    request.cs_pin = IMU_CS_Pin;
+    request.cs_gpio_port = cs_gpio_port_;
+    request.cs_pin = cs_pin_;
 
     request.comm_type = BusRequestType::kTxRx;
     request.bus_type = bus_type_;

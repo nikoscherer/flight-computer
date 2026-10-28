@@ -19,7 +19,4 @@ class STM32SPIBus : public IBus {
     IBus::CommStatus parseHALStatus(HAL_StatusTypeDef hal_status);
 
     SPI_HandleTypeDef* hspi_;
-
-    GPIO_TypeDef* cs_gpio_port_;
-    uint16_t cs_pin_;
 };
