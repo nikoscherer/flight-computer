@@ -2,7 +2,6 @@
 
 #include "ibus.hpp"
 #include "main.h"
-#include "stm32l4xx_hal_def.h"
 
 class STM32SPIBus : public IBus {
    public:

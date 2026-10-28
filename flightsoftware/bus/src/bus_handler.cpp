@@ -2,6 +2,10 @@
 
 #include "ibus.hpp"
 
+// We should have a wrapper for HAL_GPIO_WritePin. Once added, also change
+// CMakeLists.txt
+#include "main.h"
+
 BusHandler::BusHandler(IBus* bus) : bus_(bus) {}
 
 /*
@@ -11,8 +15,8 @@ bool BusHandler::processRequest(BusRequest& request) {
     // This should be through an interface, we don't want to use HAL functions
     // in this class.
     if (request.bus_type == CommBusType::kSPI) {
-        // HAL_GPIO_WritePin(request.cs_gpio_port, request.cs_pin,
-        // GPIO_PIN_RESET);
+        HAL_GPIO_WritePin((GPIO_TypeDef*)request.cs_gpio_port, request.cs_pin,
+                          GPIO_PIN_RESET);
     }
 
     // Handle transmission
@@ -31,8 +35,8 @@ bool BusHandler::processRequest(BusRequest& request) {
     }
 
     if (request.bus_type == CommBusType::kSPI) {
-        // HAL_GPIO_WritePin(request.cs_gpio_port, request.cs_pin,
-        // GPIO_PIN_SET);
+        HAL_GPIO_WritePin((GPIO_TypeDef*)request.cs_gpio_port, request.cs_pin,
+                          GPIO_PIN_SET);
     }
 
     return status == IBus::CommStatus::kOk;

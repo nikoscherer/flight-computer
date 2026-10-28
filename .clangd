@@ -1,2 +1,2 @@
 CompileFlags:
-  CompilationDatabase: build/tests
+  CompilationDatabase: build/Debug

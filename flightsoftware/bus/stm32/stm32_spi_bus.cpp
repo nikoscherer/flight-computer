@@ -34,4 +34,6 @@ IBus::CommStatus STM32SPIBus::parseHALStatus(HAL_StatusTypeDef hal_status) {
         case HAL_ERROR:
             return CommStatus::kError;
     }
+
+    return CommStatus::kError;
 }

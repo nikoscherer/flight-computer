@@ -24,8 +24,7 @@
             }
         },
         {
-            "name": "tests",
-            "displayName": "Build with Tests",
+            "name": "Tests",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/tests",
             "cacheVariables": {
@@ -42,6 +41,10 @@
         {
             "name": "Release",
             "configurePreset": "Release"
+        },
+        {
+            "name": "Tests",
+            "configurePreset": "Tests"
         }
     ]
 }
