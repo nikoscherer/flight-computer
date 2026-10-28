@@ -7,6 +7,14 @@ add_library(flightcore STATIC
 
 target_include_directories(flightcore PUBLIC
     inc
+    devices/inc
+    bus/inc
+)
+
+target_sources(flightcore PUBLIC
+    devices/src/imu.cpp
+    bus/src/stm32_spi_bus.cpp
+    bus/src/bus_handler.cpp
 )
 
 target_include_directories(flightcore PRIVATE
