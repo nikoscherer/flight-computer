@@ -5,6 +5,14 @@
 
 STM32SPIBus::STM32SPIBus(SPI_HandleTypeDef* hspi) : hspi_(hspi) {}
 
+IBus::CommStatus STM32SPIBus::transmitReceiveDMA(uint8_t* tx_buffer,
+                                                 uint8_t* rx_buffer,
+                                                 size_t length) {
+    HAL_StatusTypeDef hal_status =
+        HAL_SPI_TransmitReceive_DMA(hspi_, tx_buffer, rx_buffer, length);
+    return parseHALStatus(hal_status);
+}
+
 IBus::CommStatus STM32SPIBus::transmitReceive(uint8_t* tx_buffer,
                                               uint8_t* rx_buffer, size_t length,
                                               uint32_t timeout) {
