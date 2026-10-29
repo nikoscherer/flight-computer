@@ -13,11 +13,7 @@ struct BusRequest {
     size_t length;
     uint32_t timeout;
 
-    int* cs_gpio_port;
-    uint16_t cs_pin;
-
     BusRequestType comm_type;
-    CommBusType bus_type;
 };
 
 class IBus {

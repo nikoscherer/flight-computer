@@ -5,6 +5,7 @@
 #include "ibus.hpp"
 #include "idevice.hpp"
 #include "main.h"
+#include "spi_handler.hpp"
 
 struct IMUData {
     float x_accel;
@@ -26,6 +27,7 @@ class IMU : public IDevice {
     DeviceStatus initialize();
 
     DeviceStatus read();
+    void getReadRequest(SPIBusRequest& bus_request);
 
     void parseData(IMUData& imu_data);
 

@@ -6,6 +6,7 @@ if (NOT BUILD_TESTS)
         bus/stm32/stm32_spi_bus.cpp
         devices/src/imu.cpp
         bus/src/bus_handler.cpp
+        bus/src/spi_handler.cpp
     )
 
     target_include_directories(flightcore PUBLIC

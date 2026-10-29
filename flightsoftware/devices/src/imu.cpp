@@ -2,6 +2,8 @@
 
 #include "ibus.hpp"
 #include "idevice.hpp"
+#include "main.h"
+#include "stm32l4xx_hal_def.h"
 
 IMU::IMU(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin)
     : bus_(bus), cs_gpio_port_(cs_gpio_port), cs_pin_(cs_pin) {}
@@ -48,11 +50,11 @@ DeviceStatus IMU::initialize() {
     HAL_GPIO_WritePin(IMU_CS_GPIO_Port, IMU_CS_Pin, GPIO_PIN_SET);
 
     // Force read for EXTI callback
-    uint8_t tx_dummy[7] = {kRegisterOUTX_L_A_ | 0x80};
-    uint8_t rx_dummy[7] = {0};
-    HAL_GPIO_WritePin(IMU_CS_GPIO_Port, IMU_CS_Pin, GPIO_PIN_RESET);
-    bus_->transmitReceive(tx_dummy, rx_dummy, 7, HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(IMU_CS_GPIO_Port, IMU_CS_Pin, GPIO_PIN_SET);
+    // uint8_t tx_dummy[7] = {kRegisterOUTX_L_A_ | 0x80};
+    // uint8_t rx_dummy[7] = {0};
+    // HAL_GPIO_WritePin(IMU_CS_GPIO_Port, IMU_CS_Pin, GPIO_PIN_RESET);
+    // bus_->transmitReceive(tx_dummy, rx_dummy, 7, HAL_MAX_DELAY);
+    // HAL_GPIO_WritePin(IMU_CS_GPIO_Port, IMU_CS_Pin, GPIO_PIN_SET);
 
     return DeviceStatus::kOk;
 }
@@ -63,6 +65,20 @@ DeviceStatus IMU::read() {
                              kRegisterLengthOUT_L_A);
 
     return DeviceStatus::kOk;
+}
+
+void IMU::getReadRequest(SPIBusRequest& request) {
+    BusRequest& bus_req = request.bus_request;
+    bus_req.tx_buffer = tx_read_buffer_;
+    bus_req.rx_buffer = rx_read_buffer_;
+    bus_req.length = kRegisterLengthOUT_L_A;
+
+    bus_req.comm_type = BusRequestType::kTxRx;
+
+    request.gpio_port = cs_gpio_port_;
+    request.cs_pin = cs_pin_;
+
+    request.bus_request = bus_req;
 }
 
 void IMU::parseData(IMUData& imu_data) {
