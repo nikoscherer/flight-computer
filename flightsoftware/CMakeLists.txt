@@ -4,7 +4,8 @@ if (NOT BUILD_TESTS)
     add_library(flightcore STATIC 
         src/flightsoftware.cpp
         bus/stm32/stm32_spi_bus.cpp
-        bus/src/bus_handler.cpp # Should be in flightlogic
+        devices/src/imu.cpp
+        bus/src/bus_handler.cpp
     )
 
     target_include_directories(flightcore PUBLIC
@@ -31,7 +32,7 @@ endif()
 # include/sources that don't use the STM32 framework
 add_library(flightlogic STATIC
     # bus/src/bus_handler.cpp Should be here
-    devices/src/imu.cpp
+    bus/src/placeholder.cpp
 )
 
 target_include_directories(flightlogic PUBLIC

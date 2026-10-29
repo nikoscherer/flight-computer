@@ -9,6 +9,8 @@ class STM32SPIBus : public IBus {
 
     IBus::CommStatus transmitReceiveDMA(uint8_t* tx_buffer, uint8_t* rx_buffer,
                                         size_t length) override;
+    IBus::CommStatus transmitDMA(uint8_t* tx_buffer, size_t length) override;
+    IBus::CommStatus receiveDMA(uint8_t* rx_buffer, size_t length) override;
 
     IBus::CommStatus transmitReceive(uint8_t* tx_buffer, uint8_t* rx_buffer,
                                      size_t length, uint32_t timeout) override;
