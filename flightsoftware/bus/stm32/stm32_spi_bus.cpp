@@ -2,6 +2,8 @@
 
 #include "ibus.hpp"
 #include "main.h"
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_spi.h"
 
 STM32SPIBus::STM32SPIBus(SPI_HandleTypeDef* hspi) : hspi_(hspi) {}
 
@@ -60,4 +62,22 @@ IBus::CommStatus STM32SPIBus::parseHALStatus(HAL_StatusTypeDef hal_status) {
     }
 
     return CommStatus::kError;
+}
+
+IBus::CommStatus STM32SPIBus::getDMAStatus() {
+    HAL_SPI_StateTypeDef spi_status = hspi_->State;
+
+    switch (spi_status) {
+        case HAL_SPI_STATE_READY:
+            return IBus::CommStatus::kOk;
+        case HAL_SPI_STATE_BUSY:
+        case HAL_SPI_STATE_BUSY_TX_RX:
+        case HAL_SPI_STATE_BUSY_TX:
+        case HAL_SPI_STATE_BUSY_RX:
+            return IBus::CommStatus::kBusy;
+        case HAL_SPI_STATE_ERROR:
+            return IBus::CommStatus::kError;
+        default:  // unknown
+            return CommStatus::kError;
+    }
 }

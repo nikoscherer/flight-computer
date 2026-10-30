@@ -19,6 +19,8 @@ class STM32SPIBus : public IBus {
     IBus::CommStatus receive(uint8_t* rx_buffer, size_t length,
                              uint32_t timeout) override;
 
+    IBus::CommStatus getDMAStatus() override;
+
    private:
     IBus::CommStatus parseHALStatus(HAL_StatusTypeDef hal_status);
 

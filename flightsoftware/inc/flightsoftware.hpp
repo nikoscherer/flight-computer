@@ -12,6 +12,8 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi);
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi);
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi);
 
+void spi1TaskHandler(void* argument);
+
 void fsw_init();
 void fsw_loop();
 

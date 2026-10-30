@@ -3,7 +3,6 @@
 #include "ibus.hpp"
 #include "idevice.hpp"
 #include "main.h"
-#include "stm32l4xx_hal_def.h"
 
 IMU::IMU(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin)
     : bus_(bus), cs_gpio_port_(cs_gpio_port), cs_pin_(cs_pin) {}

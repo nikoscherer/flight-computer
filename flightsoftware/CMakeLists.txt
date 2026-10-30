@@ -21,9 +21,9 @@ if (NOT BUILD_TESTS)
         ../Drivers/CMSIS/Include
 
         # FreeRTOS paths (uncomment if using FreeRTOS)
-        # ../Middlewares/Third_Party/FreeRTOS/Source/include
-        # ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
-        # ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+        ../Middlewares/Third_Party/FreeRTOS/Source/include
+        ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
     )
 
     target_link_libraries(flightcore PUBLIC flightlogic)

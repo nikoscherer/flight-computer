@@ -1,31 +1,31 @@
 #pragma once
 
+#include "FreeRTOS.h"
+#include "bus_handler.hpp"
 #include "ibus.hpp"
 #include "main.h"
+#include "queue.h"
+#include "semphr.h"
 
-struct SPIBusRequest {
-    BusRequest bus_request;
-
-    GPIO_TypeDef* gpio_port;
-    uint16_t cs_pin;
-};
-
-class SPIHandler {
+class SPIHandler : public BusHandler {
    public:
-    SPIHandler(IBus* bus);
+    explicit SPIHandler(IBus* bus);
 
-    // Temporary bus request handling, once FreeRTOS is implemented we should be
-    // using a queue and semaphore.
+    void execute() override;
+    IBus::CommStatus finishDMARequest() override;
+
+    bool addRequestFromISR(const SPIBusRequest& bus_request);
+    bool addRequest(const SPIBusRequest& bus_request);
+
     void processBusRequest(SPIBusRequest& bus_request);
 
-    void finishDMARequest();
-
-    bool isBusy() const { return busy_; }
+    void giveRequestSemaphore() override;
 
    private:
-    IBus* bus_;
+    constexpr static uint8_t kQueueSize = 10;
+    uint8_t queue_storage_[kQueueSize * sizeof(SPIBusRequest)];
 
-    SPIBusRequest* current_request;
+    SPIBusRequest* current_request_ = nullptr;
 
     bool busy_ = false;
 };
