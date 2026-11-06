@@ -1,11 +1,8 @@
 #pragma once
 
-enum class DeviceStatus {
-    kOk = 0,
-    kInvalidDevice = 1,
-};
+enum class DeviceStatus { kOk = 0, kInvalidDevice = 1, kError = 2, kNone = 3 };
 
 class IDevice {
    public:
-    enum class CommStatus { kOk = 0, kError = 1 };
+    virtual DeviceStatus initialize() = 0;
 };

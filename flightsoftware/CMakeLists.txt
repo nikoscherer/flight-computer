@@ -5,6 +5,7 @@ if (NOT BUILD_TESTS)
         src/flightsoftware.cpp
         bus/stm32/stm32_spi_bus.cpp
         devices/src/imu.cpp
+        devices/src/barometer.cpp
         bus/src/bus_handler.cpp
         bus/src/spi_handler.cpp
     )

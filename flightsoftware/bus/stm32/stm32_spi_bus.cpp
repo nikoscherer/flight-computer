@@ -2,12 +2,10 @@
 
 #include "ibus.hpp"
 #include "main.h"
-#include "stm32l4xx_hal_def.h"
-#include "stm32l4xx_hal_spi.h"
 
 STM32SPIBus::STM32SPIBus(SPI_HandleTypeDef* hspi) : hspi_(hspi) {}
 
-IBus::CommStatus STM32SPIBus::transmitReceiveDMA(uint8_t* tx_buffer,
+IBus::CommStatus STM32SPIBus::transmitReceiveDMA(const uint8_t* tx_buffer,
                                                  uint8_t* rx_buffer,
                                                  size_t length) {
     HAL_StatusTypeDef hal_status =
@@ -15,7 +13,8 @@ IBus::CommStatus STM32SPIBus::transmitReceiveDMA(uint8_t* tx_buffer,
     return parseHALStatus(hal_status);
 }
 
-IBus::CommStatus STM32SPIBus::transmitDMA(uint8_t* tx_buffer, size_t length) {
+IBus::CommStatus STM32SPIBus::transmitDMA(const uint8_t* tx_buffer,
+                                          size_t length) {
     HAL_StatusTypeDef hal_status =
         HAL_SPI_Transmit_DMA(hspi_, tx_buffer, length);
     return parseHALStatus(hal_status);
@@ -27,7 +26,7 @@ IBus::CommStatus STM32SPIBus::receiveDMA(uint8_t* rx_buffer, size_t length) {
     return parseHALStatus(hal_status);
 }
 
-IBus::CommStatus STM32SPIBus::transmitReceive(uint8_t* tx_buffer,
+IBus::CommStatus STM32SPIBus::transmitReceive(const uint8_t* tx_buffer,
                                               uint8_t* rx_buffer, size_t length,
                                               uint32_t timeout) {
     HAL_StatusTypeDef hal_status =
@@ -35,7 +34,7 @@ IBus::CommStatus STM32SPIBus::transmitReceive(uint8_t* tx_buffer,
     return parseHALStatus(hal_status);
 }
 
-IBus::CommStatus STM32SPIBus::transmit(uint8_t* tx_buffer, size_t length,
+IBus::CommStatus STM32SPIBus::transmit(const uint8_t* tx_buffer, size_t length,
                                        uint32_t timeout) {
     HAL_StatusTypeDef hal_status =
         HAL_SPI_Transmit(hspi_, tx_buffer, length, timeout);

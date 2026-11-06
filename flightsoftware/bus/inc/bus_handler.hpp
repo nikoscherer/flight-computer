@@ -36,7 +36,6 @@ class BusHandler {
     virtual IBus::CommStatus finishDMARequest() = 0;
 
     virtual void giveRequestSemaphore() = 0;
-    bool isBusy() const { return busy_; }
 
    protected:
     IBus* bus_;
@@ -52,6 +51,4 @@ class BusHandler {
 
     // Make sure to use this in child bus handlers!!!
     // {type}BusRequest* current_request_ = nullptr;
-
-    bool busy_ = false;
 };

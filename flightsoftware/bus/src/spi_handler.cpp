@@ -3,12 +3,30 @@
 #include "bus_handler.hpp"
 #include "ibus.hpp"
 #include "main.h"
+#include "portmacro.h"
 
 SPIHandler::SPIHandler(IBus* bus) : BusHandler(bus) {
     request_queue_ = xQueueCreateStatic(kQueueSize, sizeof(SPIBusRequest),
                                         queue_storage_, &queue_control_block_);
     request_semaphore_ =
         xSemaphoreCreateBinaryStatic(&request_semaphore_buffer_);
+}
+
+void SPIHandler::execute() {
+    SPIBusRequest request;
+    if (xQueueReceive(request_queue_, &request, portMAX_DELAY)) {
+        processBusRequest(request);
+
+        if (xSemaphoreTake(request_semaphore_, pdMS_TO_TICKS(kTimeout_))) {
+            // We can reset fault status in here (or set a variable to return)
+        } else {
+            // Handle fault status code
+        }
+
+        finishDMARequest();  // This MUST run, we have to set the gpio pin high
+                             // after the transfer.
+    } else {
+    }
 }
 
 void SPIHandler::processBusRequest(SPIBusRequest& request) {
@@ -29,7 +47,18 @@ void SPIHandler::processBusRequest(SPIBusRequest& request) {
     }
 
     current_request_ = &request;
-    busy_ = true;
+}
+
+IBus::CommStatus SPIHandler::finishDMARequest() {
+    HAL_GPIO_WritePin(current_request_->gpio_port, current_request_->cs_pin,
+                      GPIO_PIN_SET);
+
+    return bus_->getDMAStatus();
+}
+
+void SPIHandler::giveRequestSemaphore() {
+    BaseType_t xHigherPriorityTaskWoken;
+    xSemaphoreGiveFromISR(request_semaphore_, &xHigherPriorityTaskWoken);
 }
 
 bool SPIHandler::addRequestFromISR(const SPIBusRequest& bus_request) {
@@ -38,34 +67,4 @@ bool SPIHandler::addRequestFromISR(const SPIBusRequest& bus_request) {
 
 bool SPIHandler::addRequest(const SPIBusRequest& bus_request) {
     return xQueueSend(request_queue_, &bus_request, 0) == pdPASS;
-}
-
-void SPIHandler::giveRequestSemaphore() {
-    BaseType_t xHigherPriorityTaskWoken;
-    xSemaphoreGiveFromISR(request_semaphore_, &xHigherPriorityTaskWoken);
-}
-
-void SPIHandler::execute() {
-    SPIBusRequest request;
-    if (xQueueReceive(request_queue_, &request, portMAX_DELAY)) {
-        processBusRequest(request);
-
-        if (xSemaphoreTake(request_semaphore_, portMAX_DELAY)) {
-            // We can reset fault status in here (or set a variable to return)
-        } else {
-            // Handle fault status code
-        }
-
-        finishDMARequest();  // This MUST run, we have to set the gpio pin high
-                             // after the transfer.
-    }
-}
-
-IBus::CommStatus SPIHandler::finishDMARequest() {
-    HAL_GPIO_WritePin(current_request_->gpio_port, current_request_->cs_pin,
-                      GPIO_PIN_SET);
-
-    busy_ = false;
-
-    return bus_->getDMAStatus();
 }

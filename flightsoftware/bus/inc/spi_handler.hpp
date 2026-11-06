@@ -26,6 +26,5 @@ class SPIHandler : public BusHandler {
     uint8_t queue_storage_[kQueueSize * sizeof(SPIBusRequest)];
 
     SPIBusRequest* current_request_ = nullptr;
-
-    bool busy_ = false;
+    uint8_t kTimeout_ = 100;  // 100 ms
 };
