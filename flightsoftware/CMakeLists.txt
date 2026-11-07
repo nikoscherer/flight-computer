@@ -3,16 +3,23 @@
 if (NOT BUILD_TESTS)
     add_library(flightcore STATIC 
         src/flightsoftware.cpp
+
+        # Bus
         bus/stm32/stm32_spi_bus.cpp
-        devices/src/imu.cpp
-        devices/src/barometer.cpp
         bus/src/bus_handler.cpp
         bus/src/spi_handler.cpp
+
+        # Devices
+        devices/imu/imu.cpp
+
+        devices/src/barometer.cpp
     )
 
     target_include_directories(flightcore PUBLIC
         inc
         bus/stm32
+        devices/inc
+        devices/imu
     )
 
     target_include_directories(flightcore PRIVATE
@@ -39,5 +46,4 @@ add_library(flightlogic STATIC
 
 target_include_directories(flightlogic PUBLIC
     bus/inc
-    devices/inc
 )
