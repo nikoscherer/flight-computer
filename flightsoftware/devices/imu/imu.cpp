@@ -19,13 +19,6 @@ DeviceStatus IMU::initialize() {
         return status;
     }
 
-    // Disale I2C and I3C
-    uint8_t tx_if_cfg[2] = {kRegisterIF_CFG_, 0x01};
-
-    HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET);
-    bus_->transmit(tx_if_cfg, 2, kTimeout_);
-    HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET);
-
     return DeviceStatus::kOk;
 }
 
@@ -60,12 +53,19 @@ DeviceStatus IMU::setConfig(const IMU::Config& config) {
     }
 
     // Enable XL and G data ready interrupts
-    if (IBus::CommStatus status = writeRegister(kRegisterINT1_CTRL_, 0x03);
+    if (IBus::CommStatus status = writeRegister(kRegisterINT1_CTRL_, 0x01);
         status != IBus::CommStatus::kOk) {
         return DeviceStatus::kError;
     }
 
     config_ = config;
+
+    // Disale I2C and I3C
+    uint8_t tx_if_cfg[2] = {kRegisterIF_CFG_, 0x01};
+
+    HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET);
+    bus_->transmit(tx_if_cfg, 2, kTimeout_);
+    HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET);
 
     return DeviceStatus::kOk;
 }

@@ -59,7 +59,19 @@ const osThreadAttr_t SPI1TaskHandler_attributes = {
   .cb_size = sizeof(SPI1TaskHandlerControlBlock),
   .stack_mem = &SPI1TaskHandlerBuffer[0],
   .stack_size = sizeof(SPI1TaskHandlerBuffer),
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityRealtime6,
+};
+/* Definitions for BarometerTask */
+osThreadId_t BarometerTaskHandle;
+uint32_t BarometerTaskBuffer[ 128 ];
+osStaticThreadDef_t BarometerTaskControlBlock;
+const osThreadAttr_t BarometerTask_attributes = {
+  .name = "BarometerTask",
+  .cb_mem = &BarometerTaskControlBlock,
+  .cb_size = sizeof(BarometerTaskControlBlock),
+  .stack_mem = &BarometerTaskBuffer[0],
+  .stack_size = sizeof(BarometerTaskBuffer),
+  .priority = (osPriority_t) osPriorityRealtime7,
 };
 /* USER CODE BEGIN PV */
 
@@ -72,6 +84,7 @@ static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI1_Init(void);
 void spi1TaskHandler(void *argument);
+extern void barometerTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -115,7 +128,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-    fsw_init();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -140,6 +152,9 @@ int main(void)
   /* Create the thread(s) */
   /* creation of SPI1TaskHandler */
   SPI1TaskHandlerHandle = osThreadNew(spi1TaskHandler, NULL, &SPI1TaskHandler_attributes);
+
+  /* creation of BarometerTask */
+  BarometerTaskHandle = osThreadNew(barometerTask, NULL, &BarometerTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -332,7 +347,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(IMU_CS_GPIO_Port, IMU_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, BARO_CS_Pin|IMU_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -366,12 +381,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD4_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : IMU_CS_Pin */
-  GPIO_InitStruct.Pin = IMU_CS_Pin;
+  /*Configure GPIO pins : BARO_CS_Pin IMU_CS_Pin */
+  GPIO_InitStruct.Pin = BARO_CS_Pin|IMU_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  HAL_GPIO_Init(IMU_CS_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 5, 0);

@@ -19,7 +19,10 @@ struct BusRequest {
     BusRequestType comm_type;
 };
 
+enum SPIDeviceID : uint8_t { kIMU = 0, kBarometer = 1 };
+
 struct SPIBusRequest {
+    SPIDeviceID id;
     BusRequest bus_request;
 
     GPIO_TypeDef* gpio_port;
@@ -37,10 +40,11 @@ class BusHandler {
 
     virtual void giveRequestSemaphore() = 0;
 
+    QueueHandle_t request_queue_ = nullptr;
+
    protected:
     IBus* bus_;
 
-    QueueHandle_t request_queue_ = nullptr;
     StaticQueue_t queue_control_block_;
     // Make sure to use and implement this in child bus handlers!!
     // constexpr static uint8_t kQueueSize = {size};

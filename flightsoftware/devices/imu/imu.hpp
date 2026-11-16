@@ -23,6 +23,7 @@ class IMU : public IDevice {
     // Accelerometer
     enum class AccelODR : uint8_t {
         kPowerDown = 0x00,
+        k960Hz = 0x04,
         k1_92kHz = 0x0A,
         k7_68kHz = 0x0C
     };
@@ -110,6 +111,7 @@ class IMU : public IDevice {
     // Gyroscope
     enum class GyroODR : uint8_t {
         kPowerDown = 0x00,
+        k960Hz = 0x04,
         k1_92kHz = 0x0A,
         k7_68kHz = 0x0C
     };

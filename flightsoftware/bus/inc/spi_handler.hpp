@@ -21,6 +21,8 @@ class SPIHandler : public BusHandler {
 
     void giveRequestSemaphore() override;
 
+    SPIBusRequest getCurrentRequest() { return *current_request_; }
+
    private:
     constexpr static uint8_t kQueueSize = 10;
     uint8_t queue_storage_[kQueueSize * sizeof(SPIBusRequest)];

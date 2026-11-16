@@ -21,10 +21,13 @@ IMU::Config imu_config{
         .fs_config = IMU::getFullScaleConfig(IMU::GyroFS::k500DPS),
     }};
 IMU imu(&spi1_bus, IMU_CS_GPIO_Port, IMU_CS_Pin);
-IMUData imu_data;
+IMUData imu_data{};
+bool imu_data_ready = false;
+uint32_t imu_data_points = 0;
 
-uint32_t data_count = 0;
-void fsw_init() {}
+Barometer baro(&spi1_bus, BARO_CS_GPIO_Port, BARO_CS_Pin);
+BarometerData baro_data{};
+bool baro_data_ready = false;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     if (GPIO_Pin == IMU_INT1_Pin) {  // IMU ready
@@ -36,14 +39,35 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
     if (hspi->Instance == SPI1) {
+        SPIBusRequest request = spi1_handler.getCurrentRequest();
+        switch (request.cs_pin) {
+            case IMU_CS_Pin:
+                imu_data_ready = true;
+                imu_data_points++;
+                break;
+            case BARO_CS_Pin:
+                baro_data_ready = true;  // read adc
+                break;
+        }
+
         spi1_handler.giveRequestSemaphore();
     }
 }
 
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi) {}
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {}
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi) {
+    if (hspi->Instance == SPI1) {
+        spi1_handler.giveRequestSemaphore();
+    }
+}
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {
+    if (hspi->Instance == SPI1) {
+        spi1_handler.giveRequestSemaphore();
+    }
+}
 
 DeviceStatus imu_status = DeviceStatus::kNone;
+DeviceStatus baro_status = DeviceStatus::kNone;
+
 void spi1TaskHandler(void* argument) {
     // IMU
     if (imu_status = imu.initialize(); imu_status != DeviceStatus::kOk) {
@@ -57,6 +81,11 @@ void spi1TaskHandler(void* argument) {
         imu_status = DeviceStatus::kError;
     }
 
+    // Barometer
+    if (baro_status = baro.initialize(); baro_status != DeviceStatus::kOk) {
+        baro_status = DeviceStatus::kError;
+    }
+
     SPIBusRequest imu_request;
     imu.getReadRequest(imu_request);
     spi1_handler.addRequest(imu_request);
@@ -64,9 +93,57 @@ void spi1TaskHandler(void* argument) {
     for (;;) {
         spi1_handler.execute();
 
-        imu.parseData(imu_data);
-        data_count++;
+        if (imu_data_ready) {
+            imu.parseData(imu_data);
+            imu_data_ready = false;
+        }
+
+        // if (baro_data_ready) {
+        //     baro.parseData(baro_data);
+        //     baro_data_ready = false;
+        // }
     }
 }
 
-void fsw_loop() {}
+// Should use a task notifier to wait for initialization
+void barometerTask(void* argument) {
+    // TickType_t xLastWakeTime = xTaskGetTickCount();
+    // TickType_t xFrequency = pdMS_TO_TICKS(500000);  // 10 ms (temporary)
+
+    // enum class BarometerState {
+    //     kConvertD1 = 0x00,
+    //     kReadD1 = 0x01,
+    //     kConvertD2 = 0x02,
+    //     kReadD2 = 0x03
+    // };
+
+    // BarometerState next_state = BarometerState::kConvertD2;
+
+    vTaskDelay(pdMS_TO_TICKS(1000000000));  // Needs to wait for spi1 handler
+    // for (;;) {
+    // SPIBusRequest baro_request;
+
+    // switch (next_state) {
+    //     case BarometerState::kConvertD1:
+    //         baro.getD1ConversionRequest(baro_request);
+    //         next_state = BarometerState::kReadD1;
+    //         break;
+    //     case BarometerState::kReadD1:
+    //         baro.getADCReadD1Request(baro_request);
+    //         next_state = BarometerState::kConvertD2;
+    //         break;
+    //     case BarometerState::kConvertD2:
+    //         baro.getD2ConversionRequest(baro_request);
+    //         next_state = BarometerState::kReadD2;
+    //         break;
+    //     case BarometerState::kReadD2:
+    //         baro.getADCReadD2Request(baro_request);
+    //         next_state = BarometerState::kConvertD1;
+    //         break;
+    // }
+
+    // spi1_handler.addRequest(baro_request);
+
+    //     vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    // }
+}

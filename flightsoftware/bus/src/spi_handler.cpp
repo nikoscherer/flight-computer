@@ -33,6 +33,7 @@ void SPIHandler::processBusRequest(SPIBusRequest& request) {
     HAL_GPIO_WritePin(request.gpio_port, request.cs_pin, GPIO_PIN_RESET);
 
     BusRequest& bus_request = request.bus_request;
+    current_request_ = &request;
     switch (request.bus_request.comm_type) {
         case BusRequestType::kTxRx:
             bus_->transmitReceiveDMA(bus_request.tx_buffer,
@@ -45,8 +46,6 @@ void SPIHandler::processBusRequest(SPIBusRequest& request) {
             bus_->receiveDMA(bus_request.rx_buffer, bus_request.length);
             break;
     }
-
-    current_request_ = &request;
 }
 
 IBus::CommStatus SPIHandler::finishDMARequest() {
@@ -57,8 +56,11 @@ IBus::CommStatus SPIHandler::finishDMARequest() {
 }
 
 void SPIHandler::giveRequestSemaphore() {
-    BaseType_t xHigherPriorityTaskWoken;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
     xSemaphoreGiveFromISR(request_semaphore_, &xHigherPriorityTaskWoken);
+
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 bool SPIHandler::addRequestFromISR(const SPIBusRequest& bus_request) {
