@@ -1,6 +1,7 @@
 #include "flightsoftware.hpp"
 
 #include "barometer.hpp"
+#include "bus_handler.hpp"
 #include "idevice.hpp"
 #include "imu.hpp"
 #include "main.h"
@@ -20,11 +21,12 @@ IMU::Config imu_config{
         .odr = IMU::GyroODR::k1_92kHz,
         .fs_config = IMU::getFullScaleConfig(IMU::GyroFS::k500DPS),
     }};
-IMU imu(&spi1_bus, IMU_CS_GPIO_Port, IMU_CS_Pin);
+IMU imu(&spi1_bus, IMU_CS_GPIO_Port, IMU_CS_Pin, SPIDeviceID::kIMU);
 IMUData imu_data{};
 bool imu_data_ready = false;
 
-Barometer baro(&spi1_bus, BARO_CS_GPIO_Port, BARO_CS_Pin);
+Barometer baro(&spi1_bus, BARO_CS_GPIO_Port, BARO_CS_Pin,
+               SPIDeviceID::kBarometer);
 BarometerData baro_data{};
 bool baro_data_ready = false;
 
@@ -39,12 +41,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
     if (hspi->Instance == SPI1) {
         SPIBusRequest request = spi1_handler.getCurrentRequest();
-        switch (request.cs_pin) {
-            case IMU_CS_Pin:
+        switch (request.id) {
+            case kIMU:
                 imu_data_ready = true;
                 break;
-            case BARO_CS_Pin:
-                baro_data_ready = true;  // read adc
+            case kBarometer:
+                baro_data_ready = true;
                 break;
         }
 

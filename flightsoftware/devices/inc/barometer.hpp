@@ -12,7 +12,8 @@ struct BarometerData {
 
 class Barometer : public IDevice {
    public:
-    Barometer(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin);
+    Barometer(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin,
+              SPIDeviceID dev_id);
 
     enum class OSR : uint8_t {
         k256 = 0x00,
@@ -53,6 +54,8 @@ class Barometer : public IDevice {
 
     GPIO_TypeDef* cs_gpio_port_;
     uint16_t cs_pin_;
+
+    SPIDeviceID dev_id_;
 
     OSR osr_ = OSR::k1024;
     PROM prom_;

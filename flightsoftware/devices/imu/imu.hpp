@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bus_handler.hpp"
 #include "ibus.hpp"
 #include "idevice.hpp"
 #include "main.h"
@@ -17,7 +18,8 @@ struct IMUData {
 
 class IMU : public IDevice {
    public:
-    IMU(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin);
+    IMU(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin,
+        SPIDeviceID dev_id);
 
     // IMU Config
     // Accelerometer
@@ -185,6 +187,8 @@ class IMU : public IDevice {
 
     GPIO_TypeDef* cs_gpio_port_;
     uint16_t cs_pin_;
+
+    SPIDeviceID dev_id_;
 
     constexpr static uint8_t kDeviceAddress_ = 0x73;
 

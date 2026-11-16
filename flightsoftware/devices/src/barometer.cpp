@@ -11,8 +11,12 @@
 #include "main.h"
 #include "task.h"
 
-Barometer::Barometer(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin)
-    : bus_(bus), cs_gpio_port_(cs_gpio_port), cs_pin_(cs_pin) {}
+Barometer::Barometer(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin,
+                     SPIDeviceID dev_id)
+    : bus_(bus),
+      cs_gpio_port_(cs_gpio_port),
+      cs_pin_(cs_pin),
+      dev_id_(dev_id) {}
 
 DeviceStatus Barometer::initialize() {
     if (sendCommand(kCommandReset_) != IBus::CommStatus::kOk) {
@@ -46,6 +50,7 @@ DeviceStatus Barometer::initialize() {
 }
 
 void Barometer::getD1ConversionRequest(SPIBusRequest& request) {
+    request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_conv_d1_;
     bus_req.length = sizeof(tx_conv_d1_);
@@ -59,6 +64,7 @@ void Barometer::getD1ConversionRequest(SPIBusRequest& request) {
 }
 
 void Barometer::getD2ConversionRequest(SPIBusRequest& request) {
+    request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_conv_d2_;
     bus_req.length = sizeof(tx_conv_d2_);
@@ -72,6 +78,7 @@ void Barometer::getD2ConversionRequest(SPIBusRequest& request) {
 }
 
 void Barometer::getADCReadRequest_(SPIBusRequest& request) {
+    request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_adc_read_;
     bus_req.length = sizeof(tx_adc_read_);

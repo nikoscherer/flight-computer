@@ -2,14 +2,19 @@
 
 #include <cstdint>
 
+#include "bus_handler.hpp"
 #include "ibus.hpp"
 #include "idevice.hpp"
 #include "main.h"
 
 #define g 9.80665f
 
-IMU::IMU(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin)
-    : bus_(bus), cs_gpio_port_(cs_gpio_port), cs_pin_(cs_pin) {}
+IMU::IMU(IBus* bus, GPIO_TypeDef* cs_gpio_port, uint16_t cs_pin,
+         SPIDeviceID dev_id)
+    : bus_(bus),
+      cs_gpio_port_(cs_gpio_port),
+      cs_pin_(cs_pin),
+      dev_id_(dev_id) {}
 
 // We expect the bus to be free when we need to initialize
 DeviceStatus IMU::initialize() {
@@ -82,6 +87,7 @@ DeviceStatus IMU::read() {
 }
 
 void IMU::getReadRequest(SPIBusRequest& request) {
+    request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_read_buffer_;
     bus_req.rx_buffer = rx_read_buffer_;
