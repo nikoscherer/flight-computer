@@ -23,7 +23,6 @@ IMU::Config imu_config{
 IMU imu(&spi1_bus, IMU_CS_GPIO_Port, IMU_CS_Pin);
 IMUData imu_data{};
 bool imu_data_ready = false;
-uint32_t imu_data_points = 0;
 
 Barometer baro(&spi1_bus, BARO_CS_GPIO_Port, BARO_CS_Pin);
 BarometerData baro_data{};
@@ -43,7 +42,6 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
         switch (request.cs_pin) {
             case IMU_CS_Pin:
                 imu_data_ready = true;
-                imu_data_points++;
                 break;
             case BARO_CS_Pin:
                 baro_data_ready = true;  // read adc
@@ -98,52 +96,52 @@ void spi1TaskHandler(void* argument) {
             imu_data_ready = false;
         }
 
-        // if (baro_data_ready) {
-        //     baro.parseData(baro_data);
-        //     baro_data_ready = false;
-        // }
+        if (baro_data_ready) {
+            baro.parseData(baro_data);
+            baro_data_ready = false;
+        }
     }
 }
 
 // Should use a task notifier to wait for initialization
 void barometerTask(void* argument) {
-    // TickType_t xLastWakeTime = xTaskGetTickCount();
-    // TickType_t xFrequency = pdMS_TO_TICKS(500000);  // 10 ms (temporary)
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    TickType_t xFrequency = pdMS_TO_TICKS(10);  // 10 ms (temporary)
 
-    // enum class BarometerState {
-    //     kConvertD1 = 0x00,
-    //     kReadD1 = 0x01,
-    //     kConvertD2 = 0x02,
-    //     kReadD2 = 0x03
-    // };
+    enum class BarometerState {
+        kConvertD1 = 0x00,
+        kReadD1 = 0x01,
+        kConvertD2 = 0x02,
+        kReadD2 = 0x03
+    };
 
-    // BarometerState next_state = BarometerState::kConvertD2;
+    BarometerState next_state = BarometerState::kConvertD2;
 
-    vTaskDelay(pdMS_TO_TICKS(1000000000));  // Needs to wait for spi1 handler
-    // for (;;) {
-    // SPIBusRequest baro_request;
+    vTaskDelay(pdMS_TO_TICKS(250));  // Needs to wait for spi1 handler
+    for (;;) {
+        SPIBusRequest baro_request;
 
-    // switch (next_state) {
-    //     case BarometerState::kConvertD1:
-    //         baro.getD1ConversionRequest(baro_request);
-    //         next_state = BarometerState::kReadD1;
-    //         break;
-    //     case BarometerState::kReadD1:
-    //         baro.getADCReadD1Request(baro_request);
-    //         next_state = BarometerState::kConvertD2;
-    //         break;
-    //     case BarometerState::kConvertD2:
-    //         baro.getD2ConversionRequest(baro_request);
-    //         next_state = BarometerState::kReadD2;
-    //         break;
-    //     case BarometerState::kReadD2:
-    //         baro.getADCReadD2Request(baro_request);
-    //         next_state = BarometerState::kConvertD1;
-    //         break;
-    // }
+        switch (next_state) {
+            case BarometerState::kConvertD1:
+                baro.getD1ConversionRequest(baro_request);
+                next_state = BarometerState::kReadD1;
+                break;
+            case BarometerState::kReadD1:
+                baro.getADCReadD1Request(baro_request);
+                next_state = BarometerState::kConvertD2;
+                break;
+            case BarometerState::kConvertD2:
+                baro.getD2ConversionRequest(baro_request);
+                next_state = BarometerState::kReadD2;
+                break;
+            case BarometerState::kReadD2:
+                baro.getADCReadD2Request(baro_request);
+                next_state = BarometerState::kConvertD1;
+                break;
+        }
 
-    // spi1_handler.addRequest(baro_request);
+        spi1_handler.addRequest(baro_request);
 
-    //     vTaskDelayUntil(&xLastWakeTime, xFrequency);
-    // }
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    }
 }
