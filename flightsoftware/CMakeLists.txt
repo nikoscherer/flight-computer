@@ -3,6 +3,7 @@
 if (NOT BUILD_TESTS)
     add_library(flightcore STATIC 
         src/flightsoftware.cpp
+        src/hardware.cpp
 
         # Bus
         bus/stm32/stm32_spi_bus.cpp
