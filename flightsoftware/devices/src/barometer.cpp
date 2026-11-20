@@ -32,7 +32,7 @@ DeviceStatus Barometer::initialize() {
         uint8_t rx[3];
 
         HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET);
-        bus_->transmitReceive(tx, rx, sizeof(tx), HAL_MAX_DELAY);
+        bus_->transmitReceive(tx, sizeof(tx), rx, sizeof(rx), HAL_MAX_DELAY);
         HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET);
 
         prom_buffer_[i] = static_cast<uint16_t>((rx[1] << 8) | rx[2]);
@@ -53,7 +53,7 @@ void Barometer::getD1ConversionRequest(SPIBusRequest& request) {
     request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_conv_d1_;
-    bus_req.length = sizeof(tx_conv_d1_);
+    bus_req.tx_length = sizeof(tx_conv_d1_);
 
     bus_req.comm_type = BusRequestType::kTx;
 
@@ -67,7 +67,7 @@ void Barometer::getD2ConversionRequest(SPIBusRequest& request) {
     request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_conv_d2_;
-    bus_req.length = sizeof(tx_conv_d2_);
+    bus_req.tx_length = sizeof(tx_conv_d2_);
 
     bus_req.comm_type = BusRequestType::kTx;
 
@@ -81,7 +81,8 @@ void Barometer::getADCReadRequest_(SPIBusRequest& request) {
     request.id = dev_id_;
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_adc_read_;
-    bus_req.length = sizeof(tx_adc_read_);
+    bus_req.tx_length = sizeof(tx_adc_read_);
+    bus_req.rx_length = sizeof(rx_adc_read_d1_);
 
     bus_req.comm_type = BusRequestType::kTxRx;
 

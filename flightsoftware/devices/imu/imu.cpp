@@ -78,9 +78,8 @@ DeviceStatus IMU::setConfig(const IMU::Config& config) {
 // Blocking
 DeviceStatus IMU::read() {
     HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET);
-    bus_->transmitReceive(tx_read_buffer_, rx_read_buffer_,
-                          1 + kRegisterLengthOUT_L_G_ + kRegisterLengthOUT_L_A_,
-                          kTimeout_);
+    bus_->transmitReceive(tx_read_buffer_, kTxRxReadLength_, rx_read_buffer_,
+                          kTxRxReadLength_, kTimeout_);
     HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET);
 
     return DeviceStatus::kOk;
@@ -91,7 +90,8 @@ void IMU::getReadRequest(SPIBusRequest& request) {
     BusRequest& bus_req = request.bus_request;
     bus_req.tx_buffer = tx_read_buffer_;
     bus_req.rx_buffer = rx_read_buffer_;
-    bus_req.length = kTxRxReadLength_;
+    bus_req.tx_length = kTxRxReadLength_;
+    bus_req.rx_length = kTxRxReadLength_;
 
     bus_req.comm_type = BusRequestType::kTxRx;
 
@@ -271,7 +271,7 @@ IBus::CommStatus IMU::readRegister(uint8_t reg, uint8_t tx, uint8_t& rx) {
     uint8_t rx_buffer[2];
     HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET);
     IBus::CommStatus status =
-        bus_->transmitReceive(tx_buffer, rx_buffer, 2, kTimeout_);
+        bus_->transmitReceive(tx_buffer, 2, rx_buffer, 2, kTimeout_);
     HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET);
 
     if (status != IBus::CommStatus::kOk) {

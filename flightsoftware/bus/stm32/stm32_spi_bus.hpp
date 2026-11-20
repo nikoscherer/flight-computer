@@ -8,18 +8,18 @@ class STM32SPIBus : public IBus {
     STM32SPIBus(SPI_HandleTypeDef* hspi);
 
     IBus::CommStatus transmitReceiveDMA(const uint8_t* tx_buffer,
-                                        uint8_t* rx_buffer,
-                                        size_t length) override;
+                                        size_t tx_length, uint8_t* rx_buffer,
+                                        size_t rx_length) override;
     IBus::CommStatus transmitDMA(const uint8_t* tx_buffer,
-                                 size_t length) override;
-    IBus::CommStatus receiveDMA(uint8_t* rx_buffer, size_t length) override;
+                                 size_t tx_length) override;
+    IBus::CommStatus receiveDMA(uint8_t* rx_buffer, size_t rx_length) override;
 
-    IBus::CommStatus transmitReceive(const uint8_t* tx_buffer,
-                                     uint8_t* rx_buffer, size_t length,
+    IBus::CommStatus transmitReceive(const uint8_t* tx_buffer, size_t tx_length,
+                                     uint8_t* rx_buffer, size_t rx_length,
                                      uint32_t timeout) override;
-    IBus::CommStatus transmit(const uint8_t* tx_buffer, size_t length,
+    IBus::CommStatus transmit(const uint8_t* tx_buffer, size_t tx_length,
                               uint32_t timeout) override;
-    IBus::CommStatus receive(uint8_t* rx_buffer, size_t length,
+    IBus::CommStatus receive(uint8_t* rx_buffer, size_t rx_length,
                              uint32_t timeout) override;
 
     IBus::CommStatus getDMAStatus() override;

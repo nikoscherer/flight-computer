@@ -11,9 +11,10 @@ enum class CommBusType { kSPI = 0 };
 enum class BusRequestType { kTxRx = 0, kTx = 1, kRx = 2 };
 
 struct BusRequest {
-    uint8_t* tx_buffer;
-    uint8_t* rx_buffer;
-    size_t length;
+    uint8_t* tx_buffer = nullptr;
+    size_t tx_length = 0;
+    uint8_t* rx_buffer = nullptr;
+    size_t rx_length = 0;
     uint32_t timeout;
 
     BusRequestType comm_type;

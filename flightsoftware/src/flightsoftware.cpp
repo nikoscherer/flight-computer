@@ -5,54 +5,22 @@
 #include "hardware.hpp"
 #include "idevice.hpp"
 #include "imu.hpp"
+#include "interrupts.hpp"
 #include "main.h"
+#include "projdefs.h"
 #include "spi_handler.hpp"
 #include "stm32_spi_bus.hpp"
 
-
 IMUData imu_data{};
-bool imu_data_ready = false;
+std::atomic<bool> imu_data_ready = false;
 
 BarometerData baro_data{};
-bool baro_data_ready = false;
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-    if (GPIO_Pin == IMU_INT1_Pin) {  // IMU ready
-        SPIBusRequest imu_request;
-        imu.getReadRequest(imu_request);
-        spi1_handler.addRequestFromISR(imu_request);
-    }
-}
-
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
-    if (hspi->Instance == SPI1) {
-        SPIBusRequest request = spi1_handler.getCurrentRequest();
-        switch (request.id) {
-            case kIMU:
-                imu_data_ready = true;
-                break;
-            case kBarometer:
-                baro_data_ready = true;
-                break;
-        }
-
-        spi1_handler.giveRequestSemaphore();
-    }
-}
-
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi) {
-    if (hspi->Instance == SPI1) {
-        spi1_handler.giveRequestSemaphore();
-    }
-}
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {
-    if (hspi->Instance == SPI1) {
-        spi1_handler.giveRequestSemaphore();
-    }
-}
+std::atomic<bool> baro_data_ready = false;
 
 DeviceStatus imu_status = DeviceStatus::kNone;
 DeviceStatus baro_status = DeviceStatus::kNone;
+
+uint16_t gps_bytes;
 
 void spi1TaskHandler(void* argument) {
     // IMU
@@ -79,6 +47,8 @@ void spi1TaskHandler(void* argument) {
     for (;;) {
         spi1_handler.execute();
 
+        // Parsing happens after handler execution so we don't have a race
+        // condition with the rx buffers.
         if (imu_data_ready) {
             imu.parseData(imu_data);
             imu_data_ready = false;
@@ -93,7 +63,6 @@ void spi1TaskHandler(void* argument) {
 
 // Should use a task notifier to wait for initialization
 void barometerTask(void* argument) {
-    TickType_t xLastWakeTime = xTaskGetTickCount();
     TickType_t xFrequency = pdMS_TO_TICKS(10);  // 10 ms (temporary)
 
     enum class BarometerState {
@@ -106,6 +75,7 @@ void barometerTask(void* argument) {
     BarometerState next_state = BarometerState::kConvertD2;
 
     vTaskDelay(pdMS_TO_TICKS(250));  // Needs to wait for spi1 handler
+    TickType_t xLastWakeTime = xTaskGetTickCount();
     for (;;) {
         SPIBusRequest baro_request;
 

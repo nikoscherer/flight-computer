@@ -1,19 +1,23 @@
 #pragma once
 
+#include <atomic>
+
+#include "barometer.hpp"
+#include "imu.hpp"
 #include "main.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern SPI_HandleTypeDef hspi1;
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi);
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi);
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi);
 
 void spi1TaskHandler(void* argument);
 void barometerTask(void* argument);
+
+extern IMUData imu_data;
+extern std::atomic<bool> imu_data_ready;
+
+extern BarometerData baro_data;
+extern std::atomic<bool> baro_data_ready;
 
 #ifdef __cplusplus
 }

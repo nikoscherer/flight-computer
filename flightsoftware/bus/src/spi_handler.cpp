@@ -37,13 +37,15 @@ void SPIHandler::processBusRequest(SPIBusRequest& request) {
     switch (request.bus_request.comm_type) {
         case BusRequestType::kTxRx:
             bus_->transmitReceiveDMA(bus_request.tx_buffer,
-                                     bus_request.rx_buffer, bus_request.length);
+                                     bus_request.tx_length,
+                                     bus_request.rx_buffer,
+                                     bus_request.rx_length);
             break;
         case BusRequestType::kTx:
-            bus_->transmitDMA(bus_request.tx_buffer, bus_request.length);
+            bus_->transmitDMA(bus_request.tx_buffer, bus_request.tx_length);
             break;
         case BusRequestType::kRx:
-            bus_->receiveDMA(bus_request.rx_buffer, bus_request.length);
+            bus_->receiveDMA(bus_request.rx_buffer, bus_request.rx_length);
             break;
     }
 }
