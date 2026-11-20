@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 void spi1TaskHandler(void* argument);
+void i2c1TaskHandler(void* argument);
 void barometerTask(void* argument);
 
 extern IMUData imu_data;

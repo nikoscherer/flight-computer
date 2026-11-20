@@ -2,12 +2,15 @@
 
 #include "flightsoftware.hpp"
 #include "hardware.hpp"
+#include "main.h"
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     if (GPIO_Pin == IMU_INT1_Pin) {  // IMU ready
         SPIBusRequest imu_request;
         imu.getReadRequest(imu_request);
         spi1_handler.addRequestFromISR(imu_request);
+    } else if (GPIO_Pin == GPS_INT_Pin) {
+        //
     }
 }
 

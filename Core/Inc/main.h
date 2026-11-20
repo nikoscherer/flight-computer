@@ -62,6 +62,9 @@ void Error_Handler(void);
 #define B1_EXTI_IRQn EXTI15_10_IRQn
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
+#define GPS_INT_Pin GPIO_PIN_3
+#define GPS_INT_GPIO_Port GPIOC
+#define GPS_INT_EXTI_IRQn EXTI3_IRQn
 #define IMU_INT1_Pin GPIO_PIN_0
 #define IMU_INT1_GPIO_Port GPIOA
 #define IMU_INT1_EXTI_IRQn EXTI0_IRQn
