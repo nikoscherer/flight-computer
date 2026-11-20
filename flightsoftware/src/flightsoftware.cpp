@@ -12,15 +12,13 @@
 #include "stm32_spi_bus.hpp"
 
 IMUData imu_data{};
-std::atomic<bool> imu_data_ready = false;
+bool imu_data_ready = false;
 
 BarometerData baro_data{};
-std::atomic<bool> baro_data_ready = false;
+bool baro_data_ready = false;
 
 DeviceStatus imu_status = DeviceStatus::kNone;
 DeviceStatus baro_status = DeviceStatus::kNone;
-
-uint16_t gps_bytes;
 
 void spi1TaskHandler(void* argument) {
     // IMU

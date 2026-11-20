@@ -14,10 +14,10 @@ void spi1TaskHandler(void* argument);
 void barometerTask(void* argument);
 
 extern IMUData imu_data;
-extern std::atomic<bool> imu_data_ready;
+extern bool imu_data_ready;
 
 extern BarometerData baro_data;
-extern std::atomic<bool> baro_data_ready;
+extern bool baro_data_ready;
 
 #ifdef __cplusplus
 }
